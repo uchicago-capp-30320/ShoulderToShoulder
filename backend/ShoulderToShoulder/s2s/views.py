@@ -1,18 +1,17 @@
 from django.shortcuts import render
+from django.contrib.auth.models import Group, User
 from django.http import HttpResponse
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 
-from s2s.db_models import Hobby
-from s2s.serializers import HobbySerializer
+from .serializers import *
+from .db_models import *
 
-
-# Function views
+# functions
 def index(request):
     return HttpResponse("Hello, world. You're at the ShoulderToShoulder index.")
 
-
-# ViewSet classes
+# viewsets
 class HobbyViewSet(viewsets.ModelViewSet):
     queryset = Hobby.objects.all()
     serializer_class = HobbySerializer
-    
+    permission_classes = [permissions.IsAuthenticated]

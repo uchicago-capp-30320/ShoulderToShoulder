@@ -4,7 +4,8 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register("api/hobby", views.HobbyViewSet, base_name="hobby")
+router.register(r"hobbies", views.HobbyViewSet)
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

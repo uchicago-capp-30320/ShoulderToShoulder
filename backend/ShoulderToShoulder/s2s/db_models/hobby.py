@@ -15,7 +15,6 @@ class Hobby(models.Model):
         OTHER = "Other"
 
     name = models.CharField(max_length=100)
-    description = models.TextField()
     max_participants = models.IntegerField()
     type = models.CharField(
         max_length=20,
@@ -24,4 +23,4 @@ class Hobby(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return "{} ({}), {} participants max".format(self.name, self.type, self.max_participants)
