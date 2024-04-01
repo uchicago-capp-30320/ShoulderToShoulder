@@ -8,12 +8,16 @@ Both front and back ends use conda virtual environments.
 
 <pre>
 ```
+cd frontend
+conda create --file=environment.yml
 conda activate frontend
 ```
 </pre>
 
 <pre>
 ```
+cd backend
+conda create --file=environment.yml
 conda activate backend
 ```
 </pre>
