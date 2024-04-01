@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
+import { FooterComponent } from './footer/footer.component';
 // import { LoginComponent } from './login/login.component';
 // import { LandingComponent } from './landing/landing.component';
 
@@ -24,6 +25,7 @@ import { AppHeaderComponent } from './app-header/app-header.component';
     HomepageComponent,
     NavbarComponent,
     AppHeaderComponent,
+    FooterComponent,
     // LoginComponent,
     // LandingComponent
   ],
