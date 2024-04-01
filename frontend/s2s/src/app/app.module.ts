@@ -8,7 +8,6 @@ import { MenubarModule } from 'primeng/menubar';
 import { BadgeModule } from 'primeng/badge';
 
 // Routing
-import { Router } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 
 // Components

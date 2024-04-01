@@ -1,6 +1,10 @@
-# S2s
+# Shoulder to Shoulder (S2S)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.2.
+
+## Set Up
+
+Be sure to initialize the conda environment by running `conda activate frontend`.
 
 ## Development server
 

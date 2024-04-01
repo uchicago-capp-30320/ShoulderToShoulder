@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 /**
@@ -18,7 +18,7 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit{
+export class NavbarComponent {
   items?: MenuItem[] = [
     {
       label: '',
@@ -45,9 +45,4 @@ export class NavbarComponent implements OnInit{
   defaultRoute = '/home';
 
   constructor() { }
-
-  ngOnInit(): void {
-    // TODO - use the AuthService to determine the user status and update the
-    // navigation bar accordingly
-  }
 }

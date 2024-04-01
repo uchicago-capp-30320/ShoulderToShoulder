@@ -22,7 +22,4 @@ export class AppHeaderComponent {
   @Input() subtitle?: string;
 
   constructor() { }
-
-  ngOnInit() {
-  }
 }
