@@ -1,4 +1,4 @@
-name: s2s_backend
+name: backend
 channels:
   - defaults
 dependencies:
@@ -31,4 +31,4 @@ dependencies:
       - django==5.0.3
       - djangorestframework==3.15.1
       - sqlparse==0.4.4
-prefix: /Users/shaymilner/anaconda3/envs/s2s_backend
+prefix: /Users/shaymilner/anaconda3/envs/backend

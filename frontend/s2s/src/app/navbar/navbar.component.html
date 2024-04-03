@@ -1,0 +1,17 @@
+<p-menubar [model]="items" styleClass="navbar">
+    <ng-template pTemplate="start">
+        <a [routerLink]="defaultRoute">
+            <img src="assets/logo.png" height="60" class="mr-2" alt="Shoulder To Shoulder Logo"/>
+        </a>
+    </ng-template>
+    <ng-template pTemplate="item" let-item>
+        <a *ngIf="!item?.url" [attr.tabindex]="-1" class="p-menuitem-link flex justify-content-between align-items-center p-3" [routerLink]="item.routerLink">
+            <div *ngIf="item.class" class="{{ item.class }}">
+                <span> {{ item.label }}</span>
+            </div>
+            <div *ngIf="!item.class">
+                <span> {{ item.label }}</span>
+            </div>
+        </a>
+    </ng-template>
+</p-menubar>
