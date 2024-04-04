@@ -1,11 +1,9 @@
 .header {
-    position: fixed;
+    position: relative;
     width: 100%;
-    z-index: 2; /* higher z-index to make sure it's on top */
+    height: 20rem;
     top: 0;
     left: 0;
     z-index: 1; /* lower z-index since you want other elements to overlap it */
     background-color: #15616D;
-    height: 50%;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
