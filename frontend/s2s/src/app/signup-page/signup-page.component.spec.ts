@@ -4,6 +4,7 @@ import { SignupPageComponent } from './signup-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from '../footer/footer.component';
 import { ActivatedRoute } from '@angular/router';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 describe('SignupPageComponent', () => {
@@ -13,7 +14,7 @@ describe('SignupPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SignupPageComponent, FooterComponent],
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, InputTextModule],
       providers: [
         { provide: ActivatedRoute, useValue: {} } // Mock ActivatedRoute without any specific data
       ]

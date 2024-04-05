@@ -1,6 +1,12 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { ConfirmEventType } from 'primeng/api';
 
+/**
+ * Custom validator to check if two controls have the same value.
+ * 
+ * @param control Control to validate
+ * @returns If the control is valid, returns null. If the control is invalid, 
+ *          returns an error object.
+ */
 export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');
