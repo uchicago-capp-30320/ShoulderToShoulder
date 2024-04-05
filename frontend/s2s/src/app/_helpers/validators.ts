@@ -5,9 +5,6 @@ export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl):
   const password = control.get('password');
   const confirmPassword = control.get('confirmPassword');
 
-  console.log(password)
-  console.log(confirmPassword)
-
   // Check if both controls have values and if they match
   if (password && confirmPassword && password.value !== confirmPassword.value) {
     // Return an error object if passwords don't match

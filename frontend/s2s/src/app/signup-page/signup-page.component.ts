@@ -31,28 +31,24 @@ export class SignupPageComponent {
   });
 
   /**
-   * Getter for the first password form field. Used for strong password 
-   * validation.
+   * Resets the sign up form.
    */
-  get passwordFormField() {
-    return this.signupForm.get('password');
+  resetForm() {
+    this.signupForm.reset();
   }
 
   /**
    * Handles form submission.
    */
   onSubmit() {
+    // Check if the form is valid
+    if (this.signupForm.invalid) {
+      // If the form is invalid, mark all fields as touched
+      this.signupForm.markAllAsTouched();
+      return;
+    }
     console.log(this.signupForm.value);
-  }
-
-  /**
-   * Custom validator for password match.
-   * 
-   * @param control The form control.
-   */
-  passwordMatchValidator(control: FormControl) {
-    const password = control.root.get('password');
-    return password && control.value !== password.value ? { passwordMatch: true } : null; // return null if validation passes
+    this.resetForm();
   }
 
 }

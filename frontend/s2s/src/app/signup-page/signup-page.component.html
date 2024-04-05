@@ -2,7 +2,7 @@
     <h1 class="dark-text">Sign Up for Shoulder to Shoulder</h1>
     <p class="subtitle dark-text"> By signing up, you will gain access to features such as personalized event creation, group formation, and more. </p>
 
-    <div class="signup-form">
+    <div class="signup-form drop-shadow">
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
             <!-- first name -->
             <div class="field">
@@ -35,7 +35,7 @@
             <div class="field">
                 <label for="password" class="label">Password<span class="required">*</span></label>
                 <small class="p-error" *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">Password is required</small>
-                <input type="password" pInputText placeholder="Password" formControlName="password" />
+                <input type="password" pInputText placeholder="Password" formControlName="password" tooltipStyleClass="customtooltip" tooltipEvent="focus" pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." />
             </div>
 
             <!-- confirm password -->

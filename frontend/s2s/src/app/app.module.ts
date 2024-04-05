@@ -4,6 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaskDirective, IConfig, provideEnvironmentNgxMask } from 'ngx-mask';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button'; 
+import { TooltipModule } from 'primeng/tooltip';
+
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -27,6 +30,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SignupPageComponent } from './signup-page/signup-page.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 // import { LoginComponent } from './login/login.component';
 // import { LandingComponent } from './landing/landing.component';
 
@@ -54,9 +58,13 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
     CardModule,
     ReactiveFormsModule,
     NgxMaskDirective,
+    MatTooltipModule,
+    MatButtonModule,
+    TooltipModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),
+    provideAnimationsAsync(),
   ],
   bootstrap: [AppComponent]
 })

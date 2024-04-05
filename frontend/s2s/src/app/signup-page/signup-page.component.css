@@ -8,6 +8,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
 }
 
 .form-container {
@@ -47,3 +49,4 @@
 .required {
     color: rgb(231, 75, 75);
 }
+
