@@ -37,6 +37,11 @@ export class SignupPageComponent {
     this.signupForm.reset();
   }
 
+  togglePasswordField(inputField: HTMLInputElement): void {
+    const type = inputField.type;
+    inputField.type = type === 'password' ? 'text' : 'password';
+  }
+
   /**
    * Handles form submission.
    */

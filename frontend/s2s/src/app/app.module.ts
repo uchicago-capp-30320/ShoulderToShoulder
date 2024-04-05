@@ -5,12 +5,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaskDirective, IConfig, provideEnvironmentNgxMask } from 'ngx-mask';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button'; 
-import { TooltipModule } from 'primeng/tooltip';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
-
-const maskConfig: Partial<IConfig> = {
-  validation: false,
-};
 
 // primeng
 import { MenubarModule } from 'primeng/menubar';
@@ -19,6 +16,11 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
+import { DividerModule } from 'primeng/divider';
+import { TooltipModule } from 'primeng/tooltip';
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -30,9 +32,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SignupPageComponent } from './signup-page/signup-page.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-// import { LoginComponent } from './login/login.component';
-// import { LandingComponent } from './landing/landing.component';
+
+
 
 @NgModule({
   declarations: [
@@ -60,12 +61,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     NgxMaskDirective,
     MatTooltipModule,
     MatButtonModule,
-    TooltipModule
+    TooltipModule,
+    DividerModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),
     provideAnimationsAsync(),
-  ],
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
