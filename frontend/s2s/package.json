@@ -19,6 +19,8 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@material/tooltip": "^14.0.0",
+    "ngx-mask": "^17.0.7",
     "prettier": "^3.2.5",
     "primeicons": "^7.0.0",
     "primeng": "^17.12.0",

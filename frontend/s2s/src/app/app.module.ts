@@ -2,6 +2,12 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxMaskDirective, IConfig, provideEnvironmentNgxMask } from 'ngx-mask';
+import {MatTooltipModule} from '@angular/material/tooltip';
+
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 // primeng
 import { MenubarModule } from 'primeng/menubar';
@@ -46,9 +52,12 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
     InputTextModule,
     PasswordModule,
     CardModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgxMaskDirective,
   ],
-  providers: [],
+  providers: [
+    provideEnvironmentNgxMask(maskConfig),
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

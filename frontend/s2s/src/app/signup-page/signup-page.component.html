@@ -4,16 +4,45 @@
 
     <div class="signup-form">
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- first name -->
             <div class="field">
-                <label for="firstName" class="label">First Name</label>
-                <small class="p-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.dirty">First name is required</small>
+                <label for="firstName" class="label">First Name<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched">First name is required</small>
                 <input type="text" pInputText placeholder="First Name" formControlName="firstName" />
             </div>
           
+            <!-- last name -->
             <div class="field">
-                <label for="lastName" class="label">Last Name</label>
-                <small class="p-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.dirty">Last name is required</small>
+                <label for="lastName" class="label">Last Name<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched">Last name is required</small>
                 <input type="text" pInputText placeholder="Last Name" formControlName="lastName" />
+            </div>
+            
+            <!-- phone number -->
+            <div class="field">
+                <label for="phoneNumber" class="label">Phone Number</label>
+                <input type="text" pInputText placeholder="Phone Number" formControlName="phoneNumber" mask="(000) 000-0000" />
+            </div>
+
+            <!-- email -->
+            <div class="field">
+                <label for="email" class="label">Email<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">Valid email is required</small>
+                <input type="text" pInputText placeholder="Email" formControlName="email" />
+            </div>
+
+            <!-- password -->
+            <div class="field">
+                <label for="password" class="label">Password<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">Password is required</small>
+                <input type="password" pInputText placeholder="Password" formControlName="password" />
+            </div>
+
+            <!-- confirm password -->
+            <div class="field">
+                <label for="confirmPassword" class="label">Confirm Password<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
+                <input type="password" pInputText placeholder="Confirm Password" formControlName="confirmPassword" />
             </div>
             
             <!-- submit buttom -->
