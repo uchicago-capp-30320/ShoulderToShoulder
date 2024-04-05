@@ -1,0 +1,26 @@
+<main>
+    <h1 class="dark-text">Sign Up for Shoulder to Shoulder</h1>
+    <p class="subtitle dark-text"> By signing up, you will gain access to features such as personalized event creation, group formation, and more. </p>
+
+    <div class="signup-form">
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
+            <div class="field">
+                <label for="firstName" class="label">First Name</label>
+                <small class="p-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.dirty">First name is required</small>
+                <input type="text" pInputText placeholder="First Name" formControlName="firstName" />
+            </div>
+          
+            <div class="field">
+                <label for="lastName" class="label">Last Name</label>
+                <small class="p-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.dirty">Last name is required</small>
+                <input type="text" pInputText placeholder="Last Name" formControlName="lastName" />
+            </div>
+            
+            <!-- submit buttom -->
+            <div>
+                <button pButton type="submit" label="Submit" class="submit-button" [disabled]="signupForm.invalid"></button>
+            </div>
+        </form>
+    </div>
+</main>
+<app-footer></app-footer>

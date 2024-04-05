@@ -7,12 +7,14 @@ import { RouterModule, Routes } from '@angular/router';
 
 // Components
 import { HomepageComponent } from './homepage/homepage.component';
+import { SignupPageComponent } from './signup-page/signup-page.component';
 // import { LoginComponent } from './login/login.component';
 
 // Routes
 const appRoutes: Routes = [
     // { path: 'login', component: LoginComponent },
     { path: 'home', component: HomepageComponent },
+    { path: 'sign-up', component: SignupPageComponent },
     { path: '', redirectTo: '/home', pathMatch: 'full' }
 ]
 
