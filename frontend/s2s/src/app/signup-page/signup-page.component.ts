@@ -30,13 +30,30 @@ export class SignupPageComponent {
     validators: confirmPasswordValidator
   });
 
+  constructor() {}
+
   /**
    * Resets the sign up form.
    */
   resetForm() {
     this.signupForm.reset();
+    console.log(this.signupForm)
   }
 
+  /**
+   * Returns the form control for the specified field.
+   * 
+   * @param fieldName The name of the field.
+   */
+  getFormControl(fieldName: string) {
+    return this.signupForm.get(fieldName);
+  }
+
+  /**
+   * Toggles the visibility of the password field.
+   * 
+   * @param inputField The password field.
+   */
   togglePasswordField(inputField: HTMLInputElement): void {
     const type = inputField.type;
     inputField.type = type === 'password' ? 'text' : 'password';
@@ -55,5 +72,4 @@ export class SignupPageComponent {
     console.log(this.signupForm.value);
     this.resetForm();
   }
-
 }

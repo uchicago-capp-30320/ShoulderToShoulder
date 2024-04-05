@@ -21,7 +21,8 @@
           {
             "allowList": [
               "appTooltipLabel",
-              "ariaLabel"
+              "ariaLabel",
+              "label"
             ]
           }
         ],
