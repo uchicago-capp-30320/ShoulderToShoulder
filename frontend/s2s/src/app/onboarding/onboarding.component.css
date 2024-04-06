@@ -1,0 +1,35 @@
+.buttonsDiv {
+    position: absolute;
+    bottom: 0; 
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* Adjust alignment as per your requirement */
+}
+
+.nextButtonDiv {
+    margin-left: auto;
+}
+
+.nextButton {
+    background-color: #ff7b0090;
+    border-color: #ff7b0090;
+    transition:0s 0s;
+}
+
+.nextButton:hover {
+    background-color: #FF7D00;
+    border-color: #FF7D00;
+    transition:0s 0s
+}
+
+.prevButton {
+    background-color: #78290fb3;
+    border-color: #78290fb3;
+}
+
+.prevButton:hover {
+    background-color: #78290F;
+    border-color: #78290F;
+}
+

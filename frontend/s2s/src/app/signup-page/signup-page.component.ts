@@ -1,5 +1,6 @@
 import { Component} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 // helpers
 import { StrongPasswordRegx } from '../_helpers/patterns';
@@ -57,7 +58,9 @@ export class SignupPageComponent {
     validators: confirmPasswordValidator
   });
 
-  constructor() {}
+  constructor(
+    private route: Router
+  ) {}
 
   /**
    * Resets the sign up form.
@@ -100,5 +103,7 @@ export class SignupPageComponent {
     }
     console.log(this.signupForm.value);
     this.resetForm();
+
+    this.route.navigate(['/onboarding']);
   }
 }

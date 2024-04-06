@@ -1,20 +1,25 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SignupPageComponent } from './signup-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from '../footer/footer.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
+
 
 
 describe('SignupPageComponent', () => {
   let component: SignupPageComponent;
   let fixture: ComponentFixture<SignupPageComponent>;
+  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SignupPageComponent, FooterComponent],
-      imports: [ReactiveFormsModule, InputTextModule],
+      imports: [ReactiveFormsModule, InputTextModule, RouterModule],
       providers: [
         { provide: ActivatedRoute, useValue: {} } // Mock ActivatedRoute without any specific data
       ]
@@ -23,6 +28,7 @@ describe('SignupPageComponent', () => {
     
     fixture = TestBed.createComponent(SignupPageComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -264,5 +270,25 @@ describe('SignupPageComponent', () => {
     // Assert firstName field has an error
     const confirmPasswordField = component.signupForm.get('confirmPassword');
     expect(confirmPasswordField?.errors).toEqual({ required: true });
+  });
+
+  it('should navigate to /onboarding route on successful form submission', () => {
+    const navigateSpy = spyOn(router, 'navigate');
+    
+    // Set sample input values
+    component.signupForm.setValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      phoneNumber: '1234567890',
+      email: 'john.doe@gmail.com',
+      password: 'Password123!',
+      confirmPassword: 'Password123!'
+    });
+
+    // Trigger form submission
+    component.onSubmit();
+
+    // Expect navigation to /onboarding route
+    expect(navigateSpy).toHaveBeenCalledWith(['/onboarding']);
   });
 });

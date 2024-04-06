@@ -32,6 +32,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SignupPageComponent } from './signup-page/signup-page.component';
+import { OnboardingComponent } from './onboarding/onboarding.component';
+import { DemographicsSurveyComponent } from './demographics-survey/demographics-survey.component';
+import { PreferencesSurveyComponent } from './preferences-survey/preferences-survey.component';
+import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.component';
 
 
 
@@ -43,6 +47,10 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
     AppHeaderComponent,
     FooterComponent,
     SignupPageComponent,
+    OnboardingComponent,
+    DemographicsSurveyComponent,
+    PreferencesSurveyComponent,
+    ScenariosSurveyComponent,
     // LoginComponent,
     // LandingComponent
   ],
