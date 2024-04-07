@@ -17,6 +17,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -70,7 +72,9 @@ import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.co
     MatTooltipModule,
     MatButtonModule,
     TooltipModule,
-    DividerModule
+    DividerModule,
+    DropdownModule,
+    MultiSelectModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),
