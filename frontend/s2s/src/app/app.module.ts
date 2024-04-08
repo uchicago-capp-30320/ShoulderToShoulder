@@ -20,6 +20,7 @@ import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 const maskConfig: Partial<IConfig> = {
   validation: false,
 };
@@ -38,6 +39,7 @@ import { OnboardingComponent } from './onboarding/onboarding.component';
 import { DemographicsSurveyComponent } from './demographics-survey/demographics-survey.component';
 import { PreferencesSurveyComponent } from './preferences-survey/preferences-survey.component';
 import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.component';
+import { EventAvailabilitySurveyComponent } from './event-availability-survey/event-availability-survey.component';
 
 
 
@@ -53,8 +55,7 @@ import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.co
     DemographicsSurveyComponent,
     PreferencesSurveyComponent,
     ScenariosSurveyComponent,
-    // LoginComponent,
-    // LandingComponent
+    EventAvailabilitySurveyComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,7 +75,8 @@ import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.co
     TooltipModule,
     DividerModule,
     DropdownModule,
-    MultiSelectModule
+    MultiSelectModule,
+    ToggleButtonModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

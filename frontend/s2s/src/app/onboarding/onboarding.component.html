@@ -12,8 +12,13 @@
         <app-preferences-survey></app-preferences-survey>
     </div>
 
-    <!-- Scenarios survey (third page) -->
+    <!-- Event availability survey (third page) -->
     <div *ngIf="this.page === 3">
+        <app-event-availability-survey></app-event-availability-survey>
+    </div>
+
+    <!-- Scenarios survey (fourth page) -->
+    <div *ngIf="this.page === 4">
         <app-scenarios-survey></app-scenarios-survey>
     </div>
 
@@ -26,12 +31,21 @@
         </div>
         
         <!-- next button -->
-        <div *ngIf="this.page !== 3" class="nextButtonDiv">
+        <div *ngIf="this.page !== 4" class="nextButtonDiv">
             <button pButton (click)="nextPage()" class="nextButton">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
+            </button>
+        </div>
+
+        <!-- submit button -->
+        <div *ngIf="this.page === 4" class="nextButtonDiv">
+            <button pButton severity="primary" (click)="onSubmit()" class="submitButton">
+                <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>
     </div>
 </main>
 <app-footer></app-footer>
+
+<!-- [disabled]="(page===2 && userService.preferencesForm.invalid) | (page===3 && userService.eventAvailabilityForm.invalid)" -->
 

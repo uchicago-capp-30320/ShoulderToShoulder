@@ -1,15 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
-// contants and helpers
-import { 
-  ageRanges, 
-  races, 
-  religiousAffiliations, 
-  genders, 
-  sexualOrientations 
-} from '../_helpers/demographics';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -25,11 +16,42 @@ export class UserService {
     religiousAffiliation: new FormControl(''),
     religiousAffiliationDesc: new FormControl(''),
   });
-  ageRanges = ageRanges;
-  races = races;
-  religiousAffiliations = religiousAffiliations;
-  genders = genders;
-  sexualOrientations = sexualOrientations;
 
-  constructor(private fb: FormBuilder) { }
+  public preferencesForm: FormGroup = this.fb.group({
+    hobbies: new FormControl('', Validators.required),
+    groupSizes: new FormControl('', Validators.required),
+    groupSimilarity: new FormControl('', Validators.required),
+    groupSimilarityAttrs: new FormControl('', Validators.required),
+    eventFrequency: new FormControl(''),
+    eventNotifications: new FormControl('', Validators.required),
+    eventNotificationFrequency: new FormControl('', Validators.required),
+  });
+
+  public eventAvailabilityForm: FormGroup = this.fb.group({
+    mondayTimes: new FormControl([]),
+    tuesdayTimes: new FormControl([]),
+    wednesdayTimes: new FormControl([]),
+    thursdayTimes: new FormControl([]),
+    fridayTimes: new FormControl([]),
+    saturdayTimes: new FormControl([]),
+    sundayTimes: new FormControl([]),
+  });
+
+  public scenariosForm: FormGroup = this.fb.group({
+    scenario1: new FormControl(''),
+    scenario2: new FormControl(''),
+    scenario3: new FormControl(''),
+    scenario4: new FormControl(''),
+    scenario5: new FormControl(''),
+    scenario6: new FormControl(''),
+    scenario7: new FormControl(''),
+    scenario8: new FormControl(''),
+    scenario9: new FormControl(''),
+    scenario10: new FormControl(''),
+  });
+
+
+  constructor(
+    private fb: FormBuilder
+    ) { }
 }

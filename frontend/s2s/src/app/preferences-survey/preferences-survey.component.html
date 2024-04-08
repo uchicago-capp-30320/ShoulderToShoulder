@@ -1,1 +1,47 @@
-<p>preferences-survey works!</p>
+<div class="pref-form drop-shadow">
+    <h3 class="light-text">Event Preferences</h3>
+    <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
+    <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- hobbies -->
+        <div class="field">
+            <label for="hobbies" class="label">Favorite Hobbies<span class="required">*</span></label>
+            <p-multiSelect [options]="hobbies" formControlName="hobbies" [showClear]="true" placeholder="Arts & Crafts" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+        </div>
+
+        <!-- group sizes -->
+        <div class="field">
+            <label for="groupSizes" class="label">Preferred Group Sizes<span class="required">*</span></label>
+            <p-multiSelect [options]="groupSizes" formControlName="groupSizes" [showClear]="true" placeholder="1-5 people" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+        </div>
+
+        <!-- group similarity -->
+        <div class="field">
+            <label for="groupSimilarity" class="label">How similar do you want your group members to be to you?<span class="required">*</span></label>
+            <p-dropdown [options]="groupSimilarity" formControlName="groupSimilarity" [showClear]="true" placeholder="Neutral" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+        </div>
+
+        <!-- group similarity attributes -->
+        <div class="field">
+            <label for="groupSimilarityAttrs" class="label">On which attributes do you want your group to be similar to you?<span class="required">*</span></label>
+            <p-multiSelect [options]="groupSimilarityAttrs" formControlName="groupSimilarityAttrs" [showClear]="true" placeholder="No preference" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+        </div>
+
+        <!-- event frequency -->
+        <div class="field">
+            <label for="eventFrequency" class="label">How often do you want to attend Shoulder to Shoulder events?<span class="required">*</span></label>
+            <p-dropdown [options]="eventFrequency" formControlName="eventFrequency" [showClear]="true" placeholder="Twice a week" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+        </div>
+
+        <!-- event notifications -->
+        <div class="field">
+            <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
+            <p-dropdown [options]="eventNotifications" formControlName="eventNotifications" [showClear]="true" placeholder="Email & Text" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+        </div>
+
+        <!-- event notification frequency -->
+        <div class="field">
+            <label for="eventNotificationFrequency" class="label">How often do you want to receive Shoulder To Shoulder notifications?<span class="required">*</span></label>
+            <p-dropdown [options]="eventNotificationFrequency" formControlName="eventNotificationFrequency" [showClear]="true" placeholder="Immediately" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+        </div>
+    </form>
+</div>

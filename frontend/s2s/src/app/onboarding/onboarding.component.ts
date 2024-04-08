@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserService } from '../_services/user.service';
 
 @Component({
   selector: 'app-onboarding',
@@ -6,9 +7,11 @@ import { Component } from '@angular/core';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent {
-  page: number = 1;
+  page: number = 1; // FIXME: Change to 1
 
-  constructor() {}
+  constructor(
+    public userService: UserService
+  ) {}
 
   /**
    * Moves to the next page.
@@ -22,6 +25,13 @@ export class OnboardingComponent {
    */
   previousPage() {
     this.page--;
+  }
+
+  /**
+   * Submits the demographics form.
+   */
+  onSubmit() {
+    console.log("Onboading forms submitted")
   }
 
 }
