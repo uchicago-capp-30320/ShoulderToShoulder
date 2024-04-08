@@ -1,11 +1,18 @@
 <div class="scenario-form drop-shadow">
     <h3 class="light-text">Event Preferences</h3>
-    <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
+    <p class="light-text">In the following questions, you will be asked to indicate whether or not you would attend the described event. This survey is used to increase the relevancy of your event recommendations.</p>
     <form [formGroup]="this.userService.scenariosForm" (ngSubmit)="onSubmit()" class="form-container">
+        
         <!-- scenario 1 -->
         <div class="field">
-            <label for="scenario1" class="label">Favorite Hobbies<span class="required">*</span></label>
+            <label for="scenario1" class="label"><b>Scenario 1</b>: You receive an invitation to attend a <i>knitting circle</i> from <i>7:00pm-8:00pm</i> at a <i>coffee shop</i> that is <i>3 miles</i> away from you. Would you attend this event?<span class="required">*</span></label>
             <p-toggleButton formControlName="scenario1" onLabel="Yes" offLabel="No"></p-toggleButton>
+        </div>
+
+        <!-- scenario 2 -->
+        <div class="field">
+            <label for="scenario1" class="label"><b>Scenario 2</b>: You receive an invitation to attend a <i>pickup soccer game</i> from <i>1:00pm-3:00pm</i> at a <i>recreation center</i> that is <i>1 mile</i> away from you. Would you attend this event?<span class="required">*</span></label>
+            <p-toggleButton formControlName="scenario1" onLabel="Yes" offLabel="No" styleClass=".toggleButton"></p-toggleButton>
         </div>
 
     </form>
