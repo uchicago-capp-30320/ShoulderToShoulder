@@ -7,6 +7,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button'; 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { HttpClientModule } from '@angular/common/http';
 
 
 // primeng
@@ -76,7 +77,8 @@ import { EventAvailabilitySurveyComponent } from './event-availability-survey/ev
     DividerModule,
     DropdownModule,
     MultiSelectModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    HttpClientModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

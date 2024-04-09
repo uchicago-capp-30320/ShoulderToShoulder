@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { NumberRegx } from '../_helpers/patterns';
+import { User } from '../_helpers/userInfo';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+
+  // onboarding forms
   public demographicsForm: FormGroup = this.fb.group({
     ageRange: new FormControl(''),
     race: new FormControl(''),
@@ -18,6 +22,15 @@ export class UserService {
   });
 
   public preferencesForm: FormGroup = this.fb.group({
+    zipCode: new FormControl('', [
+      Validators.minLength(5),
+      Validators.maxLength(5),
+      Validators.required,
+      Validators.pattern(NumberRegx)
+    ]),
+    city: new FormControl(''),
+    state: new FormControl(''),
+    addressLine1: new FormControl(''),
     hobbies: new FormControl('', Validators.required),
     groupSizes: new FormControl('', Validators.required),
     groupSimilarity: new FormControl('', Validators.required),
@@ -50,6 +63,8 @@ export class UserService {
     scenario10: new FormControl(''),
   });
 
+  onboarded: boolean = false;
+  user: User | null = null;
 
   constructor(
     private fb: FormBuilder

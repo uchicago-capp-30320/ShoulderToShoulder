@@ -2,3 +2,5 @@ frontend/node_modules/
 .DS_Store
 .vscode/
 *.log
+
+frontend/s2s/src/assets/api_keys/*

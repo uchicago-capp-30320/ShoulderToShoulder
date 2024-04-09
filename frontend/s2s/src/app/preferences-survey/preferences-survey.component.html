@@ -2,6 +2,33 @@
     <h3 class="light-text">Event Preferences</h3>
     <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
     <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- zipcode -->
+        <div class="field">
+            <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
+            <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" (blur)="getZipCodeData()">
+        </div>
+
+        <!-- city -->
+        <div class="field">
+            <span>
+                <label for="city" class="label">City</label>
+                <label for="state" class="label" style="margin-left: 55%;">State</label>
+            </span>
+            <span>
+                <input pInputText placeholder="City" formControlName="city" style="width: 40%">
+                <input pInputText placeholder="State" formControlName="state" style="width: 40%; margin-left: 20%;">
+            </span>
+
+            
+        </div>
+
+        <!-- address -->
+        <div class="field">
+            <label for="addressLine1" class="label">Address (line 1, optional)</label>
+            <input pInputText formControlName="addressLine1" placeholder="1234 Main St">
+        </div>
+        
         <!-- hobbies -->
         <div class="field">
             <label for="hobbies" class="label">Favorite Hobbies<span class="required">*</span></label>
