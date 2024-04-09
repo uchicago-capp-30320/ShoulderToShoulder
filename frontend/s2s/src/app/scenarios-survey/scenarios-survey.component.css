@@ -15,7 +15,9 @@
 .form-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .field {
@@ -58,4 +60,43 @@ h3 {
 
 p {
     text-align: center;
+}
+
+.nextButton {
+    background-color: #FF7D00;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: fit-content;
+    text-align: right;
+    font-weight: normal;
+    margin-top: 1rem;
+}
+
+.nextButtonDiv {
+    margin-left: auto;
+
+}
+
+.prevButton {
+    background-color: #78290F;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: fit-content;
+    text-align: right;
+    font-weight: normal;
+    margin-top: 1rem;
+}
+
+.prevButtonDiv {
+    margin-right: auto;
+}
+
+.buttons {
+    display: flex;
 }

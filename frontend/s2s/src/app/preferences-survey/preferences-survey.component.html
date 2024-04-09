@@ -17,7 +17,7 @@
             </span>
             <span>
                 <input pInputText placeholder="City" formControlName="city" style="width: 40%">
-                <input pInputText placeholder="State" formControlName="state" style="width: 40%; margin-left: 20%;">
+                <p-dropdown [options]="states" [showClear]="true" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '40%', 'margin-left': '20%'}"></p-dropdown>
             </span>
 
             
