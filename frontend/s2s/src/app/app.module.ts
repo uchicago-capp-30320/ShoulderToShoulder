@@ -8,7 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule } from '@angular/common/http';
-
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 // primeng
 import { MenubarModule } from 'primeng/menubar';
@@ -22,9 +24,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-const maskConfig: Partial<IConfig> = {
-  validation: false,
-};
+
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';

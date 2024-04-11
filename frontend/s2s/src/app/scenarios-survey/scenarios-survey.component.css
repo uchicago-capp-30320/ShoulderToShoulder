@@ -15,7 +15,7 @@
 .form-container {
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -63,7 +63,7 @@ p {
 }
 
 .nextButton {
-    background-color: #FF7D00;
+    background-color: #ff7b0000;
     border: none;
     border-radius: 10px;
     padding: 10px;
@@ -81,7 +81,7 @@ p {
 }
 
 .prevButton {
-    background-color: #78290F;
+    background-color: #78290f00;
     border: none;
     border-radius: 10px;
     padding: 10px;
@@ -99,4 +99,5 @@ p {
 
 .buttons {
     display: flex;
+    width: 100%
 }

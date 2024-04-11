@@ -1,79 +1,79 @@
 <div class="scenario-form drop-shadow">
     <h3 class="light-text">Recomendation Scenarios</h3>
-    <p class="light-text">In the following questions, you will be asked to indicate whether or not you would attend the described event. This survey is used to increase the relevancy of your event recommendations.</p>
+    <p class="light-text">In the following <b>10 scenarios</b>, you will be asked to indicate whether or not you would attend the described event. This survey is used to increase the relevancy of your event recommendations.</p>
     <form [formGroup]="this.userService.scenariosForm" (ngSubmit)="onSubmit()" class="form-container">
-        
-        <!-- scenario 1 -->
-        <div class="field" *ngIf="this.scenario === 1">
-            <label for="scenario1" class="label"><b>Scenario 1</b>: You receive an invitation to attend a craft circle from 7:00pm-8:00pm on a Friday at a coffee shop that is 3 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario1" onLabel="Yes" offLabel="No" (click)="changeValue('scenario1')"></p-toggleButton>
-        </div>
-
-        <!-- scenario 2 -->
-        <div class="field" *ngIf="this.scenario === 2">
-            <label for="scenario2" class="label"><b>Scenario 2</b>: You receive an invitation to attend a pickup game (soccer, rugby, basketball, etc.) from 1:00pm-3:00pm on a Sunday at a recreation center that is 1 mile away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario2" onLabel="Yes" offLabel="No" (click)="changeValue('scenario2')"></p-toggleButton>
-        </div>
-
-        <!-- scenario 3 -->
-        <div class="field" *ngIf="this.scenario === 3">
-            <label for="scenario3" class="label"><b>Scenario 3</b>: You receive an invitation to attend a trail hike from 9:00am-3:00pm on a Saturday at a state park that is 20 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario3" onLabel="Yes" offLabel="No" (click)="changeValue('scenario3')" required></p-toggleButton>
-        </div>
-
-        <!-- scenario 4 -->
-        <div class="field" *ngIf="this.scenario === 4">
-            <label for="scenario4" class="label"><b>Scenario 4</b>: You receive an invitation to attend a gardening club from 5:30pm-7:00pm on a weekday at a community garden that is 2 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario4" onLabel="Yes" offLabel="No" (click)="changeValue('scenario4')" required></p-toggleButton>
-        </div>
-
-        <!-- scenario 5 -->
-        <div class="field" *ngIf="this.scenario === 5">
-            <label for="scenario5" class="label"><b>Scenario 5</b>: You receive an invitation to attend a dance class from 12:00pm-2:00pm on a Sunday at a park that is 10 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario5" onLabel="Yes" offLabel="No" (click)="changeValue('scenario5')" required></p-toggleButton>
-        </div>
-
-        <!-- scenario 6 -->
-        <div class="field" *ngIf="this.scenario === 6">
-            <label for="scenario6" class="label"><b>Scenario 6</b>: You receive an invitation to watch a movie from 7:00pm-10:00pm on a Saturday at a movie theater that is 30 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario6" onLabel="Yes" offLabel="No" (click)="changeValue('scenario6')" required></p-toggleButton>
-        </div>
-
-        <!-- scenario 7 -->
-        <div class="field" *ngIf="this.scenario === 7">
-            <label for="scenario7" class="label"><b>Scenario 7</b>: You receive an invitation to go see a play at a venue that you've been to before that is 1 mile away from you and another invitation to see a play at a new venue 7 miles away from you. Which event would you rather attend?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario7" onLabel="Event 2" offLabel="Event 1" (click)="changeValue('scenario7')" required></p-toggleButton>
-        </div>
-
-        <!-- scenario 8 -->
-        <div class="field" *ngIf="this.scenario === 8">
-            <label for="scenario8" class="label"><b>Scenario 8</b>: You receive an invitation to attend a bookstore crawl from 10:00am-12:00pm on Saturday beginning at a bookstore 1.0 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario8" onLabel="Yes" offLabel="No" (click)="changeValue('scenario8')" required></p-toggleButton>
-        </div>
-
-        <!-- scenario 9 -->
-        <div class="field" *ngIf="this.scenario === 9">
-            <label for="scenario9" class="label"><b>Scenario 9</b>: You receive an invitation to go to brunch at 11:30am on a Saturday and another invitation to attend a dinner party at 6:30 in the evening. Which event would you rather attend?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario9" onLabel="Event 2" offLabel="Event 1" (click)="changeValue('scenario9')" required></p-toggleButton>
-        </div>
-
-         <!-- scenario 10 -->
-         <div class="field" *ngIf="this.scenario === 10">
-            <label for="scenario10" class="label"><b>Scenario 10</b>: You receive an invitation to attend a concert of a local musical artist that will have ~200 people in attendance on a Thursday evening at 7:30pm. The venue is 5 miles away from you. Would you attend this event?<span class="required">*</span></label>
-            <p-toggleButton formControlName="scenario10" onLabel="Yes" offLabel="No" (click)="changeValue('scenario10')" required></p-toggleButton>
-        </div>
-
         <span class="buttons">
             <!-- previous button -->
-            <div *ngIf="this.scenario !== 1" class="prevButtonDiv">
-            <button pButton (click)="prevScenario()" class="prevButton">
-                <span class="ui-button-text ui-clickable"><i class="pi pi-chevron-left"></i></span>
-            </button>
+            <div class="prevButtonDiv">
+                <button pButton (click)="prevScenario()" class="prevButton" [disabled]="this.scenario === 1">
+                    <span class="ui-button-text ui-clickable"><i class="pi pi-chevron-left"></i></span>
+                </button>
             </div>
 
+            <!-- scenario 1 -->
+            <div class="field" *ngIf="this.scenario === 1">
+                <label for="scenario1" class="label"><b>Scenario 1</b>: You receive an invitation to attend a craft circle from 7:00pm-8:00pm on a Friday at a coffee shop that is 3 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario1" onLabel="Yes" offLabel="No" (click)="changeValue('scenario1')"></p-toggleButton>
+            </div>
+
+            <!-- scenario 2 -->
+            <div class="field" *ngIf="this.scenario === 2">
+                <label for="scenario2" class="label"><b>Scenario 2</b>: You receive an invitation to attend a pickup game (soccer, rugby, basketball, etc.) from 1:00pm-3:00pm on a Sunday at a recreation center that is 1 mile away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario2" onLabel="Yes" offLabel="No" (click)="changeValue('scenario2')"></p-toggleButton>
+            </div>
+
+            <!-- scenario 3 -->
+            <div class="field" *ngIf="this.scenario === 3">
+                <label for="scenario3" class="label"><b>Scenario 3</b>: You receive an invitation to attend a trail hike from 9:00am-3:00pm on a Saturday at a state park that is 20 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario3" onLabel="Yes" offLabel="No" (click)="changeValue('scenario3')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 4 -->
+            <div class="field" *ngIf="this.scenario === 4">
+                <label for="scenario4" class="label"><b>Scenario 4</b>: You receive an invitation to attend a gardening club from 5:30pm-7:00pm on a weekday at a community garden that is 2 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario4" onLabel="Yes" offLabel="No" (click)="changeValue('scenario4')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 5 -->
+            <div class="field" *ngIf="this.scenario === 5">
+                <label for="scenario5" class="label"><b>Scenario 5</b>: You receive an invitation to attend a dance class from 12:00pm-2:00pm on a Sunday at a park that is 10 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario5" onLabel="Yes" offLabel="No" (click)="changeValue('scenario5')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 6 -->
+            <div class="field" *ngIf="this.scenario === 6">
+                <label for="scenario6" class="label"><b>Scenario 6</b>: You receive an invitation to watch a movie from 7:00pm-10:00pm on a Saturday at a movie theater that is 30 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario6" onLabel="Yes" offLabel="No" (click)="changeValue('scenario6')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 7 -->
+            <div class="field" *ngIf="this.scenario === 7">
+                <label for="scenario7" class="label"><b>Scenario 7</b>: You receive an invitation to go see a play at a venue that you've been to before that is 1 mile away from you and another invitation to see a play at a new venue 7 miles away from you. Which event would you rather attend?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario7" onLabel="Event 2" offLabel="Event 1" (click)="changeValue('scenario7')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 8 -->
+            <div class="field" *ngIf="this.scenario === 8">
+                <label for="scenario8" class="label"><b>Scenario 8</b>: You receive an invitation to attend a bookstore crawl from 10:00am-12:00pm on Saturday beginning at a bookstore 1.0 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario8" onLabel="Yes" offLabel="No" (click)="changeValue('scenario8')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 9 -->
+            <div class="field" *ngIf="this.scenario === 9">
+                <label for="scenario9" class="label"><b>Scenario 9</b>: You receive an invitation to go to brunch at 11:30am on a Saturday and another invitation to attend a dinner party at 6:30 in the evening. Which event would you rather attend?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario9" onLabel="Event 2" offLabel="Event 1" (click)="changeValue('scenario9')" required></p-toggleButton>
+            </div>
+
+            <!-- scenario 10 -->
+            <div class="field" *ngIf="this.scenario === 10">
+                <label for="scenario10" class="label"><b>Scenario 10</b>: You receive an invitation to attend a concert of a local musical artist that will have ~200 people in attendance on a Thursday evening at 7:30pm. The venue is 5 miles away from you. Would you attend this event?<span class="required">*</span></label>
+                <p-toggleButton formControlName="scenario10" onLabel="Yes" offLabel="No" (click)="changeValue('scenario10')" required></p-toggleButton>
+            </div>
+
+
             <!-- next button -->
-            <div *ngIf="this.scenario !== 10" class="nextButtonDiv">
-                <button pButton (click)="nextScenario()" class="nextButton">
+            <div class="nextButtonDiv">
+                <button pButton (click)="nextScenario()" class="nextButton" [disabled]="this.scenario === 10">
                     <span class="ui-button-text ui-clickable"><i class="pi pi-chevron-right"></i></span>
                 </button>
             </div>

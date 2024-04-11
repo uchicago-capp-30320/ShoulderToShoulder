@@ -1,3 +1,4 @@
+<!-- Note: make font bigger; make space between fields larger -->
 <div class="demo-form drop-shadow">
     <h3 class="light-text">Demographic Information</h3>
     <p class="light-text">The following fields are <b>optional</b> and will only serve to make our event predictions more accurate. We won't display any information on your profile that you want private.</p>
@@ -32,16 +33,22 @@
             <input type="text" pInputText placeholder="e.g., I am a transgender woman." formControlName="genderDesc">
         </div>
 
-        <!-- race -->
+        <!-- sexual orientation -->
         <div class="field">
             <label for="sexualOrientation" class="label">Sexual Orientation</label>
             <p-dropdown [options]="sexualOrientations" formControlName="sexualOrientation" [showClear]="true" placeholder="Select a sexual orientation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
         </div>
 
-        <!-- race description -->
+        <!-- sexual orientation description -->
         <div class="field">
             <label for="sexualOrientationDesc" class="label">Additional sexual orientation description</label>
             <input type="text" pInputText placeholder="e.g., I am a woman who is attracted to men." formControlName="sexualOrientationDesc">
         </div>
+
+        <!-- religious affiliation -->
+        
+
+        <!-- religious affiliation description -->
+
     </form>
 </div>
