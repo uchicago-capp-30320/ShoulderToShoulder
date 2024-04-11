@@ -1,3 +1,4 @@
+frontend/s2s/node_modules
 .DS_Store
 .vscode/
 *.log
