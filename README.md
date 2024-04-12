@@ -42,4 +42,4 @@ npm run format
 ### Meet the Team
 
 - Chanteria Milner
-  - Chanteria is a secon year Master's student studying computational analysis and public policy. When she is not coding for the U.S. Census Bureau, Chanteria enjoys finding new knitting patterns, buying too many books, and petting her cat Clover.
+  - Chanteria is a second year Master's student studying computational analysis and public policy. When she is not coding for the U.S. Census Bureau, Chanteria enjoys finding new knitting patterns, buying too many books, and petting her cat Clover.
