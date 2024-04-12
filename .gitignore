@@ -3,6 +3,7 @@ frontend/s2s/src/assets/api_keys/*
 .DS_Store
 .vscode/
 *.log
+*.pyc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
