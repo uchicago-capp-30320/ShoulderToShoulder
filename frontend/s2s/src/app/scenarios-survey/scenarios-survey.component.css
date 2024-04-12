@@ -77,6 +77,8 @@ p {
 
 .nextButtonDiv {
     margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 
 }
 
@@ -95,6 +97,8 @@ p {
 
 .prevButtonDiv {
     margin-right: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .buttons {
@@ -104,4 +108,17 @@ p {
 
 label.ml-2 {
     margin-left: 5px;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box {
+    width: 25px;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight {
+    border-color: #15616D;
+    background: #15616D;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box:hover {
+    border-color: #15616D;
 }

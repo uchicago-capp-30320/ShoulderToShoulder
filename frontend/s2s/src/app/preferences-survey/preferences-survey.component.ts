@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../_services/user.service';  
 import { HttpClient } from '@angular/common/http';
 
+// services
+import { UserService } from '../_services/user.service';  
+import { PreferencesService } from '../_services/preferences.service';
 
+// helpers
 import { 
-  hobbies, 
   groupSizes, 
   groupSimilarity, 
   groupSimilarityAttrs, 
   eventFrequency, 
-  eventNotificationFrequency, 
-  eventNotifications 
+  eventNotifications,
+  Hobby
 } from '../_helpers/preferences';
 
 import { states } from '../_helpers/location';
@@ -26,12 +28,11 @@ import { states } from '../_helpers/location';
   styleUrl: './preferences-survey.component.css'
 })
 export class PreferencesSurveyComponent implements OnInit {
-  hobbies = hobbies;
+  hobbies!: string[];
   groupSizes = groupSizes;
   groupSimilarity = groupSimilarity;
   groupSimilarityAttrs = groupSimilarityAttrs;
   eventFrequency = eventFrequency;
-  eventNotificationFrequency = eventNotificationFrequency;
   eventNotifications = eventNotifications;
   states = states;
 
@@ -43,11 +44,22 @@ export class PreferencesSurveyComponent implements OnInit {
 
   constructor(
     public userService: UserService,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private preferencesService: PreferencesService
+  ) {
+    this.getHobbyArray();
+  }
 
   ngOnInit() {
     this.getZipCodeApiKey()
+  }
+
+  /**
+   * Extracts an array of hobby names from the Hobby[] list. Sets this.hobbies
+   * to the hobby array.
+   */
+  getHobbyArray() {
+    this.hobbies = this.preferencesService.preferencesHobbies.map(hobby => hobby.name);
   }
 
   /**

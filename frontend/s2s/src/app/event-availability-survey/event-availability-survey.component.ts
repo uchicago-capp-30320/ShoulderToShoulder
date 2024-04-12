@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
+
+// services
 import { UserService } from '../_services/user.service';
-import { availableTimes } from '../_helpers/preferences';
+
+// helpers
+import { availableTimes, days } from '../_helpers/preferences';
 
 @Component({
   selector: 'app-event-availability-survey',
@@ -9,6 +13,7 @@ import { availableTimes } from '../_helpers/preferences';
 })
 export class EventAvailabilitySurveyComponent {
   availableTimes = availableTimes;
+  days = days;
 
   constructor(
     public userService: UserService

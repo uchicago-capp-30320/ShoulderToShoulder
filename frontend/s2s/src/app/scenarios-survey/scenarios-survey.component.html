@@ -1,6 +1,6 @@
 <div class="scenario-form drop-shadow">
     <h2 class="dark-text" style="text-align: center;">Recomendation Scenarios</h2>
-    <p class="dark-text">You will now be tasked with evaluating <b>10 scenarios</b>. <br>In these scenarios, you will be provided with descriptions of <b>two events</b> and be asked to report which event you would rather attend.</p>
+    <p class="dark-text">You will now be tasked with evaluating <b>10 scenarios</b>. In these scenarios, you will be provided with descriptions of <b>two events</b> and be asked to report which event you would rather attend. <br><br>Use the arrows to navigate between scenarios.</p>
 </div>
 
 <div class="scenario-form drop-shadow">
@@ -8,181 +8,37 @@
         <span class="buttons">
             <!-- previous button -->
             <div class="prevButtonDiv">
-                <button pButton (click)="prevScenario()" class="prevButton" [disabled]="this.scenario === 1" title="Previous Scenario">
-                    <span class="ui-button-text ui-clickable"><i class="pi pi-chevron-left"></i></span>
+                <button pButton (click)="prevScenario()" class="prevButton" [disabled]="this.scenarioNum === 1" title="Previous Scenario">
+                    <span class="ui-button-text ui-clickable"><i class="pi pi-arrow-left"></i></span>
                 </button>
             </div>
 
-            <!-- scenario 1 -->
-            <div class="field" *ngIf="this.scenario === 1">
-                <label for="scenario1" class="label"><b>Scenario 1</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario1" inputId="scenario1" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario1" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario1" inputId="scenario1" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario1" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>            
-
-            <!-- scenario 2 -->
-            <div class="field" *ngIf="this.scenario === 2">
-                <label for="scenario2" class="label"><b>Scenario 2</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario2" inputId="scenario2" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario2" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario2" inputId="scenario2" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario2" class="ml-2">Event 2</label>
+            <!-- scenarios -->
+            <div class="field" *ngFor="let scenario of scenarios">
+                <div *ngIf="scenario.id === scenarioNum">
+                    <label for="scenario{{ scenario.id }}" class="label"><b><u>Scenario {{ scenario.id }}</u></b>: <span [innerHtml]="scenario.description"></span><span class="required">*</span></label>
+                    <div class="p-field-radiobutton">
+                        <div class="flex align-items-center">
+                            <p-radioButton [value]="0" formControlName="scenario{{ scenario.id }}" inputId="scenario{{ scenario.id }}" (click)="nextScenario()"></p-radioButton>
+                            <label for="scenario{{ scenario.id }}" class="ml-2">Event 1</label>
+                        </div>
+                        
+                        <div class="flex align-items-center">
+                            <p-radioButton [value]="1" formControlName="scenario{{ scenario.id }}" inputId="scenario{{ scenario.id }}" (click)="nextScenario()"></p-radioButton>
+                            <label for="scenario{{ scenario.id }}" class="ml-2">Event 2</label>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- scenario 3 -->
-            <div class="field" *ngIf="this.scenario === 3">
-                <label for="scenario3" class="label"><b>Scenario 3</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario3" inputId="scenario3" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario3" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario3" inputId="scenario3" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario3" class="ml-2">Event 2</label>
-                    </div>
-                </div>            
-            </div>
-
-            <!-- scenario 4 -->
-            <div class="field" *ngIf="this.scenario === 4">
-                <label for="scenario4" class="label"><b>Scenario 4</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario4" inputId="scenario4" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario4" inputId="scenario4" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- scenario 5 -->
-            <div class="field" *ngIf="this.scenario === 5">
-                <label for="scenario5" class="label"><b>Scenario 5</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario5" inputId="scenario5" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario5" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario5" inputId="scenario5" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- scenario 6 -->
-            <div class="field" *ngIf="this.scenario === 6">
-                <label for="scenario6" class="label"><b>Scenario 6</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario6" inputId="scenario6" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario6" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario6" inputId="scenario6" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- scenario 7 -->
-            <div class="field" *ngIf="this.scenario === 7">
-                <label for="scenario7" class="label"><b>Scenario 7</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario7" inputId="scenario7" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario7" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario7" inputId="scenario7" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- scenario 8 -->
-            <div class="field" *ngIf="this.scenario === 8">
-                <label for="scenario8" class="label"><b>Scenario 8</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario8" inputId="scenario8" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario8" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario8" inputId="scenario8" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- scenario 9 -->
-            <div class="field" *ngIf="this.scenario === 9">
-                <label for="scenario9" class="label"><b>Scenario 9</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario9" inputId="scenario9" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario9" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario9" inputId="scenario9" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- scenario 10 -->
-            <div class="field" *ngIf="this.scenario === 10">
-                <label for="scenario10" class="label"><b>Scenario 10</b>: <span class="required">*</span></label>
-                <div class="p-field-radiobutton">
-                    <div class="flex align-items-center">
-                        <p-radioButton value="0" formControlName="scenario10" inputId="scenario10" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario10" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton value="1" formControlName="scenario10" inputId="scenario10" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario4" class="ml-2">Event 2</label>
-                    </div>
-                </div>
-            </div>
+            </div>      
 
 
             <!-- next button -->
             <div class="nextButtonDiv">
-                <button pButton (click)="nextScenario()" class="nextButton" [disabled]="this.scenario === 10" title="Next Scenario">
-                    <span class="ui-button-text ui-clickable"><i class="pi pi-chevron-right"></i></span>
+                <button pButton (click)="nextScenario()" class="nextButton" [disabled]="this.scenarioNum === 10" title="Next Scenario">
+                    <span class="ui-button-text ui-clickable"><i class="pi pi-arrow-right"></i></span>
                 </button>
             </div>
         </span>
         
-        
-
     </form>
 </div>

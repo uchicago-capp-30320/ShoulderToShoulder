@@ -10,3 +10,38 @@
 export function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+/**
+ * Get a random subset of an array.
+ * 
+ * @param arr The array to get a subset of.
+ * @param size The size of the subset.
+ */
+export function getRandomSubset(arr: any[], size: number) {
+  // Shuffle the array and return the first size elements.
+  let shuffled = shuffleArray(arr);
+
+  // Return the first size elements.
+  return shuffled.slice(0, size);
+}
+
+/**
+ * Shuffle an array.
+ * 
+ * @param arr The array to shuffle.
+ * @returns The shuffled array.
+ */
+export function shuffleArray(arr: any[]) {
+  let shuffled = arr.slice(0), i = arr.length, temp, index;
+
+  // While there remain elements to shuffle...
+  while (i--) {
+    // Pick a remaining element and swap it with the current element.
+    index = Math.floor((i + 1) * Math.random());
+    temp = shuffled[index];
+    shuffled[index] = shuffled[i];
+    shuffled[i] = temp;
+  }
+
+  return shuffled;
+}

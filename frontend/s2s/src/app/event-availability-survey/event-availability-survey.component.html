@@ -1,48 +1,10 @@
 <div class="avail-form drop-shadow">
     <h2 class="light-text" style="text-align: center">Event Availability</h2>
-    <!-- TODO - Reword to ask when they would prefer to attend events rather than when they are available -->
-    <p class="light-text">Please use this form to indicate what days and times throughout the week you are <b>generally</b> available to attend a Shoulder To Shoulder event. This can be edited later.</p>
+    <p class="light-text">Please use this form to indicate what days and times throughout the week your would <b>prefer</b> to attend a Shoulder To Shoulder event. This can be edited later.</p>
     <form [formGroup]="this.userService.eventAvailabilityForm" (ngSubmit)="onSubmit()" class="form-container">
-        <!-- Mondays -->
-        <div class="field">
-            <label for="mondayTimes" class="label">Mondays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="mondayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}" defaultValue="Unavailable"></p-multiSelect>
-        </div>
-
-        <!-- Tuesdays -->
-        <div class="field">
-            <label for="tuesdayTimes" class="label">Tuesdays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="tuesdayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
-        </div>
-
-        <!-- Wednesdays -->
-        <div class="field">
-            <label for="wednesdayTimes" class="label">Wednesdays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="wednesdayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
-        </div>
-
-        <!-- Thursdays -->
-        <div class="field">
-            <label for="thursdayTimes" class="label">Thursdays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="thursdayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
-        </div>
-
-        <!-- Fridays -->
-        <div class="field">
-            <label for="fridaysTimes" class="label">Fridays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="fridayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
-        </div>
-
-        <!-- Saturdays -->
-        <div class="field">
-            <label for="saturdayTimes" class="label">Saturdays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="saturdayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
-        </div>
-
-        <!-- Sundays -->
-        <div class="field">
-            <label for="sundayTimes" class="label">Sundays</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="sundayTimes" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
+        <div class="field" *ngFor="let day of days">
+            <label for="{{ day.toLowerCase() }}Times" class="label">{{ day }}s</label>
+            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="{{ day.toLowerCase() }}Times" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}" defaultValue="Unavailable"></p-multiSelect>
         </div>
     </form>
 </div>
