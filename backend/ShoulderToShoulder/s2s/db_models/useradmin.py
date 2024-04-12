@@ -6,6 +6,9 @@ from django.contrib.auth.admin import UserAdmin
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    """
+    Creates a Django Model representing the UserAdmin for Shoulder to Shoulder Database
+    """
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         is_superuser = request.user.is_superuser
