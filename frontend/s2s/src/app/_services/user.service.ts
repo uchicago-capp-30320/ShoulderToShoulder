@@ -38,7 +38,6 @@ export class UserService {
     groupSimilarityAttrs: new FormControl('', Validators.required),
     eventFrequency: new FormControl(''),
     eventNotifications: new FormControl('', Validators.required),
-    eventNotificationFrequency: new FormControl('', Validators.required),
   });
 
   public eventAvailabilityForm: FormGroup = this.fb.group({

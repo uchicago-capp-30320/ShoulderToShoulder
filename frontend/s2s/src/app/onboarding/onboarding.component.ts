@@ -7,7 +7,7 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent {
-  page: number = 5; // FIXME: Change to 1
+  page: number = 1; // FIXME: Change to 1
   maxPage: number = 5;
 
   constructor(

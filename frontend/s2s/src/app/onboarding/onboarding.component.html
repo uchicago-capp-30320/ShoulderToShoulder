@@ -44,21 +44,17 @@
         
         <!-- next button -->
         <div *ngIf="this.page !== this.maxPage" class="nextButtonDiv">
-            <button pButton (click)="nextPage()" class="nextButton">
+            <button pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 3 && userService.preferencesForm.invalid) || (page === 4 && userService.eventAvailabilityForm.invalid)">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
         </div>
 
         <!-- submit button -->
         <div *ngIf="this.page === this.maxPage" class="nextButtonDiv">
-            <button pButton severity="primary" (click)="onSubmit()" class="submitButton">
+            <button pButton severity="primary" (click)="onSubmit()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>
     </div>
 </main>
-<!-- <app-footer></app-footer> -->
-
-<!-- [disabled]="(page===3 && userService.preferencesForm.invalid) | (page===4 && userService.eventAvailabilityForm.invalid)" -->
-<!-- [disabled]="(page===5 && userService.scenariosForm.invalid)" -->
 
