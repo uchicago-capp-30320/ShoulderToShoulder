@@ -1,5 +1,5 @@
 // Purpose: Contains the preferences for the user to select from.
-import { labelValueInt } from "./constants";
+import { labelValueInt, labelValueIntArray } from "./constants";
 
 export interface Hobby {
     name: string;
@@ -99,6 +99,24 @@ export var eventNotifications = [
     'Text',
     'Email & Text',
     'None'
+];
+
+export var distances = [
+    'Within 5 miles',
+    'Within 10 miles',
+    'Within 20 miles',
+    'Within 50 miles',
+    'No preference'
+]
+
+export var availableTimeCategories: labelValueIntArray[] = [
+    {label: 'Early Morning', value: [5, 6, 7, 8]},
+    {label: 'Morning', value: [9, 10, 11, 12]},
+    {label: 'Afternoon', value: [13, 14, 15, 16]},
+    {label: 'Evening', value: [17, 18, 19, 20]},
+    {label: 'Night', value: [21, 22, 23, 24]},
+    {label: 'Late Night', value: [1, 2, 3, 4]},
+    {label: 'Unavailable', value: [0]}
 ];
 
 export var availableTimes: labelValueInt[] = [

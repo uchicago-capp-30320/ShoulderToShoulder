@@ -12,7 +12,7 @@ import {
   groupSimilarityAttrs, 
   eventFrequency, 
   eventNotifications,
-  Hobby
+  distances
 } from '../_helpers/preferences';
 
 import { states } from '../_helpers/location';
@@ -35,6 +35,7 @@ export class PreferencesSurveyComponent implements OnInit {
   eventFrequency = eventFrequency;
   eventNotifications = eventNotifications;
   states = states;
+  distances = distances;
 
   zipCodeApiUrl = "http://production.shippingapis.com/ShippingAPI.dll"
   zipCodeApi = "CityStateLookup"

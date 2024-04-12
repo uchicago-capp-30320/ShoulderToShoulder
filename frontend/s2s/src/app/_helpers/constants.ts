@@ -15,3 +15,11 @@ export interface labelValueString {
     label: string;
     value: string;
 }
+
+/**
+ * A label-value pair with an integer array value.
+ */
+export interface labelValueIntArray {
+    label: string;
+    value: number[];
+}

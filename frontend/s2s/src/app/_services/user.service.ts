@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { NumberRegx } from '../_helpers/patterns';
 import { User } from '../_helpers/userInfo';
+import { distances } from '../_helpers/preferences';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +39,7 @@ export class UserService {
     groupSimilarityAttrs: new FormControl('', Validators.required),
     eventFrequency: new FormControl(''),
     eventNotifications: new FormControl('', Validators.required),
+    distances: new FormControl('', Validators.required),
   });
 
   public eventAvailabilityForm: FormGroup = this.fb.group({

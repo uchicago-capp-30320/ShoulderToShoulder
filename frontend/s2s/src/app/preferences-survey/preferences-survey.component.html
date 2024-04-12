@@ -45,6 +45,12 @@
             <p-multiSelect [options]="hobbies" formControlName="leastInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
+        <!-- event distance -->
+        <div class="field">
+            <label for="distances" class="label">What is the maximum distance you would want your events to be from you?<span class="required">*</span></label>
+            <p-dropdown [options]="distances" formControlName="distances" [showClear]="true" placeholder="Within 5 miles" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+        </div>
+
         <!-- group sizes -->
         <div class="field">
             <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
