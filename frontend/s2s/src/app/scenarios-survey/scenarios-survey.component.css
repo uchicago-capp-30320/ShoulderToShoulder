@@ -1,6 +1,6 @@
 .scenario-form {
-    background-color: #15616D;
-    width: 60%;
+    background-color: #23A6BE;
+    width: 70%;
     height: auto;
     padding: 2rem;
     border-radius: 20px;
@@ -30,7 +30,7 @@
 .label {
     margin-bottom: 5px;
     text-align: left;
-    color: #FFECD1;
+    color: #001524;
 }
 
 .submit-button {
@@ -100,4 +100,8 @@ p {
 .buttons {
     display: flex;
     width: 100%
+}
+
+label.ml-2 {
+    margin-left: 5px;
 }

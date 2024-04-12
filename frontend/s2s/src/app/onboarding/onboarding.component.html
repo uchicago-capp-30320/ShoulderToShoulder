@@ -1,28 +1,36 @@
 <!-- Gradient color the forms -->
-<!-- Make buttons dark then hover light, unless disabled -->
 <!-- Make survey titles bigger, make question names bold -->
 
-<main>
-    <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
-    <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
+<main style="margin-bottom: 3rem;">
+    <div *ngIf="this.page !== 1">
+        <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
+        <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
+    </div>
+
+    <div *ngIf="this.page === 1" class="onboardingIntro">
+        <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
+        <p class="subtitle dark-text"> To make sure we provide the most accurate event recommendations for you, we are going to start you off with a few surveys. None of the information you report in these surveys will be shared without your explicit permission.</p>
+        <p class="subtitle dark-text"><b>Press next to get started!</b></p>
+    </div>
+    
     
     <!-- Demographics survey (first page) -->
-    <div *ngIf="this.page === 1" style="width: 100%; ">
+    <div *ngIf="this.page === 2" style="width: 100%; ">
         <app-demographics-survey></app-demographics-survey>
     </div>
 
     <!-- Preferences/Interests survey (second page) -->
-    <div *ngIf="this.page === 2">
+    <div *ngIf="this.page === 3">
         <app-preferences-survey></app-preferences-survey>
     </div>
 
     <!-- Event availability survey (third page) -->
-    <div *ngIf="this.page === 3">
+    <div *ngIf="this.page === 4">
         <app-event-availability-survey></app-event-availability-survey>
     </div>
 
     <!-- Scenarios survey (fourth page) -->
-    <div *ngIf="this.page === 4">
+    <div *ngIf="this.page === 5">
         <app-scenarios-survey></app-scenarios-survey>
     </div>
 
@@ -35,21 +43,21 @@
         </div>
         
         <!-- next button -->
-        <div *ngIf="this.page !== 4" class="nextButtonDiv">
+        <div *ngIf="this.page !== this.maxPage" class="nextButtonDiv">
             <button pButton (click)="nextPage()" class="nextButton">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
         </div>
 
         <!-- submit button -->
-        <div *ngIf="this.page === 4" class="nextButtonDiv">
+        <div *ngIf="this.page === this.maxPage" class="nextButtonDiv">
             <button pButton severity="primary" (click)="onSubmit()" class="submitButton">
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>
     </div>
 </main>
-<app-footer></app-footer>
+<!-- <app-footer></app-footer> -->
 
 <!-- [disabled]="(page===2 && userService.preferencesForm.invalid) | (page===3 && userService.eventAvailabilityForm.invalid)" -->
 

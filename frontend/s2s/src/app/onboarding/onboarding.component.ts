@@ -7,7 +7,8 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent {
-  page: number = 1; // FIXME: Change to 1
+  page: number = 5; // FIXME: Change to 1
+  maxPage: number = 5;
 
   constructor(
     public userService: UserService
@@ -17,6 +18,7 @@ export class OnboardingComponent {
    * Moves to the next page.
    */
   nextPage() {
+    this.gotoTop();
     this.page++;
   }
 
@@ -24,7 +26,16 @@ export class OnboardingComponent {
    * Moves to the previous page.
    */
   previousPage() {
+    this.gotoTop();
     this.page--;
+  }
+
+  gotoTop() {
+    window.scroll({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
+    });
   }
 
   /**

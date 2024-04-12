@@ -24,6 +24,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 
 // Routing
@@ -78,7 +79,8 @@ import { EventAvailabilitySurveyComponent } from './event-availability-survey/ev
     DropdownModule,
     MultiSelectModule,
     ToggleButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    RadioButtonModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

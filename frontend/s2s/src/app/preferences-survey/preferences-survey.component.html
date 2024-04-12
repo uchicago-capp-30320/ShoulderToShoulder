@@ -1,6 +1,6 @@
 <div class="pref-form drop-shadow">
-    <h3 class="light-text">Event Preferences</h3>
-    <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
+    <h2 class="light-text" style="text-align: center">Location Preferences</h2>
+    <p class="light-text">Some of the following fields are <b>required</b> as they determine the location of your event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
     <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
         <!-- zipcode -->
         <div class="field">
@@ -19,8 +19,6 @@
                 <input pInputText placeholder="City" formControlName="city" style="width: 40%">
                 <p-dropdown [options]="states" [showClear]="true" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '40%', 'margin-left': '20%'}"></p-dropdown>
             </span>
-
-            
         </div>
 
         <!-- address -->
@@ -28,16 +26,28 @@
             <label for="addressLine1" class="label">Address (line 1, optional)</label>
             <input pInputText formControlName="addressLine1" placeholder="1234 Main St">
         </div>
-        
-        <!-- hobbies -->
+    </form>
+</div>
+
+<div class="pref-form drop-shadow">
+    <h2 class="light-text" style="text-align: center">Event Preferences</h2>
+    <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
+    <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- hobbies - most interested -->
         <div class="field">
-            <label for="hobbies" class="label">Favorite Hobbies<span class="required">*</span></label>
-            <p-multiSelect [options]="hobbies" formControlName="hobbies" [showClear]="true" placeholder="Arts & Crafts" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+            <label for="mostInterestedHobbies" class="label">Which hobbies are you <b>most</b> interested in?<span class="required">*</span></label>
+            <p-multiSelect [options]="hobbies" formControlName="mostInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+        </div>
+
+        <!-- hobbies - least interested -->
+        <div class="field">
+            <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?<span class="required">*</span></label>
+            <p-multiSelect [options]="hobbies" formControlName="leastInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
         <!-- group sizes -->
         <div class="field">
-            <label for="groupSizes" class="label">Preferred Group Sizes<span class="required">*</span></label>
+            <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
             <p-multiSelect [options]="groupSizes" formControlName="groupSizes" [showClear]="true" placeholder="1-5 people" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
@@ -63,12 +73,6 @@
         <div class="field">
             <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
             <p-dropdown [options]="eventNotifications" formControlName="eventNotifications" [showClear]="true" placeholder="Email & Text" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
-        </div>
-
-        <!-- TODO - event notification frequency - may not need this question -->
-        <div class="field">
-            <label for="eventNotificationFrequency" class="label">How often do you want to receive Shoulder To Shoulder notifications?<span class="required">*</span></label>
-            <p-dropdown [options]="eventNotificationFrequency" formControlName="eventNotificationFrequency" [showClear]="true" placeholder="Immediately" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
         </div>
     </form>
 </div>
