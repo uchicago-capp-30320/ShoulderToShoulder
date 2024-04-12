@@ -38,3 +38,7 @@ npm run lint
 npm run format
 ```
 </pre>
+
+## Meet the team
+- Ethan Arsht
+  - Ethan is a second year graduate student at the University of Chicago. He likes biking, baking, board games, building things, and alliteration.
