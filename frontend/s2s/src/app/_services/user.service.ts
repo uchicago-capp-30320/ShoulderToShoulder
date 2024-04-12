@@ -51,18 +51,17 @@ export class UserService {
     sundayTimes: new FormControl([0]),
   });
 
-  // TODO - conver these values from bools to 0-1
   public scenariosForm: FormGroup = this.fb.group({
-    scenario1: new FormControl(''),
-    scenario2: new FormControl(''),
-    scenario3: new FormControl(''),
-    scenario4: new FormControl(''),
-    scenario5: new FormControl(''),
-    scenario6: new FormControl(''),
-    scenario7: new FormControl(''),
-    scenario8: new FormControl(''),
-    scenario9: new FormControl(''),
-    scenario10: new FormControl(''),
+    scenario1: new FormControl(undefined, Validators.required),
+    scenario2: new FormControl(undefined, Validators.required),
+    scenario3: new FormControl(undefined, Validators.required),
+    scenario4: new FormControl(undefined, Validators.required),
+    scenario5: new FormControl(undefined, Validators.required),
+    scenario6: new FormControl(undefined, Validators.required),
+    scenario7: new FormControl(undefined, Validators.required),
+    scenario8: new FormControl(undefined, Validators.required),
+    scenario9: new FormControl(undefined, Validators.required),
+    scenario10: new FormControl(undefined, Validators.required),
   });
 
   onboarded: boolean = false;
