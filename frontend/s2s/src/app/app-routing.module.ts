@@ -7,18 +7,22 @@ import { RouterModule, Routes } from '@angular/router';
 
 // Components
 import { HomepageComponent } from './homepage/homepage.component';
-// import { LoginComponent } from './login/login.component';
+import { SignupPageComponent } from './signup-page/signup-page.component';
 
 // Routes
 const appRoutes: Routes = [
-    // { path: 'login', component: LoginComponent },
     { path: 'home', component: HomepageComponent },
+    { path: 'sign-up', component: SignupPageComponent },
     { path: '', redirectTo: '/home', pathMatch: 'full' }
 ]
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes,
+      {
+        enableTracing: false, // <-- debugging purposes only
+        scrollPositionRestoration: 'enabled',
+      })
   ],
   exports: [RouterModule]
 })
