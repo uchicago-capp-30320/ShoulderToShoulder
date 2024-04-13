@@ -2,29 +2,25 @@
     <h2 class="light-text" style="text-align: center">Location Preferences</h2>
     <p class="light-text">Some of the following fields are <b>required</b> as they determine the location of your event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
     <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
-        <!-- zipcode -->
-        <div class="field">
-            <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
-            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
-            <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" (blur)="getZipCodeData()">
-        </div>
-
-        <!-- city -->
-        <div class="field">
-            <span>
-                <label for="city" class="label">City</label>
-                <label for="state" class="label" style="margin-left: 55%;">State</label>
-            </span>
-            <span>
-                <input pInputText placeholder="City" formControlName="city" style="width: 40%">
-                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '40%', 'margin-left': '20%'}"></p-dropdown>
-            </span>
-        </div>
-
         <!-- address -->
         <div class="field">
-            <label for="addressLine1" class="label">Address (line 1, optional)</label>
+            <label for="addressLine1" class="label">Address Line 1</label>
             <input pInputText formControlName="addressLine1" placeholder="1234 Main St">
+        </div>
+
+        <!-- city/state/zip -->
+        <div class="field">
+            <span>
+                <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
+                <label for="city" class="label" style="margin-left: 25%">City</label>
+                <label for="state" class="label" style="margin-left: 33%">State</label>
+            </span>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
+            <span>
+                <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" style="width: 25%" (blur)="getZipCodeData()">
+                <input pInputText placeholder="City" formControlName="city" style="width: 25%; margin-left: 12.5%">
+                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '25%', 'margin-left': '12.5%'}"></p-dropdown>
+            </span>
         </div>
     </form>
 </div>
