@@ -20,19 +20,19 @@ export var races = [
 ]
 
 export var religiousAffiliations = [
+    'Agnostic',
+    'Atheist',    
+    'Bahá’í',
+    'Buddhist',
     'Christian',
+    'Hindu',    
+    'Jain',
     'Jewish',
     'Muslim',
-    'Buddhist',
-    'Hindu',
-    'Sikh',
-    'Jain',
     'Shinto',
-    'Bahá’í',
+    'Sikh',
+    'Spiritual',
     'Taoist',
-    'Zoroastrian',
-    'Agnostic',
-    'Atheist',
     'None',
     'Other',
 ]
@@ -41,10 +41,6 @@ export var genders = [
     'Woman',
     'Man',
     'Non-binary',
-    'Genderqueer',
-    'Genderfluid',
-    'Agender',
-    'Bigender',
     'Two-spirit',
     'Transgender',
     'Other',
@@ -59,5 +55,14 @@ export var sexualOrientations = [
     'Asexual',
     'Queer',
     'Questioning',
+    'Other',
+]
+
+export var politicalAffiliations = [
+    'Strongly Conservative',
+    'Conservative',
+    'Moderate',
+    'Liberal',
+    'Strongly Liberal',
     'Other',
 ]

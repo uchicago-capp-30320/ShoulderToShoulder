@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 // services
 import { UserService } from '../_services/user.service';
@@ -10,7 +9,8 @@ import {
   races, 
   religiousAffiliations, 
   genders, 
-  sexualOrientations 
+  sexualOrientations,
+  politicalAffiliations
 } from '../_helpers/demographics';
 
 @Component({
@@ -24,6 +24,7 @@ export class DemographicsSurveyComponent {
   religiousAffiliations = religiousAffiliations;
   genders = genders;
   sexualOrientations = sexualOrientations;
+  politicalAffiliations = politicalAffiliations;
 
   constructor(
     public userService: UserService

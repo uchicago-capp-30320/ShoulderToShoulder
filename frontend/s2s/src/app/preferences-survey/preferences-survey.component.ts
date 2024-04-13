@@ -29,6 +29,7 @@ import { states } from '../_helpers/location';
 })
 export class PreferencesSurveyComponent implements OnInit {
   hobbies!: string[];
+  leastInterestedHobbies!: string[];
   groupSizes = groupSizes;
   groupSimilarity = groupSimilarity;
   groupSimilarityAttrs = groupSimilarityAttrs;
@@ -61,6 +62,13 @@ export class PreferencesSurveyComponent implements OnInit {
    */
   getHobbyArray() {
     this.hobbies = this.preferencesService.preferencesHobbies.map(hobby => hobby.name);
+  }
+
+  /**
+   * Extracts an array of hobbies that are not in the most interested hobbies array.
+   */
+  getLeastInterestedHobbiesArray() {
+    this.leastInterestedHobbies = this.hobbies.filter(hobby => !this.userService.preferencesForm.get('mostInterestedHobbies')?.value.includes(hobby));
   }
 
   /**

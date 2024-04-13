@@ -36,13 +36,13 @@
         <!-- hobbies - most interested -->
         <div class="field">
             <label for="mostInterestedHobbies" class="label">Which hobbies are you <b>most</b> interested in?<span class="required">*</span></label>
-            <p-multiSelect [options]="hobbies" formControlName="mostInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" label required></p-multiSelect>
+            <p-multiSelect [options]="hobbies" formControlName="mostInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" label required (onChange)="getLeastInterestedHobbiesArray()"></p-multiSelect>
         </div>
 
         <!-- hobbies - least interested -->
         <div class="field">
             <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?<span class="required">*</span></label>
-            <p-multiSelect [options]="hobbies" formControlName="leastInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+            <p-multiSelect [options]="leastInterestedHobbies" formControlName="leastInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
         <!-- event distance -->
@@ -59,13 +59,13 @@
 
         <!-- group similarity -->
         <div class="field">
-            <label for="groupSimilarity" class="label">How similar do you want your group members to be to you?<span class="required">*</span></label>
+            <label for="groupSimilarity" class="label">When you are looking for friends, how similar do you want them to be to you?<span class="required">*</span></label>
             <p-dropdown [options]="groupSimilarity" formControlName="groupSimilarity" [showClear]="true" placeholder="Neutral" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
         </div>
 
         <!-- group similarity attributes -->
         <div class="field">
-            <label for="groupSimilarityAttrs" class="label">On which attributes do you want your group to be similar to you?<span class="required">*</span></label>
+            <label for="groupSimilarityAttrs" class="label">On which attributes do you generally want your friends to be similar to you?<span class="required">*</span></label>
             <p-multiSelect [options]="groupSimilarityAttrs" formControlName="groupSimilarityAttrs" [showClear]="true" placeholder="No preference" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
