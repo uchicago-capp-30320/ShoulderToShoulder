@@ -17,7 +17,7 @@
             </span>
             <span>
                 <input pInputText placeholder="City" formControlName="city" style="width: 40%">
-                <p-dropdown [options]="states" [showClear]="true" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '40%', 'margin-left': '20%'}"></p-dropdown>
+                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '40%', 'margin-left': '20%'}"></p-dropdown>
             </span>
         </div>
 
@@ -36,49 +36,49 @@
         <!-- hobbies - most interested -->
         <div class="field">
             <label for="mostInterestedHobbies" class="label">Which hobbies are you <b>most</b> interested in?<span class="required">*</span></label>
-            <p-multiSelect [options]="hobbies" formControlName="mostInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" label required (onChange)="getLeastInterestedHobbiesArray()"></p-multiSelect>
+            <p-multiSelect [options]="mostInterestedHobbies" formControlName="mostInterestedHobbies" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" label required (onChange)="getLeastInterestedHobbiesArray()"></p-multiSelect>
         </div>
 
         <!-- hobbies - least interested -->
         <div class="field">
             <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?<span class="required">*</span></label>
-            <p-multiSelect [options]="leastInterestedHobbies" formControlName="leastInterestedHobbies" [showClear]="true" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+            <p-multiSelect [options]="leastInterestedHobbies" formControlName="leastInterestedHobbies" placeholder="Pick a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required (onChange)="getMostInterestedHobbiesArray()"></p-multiSelect>
         </div>
 
         <!-- event distance -->
         <div class="field">
             <label for="distances" class="label">What is the maximum distance you would want your events to be from you?<span class="required">*</span></label>
-            <p-dropdown [options]="distances" formControlName="distances" [showClear]="true" placeholder="Within 5 miles" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+            <p-dropdown [options]="distances" formControlName="distances" placeholder="Within 5 miles" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
         </div>
 
         <!-- group sizes -->
         <div class="field">
             <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
-            <p-multiSelect [options]="groupSizes" formControlName="groupSizes" [showClear]="true" placeholder="1-5 people" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+            <p-multiSelect [options]="groupSizes" formControlName="groupSizes" placeholder="1-5 people" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
         <!-- group similarity -->
         <div class="field">
             <label for="groupSimilarity" class="label">When you are looking for friends, how similar do you want them to be to you?<span class="required">*</span></label>
-            <p-dropdown [options]="groupSimilarity" formControlName="groupSimilarity" [showClear]="true" placeholder="Neutral" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+            <p-dropdown [options]="groupSimilarity" formControlName="groupSimilarity" placeholder="Neutral" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
         </div>
 
         <!-- group similarity attributes -->
         <div class="field">
             <label for="groupSimilarityAttrs" class="label">On which attributes do you generally want your friends to be similar to you?<span class="required">*</span></label>
-            <p-multiSelect [options]="groupSimilarityAttrs" formControlName="groupSimilarityAttrs" [showClear]="true" placeholder="No preference" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+            <p-multiSelect [options]="groupSimilarityAttrs" formControlName="groupSimilarityAttrs" placeholder="No preference" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
         </div>
 
         <!-- event frequency -->
         <div class="field">
             <label for="eventFrequency" class="label">How often do you want to attend Shoulder to Shoulder events?<span class="required">*</span></label>
-            <p-dropdown [options]="eventFrequency" formControlName="eventFrequency" [showClear]="true" placeholder="Twice a week" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+            <p-dropdown [options]="eventFrequency" formControlName="eventFrequency" placeholder="Twice a week" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
         </div>
 
         <!-- event notifications -->
         <div class="field">
             <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
-            <p-dropdown [options]="eventNotifications" formControlName="eventNotifications" [showClear]="true" placeholder="Email & Text" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+            <p-dropdown [options]="eventNotifications" formControlName="eventNotifications" placeholder="Email & Text" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
         </div>
     </form>
 </div>
