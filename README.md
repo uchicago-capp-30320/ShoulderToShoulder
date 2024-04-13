@@ -2,10 +2,18 @@
 
 A web application to foster community engagement and fight the loneliness pandemic.
 
+## Repository Contents
+
+#### Frontend
+Folder with the development for our web application's frontend. 
+
+#### Backend
+Folder with the development for our web application's backend. 
+
 ## Virtual Environments
 
-Both front and back ends use conda virtual environments.
-
+Both front and back ends use conda virtual environments. 
+ 
 <pre>
 ```
 conda activate frontend
