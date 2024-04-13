@@ -42,3 +42,5 @@ npm run format
 ## Meet the Team
 - Aïcha Camara
     - Aïcha is a second year Master's student at the University of Chicago. They are passionate about exploring Chicago and interested in finding new places to hike or eat tasty food around the city.
+- Darren Colby
+    - Darren is a second year Master's student at the University of Chicago. He is excited to apply his data science skills to difficult public policy challenges and spends his free time swimming and excersizing.
