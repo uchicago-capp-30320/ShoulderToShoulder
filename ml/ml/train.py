@@ -24,6 +24,7 @@ def step(params: list, x: jax.Array, y: jax.Array) -> jaxlib.xla_extension.Array
     
     """
 
+
     # Binary cross entropy with clipping to avoid rounding issues
     def loss_fn(params, x, y):
         ys = foward_deep_fm(params, x)
