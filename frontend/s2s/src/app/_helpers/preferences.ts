@@ -119,6 +119,12 @@ export var availableTimeCategories: labelValueIntArray[] = [
     {label: 'Unavailable', value: [0]}
 ];
 
+// Convert to an object indexed by label
+export const timeCategoryMap: { [label: string]: number[] } = availableTimeCategories.reduce((map, obj) => {
+    map[obj.label] = obj.value;
+    return map;
+}, {} as { [label: string]: number[] });
+
 export var availableTimes: labelValueInt[] = [
     {label: 'Unavailable', value: 0},
     {label: '01:00 AM', value: 1},

@@ -45,13 +45,13 @@ export class UserService {
   });
 
   public eventAvailabilityForm: FormGroup = this.fb.group({
-    mondayTimes: new FormControl([0]),
-    tuesdayTimes: new FormControl([0]),
-    wednesdayTimes: new FormControl([0]),
-    thursdayTimes: new FormControl([0]),
-    fridayTimes: new FormControl([0]),
-    saturdayTimes: new FormControl([0]),
-    sundayTimes: new FormControl([0]),
+    mondayTimes: new FormControl([]),
+    tuesdayTimes: new FormControl([]),
+    wednesdayTimes: new FormControl([]),
+    thursdayTimes: new FormControl([]),
+    fridayTimes: new FormControl([]),
+    saturdayTimes: new FormControl([]),
+    sundayTimes: new FormControl([]),
   });
 
   public scenariosForm: FormGroup = this.fb.group({

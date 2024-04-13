@@ -25,7 +25,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { RadioButtonModule } from 'primeng/radiobutton';
-
+import { CheckboxModule } from 'primeng/checkbox';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -80,7 +80,8 @@ import { EventAvailabilitySurveyComponent } from './event-availability-survey/ev
     MultiSelectModule,
     ToggleButtonModule,
     HttpClientModule,
-    RadioButtonModule
+    RadioButtonModule,
+    CheckboxModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

@@ -1,10 +1,47 @@
 <div class="avail-form drop-shadow">
     <h2 class="light-text" style="text-align: center">Event Availability</h2>
-    <p class="light-text">Please use this form to indicate what days and times throughout the week your would <b>prefer</b> to attend a Shoulder To Shoulder event. This can be edited later.</p>
+    <p class="light-text">Please use these forms to indicate what days and times throughout the week your would <b>prefer</b> to attend a Shoulder To Shoulder event. <br>This can be edited later.</p>
+</div>
+
+<div class="avail-form drop-shadow">
+    <h3 class="light-text">General Availability Shortcuts</h3>
+    <p class="light-text" style="margin: 0rem;">Use these shortcuts to quickly set your general availability for weekdays and weekends.</p>
+    <form [formGroup]="generalAvailabilityForm" class="general-availability">
+        <div class="light-text" style="margin-right: 30%">
+            <p class="light-text" style="text-align: center; font-size: 18px"><b>Weekdays</b></p>
+            <div style="margin-left: 0%">
+                <p-checkbox name="Early Morning" formControlName="weekdayEarlyMorning" [binary]="true" label="Early Morning" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Morning" formControlName="weekdayMorning" [binary]="true" label="Morning" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Afternoon" formControlName="weekdayAfternoon" [binary]="true" label="Afternoon" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Evening" formControlName="weekdayEvening" [binary]="true" label="Evening" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Night" formControlName="weekdayNight" [binary]="true" label="Night" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Late Night" formControlName="weekdayLateNight" [binary]="true" label="Late Night" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Unavailable" formControlName="weekdayUnavailable" [binary]="true" label="Unavailable" (onChange)="updateWeekdayTimes()" [disabled]="generalAvailabilityForm.get('weekdayEarlyMorning')?.value || generalAvailabilityForm.get('weekdayMorning')?.value || generalAvailabilityForm.get('weekdayAfternoon')?.value || generalAvailabilityForm.get('weekdayEvening')?.value ||generalAvailabilityForm.get('weekdayNight')?.value ||generalAvailabilityForm.get('weekdayLateNight')?.value"></p-checkbox>
+            </div>
+        </div>
+
+        <div class="light-text" >
+            <p class="light-text" style="text-align: center; font-size: 18px"><b>Weekends</b></p>
+            <div style="margin-left: 0%">
+                <p-checkbox name="Early Morning" formControlName="weekendEarlyMorning" [binary]="true" label="Early Morning" (onChange)="updateWeekendTimes()" [disabled]="generalAvailabilityForm.get('weekendUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Morning" formControlName="weekendMorning" [binary]="true" label="Morning" (onChange)="updateWeekendTimes()" [disabled]="generalAvailabilityForm.get('weekendUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Afternoon" formControlName="weekendAfternoon" [binary]="true" label="Afternoon" (onChange)="updateWeekendTimes()" [disabled]="generalAvailabilityForm.get('weekendUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Evening" formControlName="weekendEvening" [binary]="true" label="Evening" (onChange)="updateWeekendTimes()" [disabled]="generalAvailabilityForm.get('weekendUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Night" formControlName="weekendNight" [binary]="true" label="Night" (onChange)="updateWeekendTimes()" [disabled]="generalAvailabilityForm.get('weekendUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Late Night" formControlName="weekendLateNight" [binary]="true" (onChange)="updateWeekendTimes()" label="Late Night" [disabled]="generalAvailabilityForm.get('weekendUnavailable')?.value"></p-checkbox><br>
+                <p-checkbox name="Unavailable" formControlName="weekendUnavailable" [binary]="true" (onChange)="updateWeekendTimes()" label="Unavailable" [disabled]="generalAvailabilityForm.get('weekendEarlyMorning')?.value || generalAvailabilityForm.get('weekendMorning')?.value || generalAvailabilityForm.get('weekendAfternoon')?.value || generalAvailabilityForm.get('weekendEvening')?.value || generalAvailabilityForm.get('weekendNight')?.value || generalAvailabilityForm.get('weekendLateNight')?.value"></p-checkbox>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="avail-form drop-shadow">
+    <h3 class="light-text">Specific Availability</h3>
+    <p class="light-text">Use this form to edit your preferred availability for specific days and times.</p>
     <form [formGroup]="this.userService.eventAvailabilityForm" (ngSubmit)="onSubmit()" class="form-container">
         <div class="field" *ngFor="let day of days">
-            <label for="{{ day.toLowerCase() }}Times" class="label">{{ day }}s</label>
-            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="{{ day.toLowerCase() }}Times" [showClear]="true" placeholder="Unavailable" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}" defaultValue="Unavailable"></p-multiSelect>
+            <label for="{{ day.toLowerCase() }}Times" class="label"><b>{{ day }}s</b></label>
+            <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="{{ day.toLowerCase() }}Times" [showClear]="true" placeholder="Choose a time" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}" defaultValue="Unavailable"></p-multiSelect>
         </div>
     </form>
 </div>
