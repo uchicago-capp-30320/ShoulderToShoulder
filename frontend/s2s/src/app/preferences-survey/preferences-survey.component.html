@@ -12,14 +12,14 @@
         <div class="field">
             <span>
                 <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
-                <label for="city" class="label" style="margin-left: 25%">City</label>
-                <label for="state" class="label" style="margin-left: 33%">State</label>
+                <label for="city" class="label" style="margin-left: 13%">City</label>
+                <label for="state" class="label" style="margin-left: 35%">State</label>
             </span>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
             <span>
-                <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" style="width: 25%" (blur)="getZipCodeData()">
-                <input pInputText placeholder="City" formControlName="city" style="width: 25%; margin-left: 12.5%">
-                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '25%', 'margin-left': '12.5%'}"></p-dropdown>
+                <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" style="width: 20%" (blur)="getZipCodeData()">
+                <input pInputText placeholder="City" formControlName="city" style="width: 35%; margin-left: 5%">
+                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '35%', 'margin-left': '5%'}"></p-dropdown>
             </span>
         </div>
     </form>
