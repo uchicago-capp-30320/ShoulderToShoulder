@@ -62,8 +62,9 @@ p {
 }
 
 .nextButton {
-    background-color: #ff7b0000;
-    border: none;
+    background-color: #001524;
+    border-color: #001524;
+    color: #26c6e2;
     border-radius: 10px;
     padding: 10px;
     font-size: 1rem;
@@ -71,7 +72,7 @@ p {
     width: fit-content;
     text-align: right;
     font-weight: normal;
-    /* margin-top: 1rem; */
+    font-size: 15px;
 }
 
 .nextButtonDiv {
@@ -81,7 +82,7 @@ p {
 
 .prevButton {
     background-color: #78290f00;
-    border: none;
+    border-color: #001524;
     border-radius: 10px;
     padding: 10px;
     font-size: 1rem;
@@ -89,6 +90,11 @@ p {
     width: fit-content;
     text-align: right;
     font-weight: normal;
+    font-size: 15px;
+}
+
+.prevButton:disabled {
+    border-color:#00152499
 }
 
 .prevButtonDiv {
@@ -97,7 +103,9 @@ p {
 
 .buttons {
     display: flex;
-    width: 100%
+    width: 100%;
+    margin-top: 1.5rem;
+    font-size: smaller;
 }
 
 label.ml-2 {
@@ -115,4 +123,27 @@ label.ml-2 {
 
 ::ng-deep .p-radiobutton .p-radiobutton-box:hover {
     border-color: #15616D;
+}
+
+.scenarioDropdown {
+    width: 40%;
+    background: #FF7D00;
+}
+
+::ng-deep .p-dropdown {
+    background: none;
+    border-color: #001524;
+}
+
+::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+    color: #001524;
+}
+
+::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+::ng-deep .p-dropdown .p-dropdown-trigger {
+    color: #001524;
 }

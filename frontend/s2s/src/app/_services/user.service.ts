@@ -34,11 +34,11 @@ export class UserService {
     city: new FormControl(''),
     state: new FormControl(''),
     addressLine1: new FormControl(''),
-    mostInterestedHobbies: new FormControl('', Validators.required),
-    leastInterestedHobbies: new FormControl('', Validators.required),
-    groupSizes: new FormControl('', Validators.required),
+    mostInterestedHobbies: new FormControl([], Validators.required),
+    leastInterestedHobbies: new FormControl([]),
+    groupSizes: new FormControl([], Validators.required),
     groupSimilarity: new FormControl('', Validators.required),
-    groupSimilarityAttrs: new FormControl('', Validators.required),
+    groupSimilarityAttrs: new FormControl([], Validators.required),
     eventFrequency: new FormControl(''),
     eventNotifications: new FormControl('', Validators.required),
     distances: new FormControl('', Validators.required),
@@ -63,8 +63,6 @@ export class UserService {
     scenario6: new FormControl(undefined, Validators.required),
     scenario7: new FormControl(undefined, Validators.required),
     scenario8: new FormControl(undefined, Validators.required),
-    scenario9: new FormControl(undefined, Validators.required),
-    scenario10: new FormControl(undefined, Validators.required),
   });
 
   onboarded: boolean = false;

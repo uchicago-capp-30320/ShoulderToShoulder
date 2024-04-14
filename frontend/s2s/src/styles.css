@@ -36,7 +36,25 @@ main {
 h1 {
     font-size: 3rem;
     text-align: center;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 2rem;
+    text-align: center;
     margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+h4 {
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 0px;
 }
 
 .dark-text {
@@ -57,16 +75,14 @@ a {
 }
 
 .p-tooltip-text {
-    font: 15px;
+    font: 12px;
   }
   
 .p-tooltip .p-tooltip-text {
-background-color: #FF7D00;
 color: green ;
 }
   
 
 .customtooltip.p-tooltip .p-tooltip-text {
-background-color: #FF7D00 ;
 color: #FFECD1 ;
 }

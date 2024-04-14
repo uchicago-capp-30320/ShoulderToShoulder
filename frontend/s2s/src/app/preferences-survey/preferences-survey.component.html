@@ -1,5 +1,5 @@
 <div class="pref-form drop-shadow">
-    <h2 class="light-text" style="text-align: center">Location Preferences</h2>
+    <h3 class="light-text" style="text-align: center">Location Preferences</h3>
     <p class="light-text">Some of the following fields are <b>required</b> as they determine the location of your event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
     <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
         <!-- address -->
@@ -26,19 +26,36 @@
 </div>
 
 <div class="pref-form drop-shadow">
-    <h2 class="light-text" style="text-align: center">Event Preferences</h2>
+    <h3 class="light-text" style="text-align: center">Event Preferences</h3>
     <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
     <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
         <!-- hobbies - most interested -->
         <div class="field">
-            <label for="mostInterestedHobbies" class="label">Which hobbies are you <b>most</b> interested in?<span class="required">*</span></label>
+            <label for="mostInterestedHobbies" class="label">
+                Which hobbies are you <b>most</b> interested in?<span class="required">* </span> 
+                <span>
+                    <i 
+                        class="pi pi-question-circle" 
+                        tooltipStyleClass="customtooltip" 
+                        tooltipEvent="hover" 
+                        [pTooltip]="tooltipContent"
+                    ></i>
+                </span>
+            </label>
             <p-multiSelect [options]="mostInterestedHobbies" formControlName="mostInterestedHobbies" placeholder="Choose a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" label required (onChange)="getLeastInterestedHobbiesArray()"></p-multiSelect>
         </div>
 
+        <ng-template #tooltipContent>
+            <div class="flex" style="font-size: .80rem; text-align: left;">
+                <p style="margin-bottom: 2px;"> <b>Why are there so few hobbies?</b></p>
+                <p>We only present a subset of the total hobbies during onboarding to gain a general understanding of your interests. You will have the ability to add more hobbies on your profile page.</p>
+            </div>
+            </ng-template>
+
         <!-- hobbies - least interested -->
         <div class="field">
-            <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?<span class="required">*</span></label>
-            <p-multiSelect [options]="leastInterestedHobbies" formControlName="leastInterestedHobbies" placeholder="Choose a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required (onChange)="getMostInterestedHobbiesArray()"></p-multiSelect>
+            <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?</label>
+            <p-multiSelect [options]="leastInterestedHobbies" formControlName="leastInterestedHobbies" placeholder="Choose a hobby" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" (onChange)="getMostInterestedHobbiesArray()"></p-multiSelect>
         </div>
 
         <!-- event distance -->

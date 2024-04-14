@@ -1,9 +1,6 @@
-<!-- Gradient color the forms -->
-<!-- Make survey titles bigger, make question names bold -->
-
 <main style="margin-bottom: 3rem;">
     <div *ngIf="this.page !== 1">
-        <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
+        <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
         <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
     </div>
 
@@ -51,7 +48,7 @@
 
         <!-- submit button -->
         <div *ngIf="this.page === this.maxPage" class="nextButtonDiv">
-            <button pButton severity="primary" (click)="onSubmit()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
+            <button pButton style="background-color: #15616D; border-color: #15616D;" (click)="onSubmit()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>

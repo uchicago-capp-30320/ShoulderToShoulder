@@ -9,60 +9,78 @@ export var ageRanges = [
     '85+'
 ]
 
-export var races = [
-    'White',
-    'Black or African American',
-    'American Indian or Alaska Native',
-    'Asian',
-    'Native Hawaiian or Other Pacific Islander',
-    'Middle Eastern or North African',
-    'Other'
+export var races: string[] = [
+    "African American",
+    "Black",
+    "Central Asian",
+    "East Asian",
+    "Hispanic",
+    "Indigenous",
+    "Jewish",
+    "Latina/Latino/Latinx",
+    "Middle Eastern",
+    "Native American",
+    "North African",
+    "Pacific Islander",
+    "South Asian",
+    "Southeast Asian",
+    "West Asian",
+    "White",
+    "Other",
+    "Prefer not to answer"
 ]
 
 export var religiousAffiliations = [
-    'Agnostic',
-    'Atheist',    
-    'Bahá’í',
-    'Buddhist',
-    'Christian',
-    'Hindu',    
-    'Jain',
-    'Jewish',
-    'Muslim',
-    'Shinto',
-    'Sikh',
-    'Spiritual',
-    'Taoist',
-    'None',
-    'Other',
+    "Agnostic",
+    "Atheist",
+    "Bahá’í",
+    "Buddhist",
+    "Catholic",
+    "Christian",
+    "Hindu",
+    "Jain",
+    "Jewish",
+    "Latter-day Saint",
+    "Mormon",
+    "Muslim",
+    "Shinto",
+    "Sikh",
+    "Spiritual",
+    "Taoist",
+    "Zoroastrian",
+    "None",
+    "Other",
+    "Prefer not to answer"
 ]
 
 export var genders = [
-    'Woman',
-    'Man',
-    'Non-binary',
-    'Two-spirit',
-    'Transgender',
-    'Other',
+    "Man",
+    "Non-binary",
+    "Woman",
+    "Transgender",
+    "Two-Spirit",
+    "Other",
+    "Prefer not to answer"
 ]
 
 export var sexualOrientations = [
-    'Heterosexual/Straight',
-    'Gay',
-    'Lesbian',
-    'Bisexual',
-    'Pansexual',
-    'Asexual',
-    'Queer',
-    'Questioning',
-    'Other',
+    "Asexual",
+    "Bisexual",
+    "Gay",
+    "Heterosexual/Straight",
+    "Lesbian",
+    "Pansexual",
+    "Queer",
+    "Questioning",
+    "Other",
+    "Prefer not to answer"
 ]
 
 export var politicalAffiliations = [
-    'Strongly Conservative',
-    'Conservative',
-    'Moderate',
-    'Liberal',
-    'Strongly Liberal',
-    'Other',
+    "Apolitical",
+    "Conservative",
+    "Moderate",
+    "Liberal",
+    "Other",
+    "Prefer not to answer"
 ]

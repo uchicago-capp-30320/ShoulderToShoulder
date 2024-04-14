@@ -23,6 +23,7 @@ export class ScenariosSurveyComponent {
   usedHobbyIndexes: number[] = [];
   availableHobbies: Hobby[] = this.preferencesService.scenarioHobbies;
 
+  scenarioNavigation: any[] = [];
   days = days;
   groupSizes = [
     '1-5',
@@ -55,7 +56,19 @@ export class ScenariosSurveyComponent {
     private preferencesService: PreferencesService
   ) {
     this.getScenarios();
+    this.getScenarioNavigation();
   }
+
+  getScenarioNavigation() {
+    for (let i = 1; i <= this.maxScenarios; i++) {
+      let nav = {label: `Scenario ${i} of ${this.maxScenarios}`, value: i}
+      this.scenarioNavigation.push(nav);
+    }
+  }
+
+  updatePageNumber(event: any) {
+    this.scenarioNum = event.value?.value;
+}
 
   /**
    * Gets a random, available hobby.
@@ -154,6 +167,9 @@ export class ScenariosSurveyComponent {
    * Moves to the next scenario.
    */
   nextScenario() {
+    if (this.scenarioNum === this.maxScenarios) {
+      return;
+    }
     this.scenarioNum++;
   }
 
@@ -161,6 +177,9 @@ export class ScenariosSurveyComponent {
    * Moves to the previous scenario.
    */
   prevScenario() {
+    if (this.scenarioNum === 1) {
+      return;
+    }
     this.scenarioNum--;
   }
 

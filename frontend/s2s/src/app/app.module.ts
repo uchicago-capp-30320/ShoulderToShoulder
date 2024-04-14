@@ -43,8 +43,6 @@ import { PreferencesSurveyComponent } from './preferences-survey/preferences-sur
 import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.component';
 import { EventAvailabilitySurveyComponent } from './event-availability-survey/event-availability-survey.component';
 
-
-
 @NgModule({
   declarations: [
     AppComponent,

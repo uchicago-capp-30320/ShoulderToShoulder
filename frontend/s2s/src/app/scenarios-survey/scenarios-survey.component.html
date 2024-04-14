@@ -1,30 +1,17 @@
 <div class="scenario-form drop-shadow">
-    <h2 class="dark-text" style="text-align: center;">Recomendation Scenarios</h2>
-    <p class="dark-text">You will now be tasked with evaluating <b>{{ maxScenarios }} scenarios</b>. In these scenarios, you will be provided with descriptions of <b>two events</b> and be asked to report which event you would rather attend. <br><br>Use the arrows to navigate between scenarios.</p>
+    <h3 class="dark-text" style="text-align: center;">Recommendation Scenarios</h3>
+    <p class="dark-text">You will now be tasked with evaluating <b>{{ maxScenarios }} scenarios</b>. In these scenarios, you will be provided with descriptions of <b>two events</b> and be asked to report which event you would rather attend.</p>
 </div>
 
 <div class="scenario-form drop-shadow">
-    <span class="buttons">
-        <!-- previous button -->
-        <div class="prevButtonDiv">
-            <button pButton (click)="prevScenario()" class="prevButton" [disabled]="this.scenarioNum === 1" title="Previous Scenario">
-                <span class="ui-button-text ui-clickable dark-text"><i class="pi pi-arrow-left"></i> Previous Scenario</span>
-            </button>
-        </div>
-
-        <!-- next button -->
-        <div class="nextButtonDiv">
-            <button pButton (click)="nextScenario()" class="nextButton" [disabled]="this.scenarioNum >= this.maxScenarios" title="Next Scenario">
-                <span class="ui-button-text ui-clickable dark-text">Next Scenario <i class="pi pi-arrow-right"></i></span>
-            </button>
-        </div>
-    </span>
-
     <form [formGroup]="this.userService.scenariosForm" (ngSubmit)="onSubmit()" class="form-container">
         <!-- scenarios -->
         <div class="field" *ngFor="let scenario of scenarios">
             <div *ngIf="scenario.id === scenarioNum">
-                <p style="text-align: center;"><b><u>Scenario {{ scenario.id }}</u></b></p>
+                <!-- <h4 style="text-align: center;"><u>Scenario {{ scenario.id }} of {{ maxScenarios }}</u></h4><br> -->
+                <div style="text-align: center; margin-bottom: 1rem">
+                    <p-dropdown [options]="scenarioNavigation" optionLabel="label" placeholder="Scenario {{ scenario.id }} of {{ maxScenarios }}" styleClass="scenarioDropdown" (onChange)="updatePageNumber($event)"></p-dropdown>
+                </div>
                 <label for="scenario{{ scenario.id }}" class="label"> <span [innerHtml]="scenario.description"></span><span class="required">*</span></label>
                 <div class="p-field-radiobutton">
                     <div class="flex align-items-center">
@@ -40,4 +27,20 @@
             </div>
         </div>      
     </form>
+
+    <span class="buttons">
+        <!-- previous button -->
+        <div class="prevButtonDiv">
+            <button pButton (click)="prevScenario()" class="prevButton" [disabled]="this.scenarioNum === 1" title="Previous Scenario">
+                <span class="ui-button-text ui-clickable dark-text"><i class="pi pi-arrow-left"></i> Previous Scenario</span>
+            </button>
+        </div>
+
+        <!-- next button -->
+        <div class="nextButtonDiv">
+            <button pButton (click)="nextScenario()" class="nextButton" [disabled]="this.scenarioNum >= this.maxScenarios" title="Next Scenario">
+                <span class="ui-button-text ui-clickable">Next Scenario <i class="pi pi-arrow-right"></i></span>
+            </button>
+        </div>
+    </span>
 </div>

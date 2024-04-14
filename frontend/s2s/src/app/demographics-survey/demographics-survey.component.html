@@ -1,19 +1,19 @@
 <!-- Note: make font bigger; make space between fields larger -->
 <div class="demo-form drop-shadow">
-    <h2 class="light-text" style="text-align: center">Demographic Information</h2>
+    <h3 class="light-text" style="text-align: center">Demographic Information</h3>
     <p class="light-text">The following fields are <b>optional</b> and will only serve to make our event predictions more accurate. We won't display any information on your profile that you want private.</p>
     <div>
         <form [formGroup]="this.userService.demographicsForm" (ngSubmit)="onSubmit()" class="form-container">
             <!-- age range -->
             <div class="field">
                 <label for="ageRange" class="label">Age Range</label>
-                <p-dropdown [options]="ageRanges" formControlName="ageRange" [showClear]="true" placeholder="35-44" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
+                <p-dropdown [options]="ageRanges" formControlName="ageRange" placeholder="35-44" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
             </div>
 
             <!-- race -->
             <div class="field">
                 <label for="race" class="label">Race</label>
-                <p-multiSelect [options]="races" formControlName="race" [showClear]="true" placeholder="Asian" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
+                <p-multiSelect [options]="races" formControlName="race" placeholder="Asian" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
             </div>
 
             <!-- race description -->
@@ -25,7 +25,7 @@
             <!-- gender -->
             <div class="field">
                 <label for="gender" class="label">Gender</label>
-                <p-multiSelect [options]="genders" formControlName="gender" [showClear]="true" placeholder="Woman, Transgender" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
+                <p-multiSelect [options]="genders" formControlName="gender" placeholder="Woman, Transgender" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}"></p-multiSelect>
             </div>
 
             <!-- gender description -->
@@ -37,7 +37,7 @@
             <!-- sexual orientation -->
             <div class="field">
                 <label for="sexualOrientation" class="label">Sexual Orientation</label>
-                <p-dropdown [options]="sexualOrientations" formControlName="sexualOrientation" [showClear]="true" placeholder="Select a sexual orientation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
+                <p-dropdown [options]="sexualOrientations" formControlName="sexualOrientation" placeholder="Select a sexual orientation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
             </div>
 
             <!-- sexual orientation description -->
@@ -49,7 +49,7 @@
             <!-- religious affiliation -->
             <div class="field">
                 <label for="religiousAffiliation" class="label">Religious Affiliation</label>
-                <p-dropdown [options]="religiousAffiliations" formControlName="religiousAffiliation" [showClear]="true" placeholder="Select a religious affiliation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
+                <p-dropdown [options]="religiousAffiliations" formControlName="religiousAffiliation" placeholder="Select a religious affiliation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
             </div>
             
 
@@ -62,7 +62,7 @@
             <!-- political affiliation -->
             <div class="field">
                 <label for="politicalAffiliation" class="label">Political Affiliation</label>
-                <p-dropdown [options]="politicalAffiliations" formControlName="politicalAffiliation" [showClear]="true" placeholder="Select a political affiliation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
+                <p-dropdown [options]="politicalAffiliations" formControlName="politicalAffiliation" placeholder="Select a political affiliation" autoWidth="false" [style]="{'width':'100%'}"></p-dropdown>
             </div>
 
             <!-- political affiliation description -->

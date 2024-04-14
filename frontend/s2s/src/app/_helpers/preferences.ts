@@ -73,17 +73,18 @@ export var groupSimilarity = [
     'Moderately dissimilar',
     'Neutral',
     'Moderately similar',
-    'Completely similar'
+    'Completely similar',
+    'No preference'
 ];
 
 export var groupSimilarityAttrs = [
-    'Age Range',
-    'Religious Affiliation',
-    'Race',
-    'Gender',
-    'Sexual Orientation',
-    'Other',
-    'No preference'
+    "Age range",
+    "Gender",
+    "Political Leaning",
+    "Race or Ethnicity",
+    "Religious Affiliation",
+    "Sexual Orientation",
+    "No preference"
 ];
 
 export var eventFrequency = [
@@ -95,10 +96,10 @@ export var eventFrequency = [
 ];
 
 export var eventNotifications = [
-    'Email',
-    'Text',
-    'Email & Text',
-    'None'
+    'Email Only',
+    'Email and Text',
+    'Text Only',
+    'No preference'
 ];
 
 export var distances = [
@@ -114,23 +115,23 @@ export var distances = [
 ]
 
 export var timeCategories: string[] = [
-    'Early Morning',
-    'Morning',
-    'Afternoon',
-    'Evening',
-    'Night',
-    'Late Night',
+    "Early morning (5-8a)",
+    "Morning (9a-12p)",
+    "Afternoon (1-4p)",
+    "Evening (5-8p)",
+    "Night (9p-12a)",
+    "Late night (1-4a)",
     'Unavailable'
 ];
 
 export var availableTimeCategoriesMap: labelValueIntArray[] = [
-    {label: 'Early Morning', value: [5, 6, 7, 8]},
-    {label: 'Morning', value: [9, 10, 11, 12]},
-    {label: 'Afternoon', value: [13, 14, 15, 16]},
-    {label: 'Evening', value: [17, 18, 19, 20]},
-    {label: 'Night', value: [21, 22, 23, 24]},
-    {label: 'Late Night', value: [1, 2, 3, 4]},
-    {label: 'Unavailable', value: [0]}
+    {label: timeCategories[0], value: [5, 6, 7, 8]},
+    {label: timeCategories[1], value: [9, 10, 11, 12]},
+    {label: timeCategories[2], value: [13, 14, 15, 16]},
+    {label: timeCategories[3], value: [17, 18, 19, 20]},
+    {label: timeCategories[4], value: [21, 22, 23, 24]},
+    {label: timeCategories[5], value: [1, 2, 3, 4]},
+    {label: timeCategories[6], value: [0]}
 ];
 
 // Convert to an object indexed by label
