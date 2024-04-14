@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 // services
 import { UserService } from '../_services/user.service';  
-import { PreferencesService } from '../_services/preferences.service';
+import { PreferencesService } from '../_services/hobbies.service';
 
 // helpers
 import { 

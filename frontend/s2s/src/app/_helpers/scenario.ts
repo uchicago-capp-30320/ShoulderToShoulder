@@ -23,15 +23,17 @@ export interface ScenarioInterface {
  * @returns A scenario object describing the activity.
  */
 export class Scenario {
-    private _hobby: Hobby;
+    private _hobby1: Hobby;
+    private _hobby2: Hobby;
     private _time: string;
     private _day: string;
-    private _numPeople: number;
-    private _mileage: number;
+    private _numPeople: string;
+    private _mileage: string;
     private _altered_variable: string;
 
-    constructor(hobby: Hobby, duration: string, day: string, numPeople: number, mileage: number, altered_variable: string) {
-        this._hobby = hobby;
+    constructor(hobby1: Hobby, hobby2: Hobby, duration: string, day: string, numPeople: string, mileage: string, altered_variable: string) {
+        this._hobby1 = hobby1;
+        this._hobby2 = hobby2;
         this._time = duration;
         this._day = day;
         this._numPeople = numPeople;
@@ -46,64 +48,41 @@ export class Scenario {
      * @returns A string version of the scenario with the altered variable.
      */
     public getScenarioTemplate(altered: any) {
-        let people: string = this.numPeople === 1 ? "person" : "people";
-        let mile: string = this.mileage === 1 ? "mile" : "miles";
-
-        // altering the hobby
-        if (this._altered_variable === "hobby") {
-            altered = (altered as Hobby).scenarioForm;
-            return `You receive an invitation for two different events.<br><br> 
-                For <b>event 1</b>, you are invited to <b>${this.hobby}</b> with ${this.numPeople}
-                other ${people} ${this.mileage} ${mile} away from you at ${this.time}
-                on a ${this.day}.
-                For <b>event 2</b>, you are invited to <b>${altered}</b> with ${this.numPeople}
-                other ${people} ${this.mileage} ${mile} away from you at ${this.time} on a ${this.day}.
-                <br><br>Which event would you rather attend?`;
-        }
-            
         // altering the time
-        else if (this._altered_variable === "time")
+        if (this._altered_variable === "time")
             return `You receive an invitation for two different events.<br><br>
-                For <b>event 1</b>, you are invited to ${this.hobby} with ${this.numPeople}
-                other ${people} ${this.mileage} ${mile} away from you at <b>${this.time}</b>
-                on a ${this.day}.
-                For <b>event 2</b>, you are invited to ${this.hobby} with ${this.numPeople}
-                other ${people} ${this.mileage} ${mile} away from you at <b>${altered}</b>
-                on a ${this.day}.
-                <br><br>Which event would you rather attend?`;
-            
+                <b>Event 1</b>: You are invited to <b>${this.hobby1}</b> with ${this.numPeople}
+                other people at a location that is ${this.mileage} of you on a ${this.day} <b>${this.time}</b>.<br><br> 
+                <b>Event 2</b>: You are invited to <b>${this.hobby2}</b> with ${this.numPeople}
+                other people at a location that is ${this.mileage} of you on a ${this.day} <b>${altered}</b>.<br><br> 
+               <b>Which event would you rather attend?</b>`;
+        
         // altering the day
         else if (this._altered_variable === "day")
             return `You receive an invitation for two different events.<br><br>
-                For <b>event 1</b>, you are invited to ${this.hobby} with ${this.numPeople}
-                other ${people} ${this.mileage} ${mile} away from you at ${this.time}
-                on a <b>${this.day}</b>.
-                For <b>event 2</b>, you are invited to ${this.hobby} with ${this.numPeople}
-                other ${people} ${this.mileage} ${mile} away from you at ${this.time}
-                on a <b>${altered}</b>.
-                <br><br>Which event would you rather attend?`;
+                <b>Event 1</b>: You are invited to <b>${this.hobby1}</b> with ${this.numPeople}
+                other people at a location that is ${this.mileage} of you on a <b>${this.day}</b> ${this.time}.<br><br> 
+                <b>Event 2</b>: You are invited to <b>${this.hobby2}</b> with ${this.numPeople}
+                other people at a location that is ${this.mileage} of you on a <b>${altered}</b> ${this.time}.<br><br> 
+               <b>Which event would you rather attend?</b>`;
 
         // altering the number of people
         else if (this._altered_variable === "numPeople")
             return `You receive an invitation for two different events.<br><br>
-                For <b>event 1</b>, you are invited to ${this.hobby} with <b>${this.numPeople}
-                other ${people}</b> ${this.mileage} ${mile} away from you at ${this.time}
-                on a ${this.day}.
-                For <b>event 2</b>, you are invited to ${this.hobby} with <b>${altered}
-                other ${people}</b> ${this.mileage} ${mile} away from you at ${this.time}
-                on a ${this.day}.
-                <br><br>Which event would you rather attend?`;
+                <b>Event 1</b>: You are invited to <b>${this.hobby1}</b> with <b>${this.numPeople}</b>
+                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
+                <b>Event 2</b>: You are invited to <b>${this.hobby2}</b> with <b>${altered}</b>
+                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
+               <b>Which event would you rather attend?</b>`;
 
         // altering the mileage
         else if (this._altered_variable === "mileage")
             return `You receive an invitation for two different events.<br><br>
-                For <b>event 1</b>, you are invited to ${this.hobby} with ${this.numPeople}
-                other ${people} <b>${this.mileage} ${mile} away</b> from you at ${this.time}
-                on a ${this.day}.
-                For <b>event 2</b>, you are invited to ${this.hobby} with ${this.numPeople}
-                other ${people} <b>${altered} ${mile} away</b> from you at ${this.time}
-                on a ${this.day}.
-                <br><br>Which event would you rather attend?`;
+                <b>Event 1</b>: You are invited to <b>${this.hobby1}</b> with ${this.numPeople}
+                other people at a location that is <b>${this.mileage}</b> of you on a ${this.day} ${this.time}.<br><br> 
+                <b>Event 2</b>: You are invited to <b>${this.hobby2}</b> with ${this.numPeople}
+                other people at a location that is <b>${altered}</b> of you on a ${this.day} ${this.time}.<br><br> 
+               <b>Which event would you rather attend?</b>`;
 
         // error
         else
@@ -111,12 +90,20 @@ export class Scenario {
                     one of the following: hobby, time, day, numPeople, mileage.`;
     }
 
-    set hobby(hobby: Hobby) {
-        this._hobby = hobby;
+    set hobby1(hobby: Hobby) {
+        this._hobby1 = hobby;
     }
 
-    get hobby(): string {
-        return this._hobby.scenarioForm;
+    get hobby1(): string {
+        return this._hobby1.scenarioForm;
+    }
+
+    set hobby2(hobby: Hobby) {
+        this._hobby2 = hobby;
+    }
+
+    get hobby2(): string {
+        return this._hobby2.scenarioForm;
     }
 
     set duration(duration: string) {
@@ -135,19 +122,19 @@ export class Scenario {
         return this._day;
     }
 
-    set numPeople(numPeople: number) {
+    set numPeople(numPeople: string) {
         this._numPeople = numPeople;
     }
 
-    get numPeople(): number {
+    get numPeople(): string {
         return this._numPeople;
     }
 
-    set mileage(mileage: number) {
+    set mileage(mileage: string) {
         this._mileage = mileage;
     }
 
-    get mileage(): number {
+    get mileage(): string {
         return this._mileage;
     }
 

@@ -20,14 +20,14 @@ export var hobbies: Hobby[] = [
     { name: 'Bouldering', scenarioForm: 'go bouldering', maxParticipants: 5, type: 'SPORT/EXERCISE' },
     { name: 'Bowling', scenarioForm: 'go bowling', maxParticipants: 8, type: 'SPORT/EXERCISE' },
     { name: 'Chess', scenarioForm: 'play chess', maxParticipants: 1, type: 'GAMING' },
-    { name: 'City tour', scenarioForm: 'a city tour', maxParticipants: 5, type: 'HISTORY AND LEARNING' },
+    { name: 'City tour', scenarioForm: 'go on a city tour', maxParticipants: 5, type: 'HISTORY AND LEARNING' },
     { name: 'Collaging', scenarioForm: 'a collaging circle', maxParticipants: 5, type: 'CRAFTING' },
-    { name: 'Comedy Clubs', scenarioForm: 'a comedy club', maxParticipants: 5, type: 'ARTS AND CULTURE' },
-    { name: 'Concert', scenarioForm: 'a concert', maxParticipants: 20, type: 'ARTS AND CULTURE' },
+    { name: 'Comedy Clubs', scenarioForm: 'go to a comedy club', maxParticipants: 5, type: 'ARTS AND CULTURE' },
+    { name: 'Concert', scenarioForm: 'go to a concert', maxParticipants: 20, type: 'ARTS AND CULTURE' },
     { name: 'Exploring a Nearby Town', scenarioForm: 'explore a nearby town', maxParticipants: 5, type: 'TRAVEL' },
     { name: 'Exploring breweries', scenarioForm: 'explore breweries', maxParticipants: 5, type: 'FOOD AND DRINK' },
     { name: 'Gardening', scenarioForm: 'go gardening', maxParticipants: 5, type: 'OUTDOORS' },
-    { name: 'Getting coffee', scenarioForm: 'get coffee', maxParticipants: 5, type: 'FOOD AND DRINK' },
+    { name: 'Exploring coffee shops', scenarioForm: 'explore coffee shops', maxParticipants: 5, type: 'FOOD AND DRINK' },
     { name: 'Going to the beach', scenarioForm: 'go to the beach', maxParticipants: 10, type: 'OUTDOORS' },
     { name: 'Hiking', scenarioForm: 'go on a hike', maxParticipants: 10, type: 'SPORT/EXERCISE' },
     { name: 'History Museums', scenarioForm: 'a history museum', maxParticipants: 10, type: 'HISTORY AND LEARNING' },
@@ -61,10 +61,10 @@ export var hobbies: Hobby[] = [
 ];
 
 export var groupSizes = [
-    '1-5 people',
-    '6-10 people',
-    '10-15 people',
-    '15+ people',
+    '1-5',
+    '6-10',
+    '10-15',
+    '15+',
     'No preference'
 ];
 
@@ -102,14 +102,28 @@ export var eventNotifications = [
 ];
 
 export var distances = [
+    'Within 1 mile',
     'Within 5 miles',
     'Within 10 miles',
+    'Within 15 miles',
     'Within 20 miles',
+    'Within 30 miles',
+    'Within 40 miles',
     'Within 50 miles',
     'No preference'
 ]
 
-export var availableTimeCategories: labelValueIntArray[] = [
+export var timeCategories: string[] = [
+    'Early Morning',
+    'Morning',
+    'Afternoon',
+    'Evening',
+    'Night',
+    'Late Night',
+    'Unavailable'
+];
+
+export var availableTimeCategoriesMap: labelValueIntArray[] = [
     {label: 'Early Morning', value: [5, 6, 7, 8]},
     {label: 'Morning', value: [9, 10, 11, 12]},
     {label: 'Afternoon', value: [13, 14, 15, 16]},
@@ -120,7 +134,7 @@ export var availableTimeCategories: labelValueIntArray[] = [
 ];
 
 // Convert to an object indexed by label
-export const timeCategoryMap: { [label: string]: number[] } = availableTimeCategories.reduce((map, obj) => {
+export const timeCategoryMap: { [label: string]: number[] } = availableTimeCategoriesMap.reduce((map, obj) => {
     map[obj.label] = obj.value;
     return map;
 }, {} as { [label: string]: number[] });

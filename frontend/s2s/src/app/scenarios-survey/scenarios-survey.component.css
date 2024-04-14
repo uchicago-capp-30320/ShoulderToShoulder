@@ -15,13 +15,12 @@
 .form-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
 
 .field {
-    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
     justify-content: left;
@@ -72,13 +71,11 @@ p {
     width: fit-content;
     text-align: right;
     font-weight: normal;
-    margin-top: 1rem;
+    /* margin-top: 1rem; */
 }
 
 .nextButtonDiv {
     margin-left: auto;
-    margin-top: auto;
-    margin-bottom: auto;
 
 }
 
@@ -92,13 +89,10 @@ p {
     width: fit-content;
     text-align: right;
     font-weight: normal;
-    margin-top: 1rem;
 }
 
 .prevButtonDiv {
     margin-right: auto;
-    margin-top: auto;
-    margin-bottom: auto;
 }
 
 .buttons {
