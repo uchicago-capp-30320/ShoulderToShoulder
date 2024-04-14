@@ -3,6 +3,7 @@ from tqdm import tqdm
 import optax
 import jaxlib
 import jax.numpy as jnp
+from ml.dataset import Dataset
 
 from jax import value_and_grad, jit
 from ml.model import foward_deep_fm, foward_fm, foward_mlp
@@ -23,8 +24,6 @@ def step(params: list, x: jax.Array, y: jax.Array) -> jaxlib.xla_extension.Array
     --------
     
     """
-
-
     # Binary cross entropy with clipping to avoid rounding issues
     def loss_fn(params, x, y):
         ys = foward_deep_fm(params, x)
@@ -42,8 +41,7 @@ def step(params: list, x: jax.Array, y: jax.Array) -> jaxlib.xla_extension.Array
     return params, loss, grads, accuracy
 
 
-def train(params: list, X: jax.Array, Y: jax.Array, 
-          num_epochs: int) -> jaxlib.xla_extension.ArrayImpl:
+def train(params: list, data: Dataset, num_epochs: int) -> jaxlib.xla_extension.ArrayImpl:
     """
     Train a deep factorization machine
 
@@ -66,11 +64,12 @@ def train(params: list, X: jax.Array, Y: jax.Array,
 
     # Main training loop
     for epoch in tqdm(range(num_epochs)):
-        params, loss, grads, acc = step(params, X, Y)
+        for x_batch, y_batch in data:
+            params, loss, grads, acc = step(params, x_batch, y_batch)
 
-        # Update the weights
-        updates, solver_state = solver.update(grads, solver_state, params)
-        params = optax.apply_updates(params, updates)
+            # Update the weights
+            updates, solver_state = solver.update(grads, solver_state, params)
+            params = optax.apply_updates(params, updates)
 
         epochs.append(epoch)
         loss_list.append(loss)

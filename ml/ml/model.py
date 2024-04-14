@@ -196,8 +196,8 @@ def init_deep_fm(vocab_length: int, hidden_factors: int, layer_widths: list[int]
         vocab_length (int): the number of unique values across all features
         hidden_factors (int): the number of hidden factors to consider
         layer_widths (list[int]): dimensions for MLP layers, which should be 
-        [num_input_features, desired_output, desired_output = new_input, 
-        new_desired_output, ...]
+            [num_input_features, desired_output, desired_output = new_input, 
+            new_desired_output, ...]
         seeds (tuple[int]): a tuple of three integers to use for initialization
 
     Returns:

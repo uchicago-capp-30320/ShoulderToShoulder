@@ -1,4 +1,5 @@
 from ml.train import step, train, predict
+from ml.dataset import Dataset
 from jax import random
 import jaxlib
 from ml.model import init_deep_fm
@@ -18,8 +19,9 @@ def test_train():
     x_train = random.randint(random.PRNGKey(59), shape=(1000, 5), minval=0, 
                              maxval=50).astype(float)
     y_train = random.bernoulli(random.PRNGKey(997), 0.35, shape=(1000,)).astype(float)
+    train_data = Dataset(x_train, y_train, 128, 90)
     train_params = init_deep_fm(51, 5, [5, 64, 64, 32, 32, 1])
-    out = train(train_params, x_train, y_train, 100)
+    out = train(train_params, train_data, 100)
     epochs, loss, accuracy, train_params = out
     assert len(out) == 4
     assert len(epochs) == 100
