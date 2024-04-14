@@ -10,6 +10,9 @@ Folder with the development for our web application's frontend.
 #### Backend
 Folder with the development for our web application's backend. 
 
+#### ml
+Folder with the development for our web application's machine learning component (primarily, creating predictions for users).
+
 ## Virtual Environments
 
 Both front and back ends use conda virtual environments. 
