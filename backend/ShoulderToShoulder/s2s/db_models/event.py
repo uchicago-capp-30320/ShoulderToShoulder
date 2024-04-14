@@ -16,13 +16,15 @@ class Event(models.Model):
     duration_h = models.IntegerField(validators=[
             MaxValueValidator(24),
             MinValueValidator(1)])
-    location = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    latitude = models.DecimalField(max_digits=12, decimal_places=10)
+    longitude = models.DecimalField(max_digits=13, decimal_places=11)
     max_attendees = models.IntegerField(validators=[
             MaxValueValidator(2),
             MinValueValidator(50)])
     attendees = models.ManyToManyField('User')
     
     def __str__(self) -> str:
-        return 'Event name {}, DateTime {}, Duration {}, Location {}, Max Attendees {}, Attendees {}'.format(
-            self.title, self.datetime, self.duration_h, self.location, self.max_attendees, self.attendees)
+        return 'Event name {}, DateTime {}, Duration {}, Address {}, Max Attendees {}, Attendees {}'.format(
+            self.title, self.datetime, self.duration_h, self.address, self.max_attendees, self.attendees)
     
