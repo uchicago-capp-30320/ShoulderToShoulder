@@ -3,6 +3,7 @@ from tqdm import tqdm
 import optax
 import jaxlib
 import jax.numpy as jnp
+import matplotlib.pyplot as plt
 from ml.dataset import Dataset
 
 from jax import value_and_grad, jit
@@ -77,6 +78,13 @@ def train(params: list, data: Dataset, num_epochs: int) -> jaxlib.xla_extension.
 
         if epoch % 10 == 0:
             print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc}")
+
+    # Useful to diagnose any issues later
+    plt.plot(jnp.array(epochs), jnp.array(acc_list), label='Accuracy')
+    plt.plot(jnp.array(epochs), jnp.array(loss_list), label='Cross Entropy Loss')
+    plt.legend()
+    plt.title("Training loss vs accuracy")
+    plt.savefig('ml/figures/training_curves.jpg')
 
     return epochs, loss_list, acc_list, params
 
