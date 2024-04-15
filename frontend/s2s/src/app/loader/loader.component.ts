@@ -14,6 +14,6 @@ export class LoaderComponent implements OnInit {
   ngOnInit(): void {
     setInterval(() => {
       this.showDots = (this.showDots + 1) % (this.dots.length + 1);
-    }, 1000);
+    }, 500);
   }
 }
