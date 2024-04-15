@@ -62,69 +62,68 @@ describe('EventAvailabilitySurveyComponent', () => {
     const weekdayUnavailable = form.get('weekdayUnavailable');
     weekdayUnavailable?.setValue(true);
 
-    fixture.detectChanges();
     component.weekdayGeneralAvailabilityControls.forEach(control => {
+      if (!control.toLowerCase().includes('unavailable')) {
+        expect(component.getWeekdayDisabledState(control)).toBeTrue();
+      }
+    });
+      
+  });
+
+  it('should correctly disable unavailable control for weekdays when any other control is chosen', () => {
+    const form = component.generalAvailabilityForm;
+    component.weekdayGeneralAvailabilityControls.forEach(control => {
+      if (!control.toLowerCase().includes('unavailable')) {
+        form.get(control)?.setValue(true);
+        expect(component.getWeekdayDisabledState('weekdayUnavailable')).toBeTrue();
+        form.get(control)?.setValue(false);
+      }
+    });
+  });
+
+  it('should correctly disable all general availability controls for weekends when unavailable is chosen', () => {
+    const form = component.generalAvailabilityForm;
+    const weekendUnavailable = form.get('weekendUnavailable');
+    weekendUnavailable?.setValue(true);
+
+    fixture.detectChanges();
+    component.weekendGeneralAvailabilityControls.forEach(control => {
       if (!control.toLowerCase().includes('unavailable')) {
         expect(component.getWeekendDisabledState(control)).toBeTrue();
       }
-      
     });
+  });
 
-    it('should correctly disable unavailable control for weekdays when any other control is chosen', () => {
-      const form = component.generalAvailabilityForm;
-      component.weekdayGeneralAvailabilityControls.forEach(control => {
-        if (!control.toLowerCase().includes('unavailable')) {
-          form.get(control)?.setValue(true);
-          expect(component.getWeekdayDisabledState('weekdayUnavailable')).toBeTrue();
-          form.get(control)?.setValue(false);
-        }
-      });
+  it('should correctly disable unavailable control for weekends when any other control is chosen', () => {
+    const form = component.generalAvailabilityForm;
+    component.weekendGeneralAvailabilityControls.forEach(control => {
+      if (!control.toLowerCase().includes('unavailable')) {
+        form.get(control)?.setValue(true);
+        expect(component.getWeekendDisabledState('weekendUnavailable')).toBeTrue();
+        form.get(control)?.setValue(false);
+      }
     });
+  });
 
-    it('should correctly disable all general availability controls for weekends when unavailable is chosen', () => {
-      const form = component.generalAvailabilityForm;
-      const weekendUnavailable = form.get('weekendUnavailable');
-      weekendUnavailable?.setValue(true);
+  it('should correctly add a time range to the selected day', () => {
+    const form = component.userService.eventAvailabilityForm;
+    const timeRange = 'Early morning (5-8a)';
+    const correctTimes = [5, 6, 7, 8];
+    const days = ['mondayTimes'];
 
-      fixture.detectChanges();
-      component.weekendGeneralAvailabilityControls.forEach(control => {
-        if (!control.toLowerCase().includes('unavailable')) {
-          expect(component.getWeekendDisabledState(control)).toBeTrue();
-        }
-      });
-    });
+    component.addTimeRange(timeRange, days);
+    const mondayTimes = form.get('mondayTimes')?.value;
+    expect(mondayTimes).toEqual(correctTimes);
+  });
 
-    it('should correctly disable unavailable control for weekends when any other control is chosen', () => {
-      const form = component.generalAvailabilityForm;
-      component.weekendGeneralAvailabilityControls.forEach(control => {
-        if (!control.toLowerCase().includes('unavailable')) {
-          form.get(control)?.setValue(true);
-          expect(component.getWeekendDisabledState('weekendUnavailable')).toBeTrue();
-          form.get(control)?.setValue(false);
-        }
-      });
-    });
+  it('should correctly remove a time from the selected day', () => {
+    const form = component.userService.eventAvailabilityForm;
+    const timeRange = 'Early morning (5-8a)';
+    const days = ['mondayTimes'];
 
-    it('should correctly add a time range to the selected day', () => {
-      const form = component.generalAvailabilityForm;
-      const timeRange = 'Early morning (5-8a)';
-      const correctTimes = [5, 6, 7, 8];
-      const days = ['mondayTimes'];
-
-      component.addTimeRange(timeRange, days);
-      const mondayTimes = form.get('mondayTimes')?.value;
-      expect(mondayTimes).toEqual(correctTimes);
-    });
-
-    it('should correctly remove an unavailable time from the selected day', () => {
-      const form = component.generalAvailabilityForm;
-      const timeRange = 'Unavailable';
-      const days = ['mondayTimes'];
-
-      form.get('mondayTimes')?.setValue([1, 2, 3, 4, 5, 6, 7, 8]);
-      component.addTimeRange(timeRange, days);
-      const mondayTimes = form.get('mondayTimes')?.value;
-      expect(mondayTimes).toEqual([]);
-    });
+    form.get('mondayTimes')?.setValue([1, 2, 3, 4, 5, 6, 7, 8]);
+    component.removeTimeRange(timeRange, days);
+    const mondayTimes = form.get('mondayTimes')?.value;
+    expect(mondayTimes).toEqual([1, 2, 3, 4]);
   });
 });
