@@ -1,0 +1,78 @@
+<main>
+    <h1 class="dark-text">Sign Up for <br>Shoulder to Shoulder!</h1>
+    <p class="subtitle dark-text"> By signing up, you will gain access to features such as personalized event creation, group formation, and more. </p>
+
+    <div class="signup-form drop-shadow">
+        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- first name -->
+            <div class="field">
+                <label for="firstName" class="label">First Name<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched">First name is required</small>
+                <input type="text" pInputText placeholder="Daenerys" formControlName="firstName" />
+            </div>
+          
+            <!-- last name -->
+            <div class="field">
+                <label for="lastName" class="label">Last Name<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched">Last name is required</small>
+                <input type="text" pInputText placeholder="Targaryen" formControlName="lastName" />
+            </div>
+            
+            <!-- phone number -->
+            <div class="field">
+                <label for="phoneNumber" class="label">Phone Number</label>
+                <input type="text" pInputText placeholder="(123) 456-7890" formControlName="phoneNumber" mask="(000) 000-0000" />
+            </div>
+
+            <!-- email -->
+            <div class="field">
+                <label for="email" class="label">Email<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">Valid email is required</small>
+                <input type="text" pInputText placeholder="t.daenerys@ironchair.net" formControlName="email" />
+            </div>
+
+            <!-- password -->
+            <div class="field">
+                <label for="password" class="label">Password<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">Password is required</small>
+                <input #passwordInput
+                    type="password" 
+                    pInputText 
+                    placeholder="••••••••••" 
+                    formControlName="password" 
+                    autocomplete="new-password" 
+                    (focus)="togglePasswordField(passwordInput)" 
+                    (blur)="togglePasswordField(passwordInput)"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="focus" 
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." />
+            </div>
+
+            <!-- confirm password -->
+            <div class="field">
+                <label for="confirmPassword" class="label">Confirm Password<span class="required">*</span></label>
+                <small class="p-error" *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
+                <input #confirmPasswordInput 
+                    type="password" 
+                    pInputText 
+                    placeholder="••••••••••" 
+                    formControlName="confirmPassword" 
+                    autocomplete="new-password" 
+                    (focus)="togglePasswordField(confirmPasswordInput)" 
+                    (blur)="togglePasswordField(confirmPasswordInput)"  />
+            </div>
+
+            <!-- log in redirect -->
+            <div>
+                <p class="light-text">Already have an account? <a routerLink="/log-in" class="link">Log in here.</a></p>
+            </div>
+            
+            <!-- submit buttom -->
+            <div>
+                <!-- eslint-disable @angular-eslint/template/elements-content-->
+                <button pButton type="submit" label="Create an account" class="submit-button" [disabled]="signupForm.invalid"></button>
+            </div>
+        </form>
+    </div>
+</main>
+<app-footer></app-footer>
