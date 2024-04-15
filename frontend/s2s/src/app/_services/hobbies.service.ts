@@ -4,11 +4,6 @@ import { Injectable } from '@angular/core';
 import { 
   Hobby,
   hobbies, 
-  availableTimes, 
-  days, 
-  minMileage, 
-  maxMileage1,
-  maxMileage2
 } from '../_helpers/preferences';
 
 import { getRandomSubset } from '../_helpers/utils';
@@ -23,7 +18,7 @@ import { getRandomSubset } from '../_helpers/utils';
 @Injectable({
   providedIn: 'root'
 })
-export class PreferencesService {
+export class HobbyService {
   preferencesHobbies: Hobby[] = [];
   scenarioHobbies: Hobby[] = [];
 

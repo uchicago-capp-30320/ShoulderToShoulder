@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 // services
 import { UserService } from '../_services/user.service';
-import { PreferencesService } from '../_services/hobbies.service';
+import { HobbyService } from '../_services/hobbies.service';
 
 // helpers
 import { Scenario, ScenarioInterface } from '../_helpers/scenario';
@@ -25,7 +25,7 @@ import { Hobby } from '../_helpers/preferences';
  * ```
  * 
  * @see UserService
- * @see PreferencesService
+ * @see HobbyService
  */
 @Component({
   selector: 'app-scenarios-survey',
@@ -41,7 +41,7 @@ export class ScenariosSurveyComponent {
 
   // hobby information
   usedHobbyIndexes: number[] = [];
-  availableHobbies: Hobby[] = this.preferencesService.scenarioHobbies;
+  availableHobbies: Hobby[] = this.HobbyService.scenarioHobbies;
 
   // scenario additional information
   days = days;
@@ -72,7 +72,7 @@ export class ScenariosSurveyComponent {
   constructor(
     public userService: UserService,
     private sanitizer: DomSanitizer,
-    private preferencesService: PreferencesService
+    private HobbyService: HobbyService
   ) {
     this.getScenarios();
     this.getScenarioNavigation();

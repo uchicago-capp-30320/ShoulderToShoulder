@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 // services
 import { UserService } from '../_services/user.service';  
-import { PreferencesService } from '../_services/hobbies.service';
+import { HobbyService } from '../_services/hobbies.service';
 
 // helpers
 import { 
@@ -28,7 +28,7 @@ import { states } from '../_helpers/location';
  * ```
  * 
  * @see UserService
- * @see PreferencesService
+ * @see HobbyService
  */
 @Component({
   selector: 'app-preferences-survey',
@@ -61,7 +61,7 @@ export class PreferencesSurveyComponent implements OnInit {
   constructor(
     public userService: UserService,
     private http: HttpClient,
-    private preferencesService: PreferencesService
+    private HobbyService: HobbyService
   ) {
     this.getHobbyArray();
   }
@@ -75,7 +75,7 @@ export class PreferencesSurveyComponent implements OnInit {
    * to the hobby array.
    */
   getHobbyArray() {
-    this.hobbies = this.preferencesService.preferencesHobbies.map(hobby => hobby.name);
+    this.hobbies = this.HobbyService.preferencesHobbies.map(hobby => hobby.name);
     this.leastInterestedHobbies = this.hobbies;
     this.mostInterestedHobbies = this.hobbies;
   }
