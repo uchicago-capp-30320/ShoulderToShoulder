@@ -21,6 +21,14 @@ import { states } from '../_helpers/location';
  * Component for the preferences survey form. Also contains the logic for
  * extracting the zip code data from the form and sending a request to the USPS 
  * API.
+ * 
+ * Example:
+ * ```
+ * <app-preferences-survey></app-preferences-survey>
+ * ```
+ * 
+ * @see UserService
+ * @see PreferencesService
  */
 @Component({
   selector: 'app-preferences-survey',
@@ -28,21 +36,25 @@ import { states } from '../_helpers/location';
   styleUrl: './preferences-survey.component.css'
 })
 export class PreferencesSurveyComponent implements OnInit {
+  // hobby information
   hobbies!: string[];
   leastInterestedHobbies!: string[];
   mostInterestedHobbies!: string[];
+
+  // group information
   groupSizes = groupSizes;
   groupSimilarity = groupSimilarity;
   groupSimilarityAttrs = groupSimilarityAttrs;
+
+  // event information
   eventFrequency = eventFrequency;
   eventNotifications = eventNotifications;
+
+  // location information
   states = states;
   distances = distances;
-
-  zipCodeApiUrl = "http://production.shippingapis.com/ShippingAPI.dll"
-  zipCodeApi = "CityStateLookup"
-  zipCodeApiKeyFilepath = "assets/api_keys/usps.txt"
-  zipCodeXMLBase: string = "";
+  zipCodeApiUrl = "https://api.zipcodestack.com/v1/search?country=us"
+  zipCodeApiKeyFilepath = "assets/api_keys/zipcodestack.txt"
   zipCodeApiKey: string | null = null;
 
   constructor(
@@ -88,8 +100,11 @@ export class PreferencesSurveyComponent implements OnInit {
   getZipCodeApiKey() {
     this.http.get(this.zipCodeApiKeyFilepath).subscribe(data => {
       this.zipCodeApiKey = (data as string);
-      this.zipCodeXMLBase = `<CityStateLookupRequest USERID="${data}">`
     })
+  }
+
+  printForm() {
+    console.log(this.userService.preferencesForm.value);
   }
 
   /**
@@ -109,49 +124,28 @@ export class PreferencesSurveyComponent implements OnInit {
     }
 
     // builds the API request URL
-    let zipCodeXML = this.zipCodeXMLBase + `<ZipCode ID="0"><Zip5>${zipCode}</Zip5></ZipCode></CityStateLookupRequest>`
-    let requestUrl = this.zipCodeApiUrl + `?API=${this.zipCodeApi}&XML=${zipCodeXML}`
+    let requestUrl = this.zipCodeApiUrl + `&codes=${zipCode}&apikey=${this.zipCodeApiKey}`
     console.log(requestUrl)
 
     // sets city and state based on the response from the USPS API
-    // TODO - uncomment once I have access to the API
-    // this.http.get(requestUrl, { responseType: 'text' }).subscribe(data => {
+    this.http.get(requestUrl, { responseType: 'json' }).subscribe(data => {
 
-    //   // USPS response is XML - need to parse
-    //   try {
-    //     const newData = this.parseXml(data);
-    //     this.userService.preferencesForm.get('city')?.setValue(newData.city);
-    //     this.userService.preferencesForm.get('state')?.setValue(newData.state);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // });
-  }
+      // ZipCodeStack response is JSON - need to parse
+      try {
+        let result = (data as any).results[zipCode][0]
+        console.log(result)
+        let city = result.city
+        let state = {label: result.state, value: result.state_code}
 
-  /**
-   * Parses the XML response from the USPS API.
-   * 
-   * @param xmlStr - string data to parse
-   * @returns  - city and state data
-   */
-  private parseXml(xmlStr: string): any {
-    // build parser
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlStr, "application/xml");
-    const error = xml.getElementsByTagName("Error");
+        console.log(city, state)
+        this.userService.preferencesForm.get('city')?.setValue(city)
+        this.userService.preferencesForm.get('state')?.setValue(state)
 
-    // Handle any errors in the XML response
-    if (error.length) {
-      const description = error[0].getElementsByTagName("Description")[0].textContent;
-      throw new Error((description as string));
-    } 
-
-    // Successfully parse the XML and extract city and state data
-    else {
-      const city = xml.getElementsByTagName("City")[0].textContent;
-      const state = xml.getElementsByTagName("State")[0].textContent;
-      return { 'city': city, 'state': state };
-    }
+        console.log(this.userService.preferencesForm.value)
+      } catch (error) {
+        console.error(error);
+      }
+    });
   }
 
   /**

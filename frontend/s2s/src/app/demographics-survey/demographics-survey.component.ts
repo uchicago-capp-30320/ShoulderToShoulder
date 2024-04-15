@@ -13,6 +13,18 @@ import {
   politicalAffiliations
 } from '../_helpers/demographics';
 
+/**
+ * DemographicsSurveyComponent
+ * 
+ * This component handles the survey for users to input their demographic 
+ * information. It allows users to select their age range, race, religious 
+ * affiliation, gender, sexual orientation, and political affiliation.
+ * 
+ * Example:
+ * ```
+ * <app-demographics-survey></app-demographics-survey>
+ * ```
+ */
 @Component({
   selector: 'app-demographics-survey',
   templateUrl: './demographics-survey.component.html',

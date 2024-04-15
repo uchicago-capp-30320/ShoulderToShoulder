@@ -1,3 +1,4 @@
+<!-- location form -->
 <div class="pref-form drop-shadow">
     <h3 class="light-text" style="text-align: center">Location Preferences</h3>
     <p class="light-text">Some of the following fields are <b>required</b> as they determine the location of your event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>
@@ -19,12 +20,13 @@
             <span>
                 <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" style="width: 20%" (blur)="getZipCodeData()">
                 <input pInputText placeholder="City" formControlName="city" style="width: 35%; margin-left: 5%">
-                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '35%', 'margin-left': '5%'}"></p-dropdown>
+                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '35%', 'margin-left': '5%'}" (onChange)="printForm()"></p-dropdown>
             </span>
         </div>
     </form>
 </div>
 
+<!-- preferences form -->
 <div class="pref-form drop-shadow">
     <h3 class="light-text" style="text-align: center">Event Preferences</h3>
     <p class="light-text">The following fields are <b>required</b> as they determine your specific event recommendations. You will not be able to move forward in the onboarding process until the required questions are answered.</p>

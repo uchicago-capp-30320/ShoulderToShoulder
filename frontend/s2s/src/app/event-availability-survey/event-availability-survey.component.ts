@@ -7,12 +7,30 @@ import { UserService } from '../_services/user.service';
 // helpers
 import { availableTimes, days, timeCategoryMap } from '../_helpers/preferences';
 
+/**
+ * EventAvailabilitySurveyComponent
+ * 
+ * This component handles the survey for users to input their availability for 
+ * events. It allows users to select their availability for different time 
+ * categories on weekdays and weekends.
+ * 
+ * Example:
+ * ```
+ * <app-event-availability-survey></app-event-availability-survey>
+ * ```
+ * 
+ * @see UserService
+ */
 @Component({
   selector: 'app-event-availability-survey',
   templateUrl: './event-availability-survey.component.html',
   styleUrl: './event-availability-survey.component.css'
 })
 export class EventAvailabilitySurveyComponent {
+  availableTimes = availableTimes;
+  timeCategoryMap = timeCategoryMap;
+  days = days;
+
   // general availability form
   generalAvailabilityForm: FormGroup = this.fb.group({
     weekdayEarlyMorning: new FormControl(false),
@@ -31,6 +49,7 @@ export class EventAvailabilitySurveyComponent {
     weekendUnavailable: new FormControl(false),
   });
 
+  // general availability controls for weekdays
   weekdayGeneralAvailabilityControls = [
     'weekdayEarlyMorning',
     'weekdayMorning',
@@ -41,6 +60,7 @@ export class EventAvailabilitySurveyComponent {
     'weekdayUnavailable'
   ];
 
+  // general availability controls for weekends
   weekendGeneralAvailabilityControls = [
     'weekendEarlyMorning',
     'weekendMorning',
@@ -51,47 +71,75 @@ export class EventAvailabilitySurveyComponent {
     'weekendUnavailable'
   ];
 
+  // form control label map list for weekdays
   weekdayFormControlLabelMapList = [
     {control: 'weekdayUnavailable', label: 'Unavailable'},
-    {control: 'weekdayEarlyMorning', label: 'Early Morning (5-8a)'},
+    {control: 'weekdayEarlyMorning', label: 'Early morning (5-8a)'},
     {control: 'weekdayMorning', label: 'Morning (9a-12p)'},
     {control: 'weekdayAfternoon', label: 'Afternoon (1-4p)'},
     {control: 'weekdayEvening', label: 'Evening (5-8p)'},
     {control: 'weekdayNight', label: 'Night (9p-12a)'},
-    {control: 'weekdayLateNight', label: 'Late Night (1-4a)'}
+    {control: 'weekdayLateNight', label: 'Late night (1-4a)'}
   ];
 
+  // form control label map list for weekends
   weekendFormControlLabelMapList = [
     {control: 'weekendUnavailable', label: 'Unavailable'},
-    {control: 'weekendEarlyMorning', label: 'Early Morning (5-8a)'},
+    {control: 'weekendEarlyMorning', label: 'Early morning (5-8a)'},
     {control: 'weekendMorning', label: 'Morning (9a-12p)'},
     {control: 'weekendAfternoon', label: 'Afternoon (1-4p)'},
     {control: 'weekendEvening', label: 'Evening (5-8p)'},
     {control: 'weekendNight', label: 'Night (9p-12a)'},
-    {control: 'weekendLateNight', label: 'Late Night (1-4a)'}
+    {control: 'weekendLateNight', label: 'Late night (1-4a)'}
   ];
 
-  availableTimes = availableTimes;
-  timeCategoryMap = timeCategoryMap;
-  days = days;
   constructor(
     public userService: UserService,
     private fb: FormBuilder
   ) {}
 
   /**
-   * Submits the event availability form.
+   * Get the disabled state for the weekday controls.
+   * 
+   * @param control The control to get the disabled state of.
+   * @returns If the control should be disabled.
    */
-  onSubmit() {
-    console.log(this.userService.eventAvailabilityForm.value);
+  getWeekdayDisabledState(control: string) {
+    // determine the state of the unavailable control
+    if (control.toLowerCase().includes('unavailable')) {
+      for (let weekdayControl of this.weekdayGeneralAvailabilityControls) {
+        if (this.generalAvailabilityForm.get(weekdayControl)?.value && weekdayControl !== control) {
+          return true;
+        }
+      }
+    } 
+    
+    // determine the state of all other controls
+    else {
+      return this.generalAvailabilityForm.get('weekdayUnavailable')?.value
+    }
   }
 
   /**
-   * Updates the availability based on the form values.
+   * Get the disabled state for the weekend controls.
+   * 
+   * @param control The control to get the disabled state of.
+   * @returns If the control should be disabled.
    */
-  updateAvailability() {
-    this.updateWeekdayTimes();
-    // this.updateWeekendTimes();
+  getWeekendDisabledState(control: string) {
+    // determine the state of the unavailable control
+    if (control.toLowerCase().includes('unavailable')) {
+      for (let weekendControl of this.weekendGeneralAvailabilityControls) {
+        if (this.generalAvailabilityForm.get(weekendControl)?.value && weekendControl !== control) {
+          return true;
+        }
+      }
+    } 
+    
+    // determine the state of all other controls
+    else {
+      return this.generalAvailabilityForm.get('weekendUnavailable')?.value
+    }
   }
 
   /**
@@ -146,98 +194,22 @@ export class EventAvailabilitySurveyComponent {
     return currentTimes;
   }
 
-  /**
-   * Get the disabled state for the weekday controls.
-   * 
-   * @param control The control to get the disabled state of.
-   * @returns If the control should be disabled.
-   */
-  getWeekdayDisabledState(control: string) {
-    if (control.toLowerCase().includes('unavailable')) {
-      for (let weekdayControl of this.weekdayGeneralAvailabilityControls) {
-        if (this.generalAvailabilityForm.get(weekdayControl)?.value && weekdayControl !== control) {
-          return true;
-        }
-      }
-    } else {
-      return this.generalAvailabilityForm.get('weekdayUnavailable')?.value
-    }
-  }
-
-  /**
-   * Get the disabled state for the weekend controls.
-   * 
-   * @param control The control to get the disabled state of.
-   * @returns If the control should be disabled.
-   */
-  getWeekendDisabledState(control: string) {
-    if (control.toLowerCase().includes('unavailable')) {
-      for (let weekendControl of this.weekendGeneralAvailabilityControls) {
-        if (this.generalAvailabilityForm.get(weekendControl)?.value && weekendControl !== control) {
-          return true;
-        }
-      }
-    } else {
-      return this.generalAvailabilityForm.get('weekendUnavailable')?.value
-    }
-  }
 
   /**
    * Updates the times for the weekdays.
    */
   updateWeekdayTimes() {
     let weekdayTimes: string[] = ['mondayTimes', 'tuesdayTimes', 'wednesdayTimes', 'thursdayTimes', 'fridayTimes'];
-    
-    // early morning
-    if (this.generalAvailabilityForm.value.weekdayEarlyMorning) {
-      this.addTimeRange('Early morning (5-8a)', weekdayTimes);
+    for (let controlLabel of this.weekdayFormControlLabelMapList) {
+      // available
+      if (this.generalAvailabilityForm.value[controlLabel.control]) {
+        this.addTimeRange(controlLabel.label, weekdayTimes);
+      } 
       
-    } else {
-      this.removeTimeRange('Early morning (5-8a)', weekdayTimes);
-    }
-
-    // morning
-    if (this.generalAvailabilityForm.value.weekdayMorning) {
-      this.addTimeRange('Morning (9a-12p)', weekdayTimes);
-    } else {
-      this.removeTimeRange('Morning (9a-12p)', weekdayTimes);
-    }
-
-    // afternoon
-    if (this.generalAvailabilityForm.value.weekdayAfternoon) {
-      this.addTimeRange('Afternoon (1-4p)', weekdayTimes);
-    } else {
-      this.removeTimeRange('Afternoon (1-4p)', weekdayTimes);
-    }
-
-    // evening
-    if (this.generalAvailabilityForm.value.weekdayEvening) {
-      this.addTimeRange('Evening (5-8p)', weekdayTimes);
-    } else {
-      this.removeTimeRange('Evening (5-8p)', weekdayTimes);
-    }
-
-    // night
-    if (this.generalAvailabilityForm.value.weekdayNight) {
-      this.addTimeRange('Night (9p-12a)', weekdayTimes);
-    } else {
-      this.removeTimeRange('Night (9p-12a)', weekdayTimes);
-    }
-
-    // late night
-    if (this.generalAvailabilityForm.value.weekdayLateNight) {
-      this.addTimeRange('Late night (1-4a)', weekdayTimes);
-    } else {
-      this.removeTimeRange('Late night (1-4a)', weekdayTimes);
-    }
-
-    // unavailable
-    if (this.generalAvailabilityForm.value.weekdayUnavailable) {
-      for (let day of weekdayTimes) {
-        this.userService.eventAvailabilityForm.controls[day].setValue([0]);
+      // unavailable
+      else {
+        this.removeTimeRange(controlLabel.label, weekdayTimes);
       }
-    } else {
-      this.removeTimeRange('Unavailable', weekdayTimes);
     }
   }
 
@@ -245,54 +217,24 @@ export class EventAvailabilitySurveyComponent {
    * Updates the times for the weekends.
    */
   updateWeekendTimes() {
-    // early morning
-    if (this.generalAvailabilityForm.value.weekendEarlyMorning) {
-      this.addTimeRange('Early morning (5-8a)', ['saturdayTimes', 'sundayTimes']);
-    } else {
-      this.removeTimeRange('Early morning (5-8a)', ['saturdayTimes', 'sundayTimes']);
+    let weekendTimes: string[] = ['saturdayTimes', 'sundayTimes'];
+    for (let controlLabel of this.weekendFormControlLabelMapList) {
+      // available
+      if (this.generalAvailabilityForm.value[controlLabel.control]) {
+        this.addTimeRange(controlLabel.label, weekendTimes);
+      } 
+      
+      // unavailable
+      else {
+        this.removeTimeRange(controlLabel.label, weekendTimes);
+      }
     }
+  }
 
-    // morning
-    if (this.generalAvailabilityForm.value.weekendMorning) {
-      this.addTimeRange('Morning (9a-12p)', ['saturdayTimes', 'sundayTimes']);
-    } else {
-      this.removeTimeRange('Morning (9a-12p)', ['saturdayTimes', 'sundayTimes']);
-    }
-
-    // afternoon
-    if (this.generalAvailabilityForm.value.weekendAfternoon) {
-      this.addTimeRange('Afternoon (1-4p)', ['saturdayTimes', 'sundayTimes']);
-    } else {
-      this.removeTimeRange('Afternoon (1-4p)', ['saturdayTimes', 'sundayTimes']);
-    }
-
-    // evening
-    if (this.generalAvailabilityForm.value.weekendEvening) {
-      this.addTimeRange('Evening (5-8p)', ['saturdayTimes', 'sundayTimes']);
-    } else {
-      this.removeTimeRange('Evening (5-8p)', ['saturdayTimes', 'sundayTimes']);
-    }
-
-    // night
-    if (this.generalAvailabilityForm.value.weekendNight) {
-      this.addTimeRange('Night (9p-12a)', ['saturdayTimes', 'sundayTimes']);
-    } else {
-      this.removeTimeRange('Night (9p-12a)', ['saturdayTimes', 'sundayTimes']);
-    }
-
-    // late night
-    if (this.generalAvailabilityForm.value.weekendLateNight) {
-      this.addTimeRange('Late night (1-4a)', ['saturdayTimes', 'sundayTimes']);
-    } else {
-      this.removeTimeRange('Late night (1-4a)', ['saturdayTimes', 'sundayTimes']);
-    }
-
-    // unavailable
-    if (this.generalAvailabilityForm.value.weekendUnavailable) {
-      this.userService.eventAvailabilityForm.controls['saturdayTimes'].setValue([0]);
-      this.userService.eventAvailabilityForm.controls['sundayTimes'].setValue([0]);
-    } else {
-      this.removeTimeRange('Unavailable', ['saturdayTimes', 'sundayTimes']);
-    }
+  /**
+   * Submits the event availability form.
+   */
+  onSubmit() {
+    console.log(this.userService.eventAvailabilityForm.value);
   }
 }
