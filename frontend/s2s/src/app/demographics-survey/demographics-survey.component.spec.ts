@@ -1,6 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule, FormGroupDirective } from '@angular/forms';
 
+// primeng
+import { DropdownModule } from 'primeng/dropdown';
+
+// components and services
 import { DemographicsSurveyComponent } from './demographics-survey.component';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 describe('DemographicsSurveyComponent', () => {
   let component: DemographicsSurveyComponent;
@@ -8,7 +14,18 @@ describe('DemographicsSurveyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DemographicsSurveyComponent]
+      declarations: [
+        DemographicsSurveyComponent,
+      ],
+      imports: [
+        DropdownModule,
+        MultiSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+      ],
+      providers: [
+        FormGroupDirective
+      ]
     })
     .compileComponents();
     
