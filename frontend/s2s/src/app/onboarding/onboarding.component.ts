@@ -18,7 +18,7 @@ export class OnboardingComponent {
    * Moves to the next page.
    */
   nextPage() {
-    this.gotoTop();
+    this.goToTop();
     this.page++;
   }
 
@@ -26,12 +26,12 @@ export class OnboardingComponent {
    * Moves to the previous page.
    */
   previousPage() {
-    this.gotoTop();
+    this.goToTop();
     this.page--;
   }
 
-  gotoTop() {
-    window.scroll({ 
+  goToTop() {
+    window.scrollTo({ 
       top: 0, 
       left: 0, 
       behavior: 'smooth' 
@@ -47,7 +47,7 @@ export class OnboardingComponent {
     console.log("Preferences: ", this.userService.preferencesForm.value);
     console.log("Event Availability: ", this.userService.eventAvailabilityForm.value);
     console.log("Scenarios: ", this.userService.scenariosForm.value);
-    this.nextPage()
+    this.page = this.maxPage + 1;
   }
 
 }

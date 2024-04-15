@@ -34,21 +34,21 @@
     <div class="buttonsDiv">
         <!-- previous button -->
         <div *ngIf="this.page > 1 && this.page <= maxPage">
-            <button pButton (click)="previousPage()" class="prevButton">
+            <button id="previous-button" pButton (click)="previousPage()" class="prevButton">
                 <span class="ui-button-text ui-clickable"><i class="pi pi-arrow-left"></i> Previous Page</span>
             </button>
         </div>
         
         <!-- next button -->
         <div *ngIf="this.page < this.maxPage" class="nextButtonDiv">
-            <button pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 3 && userService.preferencesForm.invalid) || (page === 4 && userService.eventAvailabilityForm.invalid)">
+            <button id="next-button" pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 3 && userService.preferencesForm.invalid)">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
         </div>
 
         <!-- submit button -->
         <div *ngIf="this.page === this.maxPage" class="nextButtonDiv">
-            <button pButton style="background-color: #15616D; border-color: #15616D;" (click)="onSubmit()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
+            <button id="submit-button" pButton style="background-color: #15616D; border-color: #15616D;" (click)="onSubmit()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>
