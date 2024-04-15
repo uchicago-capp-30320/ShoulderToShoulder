@@ -56,6 +56,7 @@ export class PreferencesSurveyComponent implements OnInit {
   zipCodeApiUrl = "https://api.zipcodestack.com/v1/search?country=us"
   zipCodeApiKeyFilepath = "assets/api_keys/zipcodestack.txt"
   zipCodeApiKey: string | null = null;
+  zipcodeInvalid: boolean = false;
 
   constructor(
     public userService: UserService,
@@ -103,10 +104,6 @@ export class PreferencesSurveyComponent implements OnInit {
     })
   }
 
-  printForm() {
-    console.log(this.userService.preferencesForm.value);
-  }
-
   /**
    * Extracts the zip code data from the preferences form and sends a request to 
    * the USPS API to get the city and state data.
@@ -132,6 +129,15 @@ export class PreferencesSurveyComponent implements OnInit {
 
       // ZipCodeStack response is JSON - need to parse
       try {
+        let results = (data as any).results
+
+        // determine if the zipcode exists
+        if (results == null || results.length == 0) {
+          this.zipcodeInvalid = true;
+          return
+        }
+
+        // extracts city and state from the zipcode
         let result = (data as any).results[zipCode][0]
         console.log(result)
         let city = result.city

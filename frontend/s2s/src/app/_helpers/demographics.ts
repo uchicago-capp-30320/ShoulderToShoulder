@@ -1,3 +1,5 @@
+// Description: This file contains the demographic data for the survey questions.
+
 export var ageRanges = [
     '18-24',
     '25-34',

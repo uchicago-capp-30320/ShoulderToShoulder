@@ -45,10 +45,11 @@
 
 .p-error {
     text-align: left;
+    color: rgb(255, 133, 133);
 }
 
 .required {
-    color: rgb(231, 75, 75);
+    color: rgb(255, 133, 133);
 }
 
 h3 {

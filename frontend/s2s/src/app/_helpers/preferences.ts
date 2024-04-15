@@ -1,6 +1,9 @@
-// Purpose: Contains the preferences for the user to select from.
+// Description: Contains the preferences for the user to select from.
 import { labelValueInt, labelValueIntArray } from "./constants";
 
+/**
+ * An interface for representing a hobby that a user can select.
+ */
 export interface Hobby {
     name: string;
     scenarioForm: string;
@@ -59,6 +62,7 @@ export var hobbies: Hobby[] = [
     { name: 'Watching Opera', scenarioForm: 'see an opera performance', maxParticipants: 5, type: 'ARTS AND CULTURE' },
     { name: 'Watching Plays', scenarioForm: 'see a play', maxParticipants: 5, type: 'ARTS AND CULTURE' }
 ];
+
 
 export var groupSizes = [
     '1-5',

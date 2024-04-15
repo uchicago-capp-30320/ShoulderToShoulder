@@ -1,4 +1,4 @@
-// Desc: General constants used throughout the application.
+// Description: General constants used throughout the application.
 
 /**
  * A label-value pair with a number value.

@@ -9,18 +9,27 @@
             <input pInputText formControlName="addressLine1" placeholder="1234 Main St">
         </div>
 
+        <!-- zipcode -->
+        <div class="field">
+            <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
+            
+            <!-- error messages -->
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.zipcodeInvalid">Zipcode does not exist. Please enter a different value.</small>
+            
+            <!-- zipcode input -->
+            <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" style="width: 100%" (blur)="getZipCodeData()">
+        </div>
+
         <!-- city/state/zip -->
         <div class="field">
             <span>
-                <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
-                <label for="city" class="label" style="margin-left: 13%">City</label>
-                <label for="state" class="label" style="margin-left: 35%">State</label>
+                <label for="city" class="label">City</label>
+                <label for="state" class="label" style="margin-left: 50%">State</label>
             </span>
-            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
             <span>
-                <input pInputText formControlName="zipCode" required maxlength="5" placeholder="01010" style="width: 20%" (blur)="getZipCodeData()">
-                <input pInputText placeholder="City" formControlName="city" style="width: 35%; margin-left: 5%">
-                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '35%', 'margin-left': '5%'}" (onChange)="printForm()"></p-dropdown>
+                <input pInputText placeholder="City" formControlName="city" style="width: 45%">
+                <p-dropdown [options]="states" optionLabel="label" placeholder="State" formControlName="state" autoWidth="false" [style]="{'width': '45%', 'margin-left': '10%'}"></p-dropdown>
             </span>
         </div>
     </form>

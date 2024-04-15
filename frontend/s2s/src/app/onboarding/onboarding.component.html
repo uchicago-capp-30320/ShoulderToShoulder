@@ -1,5 +1,5 @@
 <main style="margin-bottom: 3rem;">
-    <div *ngIf="this.page !== 1">
+    <div *ngIf="this.page > 1 && this.page < maxPage">
         <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
         <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
     </div>
@@ -33,14 +33,14 @@
 
     <div class="buttonsDiv">
         <!-- previous button -->
-        <div *ngIf="this.page !== 1">
+        <div *ngIf="this.page > 1 && this.page <= maxPage">
             <button pButton (click)="previousPage()" class="prevButton">
                 <span class="ui-button-text ui-clickable"><i class="pi pi-arrow-left"></i> Previous Page</span>
             </button>
         </div>
         
         <!-- next button -->
-        <div *ngIf="this.page !== this.maxPage" class="nextButtonDiv">
+        <div *ngIf="this.page < this.maxPage" class="nextButtonDiv">
             <button pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 3 && userService.preferencesForm.invalid) || (page === 4 && userService.eventAvailabilityForm.invalid)">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
@@ -52,6 +52,11 @@
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>
+    </div>
+    <div *ngIf="this.page > maxPage" class="onboardingOutro">
+        <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
+        <p class="subtitle dark-text">You have successfully completed your onboarding. We are building your profile. <br> If you are not automatically redirected, you can follow this link: [INSERT]</p>
+        <app-loader></app-loader>
     </div>
 </main>
 

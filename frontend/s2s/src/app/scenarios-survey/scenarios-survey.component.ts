@@ -8,22 +8,42 @@ import { PreferencesService } from '../_services/hobbies.service';
 // helpers
 import { Scenario, ScenarioInterface } from '../_helpers/scenario';
 import { days } from '../_helpers/preferences';
-import { getRandomInt, getRandomSubset } from '../_helpers/utils';
+import { getRandomInt } from '../_helpers/utils';
 import { Hobby } from '../_helpers/preferences';
 
+/**
+ * ScenariosSurveyComponent
+ * 
+ * This component handles the survey for users to compare different scenarios 
+ * and make choices. It presents users with multiple scenarios comparing two 
+ * types of events, each with various attributes. Users are asked which event 
+ * they would rather attend based on the provided information.
+ * 
+ * Example:
+ * ```
+ * <app-scenarios-survey></app-scenarios-survey>
+ * ```
+ * 
+ * @see UserService
+ * @see PreferencesService
+ */
 @Component({
   selector: 'app-scenarios-survey',
   templateUrl: './scenarios-survey.component.html',
   styleUrl: './scenarios-survey.component.css'
 })
 export class ScenariosSurveyComponent {
+  // scenario information
   scenarioNum = 1;
   maxScenarios = 8;
   scenarios: ScenarioInterface[] = []
+  scenarioNavigation: any[] = [];
+
+  // hobby information
   usedHobbyIndexes: number[] = [];
   availableHobbies: Hobby[] = this.preferencesService.scenarioHobbies;
 
-  scenarioNavigation: any[] = [];
+  // scenario additional information
   days = days;
   groupSizes = [
     '1-5',
@@ -42,7 +62,6 @@ export class ScenariosSurveyComponent {
     'within 50 miles',
   ];
   timeCategories = ["morning", "afternoon", "evening"]; // getting a limited subset
-
   alteredVariableMap: { [index: string]: any[] } = {
     "time": this.timeCategories,
     "day": days,
@@ -59,6 +78,9 @@ export class ScenariosSurveyComponent {
     this.getScenarioNavigation();
   }
 
+  /**
+   * Gets the scenario navigation (e.g., Scenario X of Y).
+   */
   getScenarioNavigation() {
     for (let i = 1; i <= this.maxScenarios; i++) {
       let nav = {label: `Scenario ${i} of ${this.maxScenarios}`, value: i}
@@ -66,9 +88,86 @@ export class ScenariosSurveyComponent {
     }
   }
 
+  /**
+   * Updates the scenario the page is displaying.
+   * 
+   * @param event The keyboard event to draw scenario information from.
+   */
   updatePageNumber(event: any) {
     this.scenarioNum = event.value?.value;
 }
+
+  /**
+   * Gets 8 scenarios for the form.
+   * 
+   * In the scenarios form, the user is presented with 8 scenarios comparing 
+   * two types of events. Each scenario includes a hobby, a time, a day, the 
+   * maximum number of people, and a mileage. In each scenario, one of the
+   * variables is altered to create a comparison between the two events.
+   * The user is then asked which event they would rather attend.
+   */
+
+  getScenarios() {
+    const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage'];
+    const numVariables: number = alteredVariables.length;
+
+    // Generate scenarios using the remaining items
+    for (let i = 0; i < this.maxScenarios; i++) {
+      // get the variable to alter
+      const typeIndex = i % numVariables;
+      let alteredVariable = alteredVariables[typeIndex];
+
+      // Get two hobbies that are not the same
+      let hobby1 = this.getHobby();
+      let hobby2 = this.getHobby();
+
+      // get other attributes
+      const time = this.timeCategories[getRandomInt(0, this.timeCategories.length - 1)];
+      const day = days[getRandomInt(0, days.length - 1)];
+      const numPeople = this.groupSizes[getRandomInt(0, this.groupSizes.length - 1)];
+      const mileage = this.distances[getRandomInt(0, this.distances.length - 1)];
+
+      let altVariableMap: {[index: string]: string} = {
+        "time": time,
+        "day": day,
+        "numPeople": numPeople,
+        "mileage": mileage
+      };
+
+      // create the scenario
+      const scenario = 
+        new Scenario(
+          hobby1, 
+          hobby2, 
+          time, 
+          day, 
+          numPeople, 
+          mileage, 
+          alteredVariable
+        );
+
+      // Use the reserved alternative for the current type
+      let alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariable].length - 1);
+      let alternative = this.alteredVariableMap[alteredVariable][alteredIndex];
+      
+      // make sure to get a different altered variable
+      alternative = this.getAlternative(alteredVariable, alternative, altVariableMap[alteredVariable]);
+
+      // set the altered variable's value
+      scenario.alteredVariableValue = alternative;
+
+      // add the scenario to the list
+      this.scenarios.push(
+        {id: i + 1, 
+          description: this.sanitizer.bypassSecurityTrustHtml(scenario.getScenarioTemplate(alternative))
+        }
+      );
+
+      // set the form control scenario
+      let controlName = `scenario${i + 1}Scenario`;
+      this.userService.scenariosForm.controls[controlName].setValue(scenario);
+    }
+  }
 
   /**
    * Gets a random, available hobby.
@@ -92,76 +191,21 @@ export class ScenariosSurveyComponent {
   }
 
   /**
-   * Gets 8 scenarios for the form.
+   * Gets an alternative for the altered variable.
    * 
-   * In the scenarios form, the user is presented with 8 scenarios comparing 
-   * two types of events. Each scenario includes a hobby, a time, a day, the 
-   * maximum number of people, and a mileage. In each scenario, one of the
-   * variables is altered to create a comparison between the two events.
-   * The user is then asked which event they would rather attend.
+   * @param alteredVariable The altered variable.
+   * @param alternative The current alternative.
+   * @param variableValue The current variable value.
+   * @returns An alternative for the altered variable.
    */
-
-  getScenarios() {
-    const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage'];
-    const numVariables: number = alteredVariables.length;
-
-    // Generate scenarios using the remaining items
-    for (let i = 0; i < this.maxScenarios; i++) {
-      const typeIndex = i % numVariables;
-
-      // Get two hobbies that are not the same
-      let hobby1 = this.getHobby();
-      let hobby2 = this.getHobby();
-
-      // get other attributes
-      const time = this.timeCategories[getRandomInt(0, this.timeCategories.length - 1)];
-      const day = days[getRandomInt(0, days.length - 1)];
-      const numPeople = this.groupSizes[getRandomInt(0, this.groupSizes.length - 1)];
-      const mileage = this.distances[getRandomInt(0, this.distances.length - 1)];
-
-      // create the scenario
-      const scenario = new Scenario(hobby1, hobby2, time, day, numPeople, mileage, alteredVariables[typeIndex]);
-
-      // Use the reserved alternative for the current type
-      let alteredVariable = alteredVariables[typeIndex];
-      let alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariables[typeIndex]].length - 1);
-      let alternative = this.alteredVariableMap[alteredVariables[typeIndex]][alteredIndex];
-      
-      // make sure to get a different altered variable
-      if (alteredVariable === "time") {
-        while (alternative === time) {
-          alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariables[typeIndex]].length - 1);
-          alternative = this.alteredVariableMap[alteredVariables[typeIndex]][alteredIndex];
-        }
-      } else if (alteredVariable === "day") {
-        while (alternative === day) {
-          alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariables[typeIndex]].length - 1);
-          alternative = this.alteredVariableMap[alteredVariables[typeIndex]][alteredIndex];
-        }
-      } else if (alteredVariable === "numPeople") {
-        while (alternative === numPeople) {
-          alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariables[typeIndex]].length - 1);
-          alternative = this.alteredVariableMap[alteredVariables[typeIndex]][alteredIndex];
-        }
-      } else if (alteredVariable === "mileage") {
-        while (alternative === mileage) {
-          alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariables[typeIndex]].length - 1);
-          alternative = this.alteredVariableMap[alteredVariables[typeIndex]][alteredIndex];
-        }
-      }
-
-      // add the scenario to the list
-      this.scenarios.push({id: i + 1, description: this.sanitizer.bypassSecurityTrustHtml(scenario.getScenarioTemplate(alternative))});
+  getAlternative(alteredVariable: string, alternative: string, variableValue: string) {
+    while (alternative === variableValue) {
+      let alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariable].length - 1);
+      alternative = this.alteredVariableMap[alteredVariable][alteredIndex];
     }
-  }
 
-  /**
-   * Submits the scenarios survey form.
-   */
-  onSubmit() {
-    console.log(this.userService.scenariosForm.value)
+    return alternative;
   }
-
 
   /**
    * Moves to the next scenario.
@@ -183,4 +227,10 @@ export class ScenariosSurveyComponent {
     this.scenarioNum--;
   }
 
+  /**
+   * Submits the scenarios survey form.
+   */
+  onSubmit() {
+    console.log(this.userService.scenariosForm.value)
+  }
 }

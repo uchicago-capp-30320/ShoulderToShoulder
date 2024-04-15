@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { NumberRegx } from '../_helpers/patterns';
 import { User } from '../_helpers/userInfo';
-import { distances } from '../_helpers/preferences';
 
 @Injectable({
   providedIn: 'root'
@@ -56,13 +55,21 @@ export class UserService {
 
   public scenariosForm: FormGroup = this.fb.group({
     scenario1: new FormControl(undefined, Validators.required),
+    scenario1Scenario: new FormControl(undefined, Validators.required),
     scenario2: new FormControl(undefined, Validators.required),
+    scenario2Scenario: new FormControl(undefined, Validators.required),
     scenario3: new FormControl(undefined, Validators.required),
+    scenario3Scenario: new FormControl(undefined, Validators.required),
     scenario4: new FormControl(undefined, Validators.required),
+    scenario4Scenario: new FormControl(undefined, Validators.required),
     scenario5: new FormControl(undefined, Validators.required),
+    scenario5Scenario: new FormControl(undefined, Validators.required),
     scenario6: new FormControl(undefined, Validators.required),
+    scenario6Scenario: new FormControl(undefined, Validators.required),
     scenario7: new FormControl(undefined, Validators.required),
+    scenario7Scenario: new FormControl(undefined, Validators.required),
     scenario8: new FormControl(undefined, Validators.required),
+    scenario8Scenario: new FormControl(undefined, Validators.required),
   });
 
   onboarded: boolean = false;

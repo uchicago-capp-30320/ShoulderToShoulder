@@ -7,7 +7,7 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent {
-  page: number = 4; // FIXME: Change to 1
+  page: number = 6; // FIXME: Change to 1
   maxPage: number = 5;
 
   constructor(
@@ -43,6 +43,10 @@ export class OnboardingComponent {
    */
   onSubmit() {
     console.log("Onboading forms submitted")
+    console.log("Demographics: ", this.userService.demographicsForm.value);
+    console.log("Preferences: ", this.userService.preferencesForm.value);
+    console.log("Event Availability: ", this.userService.eventAvailabilityForm.value);
+    console.log("Scenarios: ", this.userService.scenariosForm.value);
   }
 
 }

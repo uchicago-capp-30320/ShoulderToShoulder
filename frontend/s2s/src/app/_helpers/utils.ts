@@ -1,4 +1,4 @@
-// Desc: Utils functions
+// Description: Utils functions
 
 /**
  * Get random integer between min and max.
