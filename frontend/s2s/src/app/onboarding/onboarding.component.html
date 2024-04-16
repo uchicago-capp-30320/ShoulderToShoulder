@@ -7,9 +7,14 @@
     </div>
 
     <!-- Standard header message -->
-    <div *ngIf="this.page > 1 && this.page < maxPage">
+    <div *ngIf="this.page > 1 && this.page < maxPage" style="width: 100%">
         <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
         <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progressIndicator" id="progressIndicator">
+        <div class="progress" id="progressBar">Survey {{ page - 1 }} of {{ maxPage - 1 }}</div>
     </div>
     
     <!-- Demographics survey (second page) -->

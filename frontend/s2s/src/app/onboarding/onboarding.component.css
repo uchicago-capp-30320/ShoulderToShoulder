@@ -68,3 +68,19 @@
     background-color: #15616d21;
     border-color: #15616db3;
 }
+
+.progressIndicator{
+    display: flex;
+    align-items: center;
+    margin-top: 2rem;
+    border: #001524 3px solid;
+    border-radius: 20px;
+    width: 70%;
+}
+
+#progressBar{
+    border-radius: 20px; 
+    background-color: #001524; 
+    text-align: center;
+    color: #FFECD1;
+}

@@ -23,7 +23,7 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent implements OnInit{
-  page: number = 1;
+  page: number = 2;
   maxPage: number = 5;
   showConfirm: boolean = false;
 
@@ -34,14 +34,54 @@ export class OnboardingComponent implements OnInit{
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
+    this.getProgressBarWidth();
+  }
+
+  /**
+   * Updates the width of the progress bar.
+   */
+  getProgressBarWidth() {
+    const progressBar = document.getElementById("progressBar");
+    console.log('adjusting progress bar width...')
+    if (progressBar) {
+      console.log(`${((this.page-1) / (this.maxPage-1)) * 100}%`)
+      progressBar.style.width = `${((this.page-1) / (this.maxPage-1)) * 100}%`;
+    }
+  }
+
+  /**
+   * Hides the progress bar.
+   */
+  hideProgressBar() {
+    const progressBar = document.getElementById("progressIndicator");
+    if (progressBar) {
+      progressBar.style.display = "none";
+    }
+  }
+
+  /**
+   * Shows the progress bar.
+   */
+  showProgressBar() {
+    const progressBar = document.getElementById("progressIndicator");
+    if (progressBar) {
+      progressBar.style.display = "block";
+    }
   }
 
   /**
    * Moves to the next page.
    */
   nextPage() {
+    this.getProgressBarWidth();
     this.goToTop();
     this.page++;
+    this.getProgressBarWidth();
+    if (this.page === 1) {
+      this.hideProgressBar();
+    } else {
+      this.showProgressBar();
+    }
   }
 
   /**
@@ -50,6 +90,12 @@ export class OnboardingComponent implements OnInit{
   previousPage() {
     this.goToTop();
     this.page--;
+    this.getProgressBarWidth();
+    if (this.page === 1) {
+      this.hideProgressBar();
+    } else {
+      this.showProgressBar();
+    }
   }
 
   goToTop() {

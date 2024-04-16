@@ -27,6 +27,8 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ToastModule } from 'primeng/toast';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -83,7 +85,9 @@ import { LoaderComponent } from './loader/loader.component';
     HttpClientModule,
     RadioButtonModule,
     CheckboxModule,
-    DialogModule
+    DialogModule,
+    ProgressBarModule,
+    ToastModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),
