@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NavbarComponent } from './navbar.component';
+import { MenubarModule } from 'primeng/menubar';
+import { ActivatedRoute } from '@angular/router';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -8,7 +10,11 @@ describe('NavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NavbarComponent]
+      declarations: [NavbarComponent],
+      imports: [MenubarModule],
+      providers: [
+        { provide: ActivatedRoute, useValue: {} } // Mock ActivatedRoute without any specific data
+      ]
     })
     .compileComponents();
     
