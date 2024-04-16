@@ -26,8 +26,8 @@ describe('UserService', () => {
     expect(form.get('sexualOrientationDesc')).toBeTruthy();
     expect(form.get('religiousAffiliation')).toBeTruthy();
     expect(form.get('religiousAffiliationDesc')).toBeTruthy();
-    expect(form.get('politicalAffiliation')).toBeTruthy();
-    expect(form.get('politicalAffiliationDesc')).toBeTruthy();
+    expect(form.get('politicalLeaning')).toBeTruthy();
+    expect(form.get('politicalLeaningDesc')).toBeTruthy();
   });
 
   it('should initialize the preferences form correctly', () => {

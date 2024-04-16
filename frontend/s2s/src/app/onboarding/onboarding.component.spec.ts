@@ -9,7 +9,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
 import { CheckboxModule } from 'primeng/checkbox';
-import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { DialogModule } from 'primeng/dialog';
 
 // components and services
 import { OnboardingComponent } from './onboarding.component';
@@ -43,7 +44,8 @@ describe('OnboardingComponent', () => {
         ReactiveFormsModule,
         TooltipModule,
         CheckboxModule,
-        RadioButtonModule
+        RadioButtonModule,
+        DialogModule
       ],
       providers: [
         FormControlDirective

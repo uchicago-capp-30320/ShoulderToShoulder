@@ -10,7 +10,7 @@ import {
   religiousAffiliations, 
   genders, 
   sexualOrientations,
-  politicalAffiliations
+  politicalLeanings
 } from '../_helpers/demographics';
 
 /**
@@ -36,7 +36,7 @@ export class DemographicsSurveyComponent {
   religiousAffiliations = religiousAffiliations;
   genders = genders;
   sexualOrientations = sexualOrientations;
-  politicalAffiliations = politicalAffiliations;
+  politicalLeanings = politicalLeanings;
 
   constructor(
     public userService: UserService

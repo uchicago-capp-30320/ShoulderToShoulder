@@ -19,8 +19,8 @@ export class UserService {
     sexualOrientationDesc: new FormControl(''),
     religiousAffiliation: new FormControl(''),
     religiousAffiliationDesc: new FormControl(''),
-    politicalAffiliation: new FormControl(''),
-    politicalAffiliationDesc: new FormControl(''),
+    politicalLeaning: new FormControl(''),
+    politicalLeaningDesc: new FormControl(''),
   });
 
   public preferencesForm: FormGroup = this.fb.group({

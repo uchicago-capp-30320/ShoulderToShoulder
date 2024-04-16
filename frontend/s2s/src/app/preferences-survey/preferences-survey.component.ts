@@ -137,6 +137,8 @@ export class PreferencesSurveyComponent implements OnInit {
           return
         }
 
+        this.zipcodeInvalid = false;
+
         // extracts city and state from the zipcode
         let result = (data as any).results[zipCode][0]
         console.log(result)

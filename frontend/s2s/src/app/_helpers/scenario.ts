@@ -45,18 +45,18 @@ export class Scenario {
         if (this.alteredVariable === "time")
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenarioForm}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a ${this.day} <b>${this.time}</b>.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a ${this.day} <b>${altered}</b>.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${altered}</b>.<br><br> 
                <b>Which event would you rather attend?</b>`;
         
         // altering the day
         else if (this.alteredVariable === "day")
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenarioForm}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a <b>${this.day}</b> ${this.time}.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a <b>${altered}</b> ${this.time}.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${altered} ${this.time}</b>.<br><br> 
                <b>Which event would you rather attend?</b>`;
 
         // altering the number of people

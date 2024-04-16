@@ -78,7 +78,7 @@ export var sexualOrientations = [
     "Prefer not to answer"
 ]
 
-export var politicalAffiliations = [
+export var politicalLeanings = [
     "Apolitical",
     "Conservative",
     "Moderate",

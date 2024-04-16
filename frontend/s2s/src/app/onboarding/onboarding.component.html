@@ -1,36 +1,38 @@
 <main style="margin-bottom: 3rem;">
-    <div *ngIf="this.page > 1 && this.page < maxPage">
-        <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
-        <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
-    </div>
-
+    <!-- Intro message -->
     <div *ngIf="this.page === 1" class="onboardingIntro">
         <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
         <p class="subtitle dark-text"> To make sure we provide the most accurate event recommendations for you, we are going to start you off with a few surveys. None of the information you report in these surveys will be shared without your explicit permission.</p>
         <p class="subtitle dark-text"><b>Press next to get started!</b></p>
     </div>
+
+    <!-- Standard header message -->
+    <div *ngIf="this.page > 1 && this.page < maxPage">
+        <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
+        <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
+    </div>
     
-    
-    <!-- Demographics survey (first page) -->
+    <!-- Demographics survey (second page) -->
     <div *ngIf="this.page === 2" style="width: 100%; ">
         <app-demographics-survey></app-demographics-survey>
     </div>
 
-    <!-- Preferences/Interests survey (second page) -->
+    <!-- Preferences/Interests survey (third page) -->
     <div *ngIf="this.page === 3">
         <app-preferences-survey></app-preferences-survey>
     </div>
 
-    <!-- Event availability survey (third page) -->
+    <!-- Event availability survey (fourth page) -->
     <div *ngIf="this.page === 4">
         <app-event-availability-survey></app-event-availability-survey>
     </div>
 
-    <!-- Scenarios survey (fourth page) -->
+    <!-- Scenarios survey (fifth page) -->
     <div *ngIf="this.page === 5">
         <app-scenarios-survey></app-scenarios-survey>
     </div>
 
+    <!-- Next, previous, and submit buttons -->
     <div class="buttonsDiv">
         <!-- previous button -->
         <div *ngIf="this.page > 1 && this.page <= maxPage">
@@ -48,11 +50,24 @@
 
         <!-- submit button -->
         <div *ngIf="this.page === this.maxPage" class="nextButtonDiv">
-            <button id="submit-button" pButton style="background-color: #15616D; border-color: #15616D;" (click)="onSubmit()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
+            <button id="submit-button" pButton style="background-color: #15616D; border-color: #15616D;" (click)="showConfirmDialog()" class="submitButton" [disabled]="page===5 && userService.scenariosForm.invalid">
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
         </div>
     </div>
+
+    <!-- Confirmation dialog -->
+    <p-dialog header="Are you sure you want to submit your responses?" [(visible)]="showConfirm" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p class="m-0">Although some responses will be editable on your profile, your onboarding reponses will be used to provide you with initial event recommendations.</p>
+        <p class="m-0">If you are satisfied with your responses, press confirm to continue.</p>
+
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" class="p-button-text" (click)="showConfirm = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
+        </div>
+    </p-dialog>
+
+    <!-- Outro message -->
     <div *ngIf="this.page > maxPage" class="onboardingOutro">
         <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
         <p class="subtitle dark-text">You have successfully completed your onboarding. We are building your profile. <br> If you are not automatically redirected, you can follow this link: [INSERT]</p>

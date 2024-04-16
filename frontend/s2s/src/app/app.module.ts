@@ -26,6 +26,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -81,7 +82,8 @@ import { LoaderComponent } from './loader/loader.component';
     ToggleButtonModule,
     HttpClientModule,
     RadioButtonModule,
-    CheckboxModule
+    CheckboxModule,
+    DialogModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),
