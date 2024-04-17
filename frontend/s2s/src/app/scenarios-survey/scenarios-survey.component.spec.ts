@@ -9,6 +9,9 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { ScenariosSurveyComponent } from './scenarios-survey.component';
 import { Hobby } from '../_helpers/preferences';
 
+// helpers
+import { ScenarioInterface } from '../_helpers/scenario';
+
 describe('ScenariosSurveyComponent', () => {
   let component: ScenariosSurveyComponent;
   let fixture: ComponentFixture<ScenariosSurveyComponent>;
@@ -80,4 +83,21 @@ describe('ScenariosSurveyComponent', () => {
     expect(newAlternative).toBeTruthy();
     expect(newAlternative).not.toEqual(variableValue);
   });
+
+  it('should get the correct class for the given scenario ID and value' , () => {
+    const scenario: ScenarioInterface = {
+      id: 1,
+      description: 'Test scenario'
+    }
+    component.userService.scenariosForm.controls["scenario1"].setValue(1);
+    
+    let value = 1;
+    let className = component.getClass(scenario, value);
+    expect(className).toEqual('selected-button');
+
+    value = 2
+    className = component.getClass(scenario, value);
+    expect(className).toEqual('event-button');
+  });
+
 });

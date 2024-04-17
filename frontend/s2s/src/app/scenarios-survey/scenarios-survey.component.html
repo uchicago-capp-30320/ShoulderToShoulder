@@ -18,15 +18,6 @@
                 <label for="scenario{{ scenario.id }}" class="label"> <span [innerHtml]="scenario.description"></span></label>
                 <p><b>Which event would you rather attend?</b><span class="required">*</span></p>
                 <div class="p-field-radiobutton">
-                    <!-- <div class="flex align-items-center">
-                        <p-radioButton [value]="0" formControlName="scenario{{ scenario.id }}" inputId="scenario{{ scenario.id }}" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario{{ scenario.id }}" class="ml-2">Event 1</label>
-                    </div>
-                    
-                    <div class="flex align-items-center">
-                        <p-radioButton [value]="1" formControlName="scenario{{ scenario.id }}" inputId="scenario{{ scenario.id }}" (click)="nextScenario()"></p-radioButton>
-                        <label for="scenario{{ scenario.id }}" class="ml-2">Event 2</label>
-                    </div> -->
                     <div class="flex align-items-center">
                         <button id="event1" pButton type="button" [class]="getClass(scenario, 1)" style="margin-left: 25%" (click)="selectEvent(1, scenario)">Event 1</button>
                         <button id="event2" pButton type="button" [class]="getClass(scenario, 2)" style="margin-left: 15%" (click)="selectEvent(2, scenario)">Event 2</button>
