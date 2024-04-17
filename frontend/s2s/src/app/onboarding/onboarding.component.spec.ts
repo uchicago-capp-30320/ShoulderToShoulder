@@ -19,7 +19,7 @@ import { DemographicsSurveyComponent } from '../demographics-survey/demographics
 import { PreferencesSurveyComponent } from '../preferences-survey/preferences-survey.component';
 import { EventAvailabilitySurveyComponent } from '../event-availability-survey/event-availability-survey.component';
 import { ScenariosSurveyComponent } from '../scenarios-survey/scenarios-survey.component';
-
+import { ProgressIndicatorComponent } from '../progress-indicator/progress-indicator.component';
 
 describe('OnboardingComponent', () => {
   let component: OnboardingComponent;
@@ -33,7 +33,8 @@ describe('OnboardingComponent', () => {
         DemographicsSurveyComponent,
         PreferencesSurveyComponent,
         EventAvailabilitySurveyComponent,
-        ScenariosSurveyComponent
+        ScenariosSurveyComponent,
+        ProgressIndicatorComponent
       ],
       imports: [
         ButtonModule,
