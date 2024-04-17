@@ -23,7 +23,7 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent implements OnInit{
-  page: number = 3;
+  page: number = 4;
   maxPage: number = 4;
   showConfirm: boolean = false;
 

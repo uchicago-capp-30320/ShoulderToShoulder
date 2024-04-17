@@ -48,7 +48,7 @@ export class Scenario {
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${altered}</b>.<br><br> 
-               <b>Which event would you rather attend?</b>`;
+               `
         
         // altering the day
         else if (this.alteredVariable === "day")
@@ -57,7 +57,7 @@ export class Scenario {
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${altered} ${this.time}</b>.<br><br> 
-               <b>Which event would you rather attend?</b>`;
+               `
 
         // altering the number of people
         else if (this.alteredVariable === "numPeople")
@@ -66,7 +66,7 @@ export class Scenario {
                 other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with <b>${altered}</b>
                 other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
-               <b>Which event would you rather attend?</b>`;
+               `
 
         // altering the mileage
         else if (this.alteredVariable === "mileage")
@@ -75,7 +75,7 @@ export class Scenario {
                 other people at a location that is <b>${this.mileage}</b> of you on a ${this.day} ${this.time}.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
                 other people at a location that is <b>${altered}</b> of you on a ${this.day} ${this.time}.<br><br> 
-               <b>Which event would you rather attend?</b>`;
+               `
 
         // error
         else

@@ -228,6 +228,49 @@ export class ScenariosSurveyComponent {
   }
 
   /**
+   * Selects an event for the scenario.
+   * 
+   * @param value The value of the event.
+   * @param scenario The scenario to select the event for.
+   */
+  selectEvent(value: number, scenario: ScenarioInterface) {
+    // update the style of the selected button
+    const unselected = value == 1? 2 : 1;
+    const button = document.getElementById(`event${value}`);
+    const unselectedButton = document.getElementById(`event${unselected}`);
+    
+    if (unselectedButton) {
+      unselectedButton.classList.remove('selected-button');
+      unselectedButton.classList.add('event-button');
+    }
+
+    if (button) {
+      button.classList.add('selected-button');
+    }
+
+    // set the form control scenario
+    let controlName = `scenario${scenario.id}Scenario`;
+    this.userService.scenariosForm.controls[controlName].setValue(scenario);
+    
+    let controlNameValue = `scenario${scenario.id}`;
+    this.userService.scenariosForm.controls[controlNameValue].setValue(value);
+
+    console.log(this.userService.scenariosForm.value)
+  }
+
+  /**
+   * Gets the class for the scenario button.
+   * 
+   * @param scenario The scenario to get the class for.
+   * @returns The class for the scenario button.
+   */
+  getClass(scenario: ScenarioInterface, value: number) {
+    let controlName = `scenario${scenario.id}`;
+    let selectedScenario = this.userService.scenariosForm.controls[controlName].value;
+    return selectedScenario === value ? 'selected-button' : 'event-button';
+  }
+
+  /**
    * Submits the scenarios survey form.
    */
   onSubmit() {
