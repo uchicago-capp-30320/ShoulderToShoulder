@@ -17,6 +17,8 @@ describe('UserService', () => {
   it('should initialize the demographic form correctly', () => {
     const form = service.demographicsForm;
     expect(form).toBeTruthy();
+    expect(form.get('groupSimilarity')).toBeTruthy();
+    expect(form.get('groupSimilarityAttrs')).toBeTruthy();
     expect(form.get('ageRange')).toBeTruthy();
     expect(form.get('race')).toBeTruthy();
     expect(form.get('raceDesc')).toBeTruthy();
@@ -40,8 +42,6 @@ describe('UserService', () => {
     expect(form.get('mostInterestedHobbies')).toBeTruthy();
     expect(form.get('leastInterestedHobbies')).toBeTruthy();
     expect(form.get('groupSizes')).toBeTruthy();
-    expect(form.get('groupSimilarity')).toBeTruthy();
-    expect(form.get('groupSimilarityAttrs')).toBeTruthy();
     expect(form.get('eventFrequency')).toBeTruthy();
     expect(form.get('eventNotifications')).toBeTruthy();
     expect(form.get('distances')).toBeTruthy();

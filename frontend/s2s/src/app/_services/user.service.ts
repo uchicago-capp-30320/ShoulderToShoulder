@@ -10,6 +10,8 @@ export class UserService {
 
   // onboarding forms
   public demographicsForm: FormGroup = this.fb.group({
+    groupSimilarity: new FormControl('', Validators.required),
+    groupSimilarityAttrs: new FormControl([], Validators.required),
     ageRange: new FormControl(''),
     race: new FormControl(''),
     raceDesc: new FormControl(''),
@@ -36,8 +38,6 @@ export class UserService {
     mostInterestedHobbies: new FormControl([], Validators.required),
     leastInterestedHobbies: new FormControl([]),
     groupSizes: new FormControl([], Validators.required),
-    groupSimilarity: new FormControl('', Validators.required),
-    groupSimilarityAttrs: new FormControl([], Validators.required),
     eventFrequency: new FormControl(''),
     eventNotifications: new FormControl('', Validators.required),
     distances: new FormControl('', Validators.required),

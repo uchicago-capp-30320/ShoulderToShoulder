@@ -70,8 +70,6 @@ describe('PreferencesSurveyComponent', () => {
       state: 'state',
       addressLine1: "addressLine1",
       groupSizes: ['groupSizes'],
-      groupSimilarity: 'groupSimilarity',
-      groupSimilarityAttrs: ['groupSimilarityAttrs'],
       eventFrequency: 'eventFrequency',
       eventNotifications: 'eventNotifications',
       distances: 'distances'
@@ -92,8 +90,6 @@ describe('PreferencesSurveyComponent', () => {
       state: 'state',
       addressLine1: "addressLine1",
       groupSizes: ['groupSizes'],
-      groupSimilarity: 'groupSimilarity',
-      groupSimilarityAttrs: ['groupSimilarityAttrs'],
       eventFrequency: 'eventFrequency',
       eventNotifications: 'eventNotifications',
       distances: 'distances'
@@ -137,8 +133,6 @@ describe('PreferencesSurveyComponent', () => {
       state: 'state',
       addressLine1: "addressLine1",
       groupSizes: ['groupSizes'],
-      groupSimilarity: 'groupSimilarity',
-      groupSimilarityAttrs: ['groupSimilarityAttrs'],
       eventFrequency: 'eventFrequency',
       eventNotifications: 'eventNotifications',
       distances: 'distances'

@@ -10,8 +10,13 @@ import {
   religiousAffiliations, 
   genders, 
   sexualOrientations,
-  politicalLeanings
+  politicalLeanings,
 } from '../_helpers/demographics';
+
+import { 
+  groupSimilarity, 
+  groupSimilarityAttrs 
+} from '../_helpers/preferences';
 
 /**
  * DemographicsSurveyComponent
@@ -31,6 +36,8 @@ import {
   styleUrl: './demographics-survey.component.css'
 })
 export class DemographicsSurveyComponent {
+  groupSimilarity = groupSimilarity;
+  groupSimilarityAttrs = groupSimilarityAttrs;
   ageRanges = ageRanges;
   races = races;
   religiousAffiliations = religiousAffiliations;

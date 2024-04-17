@@ -2,7 +2,12 @@
     <!-- Intro message -->
     <div *ngIf="this.page === 0" class="onboardingIntro">
         <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
-        <p class="subtitle dark-text"> To make sure we provide the most accurate event recommendations for you, we are going to start you off with a few surveys. None of the information you report in these surveys will be shared without your explicit permission.</p>
+        <p class="subtitle dark-text"> 
+            To make sure we provide the most accurate event recommendations for you, we are going to start you off with a few surveys. None of the information you report in these surveys will be shared without your explicit permission.
+        </p>
+        <p class="subtitle dark-text">
+            The onboarding process will take <b>approximately 10 minutes</b>. If you leave the page, your progress will be saved and you will be able to continue the process when you sign back in.
+        </p>
         <p class="subtitle dark-text"><b>Press next to get started!</b></p>
     </div>
 
@@ -11,17 +16,17 @@
         <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
         <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
     </div>
-    
-    <!-- Demographics survey (First page) -->
-    <div *ngIf="this.page === 1" style="width: 100%; ">
-        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#104C56"></app-progress-indicator>
-        <app-demographics-survey></app-demographics-survey>
-    </div>
 
-    <!-- Preferences/Interests survey (Second page) -->
-    <div *ngIf="this.page === 2">
+    <!-- Preferences/Interests survey (First page) -->
+    <div *ngIf="this.page === 1">
         <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#166A79"></app-progress-indicator>
         <app-preferences-survey></app-preferences-survey>
+    </div>
+
+    <!-- Demographics survey (Second page) -->
+    <div *ngIf="this.page === 2" style="width: 100%; ">
+        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#104C56"></app-progress-indicator>
+        <app-demographics-survey></app-demographics-survey>
     </div>
 
     <!-- Event availability survey (Third page) -->
@@ -47,7 +52,7 @@
         
         <!-- next button -->
         <div *ngIf="this.page < this.maxPage" class="nextButtonDiv">
-            <button id="next-button" pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 2 && userService.preferencesForm.invalid)">
+            <button id="next-button" pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 1 && userService.preferencesForm.invalid || page===2 && userService.demographicsForm.invalid)">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
         </div>
