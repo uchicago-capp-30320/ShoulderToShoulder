@@ -63,12 +63,12 @@ describe('OnboardingComponent', () => {
   });
 
   it('should initialize the page number correctly', () => {
-    expect(component.page).toBe(1);
+    expect(component.page).toBe(0);
   });
 
   it('should correctly increment the page number', () => {
     component.nextPage();
-    expect(component.page).toBe(2);
+    expect(component.page).toBe(1);
   });
 
   it('should correctly decrement the page number', () => {
@@ -77,16 +77,16 @@ describe('OnboardingComponent', () => {
     expect(component.page).toBe(1);
   });
 
-  it('should disable the next button when the user preferences form is invalid and page is 3', () => {
-    component.page = 3;
+  it('should disable the next button when the user preferences form is invalid and page is 2', () => {
+    component.page = 2;
     component.userService.preferencesForm.setErrors({ invalid: true });
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('#next-button')).nativeElement;
     expect(button.disabled).toBeTrue(); // Using toBeTrue for better semantics
   });
 
-  it('should disable the submit button when the user scenario form is invalid and page is 5', () => {
-    component.page = 5;
+  it('should disable the submit button when the user scenario form is invalid and page is 4', () => {
+    component.page = 4;
     component.userService.scenariosForm.setErrors({ invalid: true });
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('#submit-button')).nativeElement;

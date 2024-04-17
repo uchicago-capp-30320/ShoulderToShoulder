@@ -46,6 +46,7 @@ import { PreferencesSurveyComponent } from './preferences-survey/preferences-sur
 import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.component';
 import { EventAvailabilitySurveyComponent } from './event-availability-survey/event-availability-survey.component';
 import { LoaderComponent } from './loader/loader.component';
+import { ProgressIndicatorComponent } from './progress-indicator/progress-indicator.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { LoaderComponent } from './loader/loader.component';
     ScenariosSurveyComponent,
     EventAvailabilitySurveyComponent,
     LoaderComponent,
+    ProgressIndicatorComponent,
   ],
   imports: [
     BrowserModule,
