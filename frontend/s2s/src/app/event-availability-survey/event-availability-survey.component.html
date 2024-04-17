@@ -1,21 +1,24 @@
 <div class="avail-form drop-shadow">
     <h3 class="light-text" style="text-align: center">Event Availability</h3>
-    <p class="light-text subtitle">Please use these forms to indicate what days and times throughout the week your would <b>prefer</b> to attend a Shoulder To Shoulder event. <br>This can be edited later.</p>
+    <p class="light-text subtitle">Please use these forms to indicate what days and times throughout the week your would <b>prefer</b> to attend a Shoulder To Shoulder event.</p>
+    <p class="light-text subtitle">This can be edited later.</p>
 </div>
 
 <div class="avail-form drop-shadow">
     <h4 class="light-text">General Availability Shortcuts</h4>
-    <p class="light-text" style="margin: 0rem;">Use these shortcuts to quickly set your general availability for weekdays and weekends.</p>
+    <p class="light-text subtitle2" style="margin: 0rem;">Use these shortcuts to quickly set your general availability for weekdays and weekends.</p>
     <form [formGroup]="generalAvailabilityForm" class="general-availability">
+        <!-- weekday shortcuts -->
         <div class="light-text" style="margin-right: 30%">
-            <p class="light-text" style="text-align: center; font-size: 18px"><b>Weekdays</b></p>
+            <p class="light-text" style="text-align: center; font-size: 18px; margin-bottom: 0;"><b>Weekdays</b></p>
             <div style="margin-left: 0%" *ngFor="let controlLabel of weekdayFormControlLabelMapList">
                 <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekdayTimes()" [disabled]="getWeekdayDisabledState(controlLabel.control)"></p-checkbox><br>
             </div>
         </div>
 
+        <!-- weekend shortcuts -->
         <div class="light-text" >
-            <p class="light-text" style="text-align: center; font-size: 18px"><b>Weekends</b></p>
+            <p class="light-text" style="text-align: center; font-size: 18px; margin-bottom: 0;"><b>Weekends</b></p>
             <div style="margin-left: 0%" *ngFor="let controlLabel of weekendFormControlLabelMapList">
                 <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekendTimes()" [disabled]="getWeekendDisabledState(controlLabel.control)"></p-checkbox><br>            
             </div>
@@ -25,7 +28,7 @@
 
 <div class="avail-form drop-shadow">
     <h4 class="light-text">Specific Availability</h4>
-    <p class="light-text">Use this form to edit your preferred availability for specific days and times.</p>
+    <p class="light-text subtitle2" style="margin: 0rem;">Use this form to edit your preferred availability for specific days and times.</p>
     <form [formGroup]="this.userService.eventAvailabilityForm" (ngSubmit)="onSubmit()" class="form-container">
         <div class="field" *ngFor="let day of days">
             <label for="{{ day.toLowerCase() }}Times" class="label"><b>{{ day }}s</b></label>
