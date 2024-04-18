@@ -104,22 +104,10 @@ describe('UserService', () => {
   it('should initialize the scenarios form correctly', () => {
     const form = service.scenariosForm;
     expect(form).toBeTruthy();
-    expect(form.get('scenario1')).toBeTruthy();
-    expect(form.get('scenario1Scenario')).toBeTruthy();
-    expect(form.get('scenario2')).toBeTruthy();
-    expect(form.get('scenario2Scenario')).toBeTruthy();
-    expect(form.get('scenario3')).toBeTruthy();
-    expect(form.get('scenario3Scenario')).toBeTruthy();
-    expect(form.get('scenario4')).toBeTruthy();
-    expect(form.get('scenario4Scenario')).toBeTruthy();
-    expect(form.get('scenario5')).toBeTruthy();
-    expect(form.get('scenario5Scenario')).toBeTruthy();
-    expect(form.get('scenario6')).toBeTruthy();
-    expect(form.get('scenario6Scenario')).toBeTruthy();
-    expect(form.get('scenario7')).toBeTruthy();
-    expect(form.get('scenario7Scenario')).toBeTruthy();
-    expect(form.get('scenario8')).toBeTruthy();
-    expect(form.get('scenario8Scenario')).toBeTruthy();
+    for (let i = 1; i <= 8; i++) {
+      expect(form.get(`scenario${i}`)).toBeTruthy();
+      expect(form.get(`scenario${i}Choice`)).toBeTruthy();
+    }
   });
 
   it('should be invalid when input is invalid - scenarios form, scenario1', () => {
@@ -128,10 +116,10 @@ describe('UserService', () => {
     expect(form.get('scenario1')?.valid).toBeFalsy();
   });
 
-  it('should be invalid when input is invalid - scenarios form, scenario1Scenario', () => {
+  it('should be invalid when input is invalid - scenarios form, scenario1Choice', () => {
     const form = service.scenariosForm;
-    form.get('scenario1Scenario')?.setValue(undefined);
-    expect(form.get('scenario1Scenario')?.valid).toBeFalsy();
+    form.get('scenario1Choice')?.setValue(undefined);
+    expect(form.get('scenario1Choice')?.valid).toBeFalsy();
   });
 
   it('should be invalid when input is invalid - scenarios form, scenario2', () => {

@@ -54,7 +54,9 @@
         <div 
             *ngIf="this.page < this.maxPage" 
             class="nextButtonDiv" 
-            (mouseover)="highlightInvalidFields($event)" 
+            (click)="highlightInvalidFields($event)" 
+            (keypress)="highlightInvalidFields($event)"
+            [attr.aria-disabled]="true"
             >
             <button 
                 id="next-button" 
@@ -68,7 +70,13 @@
         </div>
 
         <!-- submit button -->
-        <div *ngIf="this.page === this.maxPage" class="nextButtonDiv">
+        <div 
+            *ngIf="this.page === this.maxPage" 
+            class="nextButtonDiv"
+            (click)="highlightInvalidFields($event)" 
+            (keypress)="highlightInvalidFields($event)"
+            [attr.aria-disabled]="true"
+        >
             <button id="submit-button" pButton style="background-color: #15616D; border-color: #15616D;" (click)="showConfirmDialog()" class="submitButton" [disabled]="page===4 && userService.scenariosForm.invalid">
                 <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
             </button>
@@ -76,8 +84,8 @@
     </div>
 
     <!-- Invalid Dialog -->
-    <p-dialog header="Invalid Fields" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-        <p class="m-0">Please fill out all required fields before proceeding.</p>
+    <p-dialog header="Required Fields Missing" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p class="m-0">{{ invalidDialogMessage }}</p>
         <div class="p-d-flex p-jc-end">
             <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
         </div>

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { PrimeNGConfig } from "primeng/api"; 
 
 // services
 import { UserService } from '../_services/user.service';
+import { formControlFieldMap } from '../_helpers/preferences';
 
 /**
  * OnboardingComponent
@@ -23,10 +25,11 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent implements OnInit{
-  page: number = 2;
+  page: number = 0;
   maxPage: number = 4;
   showConfirm: boolean = false;
   showInvalidDialog: boolean = false;
+  invalidDialogMessage: string = "Please fill out all required fields.";
 
   constructor(
     public userService: UserService,
@@ -64,22 +67,37 @@ export class OnboardingComponent implements OnInit{
     });
   }
 
+  /**
+   * Highlights invalid fields on the current page.
+   * 
+   * @param event The click event.
+   */
   highlightInvalidFields(event: any) {
+    // map the page number to the form
+    let pageFormMap: { [index: number]: FormGroup} = {
+      1: this.userService.preferencesForm,
+      2: this.userService.demographicsForm,
+      3: this.userService.eventAvailabilityForm,
+      4: this.userService.scenariosForm
+    }
+
+    // if the button is disabled, the form is invalid
     if (event.target.querySelector('button').disabled){
-      if (this.page == 1) {
-        this.userService.preferencesForm.markAllAsTouched();
-        this.showInvalidDialog = this.userService.preferencesForm.invalid ? true : false;
-      } else if (this.page == 2) {
-        this.userService.demographicsForm.markAllAsTouched();
-        console.log(this.userService.demographicsForm)
-        this.showInvalidDialog = this.userService.demographicsForm.invalid ? true : false;
-      } else if (this.page == 3) {
-        this.userService.eventAvailabilityForm.markAllAsTouched();
-        this.showInvalidDialog = this.userService.eventAvailabilityForm.invalid ? true : false;
-      } else if (this.page == 4) {
-        this.userService.scenariosForm.markAllAsTouched();
-        this.showInvalidDialog = this.userService.scenariosForm.invalid ? true : false;
-      } 
+      let form = pageFormMap[this.page];
+      form.markAllAsTouched();
+      this.showInvalidDialog = form.invalid ? true : false;
+      this.invalidDialogMessage += " The following fields are missing values: "
+
+      // get the missing fields
+      let missingFields = [];
+      for (let control in form.controls) {
+        let formControl = form.controls[control]
+        if (formControl.invalid) {
+          missingFields.push(formControlFieldMap[control]);
+        }
+      }
+
+      this.invalidDialogMessage += missingFields.join(", ");
     }
   }
 

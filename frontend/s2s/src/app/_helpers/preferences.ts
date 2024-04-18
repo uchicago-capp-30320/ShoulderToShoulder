@@ -184,3 +184,59 @@ export var days = [
 export var minMileage = 0;
 export var maxMileage1 = 10;
 export var maxMileage2 = 50;
+
+export var formControlFieldMap: { [index: string]: string } = {
+    // Preferences
+    'zipCode': 'Zip Code',
+    'city': 'City',
+    'state': 'State',
+    'addressLine1': 'Address Line 1',
+    'mostInterestedHobbies': 'Most Interested Hobbies',
+    'leastInterestedHobbies': 'Least Interested Hobbies',
+    'groupSizes': 'Group Sizes',
+    'eventFrequency': 'Event Frequency',
+    'eventNotifications': 'Event Notifications',
+    'distances': 'Distances',
+
+    // Demographics
+    'groupSimilarity': 'Group Similarity',
+    'groupSimilarityAttrs': 'Group Similarity Attributes',
+    'ageRange': 'Age Range',
+    'race': 'Race',
+    'raceDesc': 'Race Description',
+    'gender': 'Gender',
+    'genderDesc': 'Gender Description',
+    'sexualOrientation': 'Sexual Orientation',
+    'sexualOrientationDesc': 'Sexual Orientation Description',
+    'religiousAffiliation': 'Religious Affiliation',
+    'religiousAffiliationDesc': 'Religious Affiliation Description',
+    'politicalLeaning': 'Political Leaning',
+    'politicalLeaningDesc': 'Political Leaning Description',
+
+    // Event Availability
+    'mondayTimes': 'Monday Times',
+    'tuesdayTimes': 'Tuesday Times',
+    'wednesdayTimes': 'Wednesday Times',
+    'thursdayTimes': 'Thursday Times',
+    'fridayTimes': 'Friday Times',
+    'saturdayTimes': 'Saturday Times',
+    'sundayTimes': 'Sunday Times',
+
+    // Scenarios
+    'scenario1': 'Scenario 1',
+    'scenario1Choice': 'Scenario 1 Choice',
+    'scenario2': 'Scenario 2',
+    'scenario2Choice': 'Scenario 2 Choice',
+    'scenario3': 'Scenario 3',
+    'scenario3Choice': 'Scenario 3 Choice',
+    'scenario4': 'Scenario 4',
+    'scenario4Choice': 'Scenario 4 Choice',
+    'scenario5': 'Scenario 5',
+    'scenario5Choice': 'Scenario 5 Choice',
+    'scenario6': 'Scenario 6',
+    'scenario6Choice': 'Scenario 6 Choice',
+    'scenario7': 'Scenario 7',
+    'scenario7Choice': 'Scenario 7 Choice',
+    'scenario8': 'Scenario 8',
+    'scenario8Choice': 'Scenario 8 Choice'
+};

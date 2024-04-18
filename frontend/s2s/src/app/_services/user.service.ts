@@ -55,21 +55,21 @@ export class UserService {
 
   public scenariosForm: FormGroup = this.fb.group({
     scenario1: new FormControl(undefined, Validators.required),
-    scenario1Scenario: new FormControl(undefined, Validators.required),
+    scenario1Choice: new FormControl(undefined, Validators.required),
     scenario2: new FormControl(undefined, Validators.required),
-    scenario2Scenario: new FormControl(undefined, Validators.required),
+    scenario2Choice: new FormControl(undefined, Validators.required),
     scenario3: new FormControl(undefined, Validators.required),
-    scenario3Scenario: new FormControl(undefined, Validators.required),
+    scenario3Choice: new FormControl(undefined, Validators.required),
     scenario4: new FormControl(undefined, Validators.required),
-    scenario4Scenario: new FormControl(undefined, Validators.required),
+    scenario4Choice: new FormControl(undefined, Validators.required),
     scenario5: new FormControl(undefined, Validators.required),
-    scenario5Scenario: new FormControl(undefined, Validators.required),
+    scenario5Choice: new FormControl(undefined, Validators.required),
     scenario6: new FormControl(undefined, Validators.required),
-    scenario6Scenario: new FormControl(undefined, Validators.required),
+    scenario6Choice: new FormControl(undefined, Validators.required),
     scenario7: new FormControl(undefined, Validators.required),
-    scenario7Scenario: new FormControl(undefined, Validators.required),
+    scenario7Choice: new FormControl(undefined, Validators.required),
     scenario8: new FormControl(undefined, Validators.required),
-    scenario8Scenario: new FormControl(undefined, Validators.required),
+    scenario8Choice: new FormControl(undefined, Validators.required),
   });
 
   onboarded: boolean = false;

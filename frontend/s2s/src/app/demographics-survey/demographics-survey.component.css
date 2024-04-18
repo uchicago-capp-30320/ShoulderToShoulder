@@ -45,6 +45,7 @@
 
 .p-error {
     text-align: left;
+    color: rgb(255, 150, 150)
 }
 
 .required {

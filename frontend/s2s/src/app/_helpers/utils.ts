@@ -45,3 +45,25 @@ export function shuffleArray(arr: any[]) {
 
   return shuffled;
 }
+
+/**
+ * Split a string at the first digit and capitalize the first letter of the prefix.
+ * 
+ * @param input The input string.
+ * @returns The formatted string.
+ */
+export function splitString(input: string): string {
+  const index = input.search(/\d/);  // Find the index of the first digit
+  if (index === -1) {
+      return input;  // Return the original input if no digits are found
+  }
+
+  // Split the string at the found index
+  let prefix = input.substring(0, index);
+  let suffix = input.substring(index);
+
+  // Capitalize the first letter of the prefix if necessary
+  prefix = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+
+  return prefix + " " + suffix;
+}

@@ -113,16 +113,13 @@ export class PreferencesSurveyComponent implements OnInit {
    */
   getZipCodeData() {
     // extracts the zipcode from the form
-    console.log("Getting zip code data")
     let zipCode = this.userService.preferencesForm.get('zipCode')?.value
     if (zipCode == null) {
-      console.log("Zip code is null")
       return
     }
 
     // builds the API request URL
     let requestUrl = this.zipCodeApiUrl + `&codes=${zipCode}&apikey=${this.zipCodeApiKey}`
-    console.log(requestUrl)
 
     // sets city and state based on the response from the USPS API
     this.http.get(requestUrl, { responseType: 'json' }).subscribe(data => {
@@ -141,15 +138,12 @@ export class PreferencesSurveyComponent implements OnInit {
 
         // extracts city and state from the zipcode
         let result = (data as any).results[zipCode][0]
-        console.log(result)
         let city = result.city
         let state = {label: result.state, value: result.state_code}
 
-        console.log(city, state)
         this.userService.preferencesForm.get('city')?.setValue(city)
         this.userService.preferencesForm.get('state')?.setValue(state)
 
-        console.log(this.userService.preferencesForm.value)
       } catch (error) {
         console.error(error);
       }

@@ -44,19 +44,19 @@
 }
 
 
-.cancelButton {
+.confirmButton {
     background-color: #15616D;
     border-color: #15616D;
     padding: 0.5rem 1rem;
     margin-right: 1rem;
 }
 
-.cancelButton:hover {
+.confirmButton:hover {
     background-color: #15616db3;
     border-color: #15616db3;
 }
 
-.confirmButton {
+.cancelButton {
     background: none;
     border-color: #15616D;
     color: #15616D;
@@ -64,7 +64,7 @@
     margin-right: 1rem;
 }
 
-.confirmButton:hover {
+.cancelButton:hover {
     background-color: #15616d21;
     border-color: #15616db3;
 }

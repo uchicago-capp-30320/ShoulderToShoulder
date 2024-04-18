@@ -164,7 +164,7 @@ export class ScenariosSurveyComponent {
       );
 
       // set the form control scenario
-      let controlName = `scenario${i + 1}Scenario`;
+      let controlName = `scenario${i + 1}Choice`;
       this.userService.scenariosForm.controls[controlName].setValue(scenario);
     }
   }
@@ -249,13 +249,14 @@ export class ScenariosSurveyComponent {
     }
 
     // set the form control scenario
-    let controlName = `scenario${scenario.id}Scenario`;
+    let controlName = `scenario${scenario.id}Choice`;
     this.userService.scenariosForm.controls[controlName].setValue(scenario);
     
     let controlNameValue = `scenario${scenario.id}`;
     this.userService.scenariosForm.controls[controlNameValue].setValue(value);
 
-    console.log(this.userService.scenariosForm.value)
+    // move to the next scenario
+    this.nextScenario();
   }
 
   /**

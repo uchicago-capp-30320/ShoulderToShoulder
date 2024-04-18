@@ -26,20 +26,4 @@
             </div>
         </div>      
     </form>
-
-    <span class="buttons">
-        <!-- previous button -->
-        <div class="prevButtonDiv">
-            <button pButton (click)="prevScenario()" class="prevButton" [disabled]="this.scenarioNum === 1" title="Previous Scenario">
-                <span class="ui-button-text ui-clickable dark-text"><i class="pi pi-arrow-left"></i> Previous Scenario</span>
-            </button>
-        </div>
-
-        <!-- next button -->
-        <div class="nextButtonDiv">
-            <button pButton (click)="nextScenario()" class="nextButton" [disabled]="this.scenarioNum >= this.maxScenarios" title="Next Scenario">
-                <span class="ui-button-text ui-clickable">Next Scenario <i class="pi pi-arrow-right"></i></span>
-            </button>
-        </div>
-    </span>
 </div>

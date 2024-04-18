@@ -67,7 +67,6 @@ export class SignupPageComponent {
    */
   resetForm() {
     this.signupForm.reset();
-    console.log(this.signupForm)
   }
 
   /**
@@ -95,13 +94,13 @@ export class SignupPageComponent {
    *       registration.
    */
   onSubmit() {
-    // Check if the form is valid
+    // check if the form is valid
     if (this.signupForm.invalid) {
-      // If the form is invalid, mark all fields as touched
+
+      // if the form is invalid, mark all fields as touched
       this.signupForm.markAllAsTouched();
       return;
     }
-    console.log(this.signupForm.value);
     this.resetForm();
 
     this.route.navigate(['/onboarding']);
