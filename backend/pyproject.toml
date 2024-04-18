@@ -1,21 +1,48 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = "poetry environment for all of the backend"
+authors = ["First Last <email@gmail.com>"]
+readme = "README.md"
 
-[tool.black]
-line-length = 88
-include = '\.pyi?$'
-exclude = '''
-    /(
-        \.eggs/|
-        \.git/|
-        \.hg/|
-        \.mypy_cache/|
-        \.tox/|
-        \.venv/|
-        \.svn/|
-        _build/|
-        buck-out/|
-        build/|
-        dist/
-    )|
-    ^docs/|
-    ^examples/
-'''
+[tool.poetry.dependencies]
+python = "^3.12.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+jax = "^0.4.26"
+optax = "^0.2.2"
+matplotlib = "^3.8.4"
+tqdm = "^4.66.2"
+
+black = "^23.11.0"
+bzip2 = "^1.0.8"
+ca-certificates = "^2024.3.11"
+click = "^8.1.7"
+expat = "^2.5.0"
+isort = "^5.9.3"
+libcxx = "^14.0.6"
+libffi = "^3.4.4"
+mypy_extensions = "^1.0.0"
+ncurses = "^6.4"
+openssl = "^3.0.13"
+packaging = "^23.2"
+pathspec = "^0.10.3"
+pip = "^23.3.1"
+platformdirs = "^3.10.0"
+pre-commit = "3.7.0"
+readline = "^8.2"
+setuptools = "^68.2.2"
+sqlite3 = "^3.39.5"
+tk = "^0.1.0"
+tzdata = "^2024.1"
+wheel = "^0.41.2"
+python-xz = "0.5.0"
+asgiref = "3.8.1"
+django = "5.0.3"
+djangorestframework = "3.15.1"
+sqlparse = "0.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
