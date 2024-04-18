@@ -55,3 +55,8 @@ class AvialabilitySerializer:
     class Meta:
         model = Availability
         fields = "__all__"
+
+class ChoiceSerializer:
+    class Meta:
+        model = Choice
+        fields = "__all__"

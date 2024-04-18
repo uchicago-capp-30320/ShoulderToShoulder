@@ -46,6 +46,15 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
     serializer_class = AvialabilitySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class ChoiceViewSet(viewsets.ModelViewSet):
+    queryset = Choice.objects.all()
+    serializer_class = ChoiceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.GET
+        return Choice.objects.filter(user=user)
+
 # class ScenariosiewSet(viewsets.ModelViewSet):
 #     queryset = Scenarios.objects.all()
 #     serializer_class = ScenariosSerializer
