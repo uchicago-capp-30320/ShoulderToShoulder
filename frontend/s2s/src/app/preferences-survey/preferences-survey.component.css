@@ -1,15 +1,15 @@
-.signup-form {
-    background-color: #15616D;
-    width: 60%;
+.pref-form {
+    background-color: #104C56;
+    width: 70%;
     height: auto;
     padding: 2rem;
     border-radius: 20px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     margin-bottom: 2rem;
     margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .form-container {
@@ -22,6 +22,7 @@
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
+    justify-content: left;
 }
 
 .label {
@@ -44,9 +45,18 @@
 
 .p-error {
     text-align: left;
+    color: rgb(255, 133, 133);
 }
 
 .required {
-    color: rgb(231, 75, 75);
+    color: rgb(255, 133, 133);
 }
 
+h3 {
+    text-align: center;
+    margin: 0;
+}
+
+p {
+    text-align: center;
+}

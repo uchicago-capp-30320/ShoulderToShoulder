@@ -23,7 +23,14 @@ main {
 }
 
 .subtitle {
-    font-size: 1em;
+    font-size: 1.1rem;
+    font-weight: light;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.subtitle2 {
+    font-size: 1.05rem;
     font-weight: light;
     text-align: center;
     margin-bottom: 1rem;
@@ -36,7 +43,25 @@ main {
 h1 {
     font-size: 3rem;
     text-align: center;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 2rem;
+    text-align: center;
     margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+h4 {
+    font-size: 1.25rem;
+    text-align: center;
+    margin: 0px;
 }
 
 .dark-text {
@@ -56,17 +81,29 @@ a {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.wrap-shadow {
+    box-shadow: 4px 4px 8px 4px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+
+}
+
 .p-tooltip-text {
-    font: 15px;
+    font: 12px;
   }
   
 .p-tooltip .p-tooltip-text {
-background-color: #FF7D00;
 color: green ;
 }
   
 
 .customtooltip.p-tooltip .p-tooltip-text {
-background-color: #FF7D00 ;
 color: #FFECD1 ;
+}
+
+.is-invalid {
+    border-color: rgb(255, 61, 61);
+    border-width: 2px;
+    background-color: rgb(253, 209, 209);
 }
