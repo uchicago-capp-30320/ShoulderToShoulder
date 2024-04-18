@@ -23,9 +23,10 @@ import { UserService } from '../_services/user.service';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent implements OnInit{
-  page: number = 0;
+  page: number = 2;
   maxPage: number = 4;
   showConfirm: boolean = false;
+  showInvalidDialog: boolean = false;
 
   constructor(
     public userService: UserService,
@@ -52,6 +53,9 @@ export class OnboardingComponent implements OnInit{
     this.page--;
   }
 
+  /**
+   * Scrolls to the top of the page.
+   */
   goToTop() {
     window.scrollTo({ 
       top: 0, 
@@ -60,6 +64,28 @@ export class OnboardingComponent implements OnInit{
     });
   }
 
+  highlightInvalidFields(event: any) {
+    if (event.target.querySelector('button').disabled){
+      if (this.page == 1) {
+        this.userService.preferencesForm.markAllAsTouched();
+        this.showInvalidDialog = this.userService.preferencesForm.invalid ? true : false;
+      } else if (this.page == 2) {
+        this.userService.demographicsForm.markAllAsTouched();
+        console.log(this.userService.demographicsForm)
+        this.showInvalidDialog = this.userService.demographicsForm.invalid ? true : false;
+      } else if (this.page == 3) {
+        this.userService.eventAvailabilityForm.markAllAsTouched();
+        this.showInvalidDialog = this.userService.eventAvailabilityForm.invalid ? true : false;
+      } else if (this.page == 4) {
+        this.userService.scenariosForm.markAllAsTouched();
+        this.showInvalidDialog = this.userService.scenariosForm.invalid ? true : false;
+      } 
+    }
+  }
+
+  /**
+   * Shows the confirmation dialog.
+   */
   showConfirmDialog() {
     this.showConfirm = true;
   }

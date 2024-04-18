@@ -7,12 +7,14 @@
             <!-- group similarity -->
             <div class="field">
                 <label for="groupSimilarity" class="label">When you are looking for friends, how similar do you want them to be to you?<span class="required">*</span></label>
+                <small class="p-error" *ngIf="this.userService.demographicsForm.get('groupSimilarity')?.touched && this.userService.demographicsForm.get('groupSimilarity')?.invalid">This field is required</small>
                 <p-dropdown [options]="groupSimilarity" formControlName="groupSimilarity" placeholder="Choose a similarity metric" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
             </div>
 
             <!-- group similarity attributes -->
             <div class="field">
                 <label for="groupSimilarityAttrs" class="label">On which attributes do you generally want your friends to be similar to you?<span class="required">*</span></label>
+                <small class="p-error" *ngIf="this.userService.demographicsForm.get('groupSimilarityAttrs')?.touched && this.userService.demographicsForm.get('groupSimilarityAttrs')?.invalid">This field is required</small>
                 <p-multiSelect [options]="groupSimilarityAttrs" formControlName="groupSimilarityAttrs" placeholder="Choose a similarity attribute" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
             </div>
         </form>
@@ -31,7 +33,7 @@
                 <p-dropdown 
                     [options]="ageRanges" 
                     formControlName="ageRange" 
-                    placeholder="35-44" 
+                    placeholder="Select an age range" 
                     autoWidth="false" 
                     [style]="{'width':'100%'}"
                     tooltipStyleClass="customtooltip" 
@@ -46,7 +48,7 @@
                 <p-multiSelect 
                     [options]="races" 
                     formControlName="race" 
-                    placeholder="Asian" 
+                    placeholder="Select a race or an ethnicity" 
                     [maxSelectedLabels]="3" 
                     autoWidth="false" 
                     [style]="{'width':'100%'}"
@@ -62,11 +64,11 @@
                 <input 
                     type="text" 
                     pInputText 
-                    placeholder="e.g., I am east Asian and am from Japan." 
                     formControlName="raceDesc"
                     tooltipStyleClass="customtooltip" 
                     tooltipEvent="hover" 
                     pTooltip="This field is optional" 
+                    placeholder="Additional description"
                 >
             </div>
 
@@ -76,7 +78,7 @@
                 <p-multiSelect 
                     [options]="genders" 
                     formControlName="gender" 
-                    placeholder="Woman, Transgender" 
+                    placeholder="Select a gender" 
                     [maxSelectedLabels]="3" 
                     autoWidth="false" 
                     [style]="{'width':'100%'}"
@@ -92,11 +94,11 @@
                 <input 
                     type="text" 
                     pInputText 
-                    placeholder="e.g., I am a transgender woman." 
                     formControlName="genderDesc"
                     tooltipStyleClass="customtooltip" 
                     tooltipEvent="hover" 
                     pTooltip="This field is optional" 
+                    placeholder="Additional description"
                 >
             </div>
 
@@ -121,11 +123,11 @@
                 <input 
                     type="text" 
                     pInputText 
-                    placeholder="e.g., I am a woman who is attracted to men." 
                     formControlName="sexualOrientationDesc"
                     tooltipStyleClass="customtooltip" 
                     tooltipEvent="hover" 
                     pTooltip="This field is optional" 
+                    placeholder="Additional description"
                 >
             </div>
 
@@ -151,11 +153,11 @@
                 <input 
                     type="text" 
                     pInputText 
-                    placeholder="e.g., I am spiritual but not religious." 
                     formControlName="religiousAffiliationDesc"
                     tooltipStyleClass="customtooltip" 
                     tooltipEvent="hover" 
                     pTooltip="This field is optional" 
+                    placeholder="Additional description"
                 >
             </div>
 
@@ -180,11 +182,11 @@
                 <input 
                     type="text" 
                     pInputText 
-                    placeholder="e.g., I am a liberal democrat." 
                     formControlName="politicalLeaningDesc"
                     tooltipStyleClass="customtooltip" 
                     tooltipEvent="hover" 
                     pTooltip="This field is optional" 
+                    placeholder="Additional description"
                 >
             </div>
     </form>

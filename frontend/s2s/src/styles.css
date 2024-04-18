@@ -101,3 +101,9 @@ color: green ;
 .customtooltip.p-tooltip .p-tooltip-text {
 color: #FFECD1 ;
 }
+
+.is-invalid {
+    border-color: rgb(255, 61, 61);
+    border-width: 2px;
+    background-color: rgb(253, 209, 209);
+}

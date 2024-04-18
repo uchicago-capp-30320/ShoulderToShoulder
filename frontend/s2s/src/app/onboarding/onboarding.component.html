@@ -51,8 +51,18 @@
         </div>
         
         <!-- next button -->
-        <div *ngIf="this.page < this.maxPage" class="nextButtonDiv">
-            <button id="next-button" pButton (click)="nextPage()" class="nextButton" [disabled]="(page === 1 && userService.preferencesForm.invalid || page===2 && userService.demographicsForm.invalid)">
+        <div 
+            *ngIf="this.page < this.maxPage" 
+            class="nextButtonDiv" 
+            (mouseover)="highlightInvalidFields($event)" 
+            >
+            <button 
+                id="next-button" 
+                pButton 
+                (click)="nextPage()" 
+                class="nextButton" 
+                (focus)="highlightInvalidFields($event)"
+                [disabled]="(page === 1 && userService.preferencesForm.invalid || page===2 && userService.demographicsForm.invalid)">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
         </div>
@@ -64,6 +74,14 @@
             </button>
         </div>
     </div>
+
+    <!-- Invalid Dialog -->
+    <p-dialog header="Invalid Fields" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p class="m-0">Please fill out all required fields before proceeding.</p>
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
+        </div>
+    </p-dialog>
 
     <!-- Confirmation dialog -->
     <p-dialog header="Are you sure you want to submit your responses?" [(visible)]="showConfirm" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">

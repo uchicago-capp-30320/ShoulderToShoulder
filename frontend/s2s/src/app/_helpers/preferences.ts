@@ -103,7 +103,6 @@ export var eventNotifications = [
     'Email Only',
     'Email and Text',
     'Text Only',
-    'No preference'
 ];
 
 export var distances = [
