@@ -3,18 +3,21 @@ from django.db import models
 
 class Hobby(models.Model):
     class HobbyType(models.TextChoices):
-        SPORT = "Sport"
-        MUSIC = "Music"
-        ART = "Art"
-        LITERATURE = "Literature"
-        SCIENCE = "Science"
-        TECHNOLOGY = "Technology"
-        CRAFTS = "Crafts"
-        GAMING = "Gaming"
-        COOKING = "Cooking"
-        OTHER = "Other"
+        CRAFTS = 'Arts & Crafts',
+        BOOKS = 'Books',
+        COOKING = 'Cooking/Baking',
+        EXERCISE = 'Exercise',
+        GAMING = 'Gaming',
+        MUSIC = 'Music',
+        MOVIES = 'Movies',
+        OUTDOORS = 'Outdoor Activities',
+        ART = 'Art',
+        TRAVEL = 'Travel',
+        WRITING = 'Writing',
+        OTHER = 'Other'
 
     name = models.CharField(max_length=100)
+    scenario_format = models.CharField(max_length=100, null=True, blank=True, default=None)
     max_participants = models.IntegerField()
     type = models.CharField(
         max_length=20,

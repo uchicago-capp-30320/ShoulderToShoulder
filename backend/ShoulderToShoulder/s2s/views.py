@@ -46,7 +46,7 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
     serializer_class = AvialabilitySerializer
     permission_classes = [permissions.IsAuthenticated]
 
-class ScenariosiewSet(viewsets.ModelViewSet):
-    queryset = Scenarios.objects.all()
-    serializer_class = ScenariosSerializer
-    permission_classes = [permissions.IsAuthenticated]    
+# class ScenariosiewSet(viewsets.ModelViewSet):
+#     queryset = Scenarios.objects.all()
+#     serializer_class = ScenariosSerializer
+#     permission_classes = [permissions.IsAuthenticated]    

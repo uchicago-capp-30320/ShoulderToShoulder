@@ -1,5 +1,6 @@
-from djando.db import models
-from django.contrib.auth.models import User
+from django.db import models
+# from django.contrib.auth.models import User
+from .user import User
 from .calendar import Calendar
 
 class Availability(models.Model):
@@ -16,7 +17,7 @@ class Availability(models.Model):
     available = models.BooleanField(default = False)
 
     class Meta:
-        unique_together = ('user', 'calendar')
+        unique_together = ('user_id', 'calendar_id')
 
     def __str__(self) -> str:
         return 'User {}, Calendar {}, Available {}'.format(self.user_id, self.calendar_id, self.available)

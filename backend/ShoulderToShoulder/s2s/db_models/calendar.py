@@ -1,4 +1,4 @@
-from djando.db import models
+from django.db import models
 
 class Calendar(models.Model):
     """

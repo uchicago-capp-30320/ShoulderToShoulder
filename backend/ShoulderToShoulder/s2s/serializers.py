@@ -44,10 +44,10 @@ class OnbordingSerializer:
         fields = "__all__"
 
 
-class ScenariosSerializer:   
-    class Meta:
-        model = Scenario
-        fields = "__all__"    
+# class ScenariosSerializer:   
+#     class Meta:
+#         model = Scenarios
+#         fields = "__all__"    
        
        
         

@@ -6,4 +6,4 @@ from s2s.db_models.user import User
 from s2s.db_models.group import Group
 from s2s.db_models.useradmin import UserAdmin
 from s2s.db_models.onboarding import Onboarding
-from s2s.db_models.scenarios import Scenarios
+# from s2s.db_models.scenarios import Scenarios
