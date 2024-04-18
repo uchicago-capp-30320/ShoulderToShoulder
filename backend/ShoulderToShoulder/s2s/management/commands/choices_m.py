@@ -29,13 +29,15 @@ class Command(BaseCommand):
                         if len(row[i]) > 0:
                             choices[column].append(row[i]) 
 
-            # bulk create choices
-            choices_obj = Choice(
-                            categories=choices
-                        )
-            Choice.objects.bulk_create([choices_obj])
+            # create or update Choice record
+            if Choice.objects.exists():
+                choice_obj = Choice.objects.first()
+                choice_obj.categories = choices
+                choice_obj.save()
+            else:
+                Choice.objects.create(categories=choices)
             self.stdout.write(self.style.SUCCESS('Data imported successfully'))
         
-        except Exception:
-            self.stdout.write(self.style.ERROR('Error importing data'))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR('Error importing data: {}'.format(str(e))))
 
