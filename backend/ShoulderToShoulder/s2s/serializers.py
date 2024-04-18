@@ -38,7 +38,7 @@ class CalendarSerializer(ModelSerializer):
         fields = "__all__"
 
 
-class OnbordingSerializer:
+class OnbordingSerializer(ModelSerializer):
     class Meta:
         model = Onboarding
         fields = "__all__"
@@ -51,12 +51,12 @@ class OnbordingSerializer:
        
        
         
-class AvialabilitySerializer:
+class AvialabilitySerializer(ModelSerializer):
     class Meta:
         model = Availability
         fields = "__all__"
 
-class ChoiceSerializer:
+class ChoiceSerializer(ModelSerializer):
     class Meta:
         model = Choice
         fields = "__all__"
