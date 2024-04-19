@@ -7,7 +7,10 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button'; 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-
+import { HttpClientModule } from '@angular/common/http';
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 // primeng
 import { MenubarModule } from 'primeng/menubar';
@@ -17,10 +20,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { TooltipModule } from 'primeng/tooltip';
-const maskConfig: Partial<IConfig> = {
-  validation: false,
-};
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ToastModule } from 'primeng/toast';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -32,8 +40,13 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { AppHeaderComponent } from './app-header/app-header.component';
 import { FooterComponent } from './footer/footer.component';
 import { SignupPageComponent } from './signup-page/signup-page.component';
-
-
+import { OnboardingComponent } from './onboarding/onboarding.component';
+import { DemographicsSurveyComponent } from './demographics-survey/demographics-survey.component';
+import { PreferencesSurveyComponent } from './preferences-survey/preferences-survey.component';
+import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.component';
+import { EventAvailabilitySurveyComponent } from './event-availability-survey/event-availability-survey.component';
+import { LoaderComponent } from './loader/loader.component';
+import { ProgressIndicatorComponent } from './progress-indicator/progress-indicator.component';
 
 @NgModule({
   declarations: [
@@ -43,8 +56,13 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
     AppHeaderComponent,
     FooterComponent,
     SignupPageComponent,
-    // LoginComponent,
-    // LandingComponent
+    OnboardingComponent,
+    DemographicsSurveyComponent,
+    PreferencesSurveyComponent,
+    ScenariosSurveyComponent,
+    EventAvailabilitySurveyComponent,
+    LoaderComponent,
+    ProgressIndicatorComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,7 +80,16 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
     MatTooltipModule,
     MatButtonModule,
     TooltipModule,
-    DividerModule
+    DividerModule,
+    DropdownModule,
+    MultiSelectModule,
+    ToggleButtonModule,
+    HttpClientModule,
+    RadioButtonModule,
+    CheckboxModule,
+    DialogModule,
+    ProgressBarModule,
+    ToastModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

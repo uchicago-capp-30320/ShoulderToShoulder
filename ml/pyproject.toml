@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ml"
+version = "0.1.0"
+description = ""
+authors = ["Darren Colby <dscolby17@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+jax = "^0.4.26"
+optax = "^0.2.2"
+matplotlib = "^3.8.4"
+tqdm = "^4.66.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
