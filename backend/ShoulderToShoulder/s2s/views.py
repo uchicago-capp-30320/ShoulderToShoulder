@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group, User
 from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
+import json
+from django.http import JsonResponse
 
 from .serializers import *
 from .db_models import *
@@ -79,6 +81,48 @@ class ChoiceViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+class CreateUserViewSet(viewsets.ModelViewSet):
+    queryset = None
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        return User.objects.none()
+
+    # POST method to create a new user
+    def post(self, request):
+        # parse data from the POST request
+        data = json.loads(request.body)
+
+        # extract necessary fields
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        password = data.get('password')
+        email = data.get('email')
+        username = data.get('email')
+        phone_number = data.get('phone_number')
+
+        # Validate data (you may want to add more validation here)
+        if not all([first_name, last_name, password, email, username, phone_number]):
+            return JsonResponse({'error': 'Missing required fields'}, status=400)
+
+        # Create the user
+        try:
+            user = User.objects.create_user(
+                first_name=first_name, 
+                last_name=last_name, 
+                password=password, 
+                email=email, 
+                username=username, 
+                phone_number=phone_number
+            )
+            return JsonResponse({'success': f'User created successfully with user ID: {user.id}'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    # GET method not allowed
+    def get(self, request):
+        return JsonResponse({'error': 'GET method not allowed'}, status=405)
 
 # class ScenariosiewSet(viewsets.ModelViewSet):
 #     queryset = Scenarios.objects.all()

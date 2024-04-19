@@ -12,6 +12,7 @@ router.register(r"calendar", views.CalendarViewSet)
 router.register(r"onboarding", views.OnbordingViewSet)
 router.register(r"availability", views.AvailabilityViewSet)
 router.register(r"choices", views.ChoiceViewSet)
+router.register(r"create_user", views.CreateUserViewSet, basename="create_user")
 # router.register(r"scenarios", views.ScenariosiewSet)
 urlpatterns = [
     path("", include(router.urls)),
