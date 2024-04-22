@@ -23,10 +23,6 @@ class Scenarios(models.Model):
         preferes_event2: does participant prefer event 2 over event 1 [0,1]
 
     """
-    ALLOWED_PREFERENCE_VALUES = (
-        (1,),
-        (0,),
-    )
 
     ALLOWED_PARTICIPANT_NUM = (
         ("1-5",),
@@ -66,8 +62,25 @@ class Scenarios(models.Model):
     )
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    ## TODO: Finish building out model
+ 
+    hobby1 = models.CharField(max_length = 20)
+    hobby2 = models.CharField(max_length = 20)
+
+    distance1 = models.CharField(choices=ALLOWED_DISTANCES)
+    distance2 = models.CharField(choices=ALLOWED_DISTANCES)
+
+    num_participants1 = models.CharField(choices=ALLOWED_PARTICIPANT_NUM)
+    num_participants2 = models.CharField(choices=ALLOWED_PARTICIPANT_NUM)
+
+    day_of_week1 = models.CharField(choices=ALLOWED_DAYS)
+    day_of_week2 = models.CharField(choices=ALLOWED_DAYS)
+
+    time_of_day1 = models.CharField(choices=ALLOWED_TOD)
+    time_of_day2 = models.CharField(choices=ALLOWED_TOD)
+
+    prefers_event1 = models.BooleanField()
+    prefers_event2 = models.BooleanField()
 
     def __str__(self) -> str:
-        return 'User: {}'.format(
-            self.user_id)
+        return 'User: {}, Preference for Event1: {}'.format(
+            self.user_id, self.prefers_event1)
