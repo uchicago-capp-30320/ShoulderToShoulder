@@ -1,6 +1,6 @@
 from django.db import models
-from .user import User
-import backend.settings as s2s_settings
+from django.contrib.auth.models import User
+import ShoulderToShoulder.settings as s2s_settings
 
 # https://dev.to/earthcomfy/django-user-profile-3hik
 class Profile(models.Model):

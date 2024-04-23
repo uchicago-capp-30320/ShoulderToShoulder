@@ -16,11 +16,6 @@ class HobbyViewSet(viewsets.ModelViewSet):
     queryset = Hobby.objects.all()
     serializer_class = HobbySerializer
     permission_classes = [permissions.IsAuthenticated]
-    
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -80,7 +75,15 @@ class ChoiceViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-# class ScenariosiewSet(viewsets.ModelViewSet):
-#     queryset = Scenarios.objects.all()
-#     serializer_class = ScenariosSerializer
-#     permission_classes = [permissions.IsAuthenticated]    
+class ScenariosiewSet(viewsets.ModelViewSet):
+    queryset = Scenarios.objects.all()
+    serializer_class = ScenariosSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    
+class ProfilesViewSet(viewsets.ModelViewSet):
+    queryset = Scenarios.objects.all()
+    serializer_class = ScenariosSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    # add functionality for the photos to be added with s3bot 

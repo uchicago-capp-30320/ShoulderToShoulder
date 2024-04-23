@@ -1,6 +1,5 @@
 from django.db import models
-# from django.contrib.auth.models import User
-from .user import User
+from django.contrib.auth.models import User
 
 class Scenarios(models.Model):
     """
@@ -25,40 +24,40 @@ class Scenarios(models.Model):
     """
 
     ALLOWED_PARTICIPANT_NUM = (
-        ("1-5",),
-        ("5-10",),
-        ("10-15",),
-        ("15+",),
+        (0, "1-5"),
+        (1, "5-10"),
+        (2, "10-15"),
+        (3, "15+"),
     )
 
     ALLOWED_DISTANCES = (
-        ("Within 1 mile",),
-        ("Within 5 miles",),
-        ("Within 10 miles",),
-        ("Within 15 miles",),
-        ("Within 20 miles",),
-        ("Within 30 miles",),
-        ("Within 40 miles",),
-        ("Within 50 miles",),
+        (0, "Within 1 mile"),
+        (1, "Within 5 miles"),
+        (2, "Within 10 miles"),
+        (3, "Within 15 miles"),
+        (4, "Within 20 miles"),
+        (5, "Within 30 miles"),
+        (6, "Within 40 miles"),
+        (7, "Within 50 miles"),
     )
 
     ALLOWED_DAYS = (
-        ("Monday",),
-        ("Tuesday",),
-        ("Wednesday",),
-        ("Thursday",),
-        ("Friday",),
-        ("Saturday",),
-        ("Sunday",),
+        (0, "Monday"),
+        (1, "Tuesday"),
+        (2, "Wednesday"),
+        (3, "Thursday"),
+        (4, "Friday"),
+        (5, "Saturday"),
+        (6, "Sunday"),
     )
 
     ALLOWED_TOD = (
-        ("Early morning (5-8a)",),
-        ("Morning (9a-12p)",),
-        ("Afternoon (1-4p)",),
-        ("Evening (5-8p)",),
-        ("Night (9p-12a)",),
-        ("Late night (1-4a)",),
+        (0, "Early morning (5-8a)"),
+        (1, "Morning (9a-12p)"),
+        (2, "Afternoon (1-4p)"),
+        (3, "Evening (5-8p)"),
+        (4, "Night (9p-12a)"),
+        (5, "Late night (1-4a)"),
     )
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

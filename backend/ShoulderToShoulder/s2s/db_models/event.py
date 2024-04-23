@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
 
 class Event(models.Model):
     """
@@ -22,7 +23,7 @@ class Event(models.Model):
     max_attendees = models.IntegerField(validators=[
             MaxValueValidator(2),
             MinValueValidator(50)])
-    attendees = models.ManyToManyField('User')
+    attendees = models.ManyToManyField(User)
     
     def __str__(self) -> str:
         return 'Event name {}, DateTime {}, Duration {}, Address {}, Max Attendees {}, Attendees {}'.format(
