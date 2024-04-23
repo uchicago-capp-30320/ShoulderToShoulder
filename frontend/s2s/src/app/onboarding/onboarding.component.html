@@ -1,0 +1,112 @@
+<main style="margin-bottom: 3rem;">
+    <!-- Intro message -->
+    <div *ngIf="this.page === 0" class="onboardingIntro">
+        <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
+        <p class="subtitle dark-text"> 
+            To make sure we provide the most accurate event recommendations for you, we are going to start you off with a few surveys. None of the information you report in these surveys will be shared without your explicit permission.
+        </p>
+        <p class="subtitle dark-text">
+            The onboarding process will take <b>approximately 10 minutes</b>. If you leave the page, your progress will be saved and you will be able to continue the process when you sign back in.
+        </p>
+        <p class="subtitle dark-text"><b>Press next to get started!</b></p>
+    </div>
+
+    <!-- Standard header message -->
+    <div *ngIf="this.page > 0 && this.page < maxPage" style="width: 100%">
+        <h2 class="dark-text">Welcome to Shoulder to Shoulder!</h2>
+        <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
+    </div>
+
+    <!-- Preferences/Interests survey (First page) -->
+    <div *ngIf="this.page === 1">
+        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#104C56"></app-progress-indicator>
+        <app-preferences-survey></app-preferences-survey>
+    </div>
+
+    <!-- Demographics survey (Second page) -->
+    <div *ngIf="this.page === 2" style="width: 100%; ">
+        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#166A79"></app-progress-indicator>
+        <app-demographics-survey></app-demographics-survey>
+    </div>
+
+    <!-- Event availability survey (Third page) -->
+    <div *ngIf="this.page === 3">
+        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#1C889B"></app-progress-indicator>
+        <app-event-availability-survey></app-event-availability-survey>
+    </div>
+
+    <!-- Scenarios survey (Fourth page) -->
+    <div *ngIf="this.page === 4">
+        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#23A6BE" textColor="#001524"></app-progress-indicator>
+        <app-scenarios-survey></app-scenarios-survey>
+    </div>
+
+    <!-- Next, previous, and submit buttons -->
+    <div class="buttonsDiv">
+        <!-- previous button -->
+        <div *ngIf="this.page > 0 && this.page <= maxPage">
+            <button id="previous-button" pButton (click)="previousPage()" class="prevButton">
+                <span class="ui-button-text ui-clickable"><i class="pi pi-arrow-left"></i> Previous Page</span>
+            </button>
+        </div>
+        
+        <!-- next button -->
+        <div 
+            *ngIf="this.page < this.maxPage" 
+            class="nextButtonDiv" 
+            (click)="highlightInvalidFields($event)" 
+            (keypress)="highlightInvalidFields($event)"
+            [attr.aria-disabled]="true"
+            >
+            <button 
+                id="next-button" 
+                pButton 
+                (click)="nextPage()" 
+                class="nextButton" 
+                (focus)="highlightInvalidFields($event)"
+                [disabled]="(page === 1 && userService.preferencesForm.invalid || page===2 && userService.demographicsForm.invalid)">
+                <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
+            </button>
+        </div>
+
+        <!-- submit button -->
+        <div 
+            *ngIf="this.page === this.maxPage" 
+            class="nextButtonDiv"
+            (click)="highlightInvalidFields($event)" 
+            (keypress)="highlightInvalidFields($event)"
+            [attr.aria-disabled]="true"
+        >
+            <button id="submit-button" pButton style="background-color: #15616D; border-color: #15616D;" (click)="showConfirmDialog()" class="submitButton" [disabled]="page===4 && userService.scenariosForm.invalid">
+                <span class="ui-button-text ui-clickable">Submit <i class="pi pi-check-square"></i></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Invalid Dialog -->
+    <p-dialog header="Required Fields Missing" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p class="m-0">{{ invalidDialogMessage }}</p>
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
+        </div>
+    </p-dialog>
+
+    <!-- Confirmation dialog -->
+    <p-dialog header="Are you sure you want to submit your responses?" [(visible)]="showConfirm" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p class="m-0">Although some responses will be editable on your profile, your onboarding reponses will be used to provide you with initial event recommendations.</p>
+        <p class="m-0">If you are satisfied with your responses, press confirm to continue.</p>
+
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" class="p-button-text" (click)="showConfirm = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
+        </div>
+    </p-dialog>
+
+    <!-- Outro message -->
+    <div *ngIf="this.page > maxPage" class="onboardingOutro">
+        <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
+        <p class="subtitle dark-text">You have successfully completed the onboarding process. We are building your profile. <br> If you are not automatically redirected, you can follow this link: [INSERT]</p>
+        <app-loader></app-loader>
+    </div>
+</main>
+
