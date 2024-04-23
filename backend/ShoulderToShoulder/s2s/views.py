@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group, User
 from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
+import environ
+import requests
 
 from .serializers import *
 from .db_models import *
@@ -86,4 +88,15 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     serializer_class = ScenariosSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-    # add functionality for the photos to be added with s3bot 
+    # add functionality for the photos to be added with s3 boto3
+
+class ZipCodeViewSet(viewsets.ModelViewSet):
+    endpoint = "https://api.zipcodestack.com/v1/search?country=us"
+    api_key = environ.Env().str('ZIPCODE_API_KEY')
+
+    def list(self, request, *args, **kwargs):
+        zip_code = request.query_params.get('zip_code')
+        if zip_code:
+            response = requests.get(f"{self.endpoint}&codes={zip_code}&apikey={self.api_key}")
+            return Response(response.json())
+        return Response({"error": "Zip code not provided"}, status=400)
