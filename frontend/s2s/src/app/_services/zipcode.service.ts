@@ -20,7 +20,7 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class ZipcodeService {
-  enpoint = 'zipcodes';
+  enpoint = this.apiService.BASE_API_URL + '/zipcodes';
   httpOptions = {
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export class ZipcodeService {
    */
   getZipcode(zipcode: string) {
     return this.http.get(
-      `${this.apiService.BASE_API_URL}/${this.enpoint}/?zip_code=${zipcode}`,
+      `${this.enpoint}/?zip_code=${zipcode}`,
       this.httpOptions,);
   }
 }

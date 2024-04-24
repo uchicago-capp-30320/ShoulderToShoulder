@@ -133,7 +133,7 @@
             <label for="distances" class="label">What is the maximum distance you would want your events to be from you?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('distances')?.touched && this.userService.preferencesForm.get('distances')?.invalid">This field is required</small>
             <p-dropdown 
-                [options]="distances" 
+                [options]="choices['distance']" 
                 formControlName="distances" 
                 placeholder="Choose a distance" 
                 autoWidth="false" 
@@ -147,7 +147,7 @@
             <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('groupSizes')?.touched && this.userService.preferencesForm.get('groupSizes')?.invalid">This field is required</small>
             <p-multiSelect 
-                [options]="groupSizes" 
+                [options]="choices['group_size']" 
                 formControlName="groupSizes" 
                 placeholder="Choose a group size" 
                 autoWidth="false" 
@@ -162,7 +162,7 @@
             <label for="eventFrequency" class="label">How often do you want to attend Shoulder to Shoulder events?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('eventFrequency')?.touched && this.userService.preferencesForm.get('eventFrequency')?.invalid">This field is required</small>
             <p-dropdown 
-                [options]="eventFrequency" 
+                [options]="choices['event_frequency']" 
                 formControlName="eventFrequency" 
                 placeholder="Choose an event frequency" 
                 autoWidth="false" 
@@ -176,7 +176,7 @@
             <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('eventNotifications')?.touched && this.userService.preferencesForm.get('eventNotifications')?.invalid">This field is required</small>
             <p-dropdown 
-                [options]="eventNotifications" 
+                [options]="choices['notification_method']" 
                 formControlName="eventNotifications" 
                 placeholder="Choose a notification method" 
                 autoWidth="false" 

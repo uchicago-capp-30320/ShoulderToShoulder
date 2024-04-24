@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+
+// services
 import { HobbyService } from '../_services/hobbies.service';
 import { UserService } from '../_services/user.service';
 import { ZipcodeService } from '../_services/zipcode.service';
-import { 
-  groupSizes, 
-  groupSimilarity, 
-  groupSimilarityAttrs, 
-  eventFrequency, 
-  eventNotifications, 
-  distances
-} from '../_helpers/preferences';
+import { ChoicesService } from '../_services/choices.service';
+
+// helpers
 import { states } from '../_helpers/location';
 
 @Component({
@@ -21,19 +18,26 @@ export class PreferencesSurveyComponent implements OnInit {
   hobbies: string[] = [];
   leastInterestedHobbies: string[] = [];
   mostInterestedHobbies: string[] = [];
-  groupSizes = groupSizes;
-  groupSimilarity = groupSimilarity;
-  groupSimilarityAttrs = groupSimilarityAttrs;
-  eventFrequency = eventFrequency;
-  eventNotifications = eventNotifications;
   states = states;
-  distances = distances;
   zipcodeInvalid = false;
+  choices: { [index: string]: any[]; } = {};
 
-  constructor(public userService: UserService, private hobbyService: HobbyService, private zipCodeService: ZipcodeService) {}
+  constructor(
+    public userService: UserService, 
+    private hobbyService: HobbyService, 
+    private zipCodeService: ZipcodeService,
+    private choicesService: ChoicesService,
+  ) {}
 
   ngOnInit() {
     this.getHobbyArray();
+    this.getChoices();
+  }
+
+  getChoices() {
+    this.choicesService.choices.subscribe(choices => {
+      this.choices = choices;
+    });
   }
 
   getHobbyArray() {

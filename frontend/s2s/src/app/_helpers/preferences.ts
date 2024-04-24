@@ -1,59 +1,6 @@
 // Description: Contains the preferences for the user to select from.
 import { labelValueInt, labelValueIntArray } from "./constants";
 
-export var groupSizes = [
-    '1-5',
-    '6-10',
-    '10-15',
-    '15+',
-    'No preference'
-];
-
-export var groupSimilarity = [
-    'Completely dissimilar',
-    'Moderately dissimilar',
-    'Neutral',
-    'Moderately similar',
-    'Completely similar',
-    'No preference'
-];
-
-export var groupSimilarityAttrs = [
-    "Age range",
-    "Gender",
-    "Political Leaning",
-    "Race or Ethnicity",
-    "Religious Affiliation",
-    "Sexual Orientation",
-    "No preference"
-];
-
-export var eventFrequency = [
-    'Twice a week',
-    'Once a week',
-    'Once every two weeks',
-    'Once a month',
-    'Once every three months',
-];
-
-export var eventNotifications = [
-    'Email Only',
-    'Email and Text',
-    'Text Only',
-];
-
-export var distances = [
-    'Within 1 mile',
-    'Within 5 miles',
-    'Within 10 miles',
-    'Within 15 miles',
-    'Within 20 miles',
-    'Within 30 miles',
-    'Within 40 miles',
-    'Within 50 miles',
-    'No preference'
-]
-
 export var timeCategories: string[] = [
     "Early morning (5-8a)",
     "Morning (9a-12p)",
@@ -117,10 +64,6 @@ export var days = [
     'Saturday',
     'Sunday'
 ];
-
-export var minMileage = 0;
-export var maxMileage1 = 10;
-export var maxMileage2 = 50;
 
 export var formControlFieldMap: { [index: string]: string } = {
     // Preferences

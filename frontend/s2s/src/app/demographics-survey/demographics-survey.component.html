@@ -8,14 +8,14 @@
             <div class="field">
                 <label for="groupSimilarity" class="label">When you are looking for friends, how similar do you want them to be to you?<span class="required">*</span></label>
                 <small class="p-error" *ngIf="this.userService.demographicsForm.get('groupSimilarity')?.touched && this.userService.demographicsForm.get('groupSimilarity')?.invalid">This field is required</small>
-                <p-dropdown [options]="groupSimilarity" formControlName="groupSimilarity" placeholder="Choose a similarity metric" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
+                <p-dropdown [options]="choices['similarity_metric']" formControlName="groupSimilarity" placeholder="Choose a similarity metric" autoWidth="false" [style]="{'width':'100%'}" [required]="true"></p-dropdown>
             </div>
 
             <!-- group similarity attributes -->
             <div class="field">
                 <label for="groupSimilarityAttrs" class="label">On which attributes do you generally want your friends to be similar to you?<span class="required">*</span></label>
                 <small class="p-error" *ngIf="this.userService.demographicsForm.get('groupSimilarityAttrs')?.touched && this.userService.demographicsForm.get('groupSimilarityAttrs')?.invalid">This field is required</small>
-                <p-multiSelect [options]="groupSimilarityAttrs" formControlName="groupSimilarityAttrs" placeholder="Choose a similarity attribute" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
+                <p-multiSelect [options]="choices['similarity_attribute']" formControlName="groupSimilarityAttrs" placeholder="Choose a similarity attribute" autoWidth="false" [style]="{'width':'100%'}" [maxSelectedLabels]="3" required></p-multiSelect>
             </div>
         </form>
     </div>
@@ -31,7 +31,7 @@
             <div class="field">
                 <label for="ageRange" class="label">Age Range</label>
                 <p-dropdown 
-                    [options]="ageRanges" 
+                    [options]="choices['age_range']" 
                     formControlName="ageRange" 
                     placeholder="Select an age range" 
                     autoWidth="false" 
@@ -46,7 +46,7 @@
             <div class="field">
                 <label for="race" class="label">Race or Ethnicity</label>
                 <p-multiSelect 
-                    [options]="races" 
+                    [options]="choices['race_ethnicity']" 
                     formControlName="race" 
                     placeholder="Select a race or an ethnicity" 
                     [maxSelectedLabels]="3" 
@@ -76,7 +76,7 @@
             <div class="field">
                 <label for="gender" class="label">Gender</label>
                 <p-multiSelect 
-                    [options]="genders" 
+                    [options]="choices['gender']" 
                     formControlName="gender" 
                     placeholder="Select a gender" 
                     [maxSelectedLabels]="3" 
@@ -106,7 +106,7 @@
             <div class="field">
                 <label for="sexualOrientation" class="label">Sexual Orientation</label>
                 <p-dropdown 
-                    [options]="sexualOrientations" 
+                    [options]="choices['sexual_orientation']" 
                     formControlName="sexualOrientation" 
                     placeholder="Select a sexual orientation" 
                     autoWidth="false" 
@@ -135,7 +135,7 @@
             <div class="field">
                 <label for="religiousAffiliation" class="label">Religious Affiliation</label>
                 <p-dropdown 
-                    [options]="religiousAffiliations" 
+                    [options]="choices['religion']" 
                     formControlName="religiousAffiliation" 
                     placeholder="Select a religious affiliation" 
                     autoWidth="false" 
@@ -165,7 +165,7 @@
             <div class="field">
                 <label for="politicalLeaning" class="label">Political Leaning</label>
                 <p-dropdown 
-                    [options]="politicalLeanings" 
+                    [options]="choices['politics']" 
                     formControlName="politicalLeaning" 
                     placeholder="Select a political affiliation" 
                     autoWidth="false" 

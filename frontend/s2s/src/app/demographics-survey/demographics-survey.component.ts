@@ -1,22 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 // services
 import { UserService } from '../_services/user.service';
-
-// contants and helpers
-import { 
-  ageRanges, 
-  races, 
-  religiousAffiliations, 
-  genders, 
-  sexualOrientations,
-  politicalLeanings,
-} from '../_helpers/demographics';
-
-import { 
-  groupSimilarity, 
-  groupSimilarityAttrs 
-} from '../_helpers/preferences';
+import { ChoicesService } from '../_services/choices.service';
 
 /**
  * DemographicsSurveyComponent
@@ -35,19 +21,26 @@ import {
   templateUrl: './demographics-survey.component.html',
   styleUrl: './demographics-survey.component.css'
 })
-export class DemographicsSurveyComponent {
-  groupSimilarity = groupSimilarity;
-  groupSimilarityAttrs = groupSimilarityAttrs;
-  ageRanges = ageRanges;
-  races = races;
-  religiousAffiliations = religiousAffiliations;
-  genders = genders;
-  sexualOrientations = sexualOrientations;
-  politicalLeanings = politicalLeanings;
+export class DemographicsSurveyComponent implements OnInit {
+  choices: { [index: string]: any[]; } = {};
 
   constructor(
-    public userService: UserService
+    public userService: UserService,
+    private choicesService: ChoicesService,
     ) {
+  }
+
+  ngOnInit() {
+    this.getChoices();
+  }
+
+  /**
+   * Gets the choices from the choices service.
+   */
+  getChoices() {
+    this.choicesService.choices.subscribe(choices => {
+      this.choices = choices;
+    });
   }
 
   /**
