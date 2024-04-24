@@ -108,7 +108,7 @@ export class PreferencesSurveyComponent implements OnInit {
 
   /**
    * Extracts the zip code data from the preferences form and sends a request to 
-   * the USPS API to get the city and state data.
+   * the zipcode API endpoint to get the city and state data.
    * 
    * @returns null if the zip code is null.
    * 
@@ -120,10 +120,7 @@ export class PreferencesSurveyComponent implements OnInit {
       return
     }
 
-    // builds the API request URL
-    let requestUrl = this.zipCodeApiUrl + `&codes=${zipCode}&apikey=${this.zipCodeApiKey}`
-
-    // sets city and state based on the response from the USPS API
+    // sets city and state based on the response from the API
     this.zipCodeService.getZipcode(zipCode).subscribe(data => {
 
       // ZipCodeStack response is JSON - need to parse
