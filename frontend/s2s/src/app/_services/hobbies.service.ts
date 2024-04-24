@@ -2,8 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { switchMap, catchError, concatMap } from 'rxjs/operators';
 import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+
+// services
 import { ApiService } from './api.service';
-import { Hobby, HobbyResponse } from '../_data-models/hobby';
+
+// models
+import { Hobby, HobbyResponse } from '../_models/hobby';
+
+// helpers
 import { getRandomSubset } from '../_helpers/utils';
 
 @Injectable({

@@ -1,6 +1,6 @@
 // Description: Contains the scenario class.
 
-import { Hobby } from "./../_data-models/hobby"
+import { Hobby } from "../_models/hobby"
 import { SafeHtml } from "@angular/platform-browser";
 
 /**

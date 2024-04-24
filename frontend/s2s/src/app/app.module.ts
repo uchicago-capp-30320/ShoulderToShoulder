@@ -50,7 +50,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { ProgressIndicatorComponent } from './progress-indicator/progress-indicator.component';
 
 // HTTP interceptor
-import { AuthInterceptor } from './_services/interceptor';
+import { AuthInterceptor } from './_helpers/interceptor';
 
 @NgModule({
   declarations: [

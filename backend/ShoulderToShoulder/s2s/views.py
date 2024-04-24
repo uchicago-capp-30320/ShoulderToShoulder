@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from s2s.permissions import HasAppToken
 import environ
 import requests
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 
 from .serializers import *
 from .db_models import *
@@ -101,3 +103,57 @@ class ZipCodeViewSet(viewsets.ModelViewSet):
             response = requests.get(f"{self.endpoint}&codes={zip_code}&apikey={self.api_key}")
             return Response(response.json())
         return Response({"error": "Zip code not provided"}, status=400)
+    
+class CreateUserViewSet(viewsets.ModelViewSet):
+    permission_classes = [HasAppToken]
+
+    def create(self, request):
+        request.data['username'] = request.data['email']
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+
+            # Return user information and tokens
+            data = {
+                'user': serializer.data,
+                'access_token': access_token,
+                'refresh_token': refresh_token
+            }
+
+            return Response(data, status=201)
+        return Response(serializer.errors, status=400)
+
+class LoginViewSet(viewsets.ViewSet):
+    permission_classes = [HasAppToken]
+    
+    def login(self, request):
+        if request.method == 'POST':
+            username = request.data.get('username')
+            password = request.data.get('password')
+
+            user = authenticate(username=username, password=password)
+
+            if user:
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                refresh_token = str(refresh)
+                return Response({
+                    'user': {
+                        'id': user.id,
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'username': user.username,
+                        'email': user.email
+                    },
+                    'access_token': access_token,
+                    'refresh_token': refresh_token
+                })
+            else:
+                return Response({'error': 'Invalid credentials'}, status=401)
+        else:
+            return Response({'error': 'Method not allowed'}, status=405)

@@ -1,6 +1,14 @@
 import { Component} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError, switchMap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+
+// services
+import { AuthService } from '../_services/auth.service';
+
+// models
+import { UserSignUp } from '../_models/user';
 
 // helpers
 import { StrongPasswordRegx } from '../_helpers/patterns';
@@ -59,7 +67,8 @@ export class SignupPageComponent {
   });
 
   constructor(
-    private route: Router
+    private route: Router,
+    private authService: AuthService
   ) {}
 
   /**
@@ -101,8 +110,26 @@ export class SignupPageComponent {
       this.signupForm.markAllAsTouched();
       return;
     }
-    this.resetForm();
 
-    this.route.navigate(['/onboarding']);
+    // use auth service to sign user up
+    const user: UserSignUp = {
+      first_name: this.getFormControl('firstName')?.value,
+      last_name: this.getFormControl('lastName')?.value,
+      email: this.getFormControl('email')?.value,
+      password: this.getFormControl('password')?.value,
+    };
+
+    console.log(user)
+
+    // sign up user
+    this.authService.signup(user).pipe(
+      catchError((error) => {
+        console.error('Error signing up user:', error);
+        return EMPTY;
+      }),
+    ).subscribe(() => {
+      this.resetForm();
+      this.route.navigate(['/onboarding']);
+    });
   }
 }

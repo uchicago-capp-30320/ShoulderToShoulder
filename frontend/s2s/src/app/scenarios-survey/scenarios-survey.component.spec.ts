@@ -7,7 +7,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 
 // components and services
 import { ScenariosSurveyComponent } from './scenarios-survey.component';
-import { Hobby } from '../_data-models/hobby';
+import { Hobby } from '../_models/hobby';
 
 // helpers
 import { ScenarioInterface } from '../_helpers/scenario';
