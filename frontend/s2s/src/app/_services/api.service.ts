@@ -8,9 +8,8 @@ export class ApiService {
   public BASE_API_URL = environment.api;
   public BASE_S2S_URL = environment.s2s;
   public production = environment.production;
+  public appToken = environment.appToken;
 
   constructor() {
-    this.BASE_API_URL = environment.api;
-    this.BASE_S2S_URL = environment.s2s;
    }
 }

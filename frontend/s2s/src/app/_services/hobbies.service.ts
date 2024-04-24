@@ -1,46 +1,59 @@
 import { Injectable } from '@angular/core';
-
-// helpers
-import { 
-  Hobby,
-  hobbies, 
-} from '../_helpers/preferences';
-
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { switchMap, catchError, concatMap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+import { ApiService } from './api.service';
+import { Hobby, HobbyResponse } from '../_data-models/hobby';
 import { getRandomSubset } from '../_helpers/utils';
 
-/**
- * A service that handles the preferences and scenarios forms.
- * 
- * This service generates random hobbies, times, and mileages for the preferences
- * and scenarios forms. It also handles the exclusion of certain times for the
- * scenarios form.
- */
 @Injectable({
   providedIn: 'root'
 })
 export class HobbyService {
+  endpoint = `${this.apiService.BASE_API_URL}/hobbies/`;
+  httpOptions = {
+    headers: new HttpHeaders({'Content-Type': 'application/json'})
+  };
+  private hobbySubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
+  public hobbies: Observable<Hobby[]> = this.hobbySubject.asObservable();
   preferencesHobbies: Hobby[] = [];
   scenarioHobbies: Hobby[] = [];
 
-  constructor() {
-    this.generateHobbies();
-   }
+  constructor(private apiService: ApiService, private http: HttpClient) {
+    this.loadAllHobbies();
+  }
 
-  /**
-   * Generates random hobby lists for the preferences and scenarios forms.
-   * 
-   * This method pulls 20 random hobbies from the list and assigned it for the
-   * preferences form; it then pulls 20 random hobbies from the list and assigns
-   * it for the scenarios form. The 20 hobbies should not be the same as the 20.
-   */
-  generateHobbies() {
-    // generate random hobbies for the preferences form
+  loadAllHobbies(): void {
+    this.fetchHobbies(this.endpoint).subscribe(hobbies => {
+      this.hobbySubject.next(hobbies);  // Update BehaviorSubject
+      this.generateHobbies(hobbies);   // Pass hobbies directly
+    });
+  }
+
+  private fetchHobbies(url: string): Observable<Hobby[]> {
+    return this.http.get<HobbyResponse>(url, this.httpOptions).pipe(
+      switchMap(response => {
+        const hobbies = response.results;
+        const nextUrl = response.next;
+        return nextUrl ? this.fetchHobbies(nextUrl).pipe(
+          concatMap(nextHobbies => of([...hobbies, ...nextHobbies]))
+        ) : of(hobbies);
+      }),
+      catchError(error => {
+        console.error('Error fetching hobbies:', error);
+        return EMPTY;
+      })
+    );
+  }
+
+  generateHobbies(hobbies: Hobby[]) {
+    // Generate random hobbies for the preferences form
     this.preferencesHobbies = getRandomSubset(hobbies, 20);
 
-    // remove the preferences hobbies from the list
+    // Remove the preferences hobbies from the list
     let remainingHobbies = hobbies.filter(hobby => !this.preferencesHobbies.includes(hobby));
 
-    // generate random hobbies for the scenarios form
+    // Generate random hobbies for the scenarios form
     this.scenarioHobbies = getRandomSubset(remainingHobbies, 20);
   }
 }

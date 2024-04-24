@@ -43,6 +43,7 @@ class Onboarding(models.Model):
     )
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    onboarded = models.BooleanField(default=False)
 
     # preferences
     num_participants = models.CharField(choices = ALLOWED_PARTICIPANT_NUM)

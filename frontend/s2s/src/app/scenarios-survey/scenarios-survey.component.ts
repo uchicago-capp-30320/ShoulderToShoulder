@@ -9,7 +9,7 @@ import { HobbyService } from '../_services/hobbies.service';
 import { Scenario, ScenarioInterface } from '../_helpers/scenario';
 import { days } from '../_helpers/preferences';
 import { getRandomInt } from '../_helpers/utils';
-import { Hobby } from '../_helpers/preferences';
+import { Hobby } from '../_data-models/hobby';
 
 /**
  * ScenariosSurveyComponent

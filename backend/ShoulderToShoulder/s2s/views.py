@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group, User
 from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
+from s2s.permissions import HasAppToken
 import environ
 import requests
 
@@ -17,7 +18,7 @@ def index(request):
 class HobbyViewSet(viewsets.ModelViewSet):
     queryset = Hobby.objects.all()
     serializer_class = HobbySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [HasAppToken]
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -32,7 +33,7 @@ class EventViewSet(viewsets.ModelViewSet):
 class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [HasAppToken]
     
 class OnbordingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
@@ -47,7 +48,7 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
 class ChoiceViewSet(viewsets.ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [HasAppToken]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

@@ -88,6 +88,8 @@
             </label>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('mostInterestedHobbies')?.touched && this.userService.preferencesForm.get('mostInterestedHobbies')?.invalid">This field is required</small>
             <p-multiSelect 
+                [virtualScroll]="true" 
+                [virtualScrollItemSize]="48"
                 [options]="mostInterestedHobbies" 
                 formControlName="mostInterestedHobbies" 
                 placeholder="Choose a hobby" 
@@ -111,6 +113,8 @@
             <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?</label>
             <small class="p-error" *ngIf="this.userService.preferencesForm.get('leastInterestedHobbies')?.touched && this.userService.preferencesForm.get('leastInterestedHobbies')?.invalid">This field is required</small>
             <p-multiSelect 
+                [virtualScroll]="true" 
+                [virtualScrollItemSize]="48"
                 [options]="leastInterestedHobbies" 
                 formControlName="leastInterestedHobbies" 
                 placeholder="Choose a hobby" 

@@ -1,85 +1,47 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-// services
-import { UserService } from '../_services/user.service';  
 import { HobbyService } from '../_services/hobbies.service';
+import { UserService } from '../_services/user.service';
 import { ZipcodeService } from '../_services/zipcode.service';
-
-// helpers
 import { 
   groupSizes, 
   groupSimilarity, 
   groupSimilarityAttrs, 
   eventFrequency, 
-  eventNotifications,
+  eventNotifications, 
   distances
 } from '../_helpers/preferences';
-
 import { states } from '../_helpers/location';
 
-/**
- * Component for the preferences survey form. Also contains the logic for
- * extracting the zip code data from the form and sending a request to the USPS 
- * API.
- * 
- * Example:
- * ```
- * <app-preferences-survey></app-preferences-survey>
- * ```
- * 
- * @see UserService
- * @see HobbyService
- */
 @Component({
   selector: 'app-preferences-survey',
   templateUrl: './preferences-survey.component.html',
-  styleUrl: './preferences-survey.component.css'
+  styleUrls: ['./preferences-survey.component.css']
 })
 export class PreferencesSurveyComponent implements OnInit {
-  // hobby information
-  hobbies!: string[];
-  leastInterestedHobbies!: string[];
-  mostInterestedHobbies!: string[];
-
-  // group information
+  hobbies: string[] = [];
+  leastInterestedHobbies: string[] = [];
+  mostInterestedHobbies: string[] = [];
   groupSizes = groupSizes;
   groupSimilarity = groupSimilarity;
   groupSimilarityAttrs = groupSimilarityAttrs;
-
-  // event information
   eventFrequency = eventFrequency;
   eventNotifications = eventNotifications;
-
-  // location information
   states = states;
   distances = distances;
-  zipCodeApiUrl = "https://api.zipcodestack.com/v1/search?country=us"
-  zipCodeApiKeyFilepath = "assets/api_keys/zipcodestack.txt"
-  zipCodeApiKey: string | null = null;
-  zipcodeInvalid: boolean = false;
+  zipcodeInvalid = false;
 
-  constructor(
-    public userService: UserService,
-    private http: HttpClient,
-    private hobbyService: HobbyService,
-    private zipCodeService: ZipcodeService,
-  ) {
+  constructor(public userService: UserService, private hobbyService: HobbyService, private zipCodeService: ZipcodeService) {}
+
+  ngOnInit() {
     this.getHobbyArray();
   }
 
-  ngOnInit() {
-    this.getZipCodeApiKey()
-  }
-
-  /**
-   * Extracts an array of hobby names from the Hobby[] list. Sets this.hobbies
-   * to the hobby array.
-   */
   getHobbyArray() {
-    this.hobbies = this.hobbyService.preferencesHobbies.map(hobby => hobby.name);
-    this.leastInterestedHobbies = this.hobbies;
-    this.mostInterestedHobbies = this.hobbies;
+    this.hobbyService.hobbies.subscribe(hobbies => {
+      this.hobbies = hobbies.map(hobby => hobby.name);
+      this.leastInterestedHobbies = this.hobbies.slice();
+      this.mostInterestedHobbies = this.hobbies.slice();
+    });
   }
 
   /**
@@ -94,16 +56,6 @@ export class PreferencesSurveyComponent implements OnInit {
    */
   getLeastInterestedHobbiesArray() {
     this.leastInterestedHobbies = this.hobbies.filter(hobby => !this.userService.preferencesForm.get('mostInterestedHobbies')?.value.includes(hobby));
-  }
-
-  /**
-   * Gets the USPS API key from the .txt file.
-   * 
-   */
-  getZipCodeApiKey() {
-    this.http.get(this.zipCodeApiKeyFilepath).subscribe(data => {
-      this.zipCodeApiKey = (data as string);
-    })
   }
 
   /**

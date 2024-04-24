@@ -9,3 +9,6 @@ admin.site.register(Availability)
 admin.site.register(Group)
 admin.site.register(Onboarding)
 admin.site.register(Choice)
+@admin.register(ApplicationToken)
+class ApplicationTokenAdmin(admin.ModelAdmin):
+    list_display = ('name', 'token', 'created_at')

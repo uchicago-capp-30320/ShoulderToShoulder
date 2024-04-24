@@ -7,6 +7,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button'; 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -47,6 +48,9 @@ import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.co
 import { EventAvailabilitySurveyComponent } from './event-availability-survey/event-availability-survey.component';
 import { LoaderComponent } from './loader/loader.component';
 import { ProgressIndicatorComponent } from './progress-indicator/progress-indicator.component';
+
+// HTTP interceptor
+import { AuthInterceptor } from './_services/interceptor';
 
 @NgModule({
   declarations: [
@@ -94,7 +98,8 @@ import { ProgressIndicatorComponent } from './progress-indicator/progress-indica
   providers: [
     provideEnvironmentNgxMask(maskConfig),
     provideAnimationsAsync(),
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
     ],
   bootstrap: [AppComponent]
 })
