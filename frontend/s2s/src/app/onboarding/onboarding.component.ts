@@ -25,7 +25,7 @@ import { formControlFieldMap } from '../_helpers/preferences';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent implements OnInit{
-  page: number = 0;
+  page: number = 1;
   maxPage: number = 4;
   showConfirm: boolean = false;
   showInvalidDialog: boolean = false;

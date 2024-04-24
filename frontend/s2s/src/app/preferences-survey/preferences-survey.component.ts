@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 // services
 import { UserService } from '../_services/user.service';  
 import { HobbyService } from '../_services/hobbies.service';
+import { ZipcodeService } from '../_services/zipcode.service';
 
 // helpers
 import { 
@@ -61,7 +62,8 @@ export class PreferencesSurveyComponent implements OnInit {
   constructor(
     public userService: UserService,
     private http: HttpClient,
-    private HobbyService: HobbyService
+    private hobbyService: HobbyService,
+    private zipCodeService: ZipcodeService,
   ) {
     this.getHobbyArray();
   }
@@ -75,7 +77,7 @@ export class PreferencesSurveyComponent implements OnInit {
    * to the hobby array.
    */
   getHobbyArray() {
-    this.hobbies = this.HobbyService.preferencesHobbies.map(hobby => hobby.name);
+    this.hobbies = this.hobbyService.preferencesHobbies.map(hobby => hobby.name);
     this.leastInterestedHobbies = this.hobbies;
     this.mostInterestedHobbies = this.hobbies;
   }
@@ -122,7 +124,7 @@ export class PreferencesSurveyComponent implements OnInit {
     let requestUrl = this.zipCodeApiUrl + `&codes=${zipCode}&apikey=${this.zipCodeApiKey}`
 
     // sets city and state based on the response from the USPS API
-    this.http.get(requestUrl, { responseType: 'json' }).subscribe(data => {
+    this.zipCodeService.getZipcode(zipCode).subscribe(data => {
 
       // ZipCodeStack response is JSON - need to parse
       try {
