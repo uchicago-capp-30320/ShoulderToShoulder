@@ -4,13 +4,13 @@ A web application to foster community engagement and fight the loneliness pandem
 
 ## Repository Contents
 
-#### `frontend/s2s`
+#### `frontend`
 Directory with our web application's frontend development, which is created to display information and interact with users. Our frontend employs Angular.
 
-#### `backend/ShoulderToShoulder`
-Directory with our web application's backend development. Our backend employs Django with a posgress database. The database contains account information, user data, and event data. The backend development team manages the database, as well as the API endpoints between the database and frontend.
+#### `backend/shoulder` 
+Directory with our web application's backend development. Our backend employs Django with an AWS posgress database. The database contains account information, user data, and event data. The backend development team manages the database, the API endpoints, and involves a machine learning component. 
 
-#### `backend/ml`
+#### `backend/shoulder/ml`
 Directory which contains our web application's machine learning development. Machine learning is used by our application to provide users with recommendations for events to attend.
 
 To generate user recommendations, we employ a deep factorization machine (DeepFM). A DeepFM
@@ -53,23 +53,21 @@ For more information on factorization machines and DeepFMs, see:
 
 #### `frontend`
 
-The frontend employs a conda virtual environment. To create the environment, follow these steps:
+The frontend development does not utilize a virtual environment, but instead requires the installation of nodejs. To install the necessary packages for the first time, follow these steps:
 
 <pre>
 ```
 cd frontend
-conda env create --file environment.yml
-conda activate frontend
-npm install @angular/cli
+pip install nodejs
 npm install
-
-conda deactivate
 ```
 </pre>
 
+This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to work on the frontend development. 
+
 #### `backend`
 
-The backend employs a poetry virtual environment with Python 3.12. To create the environment, follow these steps:
+The backend employs a poetry virtual environment with Python 3.12. To create the environment for the first time, follow these steps:
  
 <pre>
 ```
@@ -77,10 +75,22 @@ cd backend
 poetry shell
 poetry install --no-root
 
+#to exit the environment
 exit
 ```
 </pre>
 
+If you have already created the environment before, you can enter it by following these steps: 
+
+<pre>
+```
+cd backend
+poetry shell
+
+#to exit the environment
+exit 
+```
+</pre>
 
 ## How to use our app
 
@@ -88,9 +98,8 @@ To launch the application, follow these steps:
 
 <pre>
 ```
-cd frontend
-conda activate frontend
-conda deactivate
+cd frontend/s2s
+ng serve
 ```
 </pre>
 
