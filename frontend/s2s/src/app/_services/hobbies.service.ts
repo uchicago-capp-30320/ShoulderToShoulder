@@ -22,8 +22,10 @@ export class HobbyService {
   };
   private hobbySubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
   public hobbies: Observable<Hobby[]> = this.hobbySubject.asObservable();
-  preferencesHobbies: Hobby[] = [];
-  scenarioHobbies: Hobby[] = [];
+  private preferencesHobbiesSubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
+  preferencesHobbies: Observable<Hobby[]> = this.preferencesHobbiesSubject.asObservable();
+  scenarioHobbiesSubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
+  scenarioHobbies: Observable<Hobby[]> = this.scenarioHobbiesSubject.asObservable();
 
   constructor(private apiService: ApiService, private http: HttpClient) {
     this.loadAllHobbies();
@@ -31,8 +33,8 @@ export class HobbyService {
 
   loadAllHobbies(): void {
     this.fetchHobbies(this.endpoint).subscribe(hobbies => {
-      this.hobbySubject.next(hobbies);  // Update BehaviorSubject
-      this.generateHobbies(hobbies);   // Pass hobbies directly
+      this.hobbySubject.next(hobbies);
+      this.generateHobbies(hobbies);
     });
   }
 
@@ -53,13 +55,14 @@ export class HobbyService {
   }
 
   generateHobbies(hobbies: Hobby[]) {
+    console.log(hobbies)
     // Generate random hobbies for the preferences form
-    this.preferencesHobbies = getRandomSubset(hobbies, 20);
+    this.preferencesHobbiesSubject.next(getRandomSubset(hobbies, 20));
 
     // Remove the preferences hobbies from the list
-    let remainingHobbies = hobbies.filter(hobby => !this.preferencesHobbies.includes(hobby));
+    let remainingHobbies = hobbies.filter(hobby => !this.preferencesHobbiesSubject.getValue().includes(hobby));
 
     // Generate random hobbies for the scenarios form
-    this.scenarioHobbies = getRandomSubset(remainingHobbies, 20);
+    this.scenarioHobbiesSubject.next(getRandomSubset(remainingHobbies, 20));
   }
 }

@@ -52,6 +52,7 @@ import { ProgressIndicatorComponent } from './progress-indicator/progress-indica
 // HTTP interceptor
 import { AuthInterceptor } from './_helpers/interceptor';
 import { LogInComponent } from './log-in/log-in.component';
+import { AvailabilityDisplayComponent } from './availability-display/availability-display.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { LogInComponent } from './log-in/log-in.component';
     LoaderComponent,
     ProgressIndicatorComponent,
     LogInComponent,
+    AvailabilityDisplayComponent,
   ],
   imports: [
     BrowserModule,

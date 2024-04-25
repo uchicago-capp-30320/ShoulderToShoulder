@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
+// services
+import { CalendarService } from './calendar.service';
+
 // helpers
 import { NumberRegx } from '../_helpers/patterns';
 
@@ -74,6 +77,16 @@ export class OnboardingService {
   onboarded: boolean = false;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public calendarService: CalendarService
   ) { }
+
+  submitAvailabilityForm(): void {
+    this.calendarService.updateAvailability(this.calendarService.userAvailability).subscribe(
+      response => {
+        console.log(response)
+      }
+    )
+    console.log(this.calendarService.userAvailability)
+  }
 }

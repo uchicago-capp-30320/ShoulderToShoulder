@@ -26,7 +26,7 @@
     </form>
 </div>
 
-<div class="avail-form drop-shadow">
+<!-- <div class="avail-form drop-shadow">
     <h4 class="light-text">Specific Availability</h4>
     <p class="light-text subtitle2" style="margin-top: 0rem;">Use this form to edit your preferred availability for specific days and times.</p>
     <form [formGroup]="this.onboardingService.eventAvailabilityForm" (ngSubmit)="onSubmit()" class="form-container">
@@ -35,4 +35,6 @@
             <p-multiSelect [options]="availableTimes" optionLabels="label" formControlName="{{ day.toLowerCase() }}Times" placeholder="Choose a time" [maxSelectedLabels]="3" autoWidth="false" [style]="{'width':'100%'}" defaultValue="Unavailable"></p-multiSelect>
         </div>
     </form>
-</div>
+</div> -->
+
+<app-availability-display></app-availability-display>

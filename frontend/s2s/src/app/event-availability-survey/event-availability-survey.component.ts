@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 // services
 import { OnboardingService } from '../_services/onboarding.service';
+import { CalendarService } from '../_services/calendar.service';
 
 // helpers
-import { availableTimes, days, timeCategoryMap } from '../_helpers/preferences';
+import { availableTimes, timeCategoryMap } from '../_helpers/preferences';
+import { daysOfTheWeek } from '../_models/calendar';
 
 /**
  * EventAvailabilitySurveyComponent
@@ -29,7 +31,6 @@ import { availableTimes, days, timeCategoryMap } from '../_helpers/preferences';
 export class EventAvailabilitySurveyComponent {
   availableTimes = availableTimes;
   timeCategoryMap = timeCategoryMap;
-  days = days;
 
   // general availability form
   generalAvailabilityForm: FormGroup = this.fb.group({
@@ -95,7 +96,8 @@ export class EventAvailabilitySurveyComponent {
 
   constructor(
     public onboardingService: OnboardingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private calendarService: CalendarService
   ) {}
 
   /**
@@ -150,23 +152,21 @@ export class EventAvailabilitySurveyComponent {
    */
   addTimeRange(timeRange: string, days: string[]) {
     let times = this.timeCategoryMap[timeRange];
+    for (let time of times) {
+      if (time === 0) {
+        continue;
+      }
       for (let day of days) {
-        // get the current availability for the day
-        let currentTimes = this.onboardingService.eventAvailabilityForm.value[day];
+        let timeSlot = this.calendarService.userAvailability[time - 1];
+        let currentTimeAvailability = timeSlot.days;
+        console.log(day)
+        console.log(daysOfTheWeek.indexOf(day))
+        currentTimeAvailability[daysOfTheWeek.indexOf(day)] = true;
 
-        // remove the unavailable time
-        currentTimes = currentTimes.filter((time: number) => time !== 0);
-
-        // add these times to the current availability
-        times.forEach((time: number) => {
-          if (!currentTimes.includes(time)) {
-            currentTimes.push(time);
-          }
-        });
-
-        // update the availability for the day
-        this.onboardingService.eventAvailabilityForm.controls[day].setValue(currentTimes);
-      } 
+        // update the availability
+        this.calendarService.userAvailability[time - 1].days = currentTimeAvailability;
+      }
+    }
   }
 
   /**
@@ -178,20 +178,19 @@ export class EventAvailabilitySurveyComponent {
    */
   removeTimeRange(timeRange: string, days: string[]) {
     let times = this.timeCategoryMap[timeRange];
-    let currentTimes: number[] = [];
-    for (let day of days) {
-      // get the current availability for the day
-      let currentTimes = this.onboardingService.eventAvailabilityForm.value[day];
+    for (let time of times) {
+      if (time === 0) {
+        continue;
+      }
+      for (let day of days) {
+        let timeSlot = this.calendarService.userAvailability[time - 1];
+        let currentTimeAvailability = timeSlot.days;
+        currentTimeAvailability[daysOfTheWeek.indexOf(day)] = false;
 
-      // remove the times from the current availability
-      times.forEach((time: number) => {
-        currentTimes = currentTimes.filter((t: number) => t !== time);
-      });
-
-      // update the form control
-      this.onboardingService.eventAvailabilityForm.controls[day].setValue(currentTimes);
+        // update the availability
+        this.calendarService.userAvailability[time - 1].days = currentTimeAvailability;
+      }
     }
-    return currentTimes;
   }
 
 
@@ -199,7 +198,7 @@ export class EventAvailabilitySurveyComponent {
    * Updates the times for the weekdays.
    */
   updateWeekdayTimes() {
-    let weekdayTimes: string[] = ['mondayTimes', 'tuesdayTimes', 'wednesdayTimes', 'thursdayTimes', 'fridayTimes'];
+    let weekdayTimes: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     for (let controlLabel of this.weekdayFormControlLabelMapList) {
       // available
       if (this.generalAvailabilityForm.value[controlLabel.control]) {
@@ -217,8 +216,9 @@ export class EventAvailabilitySurveyComponent {
    * Updates the times for the weekends.
    */
   updateWeekendTimes() {
-    let weekendTimes: string[] = ['saturdayTimes', 'sundayTimes'];
+    let weekendTimes: string[] = ['Saturday', 'Sunday'];
     for (let controlLabel of this.weekendFormControlLabelMapList) {
+      console.log(controlLabel)
       // available
       if (this.generalAvailabilityForm.value[controlLabel.control]) {
         this.addTimeRange(controlLabel.label, weekendTimes);

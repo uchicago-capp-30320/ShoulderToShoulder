@@ -60,6 +60,23 @@ class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
     permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        id = self.request.query_params.get('id')
+        day_of_week = self.request.query_params.get('day_of_week')
+        hour = self.request.query_params.get('hour')
+
+        if id:
+            print(id)
+            print(queryset)
+            queryset = queryset.filter(id=id)
+        elif day_of_week and hour:
+            print(day_of_week)
+            print(hour)
+            queryset = queryset.filter(day_of_week=day_of_week, hour=hour)
+        
+        return queryset
     
 class OnbordingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
@@ -112,6 +129,20 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(availability)
         return Response(serializer.data, status=201)
+    
+    def get_queryset(self):
+        queryset = self.queryset
+        email = self.request.query_params.get('email')
+        user_id = self.request.query_params.get('user_id')
+
+        if email:
+            user = User.objects.get(email=email)
+            queryset = queryset.filter(user_id=user)
+        elif user_id:
+            user = User.objects.get(id=user_id)
+            queryset = queryset.filter(user_id=user)
+        
+        return queryset
 
 class ChoiceViewSet(viewsets.ModelViewSet):
     queryset = Choice.objects.all()

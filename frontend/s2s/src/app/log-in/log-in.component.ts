@@ -21,6 +21,7 @@ import { UserLogIn } from '../_models/user';
   styleUrl: './log-in.component.css'
 })
 export class LogInComponent {
+  showLoginError: boolean = false;
   /**
    * The sign-up form.
    */
@@ -84,10 +85,12 @@ export class LogInComponent {
     this.authService.login(user).pipe(
       catchError((error) => {
         console.error('Error logging in user:', error);
+        this.showLoginError = true;
         return EMPTY;
       }),
     ).subscribe(() => {
       this.resetForm();
+      this.showLoginError = false;
       this.route.navigate(['/onboarding']);
     });
   }

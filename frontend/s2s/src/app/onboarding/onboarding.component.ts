@@ -46,6 +46,17 @@ export class OnboardingComponent implements OnInit{
   nextPage() {
     this.goToTop();
     this.page++;
+
+    // test - submitting availability form
+    if ((this.page-1) == 3) {
+      console.log(this.page)
+      this.onboardingService.submitAvailabilityForm();
+    }
+  }
+
+  nextButtonDisabled(){
+    return (this.page === 1 && this.onboardingService.preferencesForm.invalid)
+    || (this.page===2 && this.onboardingService.demographicsForm.invalid)
   }
 
   /**
@@ -77,12 +88,11 @@ export class OnboardingComponent implements OnInit{
     let pageFormMap: { [index: number]: FormGroup} = {
       1: this.onboardingService.preferencesForm,
       2: this.onboardingService.demographicsForm,
-      3: this.onboardingService.eventAvailabilityForm,
       4: this.onboardingService.scenariosForm
     }
 
     // if the button is disabled, the form is invalid
-    if (event.target.querySelector('button').disabled){
+    if (event.target.querySelector('button') && event.target.querySelector('button').disabled){
       let form = pageFormMap[this.page];
       form.markAllAsTouched();
       this.showInvalidDialog = form.invalid ? true : false;

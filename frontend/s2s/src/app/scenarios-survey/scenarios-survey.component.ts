@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 
 // services
 import { OnboardingService } from '../_services/onboarding.service';
@@ -10,6 +11,7 @@ import { Scenario, ScenarioInterface } from '../_helpers/scenario';
 import { days } from '../_helpers/preferences';
 import { getRandomInt } from '../_helpers/utils';
 import { Hobby } from '../_models/hobby';
+import { getRandomSubset } from '../_helpers/utils';
 
 /**
  * ScenariosSurveyComponent
@@ -32,16 +34,17 @@ import { Hobby } from '../_models/hobby';
   templateUrl: './scenarios-survey.component.html',
   styleUrl: './scenarios-survey.component.css'
 })
-export class ScenariosSurveyComponent {
+export class ScenariosSurveyComponent implements OnInit{
   // scenario information
   scenarioNum = 1;
   maxScenarios = 8;
   scenarios: ScenarioInterface[] = []
   scenarioNavigation: any[] = [];
+  private subscription = new Subscription();
 
   // hobby information
   usedHobbyIndexes: number[] = [];
-  availableHobbies: Hobby[] = this.HobbyService.scenarioHobbies;
+  availableHobbies: Hobby[] = [];
 
   // scenario additional information
   days = days;
@@ -67,6 +70,14 @@ export class ScenariosSurveyComponent {
     "day": days,
     "numPeople": this.groupSizes,
     "mileage": this.distances
+  }
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.HobbyService.scenarioHobbies.subscribe(hobbies => {
+        this.availableHobbies = hobbies;
+      })
+    );
   }
 
   constructor(

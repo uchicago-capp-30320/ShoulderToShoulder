@@ -67,3 +67,14 @@ export function splitString(input: string): string {
 
   return prefix + " " + suffix;
 }
+
+/**
+ * Create an array range of numbers.
+ * 
+ * @param start The start of the range (inclusive).
+ * @param end The end of the range (exclusive).
+ * @returns The array range.
+ */
+export function range(start: number, end: number): number[] {
+  return Array.from({ length: end - start }, (_, i) => start + i);
+}

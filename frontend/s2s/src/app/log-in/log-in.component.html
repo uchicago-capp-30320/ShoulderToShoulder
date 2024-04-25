@@ -4,6 +4,8 @@
 
     <div class="login-form drop-shadow">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- Login Error -->
+            <p class="p-error" *ngIf="showLoginError">Invalid email or password. Please try again.</p>
 
             <!-- email -->
             <div class="field">

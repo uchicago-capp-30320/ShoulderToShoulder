@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 // services
 import { HobbyService } from '../_services/hobbies.service';
@@ -21,6 +22,7 @@ export class PreferencesSurveyComponent implements OnInit {
   states = states;
   zipcodeInvalid = false;
   choices: { [index: string]: any[]; } = {};
+  private subscription = new Subscription();
 
   constructor(
     public onboardingService: OnboardingService, 
@@ -30,7 +32,13 @@ export class PreferencesSurveyComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getHobbyArray();
+    this.subscription.add(
+      this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+        this.hobbies = hobbies.map(hobby => hobby.name);
+        this.mostInterestedHobbies = [...this.hobbies];
+        this.leastInterestedHobbies = [...this.hobbies];
+      })
+    );
     this.getChoices();
   }
 
@@ -40,13 +48,11 @@ export class PreferencesSurveyComponent implements OnInit {
     });
   }
 
-  getHobbyArray() {
-    this.hobbyService.hobbies.subscribe(hobbies => {
-      this.hobbies = hobbies.map(hobby => hobby.name);
-      this.leastInterestedHobbies = this.hobbies.slice();
-      this.mostInterestedHobbies = this.hobbies.slice();
-    });
-  }
+  // getHobbyArray() {
+  //   this.hobbies = this.hobbyService.preferencesHobbies.map(hobby => hobby.name);
+  //   this.mostInterestedHobbies = this.hobbies;
+  //   this.leastInterestedHobbies = this.hobbies;
+  // }
 
   /**
    * Extracts an array of hobbies that are in the most interested hobbies array.

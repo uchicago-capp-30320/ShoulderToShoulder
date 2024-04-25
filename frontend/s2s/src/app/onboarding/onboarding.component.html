@@ -64,7 +64,7 @@
                 (click)="nextPage()" 
                 class="nextButton" 
                 (focus)="highlightInvalidFields($event)"
-                [disabled]="(page === 1 && onboardingService.preferencesForm.invalid || page===2 && onboardingService.demographicsForm.invalid)">
+                [disabled]="nextButtonDisabled()">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
             </button>
         </div>
