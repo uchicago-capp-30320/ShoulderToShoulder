@@ -15,6 +15,11 @@ export interface UserSignUp {
 
 }
 
+export interface UserLogIn {
+    username: string,
+    password: string,
+}
+
 export interface User {
     first_name: string,
     last_name: string,

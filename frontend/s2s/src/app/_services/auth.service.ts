@@ -8,7 +8,7 @@ import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { ApiService } from './api.service';
 
 // models
-import { User, UserSignUp, UserResponse } from '../_models/user';
+import { User, UserSignUp, UserLogIn, UserResponse } from '../_models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -35,8 +35,8 @@ export class AuthService {
     );
   }
 
-  login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(this.loginEndpoint, {username, password}).pipe(
+  login(user: UserLogIn): Observable<any> {
+    return this.http.post<any>(this.loginEndpoint, user).pipe(
       switchMap(response => {
         localStorage.setItem('token', response.access);
         return this.fetchUser();

@@ -98,9 +98,7 @@ export class SignupPageComponent {
   }
 
   /**
-   * Handles form submission.
-   * TODO: Implement form submission logic once the backend can handle user
-   *       registration.
+   * Handles submission for the sign up form.
    */
   onSubmit() {
     // check if the form is valid
@@ -118,8 +116,6 @@ export class SignupPageComponent {
       email: this.getFormControl('email')?.value,
       password: this.getFormControl('password')?.value,
     };
-
-    console.log(user)
 
     // sign up user
     this.authService.signup(user).pipe(

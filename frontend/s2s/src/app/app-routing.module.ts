@@ -9,12 +9,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomepageComponent } from './homepage/homepage.component';
 import { SignupPageComponent } from './signup-page/signup-page.component';
 import { OnboardingComponent } from './onboarding/onboarding.component';
+import { LogInComponent } from './log-in/log-in.component';
 
 // Routes
 const appRoutes: Routes = [
     { path: 'home', component: HomepageComponent },
     { path: 'sign-up', component: SignupPageComponent },
     { path: 'onboarding', component: OnboardingComponent },
+    { path: 'log-in', component: LogInComponent },
     { path: '', redirectTo: '/home', pathMatch: 'full' }
 ]
 

@@ -89,6 +89,7 @@ export class UserService {
   setUser() {
     this.authService.user.subscribe(user => {
       this.user = user;
+      this.loggedIn = true;
     });
   }
 }
