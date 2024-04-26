@@ -24,7 +24,41 @@ export interface ScenarioInterface {
  * @returns A scenario object describing the activity.
  */
 export class Scenario {
-    public scenarioObj: ScenarioObj;
+    userStorage = localStorage.getItem('user');
+    user = this.userStorage ? JSON.parse(this.userStorage) : {id: 0};
+    timeOfDayMap: { [index: string]: string } = {
+        "morning": "Morning (9a-12p)",
+        "afternoon": "Afternoon (1-4p)",
+        "evening": "Evening (5-8p)",
+        "night": "Night (9p-12a)"
+    }
+    distanceMap: { [index: string]: string } = {
+        "within 1 mile": "Within 1 mile",
+        "within 5 miles": "Within 5 miles",
+        "within 10 miles": "Within 10 miles",
+        "within 15 miles": "Within 15 miles", 
+        "within 20 miles": "Within 20 miles",
+        "within 30 miles": "Within 30 miles",
+        "within 40 miles": "Within 40 miles",
+        "within 50 miles": "Within 50 miles",
+    }
+
+    public scenarioObj: ScenarioObj = {
+        user_id: this.user.id,
+        hobby1: this.hobby1.name,
+        hobby2: this.hobby2.name,
+        distance1: this.distanceMap[this.mileage.toLowerCase()],
+        distance2: this.distanceMap[this.mileage.toLowerCase()],
+        num_participants1: this.numPeople,
+        num_participants2: this.numPeople,
+        day_of_week1: this.day,
+        day_of_week2: this.day,
+        time_of_day1: this.timeOfDayMap[this.time],
+        time_of_day2: this.timeOfDayMap[this.time],
+        prefers_event1: false,
+        prefers_event2: false,
+    };
+
     constructor(
         public hobby1: Hobby,
         public hobby2: Hobby,
@@ -34,23 +68,7 @@ export class Scenario {
         public mileage: string,
         private alteredVariable: string,
         public alteredVariableValue?: string
-    ) {
-        this.scenarioObj = {
-            user_id: 0,
-            hobby1: hobby1.name,
-            hobby2: hobby2.name,
-            distance1: mileage,
-            distance2: mileage,
-            num_participants1: numPeople,
-            num_participants2: numPeople,
-            day_of_week1: day,
-            day_of_week2: day,
-            time_of_day1: time,
-            time_of_day2: time,
-            prefers_event1: false,
-            prefers_event2: false,
-            };
-    }
+    ) {}
 
     /**
      * Generates a scenario template based on the altered variable.
@@ -61,7 +79,7 @@ export class Scenario {
     public getScenarioTemplate(altered: any) {
         // altering the time
         if (this.alteredVariable === "time") {
-            this.scenarioObj.time_of_day2 = altered;
+            this.scenarioObj.time_of_day2 = this.timeOfDayMap[altered];
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
@@ -96,7 +114,7 @@ export class Scenario {
 
         // altering the mileage
         else if (this.alteredVariable === "mileage") {
-            this.scenarioObj.distance2 = altered;
+            this.scenarioObj.distance2 = this.distanceMap[altered.toLowerCase()];
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is <b>${this.mileage}</b> of you on a ${this.day} ${this.time}.<br><br> 

@@ -52,7 +52,6 @@ class GroupViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
-
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -84,6 +83,27 @@ class OnbordingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
     serializer_class = OnbordingSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    @action(methods=['post'], detail=False, url_path='update')
+    def update_onboarding(self, request, *args, **kwargs):
+        # grab the user's row in the onboarding table
+        # users are automatically added to the onboarding table when they are created
+        try:
+            user = User.objects.get(pk=request.data.get('user_id', None))
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        # Attempt to get the onboarding record for the user
+        onboarding, created = Onboarding.objects.get_or_create(user_id=user)
+
+        # Update onboarding data
+        serializer = self.get_serializer(onboarding, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200 if created else 202)
+        
+        return Response(serializer.errors, status=400)
+                
     
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.all()
@@ -119,27 +139,6 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
                 responses.append(self.get_serializer(instance).data)
 
             return Response({"Number of updated rows": len(responses)}, status=200)
-    
-    def update(self, request, *args, **kwargs):
-        if not all([request.data.get('email'), request.data.get('day_of_week'), request.data.get('hour')]):
-            return Response({"error": "Missing required fields"}, status=400)
-
-        # Extract the data from the request
-        email = request.data.get('email')
-        day_of_week = request.data.get('day_of_week')
-        hour = request.data.get('hour')
-        available = request.data.get('available')
-
-        # Perform the update
-        user_id = User.objects.get(email=email)
-        calendar_id = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
-        instance = Availability.objects.get(user_id=user_id, calendar_id=calendar_id)
-
-        instance.available = available
-        instance.save()
-
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=200)
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')
@@ -212,9 +211,8 @@ class ChoiceViewSet(viewsets.ModelViewSet):
 class ScenariosiewSet(viewsets.ModelViewSet):
     queryset = Scenarios.objects.all()
     serializer_class = ScenariosSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    
-    
+    permission_classes = [HasAppToken]
+      
 class ProfilesViewSet(viewsets.ModelViewSet):
     queryset = Scenarios.objects.all()
     serializer_class = ScenariosSerializer

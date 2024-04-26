@@ -7,7 +7,7 @@ class ApplicationTokenMiddleware:
 
     def __call__(self, request):
         # Attempt to get the token from the Authorization header
-        token = request.headers.get('Authorization')
+        token = request.headers.get('X-App-Token')
         if token:
             token = token.split('Bearer ')[1] if 'Bearer ' in token else token
             if not ApplicationToken.objects.filter(token=token).exists():

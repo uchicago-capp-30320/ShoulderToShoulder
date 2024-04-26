@@ -71,7 +71,6 @@ export class CalendarService {
     this.fetchAvailability(this.availabilityEndpoint).subscribe(availability => {
       this.availabilitySubject.next(availability);
       this.userAvailability = this.convertAvailability(availability, calendar);
-      console.log(this.userAvailability)
     });
   }
 
@@ -123,28 +122,26 @@ export class CalendarService {
    */  
   updateAvailability() {
     const updates = this.userAvailability.map(slot => slot.days.map((available, dayIndex) => {
-        const day = daysOfTheWeek[dayIndex];
-        const hour = slot.time.value;
-        this.authService.user.subscribe(user => {
-                  
-          return {
-            email: user.email,
-            day_of_week: day,
-            hour: hour,
-            available: available
-          };
-        })}));
-      console.log(updates);
-
-      this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates.flat()).pipe(
-          catchError(error => {
-              console.error('Error updating availability:', error);
-              return EMPTY;
-          })
-        ).subscribe(() => {
-            console.log('Availability updated successfully!');
-        });
-      }
+      const day = daysOfTheWeek[dayIndex];
+      const hour = slot.time.value;
+      let user = this.authService.userValue;
+      return {
+        email: user.email,
+        day_of_week: day,
+        hour: hour,
+        available: available
+      };
+      }));
+    
+    this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates.flat()).pipe(
+        catchError(error => {
+            console.error('Error updating availability:', error);
+            return EMPTY;
+        })
+      ).subscribe(() => {
+          console.log('Availability updated successfully!');
+      });
+    }
 
   /**
    * Submits the onboarding availability form. Converts the form data into

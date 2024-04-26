@@ -50,7 +50,7 @@ export class ScenariosSurveyComponent implements OnInit{
   days = days;
   groupSizes = [
     '1-5',
-    '6-10',
+    '5-10',
     '10-15',
     '15+',
   ];
@@ -176,7 +176,7 @@ export class ScenariosSurveyComponent implements OnInit{
       );
 
       // set the form control scenario
-      let controlName = `scenario${i + 1}Choice`;
+      let controlName = `scenario${i + 1}`;
       this.onboardingService.scenariosForm.controls[controlName].setValue(scenario);
     }
   }
@@ -262,10 +262,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
     // set the form control scenario
     let controlName = `scenario${scenario.id}Choice`;
-    this.onboardingService.scenariosForm.controls[controlName].setValue(scenario);
-    
-    let controlNameValue = `scenario${scenario.id}`;
-    this.onboardingService.scenariosForm.controls[controlNameValue].setValue(value);
+    this.onboardingService.scenariosForm.controls[controlName].setValue(value);
 
     // move to the next scenario
     this.nextScenario();

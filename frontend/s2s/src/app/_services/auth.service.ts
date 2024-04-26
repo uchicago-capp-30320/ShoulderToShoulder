@@ -16,8 +16,6 @@ import { User, UserSignUp, UserLogIn, UserResponse } from '../_models/user';
 export class AuthService {
   signupEndpoint = `${this.apiService.BASE_API_URL}/create/`;
   loginEndpoint = `${this.apiService.BASE_API_URL}/login/`;
-  userSubject: BehaviorSubject<User> = new BehaviorSubject<User>({id: 0, username: '', email: '', first_name: '', last_name: ''});
-  user: Observable<User> = this.userSubject.asObservable();
 
   constructor(
     private apiService: ApiService,
@@ -30,7 +28,8 @@ export class AuthService {
       switchMap(response => {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
-        return this.fetchUser();
+        localStorage.setItem('user', JSON.stringify(response.user));
+        return of(response.user);
       })
     );
   }
@@ -40,36 +39,28 @@ export class AuthService {
       switchMap(response => {
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('refresh_token', response.refresh_token);
-        let user = response.user;
-        console.log('User:', user)
-        this.userSubject.next(user);
-        return of(user);
+        localStorage.setItem('user', JSON.stringify(response.user));
+        return of(response.user);
       })
     );
   }
 
   get loggedIn(): boolean {
-    return !!localStorage.getItem('access_token');
+    return !!localStorage.getItem('user');
   }
 
-  fetchUser(): Observable<User> {
-    return this.http.get<UserResponse>(this.apiService.BASE_API_URL).pipe(
-      switchMap(response => {
-        const user = response.user;
-        this.userSubject.next(user);
-        return of(user);
-      }),
-      catchError(error => {
-        console.error('Error fetching user:', error);
-        return EMPTY;
-      })
-    );
+  get userValue(): User {
+    let userStr = localStorage.getItem('user');
+    if (userStr) {
+      return JSON.parse(userStr);
+    }
+    return {id: 0, username: '', email: '', first_name: '', last_name: ''};
   }
 
   logout(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    this.userSubject.next({id: 0, username: '', email: '', first_name: '', last_name: ''});
+    localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
 }

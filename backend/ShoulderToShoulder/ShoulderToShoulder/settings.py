@@ -82,6 +82,7 @@ CORS_ALLOW_HEADERS = (
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
+    "x-app-token",
 )
 
 ROOT_URLCONF = "ShoulderToShoulder.urls"

@@ -1,5 +1,5 @@
 export interface ScenarioObj {
-    user_id: number | undefined,
+    user_id: number,
     hobby1: string,
     hobby2: string,
     distance1: string,

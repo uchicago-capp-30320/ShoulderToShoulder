@@ -34,7 +34,7 @@ class OnbordingSerializer(ModelSerializer):
 
 
 
-class ScenariosSerializer:   
+class ScenariosSerializer(ModelSerializer):   
     class Meta:
         model = Scenarios
         fields = "__all__"    

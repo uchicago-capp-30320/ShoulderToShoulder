@@ -5,6 +5,7 @@ backend/settings.py
 .vscode/
 *.log
 *.pyc
+curl.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

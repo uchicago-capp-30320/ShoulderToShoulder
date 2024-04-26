@@ -125,10 +125,6 @@ export class OnboardingComponent implements OnInit{
     this.page = this.maxPage + 1;
     this.onboardingService.submitOnboardingForms()
     console.log("Onboading forms submitted")
-    console.log("Demographics: ", this.onboardingService.demographicsForm.value);
-    console.log("Preferences: ", this.onboardingService.preferencesForm.value);
-    console.log("Event Availability: ", this.onboardingService.eventAvailabilityForm.value);
-    console.log("Scenarios: ", this.onboardingService.scenariosForm.value);
   }
 
 }

@@ -12,15 +12,17 @@ export class AuthInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let authToken = this.apiService.appToken; // Assume a service that handles token retrieval
+        let header = "X-App-Token"
 
-        if (request.url.includes('onboarding') || request.url.includes('scenario')) {
+        if (request.url.includes('onboarding') || request.url.includes('profile')) {
             if (localStorage.getItem('access_token')) {
-                authToken = `JWT ${localStorage.getItem('access_token') as string}`;
+                authToken = `Bearer ${localStorage.getItem('access_token') as string}`;
+                header = "Authorization";
             }
         }
 
         const authReq = request.clone({
-            headers: request.headers.set('Authorization', authToken),
+            headers: request.headers.set(header, authToken),
         });
         
         return next.handle(authReq);
