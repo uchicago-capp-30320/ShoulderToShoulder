@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 
 // services
-import { UserService } from '../_services/user.service';
 import { CalendarService } from '../_services/calendar.service';
 
 // helpers
@@ -16,7 +15,6 @@ export class AvailabilityDisplayComponent {
   days = days;
 
   constructor(
-    public userService: UserService,
     public calendarService: CalendarService
   ) { }
 

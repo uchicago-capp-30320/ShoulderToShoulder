@@ -19,25 +19,25 @@
 
     <!-- Preferences/Interests survey (First page) -->
     <div *ngIf="this.page === 1">
-        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#104C56"></app-progress-indicator>
+        <app-progress-indicator [current]="1" [max]="4" [display]="true" color="#104C56"></app-progress-indicator>
         <app-preferences-survey></app-preferences-survey>
     </div>
 
     <!-- Demographics survey (Second page) -->
     <div *ngIf="this.page === 2" style="width: 100%; ">
-        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#166A79"></app-progress-indicator>
+        <app-progress-indicator [current]="2" [max]="4" [display]="true" color="#166A79"></app-progress-indicator>
         <app-demographics-survey></app-demographics-survey>
     </div>
 
     <!-- Event availability survey (Third page) -->
     <div *ngIf="this.page === 3">
-        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#1C889B"></app-progress-indicator>
+        <app-progress-indicator [current]="3" [max]="4" [display]="true" color="#1C889B"></app-progress-indicator>
         <app-event-availability-survey></app-event-availability-survey>
     </div>
 
     <!-- Scenarios survey (Fourth page) -->
     <div *ngIf="this.page === 4">
-        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" color="#23A6BE" textColor="#001524"></app-progress-indicator>
+        <app-progress-indicator [current]="4" [max]="4" [display]="true" color="#23A6BE" textColor="#001524"></app-progress-indicator>
         <app-scenarios-survey></app-scenarios-survey>
     </div>
 

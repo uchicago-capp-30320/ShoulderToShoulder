@@ -1,16 +1,28 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 // services
 import { CalendarService } from './calendar.service';
+import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
 
 // helpers
 import { NumberRegx } from '../_helpers/patterns';
+import { ScenarioObj } from '../_models/scenarios';
+import { Scenario } from '../_helpers/scenario';
+import { Onboarding } from '../_models/onboarding';
+import { User } from '../_models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OnboardingService {
+  onboardingEndpoint = this.apiService.BASE_API_URL + '/onboarding/';
+  scenariosEndpoint = this.apiService.BASE_API_URL + '/scenarios/';
+
   // onboarding forms
   public demographicsForm: FormGroup = this.fb.group({
     groupSimilarity: new FormControl('', Validators.required),
@@ -78,10 +90,84 @@ export class OnboardingService {
 
   constructor(
     private fb: FormBuilder,
-    public calendarService: CalendarService
+    public calendarService: CalendarService,
+    public authService: AuthService,
+    private http: HttpClient,
+    private apiService: ApiService
   ) { }
 
-  submitAvailabilityForm(): void {
-    this.calendarService.updateAvailability()
+  submitOnboardingForms(): void {
+    this.authService.user.subscribe(user => {
+      console.log(user)
+      this.submitOnboarding(user);
+      this.submitScenarios(user);
+      this.submitAvailabilityForm();
+    });
   }
+
+  submitOnboarding(user: User): void {
+    // collect data
+    let onboarding: Onboarding = {
+      user_id: user.id,
+      onboarded: true,
+      num_participants: this.preferencesForm.get('groupSizes')?.value,
+      distance: this.preferencesForm.get('distances')?.value,
+      similarity_to_group: this.demographicsForm.get('groupSimilarity')?.value,
+      similarity_metrics: this.demographicsForm.get('groupSimilarityAttrs')?.value,
+      gender: this.demographicsForm.get('gender')?.value,
+      gender_description: this.demographicsForm.get('genderDesc')?.value,
+      race: this.demographicsForm.get('race')?.value,
+      race_description: this.demographicsForm.get('raceDesc')?.value,
+      age: this.demographicsForm.get('ageRange')?.value,
+      sexual_orientation: this.demographicsForm.get('sexualOrientation')?.value,
+      sexual_orientation_description: this.demographicsForm.get('sexualOrientationDesc')?.value,
+      religion: this.demographicsForm.get('religiousAffiliation')?.value,
+      religion_description: this.demographicsForm.get('religiousAffiliationDesc')?.value,
+      political_leaning: this.demographicsForm.get('politicalLeaning')?.value,
+      political_description: this.demographicsForm.get('politicalLeaningDesc')?.value,
+    }
+
+    // send onboarding data to the backend
+    this.http.post(this.onboardingEndpoint, onboarding).pipe(
+      catchError(error => {
+        console.error('Error submitting onboarding:', error);
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      console.log('Onboarding submitted successfully!');
+    });
+  }
+
+  submitScenarios(user: User): void {
+    // collect data
+    let scenarioObjs: ScenarioObj[] = [];
+
+    for (let i = 1; i <= 8; i++) {
+      let scenario: Scenario = this.scenariosForm.get(`scenario${i}`)?.value;
+      let scenarioObj: ScenarioObj = scenario.scenarioObj;
+      let choice = this.scenariosForm.get(`scenario${i}Choice`)?.value;
+
+      scenarioObj.user_id = user.id;
+      scenarioObj.prefers_event1 = choice == 1 ? true : false;
+      scenarioObj.prefers_event2 = !scenarioObj.prefers_event1;
+
+      scenarioObjs.push(scenarioObj);
+
+      // send scenario data to the backend
+      this.http.post(this.scenariosEndpoint, scenarioObj).pipe(
+        catchError(error => {
+          console.error('Error submitting scenarios:', error);
+          return EMPTY;
+        })
+      ).subscribe(() => {
+        console.log('Scenarios submitted successfully!');
+      });
+    }
+  }
+
+  submitAvailabilityForm(): void {
+    // send availability data to the backend
+    this.calendarService.updateAvailability();
+  }
+
 }

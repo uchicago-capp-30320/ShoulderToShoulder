@@ -159,8 +159,6 @@ export class EventAvailabilitySurveyComponent {
       for (let day of days) {
         let timeSlot = this.calendarService.userAvailability[time - 1];
         let currentTimeAvailability = timeSlot.days;
-        console.log(day)
-        console.log(daysOfTheWeek.indexOf(day))
         currentTimeAvailability[daysOfTheWeek.indexOf(day)] = true;
 
         // update the availability
@@ -218,7 +216,6 @@ export class EventAvailabilitySurveyComponent {
   updateWeekendTimes() {
     let weekendTimes: string[] = ['Saturday', 'Sunday'];
     for (let controlLabel of this.weekendFormControlLabelMapList) {
-      console.log(controlLabel)
       // available
       if (this.generalAvailabilityForm.value[controlLabel.control]) {
         this.addTimeRange(controlLabel.label, weekendTimes);

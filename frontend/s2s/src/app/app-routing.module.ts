@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // guards
-// import { AuthGuard } from './guards/auth.guard';
+import { canActivateProfile } from './_guards/auth.guard';
 // import { AdminGuard } from './guards/admin.guard';
 
 // Components
@@ -15,7 +15,7 @@ import { LogInComponent } from './log-in/log-in.component';
 const appRoutes: Routes = [
     { path: 'home', component: HomepageComponent },
     { path: 'sign-up', component: SignupPageComponent },
-    { path: 'onboarding', component: OnboardingComponent },
+    { path: 'onboarding', component: OnboardingComponent, canActivate: [canActivateProfile]},
     { path: 'log-in', component: LogInComponent },
     { path: '', redirectTo: '/home', pathMatch: 'full' }
 ]

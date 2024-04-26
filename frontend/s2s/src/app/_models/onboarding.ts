@@ -1,5 +1,5 @@
 export interface Onboarding {
-    user_id: number,
+    user_id: number | undefined,
     onboarded: boolean,
     num_participants: string,
     distance: string,

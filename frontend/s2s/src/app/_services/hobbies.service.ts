@@ -62,11 +62,7 @@ export class HobbyService {
     let remainingHobbies = hobbies.filter(hobby =>
       !this.preferencesHobbiesSubject.getValue().includes(hobby)
     );
-
-    console.log(remainingHobbies)
   
     this.scenarioHobbiesSubject.next(getRandomSubset(remainingHobbies, 20));
-
-    console.log(this.scenarioHobbiesSubject.getValue())
   }
 }
