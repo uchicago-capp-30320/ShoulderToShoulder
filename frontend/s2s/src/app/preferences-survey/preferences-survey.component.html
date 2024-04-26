@@ -1,0 +1,184 @@
+<!-- location form -->
+<div class="pref-form drop-shadow">
+    <h3 class="light-text" style="text-align: center">Location Preferences</h3>
+    <p class="light-text subtitle">Some of the following fields are <b>required</b> as they determine the location of your event recommendations.</p>
+    <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- address -->
+        <div class="field">
+            <label for="addressLine1" class="label">Address Line 1</label>
+            <input 
+                pInputText 
+                formControlName="addressLine1" 
+                placeholder="Address Line 1"
+                tooltipStyleClass="customtooltip" 
+                tooltipEvent="hover" 
+                pTooltip="This field is optional" 
+            >
+        </div>
+
+        <!-- zipcode -->
+        <div class="field">
+            <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
+            
+            <!-- error messages -->
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.userService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('zipCode')?.touched && this.zipcodeInvalid">Zipcode does not exist. Please enter a different value.</small>
+            
+            <!-- zipcode input -->
+            <input 
+                pInputText 
+                formControlName="zipCode" 
+                required 
+                maxlength="5" 
+                placeholder="Zip Code" 
+                style="width: 100%" 
+                (blur)="getZipCodeData()"
+            >
+        </div>
+
+        <!-- city/state/zip -->
+        <div class="field">
+            <span>
+                <label for="city" class="label">City</label>
+                <label for="state" class="label" style="margin-left: 50%">State</label>
+            </span>
+            <span>
+                <input 
+                    pInputText 
+                    placeholder="City" 
+                    formControlName="city" 
+                    style="width: 45%"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="hover" 
+                    pTooltip="This field is optional" 
+                >
+                <p-dropdown 
+                    [options]="states" 
+                    optionLabel="label" 
+                    placeholder="State" 
+                    formControlName="state" 
+                    autoWidth="false" 
+                    [style]="{'width': '45%', 'margin-left': '10%'}"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="hover" 
+                    pTooltip="This field is optional" 
+                ></p-dropdown>
+            </span>
+        </div>
+    </form>
+</div>
+
+<!-- preferences form -->
+<div class="pref-form drop-shadow">
+    <h3 class="light-text" style="text-align: center">Event Preferences</h3>
+    <p class="light-text subtitle">The following fields are <b>required</b> as they determine your specific event recommendations.</p>
+    <form [formGroup]="this.userService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- hobbies - most interested -->
+        <div class="field">
+            <label for="mostInterestedHobbies" class="label">
+                Which hobbies are you <b>most</b> interested in?<span class="required">* </span> 
+                <span>
+                    <i 
+                        class="pi pi-question-circle" 
+                        tooltipStyleClass="customtooltip" 
+                        tooltipEvent="hover" 
+                        [pTooltip]="tooltipContent"
+                    ></i>
+                </span>
+            </label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('mostInterestedHobbies')?.touched && this.userService.preferencesForm.get('mostInterestedHobbies')?.invalid">This field is required</small>
+            <p-multiSelect 
+                [options]="mostInterestedHobbies" 
+                formControlName="mostInterestedHobbies" 
+                placeholder="Choose a hobby" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [maxSelectedLabels]="3" 
+                required 
+                (onChange)="getLeastInterestedHobbiesArray()">
+            </p-multiSelect>
+        </div>
+
+        <ng-template #tooltipContent>
+            <div class="flex" style="font-size: .80rem; text-align: left;">
+                <p style="margin-bottom: 2px;"> <b>Why are there so few hobbies?</b></p>
+                <p>We only present a subset of the total hobbies during onboarding to gain a general understanding of your interests. You will have the ability to add more hobbies on your profile page.</p>
+            </div>
+            </ng-template>
+
+        <!-- hobbies - least interested -->
+        <div class="field">
+            <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?</label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('leastInterestedHobbies')?.touched && this.userService.preferencesForm.get('leastInterestedHobbies')?.invalid">This field is required</small>
+            <p-multiSelect 
+                [options]="leastInterestedHobbies" 
+                formControlName="leastInterestedHobbies" 
+                placeholder="Choose a hobby" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [maxSelectedLabels]="3" 
+                (onChange)="getMostInterestedHobbiesArray()"
+                tooltipStyleClass="customtooltip" 
+                tooltipEvent="hover" 
+                pTooltip="This field is optional" >
+            </p-multiSelect>
+        </div>
+
+        <!-- event distance -->
+        <div class="field">
+            <label for="distances" class="label">What is the maximum distance you would want your events to be from you?<span class="required">*</span></label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('distances')?.touched && this.userService.preferencesForm.get('distances')?.invalid">This field is required</small>
+            <p-dropdown 
+                [options]="distances" 
+                formControlName="distances" 
+                placeholder="Choose a distance" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [required]="true">
+            </p-dropdown>
+        </div>
+
+        <!-- group sizes -->
+        <div class="field">
+            <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('groupSizes')?.touched && this.userService.preferencesForm.get('groupSizes')?.invalid">This field is required</small>
+            <p-multiSelect 
+                [options]="groupSizes" 
+                formControlName="groupSizes" 
+                placeholder="Choose a group size" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [maxSelectedLabels]="3" 
+                required>
+            </p-multiSelect>
+        </div>
+
+        <!-- event frequency -->
+        <div class="field">
+            <label for="eventFrequency" class="label">How often do you want to attend Shoulder to Shoulder events?<span class="required">*</span></label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('eventFrequency')?.touched && this.userService.preferencesForm.get('eventFrequency')?.invalid">This field is required</small>
+            <p-dropdown 
+                [options]="eventFrequency" 
+                formControlName="eventFrequency" 
+                placeholder="Choose an event frequency" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [required]="true">
+            </p-dropdown>
+        </div>
+
+        <!-- event notifications -->
+        <div class="field">
+            <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
+            <small class="p-error" *ngIf="this.userService.preferencesForm.get('eventNotifications')?.touched && this.userService.preferencesForm.get('eventNotifications')?.invalid">This field is required</small>
+            <p-dropdown 
+                [options]="eventNotifications" 
+                formControlName="eventNotifications" 
+                placeholder="Choose a notification method" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [required]="true">
+            </p-dropdown>
+        </div>
+    </form>
+</div>
