@@ -53,17 +53,17 @@ For more information on factorization machines and DeepFMs, see:
 
 #### `frontend`
 
-The frontend development does not utilize a virtual environment, but instead requires the installation of nodejs. To install the necessary packages for the first time, follow these steps:
+The frontend development uses `npm` as its package manager. To use npm, you first need to install [nodejs](https://nodejs.org/en). (follow the installation instructions provided on the nodejs website, or run `brew install nodejs` in your terminal). Afterward, to install the necessary packages, follow these steps:
 
 <pre>
 ```
 cd frontend
-pip install nodejs
+npm install -g @angular/cli
 npm install
 ```
 </pre>
 
-This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to work on the frontend development. 
+This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to develop in the frontend. 
 
 #### `backend`
 
@@ -81,7 +81,7 @@ exit
 ```
 </pre>
 
-If you have already created the environment before, you can enter it by following these steps: 
+If you have already created the poetry environment once before, you will need to enter it every time you develop in the backend. Follow these steps to open the environment: 
 
 <pre>
 ```
@@ -96,7 +96,7 @@ exit
 
 ## How to use our app
 
-To launch the application, follow these steps:
+To use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps:
 
 <pre>
 ```
@@ -107,7 +107,20 @@ ng serve
 
 Navigate to `localhost:4200/` in your web browser. 
 
-To exit the application, run ctrl+C (i.e. ^C) in your terminal.
+Now, open a new terminal and run:
+
+<pre>
+```
+cd backend
+poetry env use 3.12
+poetry shell
+python shoulder/manage.py runserver
+```
+</pre>
+
+Navigate to `localhost:1800/` in your web browser and enter the superuser credentials.
+
+To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
 ## Pre-Commit Checklist
 
