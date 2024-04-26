@@ -48,12 +48,6 @@ export class PreferencesSurveyComponent implements OnInit {
     });
   }
 
-  // getHobbyArray() {
-  //   this.hobbies = this.hobbyService.preferencesHobbies.map(hobby => hobby.name);
-  //   this.mostInterestedHobbies = this.hobbies;
-  //   this.leastInterestedHobbies = this.hobbies;
-  // }
-
   /**
    * Extracts an array of hobbies that are in the most interested hobbies array.
    */

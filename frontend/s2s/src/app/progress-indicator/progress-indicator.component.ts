@@ -1,11 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-progress-indicator',
   templateUrl: './progress-indicator.component.html',
   styleUrl: './progress-indicator.component.css'
 })
-export class ProgressIndicatorComponent implements OnInit {
+export class ProgressIndicatorComponent implements OnChanges {
   @Input() current: number;
   @Input() max: number;
   @Input() color: string;
@@ -20,7 +20,7 @@ export class ProgressIndicatorComponent implements OnInit {
     this.textColor = '#FFECD1';
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.changeDisplay();
     this.setWidth();
     this.setColor();

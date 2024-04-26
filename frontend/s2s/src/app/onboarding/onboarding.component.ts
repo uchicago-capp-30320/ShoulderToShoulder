@@ -39,6 +39,7 @@ export class OnboardingComponent implements OnInit{
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
+    this.page = 0;
   }
 
   /**
