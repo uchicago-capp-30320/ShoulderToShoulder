@@ -25,6 +25,9 @@ tk = "^0.1.0"
 tzdata = "^2024.1"
 wheel = "^0.43.0"
 setuptools = "^69.5.1"
+geopy = "^2.4.1"
+traveltimepy = "^3.9.6"
+numpy = "^1.26.4"
 
 
 [build-system]
