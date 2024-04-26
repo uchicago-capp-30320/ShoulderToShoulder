@@ -72,6 +72,7 @@ The backend employs a poetry virtual environment with Python 3.12. To create the
 <pre>
 ```
 cd backend
+poetry env use 3.12
 poetry shell
 poetry install --no-root
 
