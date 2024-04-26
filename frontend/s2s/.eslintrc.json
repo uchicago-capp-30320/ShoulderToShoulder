@@ -8,6 +8,7 @@
       "files": [
         "*.ts"
       ],
+      "parser": "@angular-eslint/template-parser",
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -15,6 +16,16 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
+        "@angular-eslint/template/elements-content": [
+          "warn",
+          {
+            "allowList": [
+              "appTooltipLabel",
+              "ariaLabel",
+              "label"
+            ]
+          }
+        ],
         "@typescript-eslint/no-unused-vars": "warn",
         "@angular-eslint/directive-selector": [
           "error",
