@@ -1,4 +1,9 @@
 <main style="margin-bottom: 3rem;">
+    <!-- Exit Button -->
+    <div *ngIf="this.page > -1 && this.page <= maxPage" class="exitDiv">
+        <button id="exit-button" pButton (click)="exitOnboarding()" class="exitButton">Exit Onboarding</button>
+    </div>
+
     <!-- Intro message -->
     <div *ngIf="this.page === 0" class="onboardingIntro">
         <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>

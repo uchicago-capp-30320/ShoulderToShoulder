@@ -50,3 +50,40 @@
     color: rgb(231, 75, 75);
 }
 
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to cover the whole application */
+  }
+  
+.loading-overlay-content {
+    background-color: #FFECD1;
+    height: 11rem;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    text-align: center;
+}
+
+.loading-overlay-content p {
+    color: #15616D;
+}
+
+.loading-overlay-content h3 {
+    color: #001524;
+}
+
+.error-message {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgb(233, 98, 98);    
+}
+

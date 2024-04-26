@@ -1,7 +1,7 @@
 import { Component} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 
 // services
@@ -66,10 +66,15 @@ export class SignupPageComponent {
     validators: confirmPasswordValidator
   });
 
+  isLoading: boolean = false;
+  showError = false;
+  errorMessage = '';
+
   constructor(
     private route: Router,
     private authService: AuthService
-  ) {}
+  ) {
+  }
 
   /**
    * Resets the sign up form.
@@ -118,13 +123,20 @@ export class SignupPageComponent {
     };
 
     // sign up user
+    this.isLoading = true;
     this.authService.signup(user).pipe(
       catchError((error) => {
         console.error('Error signing up user:', error);
+        if (error.status === 400) {
+          this.errorMessage = 'Email already exists. Please log in.';
+          this.showError = true;
+        }
+        this.isLoading = false;
         return EMPTY;
       }),
     ).subscribe(() => {
       this.resetForm();
+      this.isLoading = false;
       this.route.navigate(['/onboarding']);
     });
   }

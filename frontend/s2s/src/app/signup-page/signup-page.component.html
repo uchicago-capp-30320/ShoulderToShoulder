@@ -4,6 +4,9 @@
 
     <div class="signup-form drop-shadow">
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- Signup Error -->
+            <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
+            
             <!-- first name -->
             <div class="field">
                 <label for="firstName" class="label">First Name<span class="required">*</span></label>
@@ -73,6 +76,15 @@
                 <button pButton type="submit" label="Create an account" class="submit-button" [disabled]="signupForm.invalid"></button>
             </div>
         </form>
+    </div>
+
+    <!-- Loading dialog -->
+    <div *ngIf="isLoading" class="loading-overlay">
+        <div class="loading-overlay-content">
+            <h3>Welcome to Shoulder to Shoulder!</h3>
+            <p class="m-0">Please wait while we sign you up.</p>
+            <app-loader></app-loader>
+        </div>
     </div>
 </main>
 <app-footer></app-footer>

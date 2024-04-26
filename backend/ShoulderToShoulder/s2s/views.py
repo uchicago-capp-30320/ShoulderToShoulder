@@ -69,12 +69,8 @@ class CalendarViewSet(viewsets.ModelViewSet):
         hour = self.request.query_params.get('hour')
 
         if id:
-            print(id)
-            print(queryset)
             queryset = queryset.filter(id=id)
         elif day_of_week and hour:
-            print(day_of_week)
-            print(hour)
             queryset = queryset.filter(day_of_week=day_of_week, hour=hour)
         
         return queryset
@@ -82,7 +78,7 @@ class CalendarViewSet(viewsets.ModelViewSet):
 class OnbordingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
     serializer_class = OnbordingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [HasAppToken]
 
     @action(methods=['post'], detail=False, url_path='update')
     def update_onboarding(self, request, *args, **kwargs):
@@ -103,8 +99,17 @@ class OnbordingViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=200 if created else 202)
         
         return Response(serializer.errors, status=400)
-                
     
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            user = User.objects.get(id=user_id)
+            queryset = queryset.filter(user_id=user)
+        
+        return queryset
+                
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.all()
     serializer_class = AvailabilitySerializer
@@ -212,6 +217,16 @@ class ScenariosiewSet(viewsets.ModelViewSet):
     queryset = Scenarios.objects.all()
     serializer_class = ScenariosSerializer
     permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            user = User.objects.get(id=user_id)
+            queryset = queryset.filter(user_id=user)
+        
+        return queryset
       
 class ProfilesViewSet(viewsets.ModelViewSet):
     queryset = Scenarios.objects.all()
@@ -236,6 +251,11 @@ class CreateUserViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         request.data['username'] = request.data['email']
+        # check if user already exists
+        user = User.objects.filter(email=request.data['email'])
+        if user:
+            return Response({"error": "User already exists"}, status=400)
+
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -269,6 +289,7 @@ class CreateUserViewSet(viewsets.ModelViewSet):
 
             return Response(data, status=201)
         return Response(serializer.errors, status=400)
+
 
 class LoginViewSet(viewsets.ViewSet):
     permission_classes = [HasAppToken]

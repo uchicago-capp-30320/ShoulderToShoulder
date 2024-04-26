@@ -232,6 +232,6 @@ export class EventAvailabilitySurveyComponent {
    * Submits the event availability form.
    */
   onSubmit() {
-    console.log(this.onboardingService.eventAvailabilityForm.value);
+    console.log(this.calendarService.userAvailability);
   }
 }

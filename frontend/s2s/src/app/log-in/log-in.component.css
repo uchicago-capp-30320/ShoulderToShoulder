@@ -43,6 +43,11 @@
 }
 
 .p-error {
+    text-align: left;
+    color: rgb(233, 98, 98);
+}
+
+.error-message {
     text-align: center;
     margin-top: 0;
     margin-bottom: 0;

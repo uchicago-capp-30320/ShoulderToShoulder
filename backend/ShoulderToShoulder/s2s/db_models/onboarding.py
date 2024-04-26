@@ -73,7 +73,7 @@ class Onboarding(models.Model):
 
     # event frequency and notifications
     event_frequency = models.CharField(choices=EVENT_FREQUENCIES, max_length=100, null=True, blank=True)
-    event_notification = models.CharField(choices=EVENT_NOTIFICATIONS, default=True)
+    event_notification = models.CharField(choices=EVENT_NOTIFICATIONS, max_length=100, null=True, blank=True)
 
     # hobbies stored as JSON or use ManyToManyField if applicable
     most_interested_hobbies = JSONField(null=True, blank=True)  

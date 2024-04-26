@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { NumberRegx } from '../_helpers/patterns';
 import { ScenarioObj } from '../_models/scenarios';
 import { Scenario } from '../_helpers/scenario';
-import { Onboarding } from '../_models/onboarding';
+import { Onboarding, OnboardingResp } from '../_models/onboarding';
 import { User } from '../_models/user';
 
 @Injectable({
@@ -59,16 +59,6 @@ export class OnboardingService {
     distances: new FormControl('', Validators.required),
   });
 
-  public eventAvailabilityForm: FormGroup = this.fb.group({
-    mondayTimes: new FormControl([]),
-    tuesdayTimes: new FormControl([]),
-    wednesdayTimes: new FormControl([]),
-    thursdayTimes: new FormControl([]),
-    fridayTimes: new FormControl([]),
-    saturdayTimes: new FormControl([]),
-    sundayTimes: new FormControl([]),
-  });
-
   public scenariosForm: FormGroup = this.fb.group({
     scenario1: new FormControl(undefined, Validators.required),
     scenario1Choice: new FormControl(undefined, Validators.required),
@@ -95,7 +85,8 @@ export class OnboardingService {
     public authService: AuthService,
     private http: HttpClient,
     private apiService: ApiService
-  ) { }
+  ) { 
+  }
 
   /**
    * Fetches any existing onboarding data for the user. This function allows
@@ -106,13 +97,16 @@ export class OnboardingService {
    */
   fetchOnboarding(): void {
     let user = this.authService.userValue;
-    this.http.get<Onboarding>(this.onboardingEndpoint + user.id).pipe(
+    this.http.get<OnboardingResp>(`${this.onboardingEndpoint}?user_id=${user.id}`).pipe(
       catchError(error => {
         console.error('Error fetching onboarding:', error);
         return EMPTY;
       })
-    ).subscribe(onboarding => {
-      if (onboarding) {
+    ).subscribe(onboardingResp => {
+      if (onboardingResp) {
+        let onboarding = onboardingResp.results[0];
+        console.log('Onboarding fetched successfully!')
+        console.log(onboarding);
         this.onboarded = onboarding.onboarded;
         this.setDemographicsForm(onboarding);
         this.setPreferencesForm(onboarding);
@@ -121,6 +115,11 @@ export class OnboardingService {
     });
   }
 
+  /**
+   * Sets the demographics form with the user's existing onboarding data.
+   * 
+   * @param onboarding 
+   */
   setDemographicsForm(onboarding: Onboarding): void {
     this.demographicsForm.setValue({
       groupSimilarity: onboarding.similarity_to_group,
@@ -139,6 +138,11 @@ export class OnboardingService {
     });
   }
 
+  /**
+   * Sets the preferences form with the user's existing onboarding data.
+   * 
+   * @param onboarding 
+   */
   setPreferencesForm(onboarding: Onboarding): void {
     this.preferencesForm.setValue({
       zipCode: onboarding.zip_code,
@@ -149,13 +153,18 @@ export class OnboardingService {
       leastInterestedHobbies: onboarding.least_interested_hobbies,
       groupSizes: onboarding.num_participants,
       eventFrequency: onboarding.event_frequency,
-      eventNotifications: onboarding.event_notifications,
+      eventNotifications: onboarding.event_notification,
       distances: onboarding.distance,
     });
   }
 
+  /**
+   * Sets the scenarios form with the user's existing onboarding data.
+   * 
+   * @param onboarding 
+   */
   setScenariosForm(onboarding: Onboarding): void {
-    this.http.get<ScenarioObj[]>(this.scenariosEndpoint + onboarding.user_id).pipe(
+    this.http.get<ScenarioObj[]>(`${this.scenariosEndpoint}?user_id=${onboarding.user_id}`).pipe(
       catchError(error => {
         console.error('Error fetching scenarios:', error);
         return EMPTY;
@@ -169,6 +178,21 @@ export class OnboardingService {
     });
   }
 
+  /**
+   * Exist onboarding by sending current data to the backend and
+   * signing user out.
+   */
+  exitOnboarding(): void {
+    let user = this.authService.userValue;
+    this.submitOnboarding(user, false);
+    this.submitScenarios(user);
+    this.submitAvailabilityForm();
+    this.authService.logout();
+  }
+
+  /**
+   * Submits the onboarding forms to the backend.
+   */
   submitOnboardingForms(): void {
     let user = this.authService.userValue;
     this.submitOnboarding(user);
@@ -176,11 +200,11 @@ export class OnboardingService {
     this.submitAvailabilityForm();
   }
 
-  submitOnboarding(user: User): void {
+  submitOnboarding(user: User, onboarded: boolean = true): void {
     // collect data
     let onboarding: Onboarding = {
       user_id: user.id,
-      onboarded: true,
+      onboarded: onboarded,
 
       // preferences form
       most_interested_hobbies: this.getStringToListChar("mostInterestedHobbies"),
@@ -189,10 +213,10 @@ export class OnboardingService {
       distance: this.preferencesForm.get('distances')?.value,
       zip_code: this.preferencesForm.get('zipCode')?.value,
       city: this.preferencesForm.get('city')?.value,
-      state: this.preferencesForm.get('state')?.value,
+      state: (this.preferencesForm.get('state')?.value as {label: string, value: string}).value,
       address_line1: this.preferencesForm.get('addressLine1')?.value,
       event_frequency: this.preferencesForm.get('eventFrequency')?.value,
-      event_notifications: this.preferencesForm.get('eventNotifications')?.value,
+      event_notification: this.preferencesForm.get('eventNotifications')?.value,
 
       // demographics form
       similarity_to_group: this.demographicsForm.get('groupSimilarity')?.value,
@@ -235,23 +259,25 @@ export class OnboardingService {
 
     for (let i = 1; i <= 8; i++) {
       let scenario: Scenario = this.scenariosForm.get(`scenario${i}`)?.value;
-      let scenarioObj: ScenarioObj = scenario.scenarioObj;
-      let choice = this.scenariosForm.get(`scenario${i}Choice`)?.value;
+      if (scenario) {
+        let scenarioObj: ScenarioObj = scenario.scenarioObj;
+        let choice = this.scenariosForm.get(`scenario${i}Choice`)?.value;
 
-      scenarioObj.prefers_event1 = choice == 1 ? true : false;
-      scenarioObj.prefers_event2 = !scenarioObj.prefers_event1;
+        scenarioObj.prefers_event1 = choice == 1 ? true : false;
+        scenarioObj.prefers_event2 = !scenarioObj.prefers_event1;
 
-      scenarioObjs.push(scenarioObj);
+        scenarioObjs.push(scenarioObj);
 
-      // send scenario data to the backend
-      this.http.post(this.scenariosEndpoint, scenarioObj).pipe(
-        catchError(error => {
-          console.error('Error submitting scenarios:', error);
-          return EMPTY;
-        })
-      ).subscribe(() => {
-        console.log('Scenarios submitted successfully!');
-      });
+        // send scenario data to the backend
+        this.http.post(this.scenariosEndpoint, scenarioObj).pipe(
+          catchError(error => {
+            console.error('Error submitting scenarios:', error);
+            return EMPTY;
+          })
+        ).subscribe(() => {
+          console.log('Scenarios submitted successfully!');
+        });
+      }
     }
   }
 

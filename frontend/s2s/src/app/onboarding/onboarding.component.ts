@@ -34,7 +34,8 @@ export class OnboardingComponent implements OnInit{
   constructor(
     public onboardingService: OnboardingService,
     private primengConfig: PrimeNGConfig
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
@@ -115,6 +116,14 @@ export class OnboardingComponent implements OnInit{
    */
   showConfirmDialog() {
     this.showConfirm = true;
+  }
+
+  /**
+   * Exist onboarding by sending current data to the backend and 
+   * signing user out.
+   */
+  exitOnboarding() {
+    this.onboardingService.exitOnboarding();
   }
 
   /**

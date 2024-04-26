@@ -142,24 +142,4 @@ export class CalendarService {
           console.log('Availability updated successfully!');
       });
     }
-
-  /**
-   * Submits the onboarding availability form. Converts the form data into
-   * an array of AvailabilitySlot objects and updates the availability in the database.
-   */
-  submitAvailabilityForm(form: FormGroup): void {
-    let availability: AvailabilitySlot[] = [];
-    hours.forEach(hour => {
-      let label = `${hour % 12 == 0 ? 12 : hour % 12}:00` + (hour > 12 ? ' PM' : ' AM');
-      let time = {label: label, value: hour};
-      let days = Array(daysOfTheWeek.length).fill(false);
-      days.forEach((_, dayIndex) => {
-        let dayControl = daysOfTheWeek[dayIndex].toLowerCase() + 'Times';
-        days[dayIndex] = form.controls[dayControl].value.includes(hour);
-      });
-      availability.push({time: time, days: days});
-    });
-    this.userAvailability = availability;
-    this.updateAvailability();
-  }
 }

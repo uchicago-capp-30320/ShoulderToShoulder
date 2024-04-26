@@ -14,7 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
         let authToken = this.apiService.appToken; // Assume a service that handles token retrieval
         let header = "X-App-Token"
 
-        if (request.url.includes('onboarding') || request.url.includes('profile')) {
+        if (request.url.includes('profile')) {
             if (localStorage.getItem('access_token')) {
                 authToken = `Bearer ${localStorage.getItem('access_token') as string}`;
                 header = "Authorization";

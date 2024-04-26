@@ -6,6 +6,7 @@ import { EMPTY } from 'rxjs';
 
 // services
 import { AuthService } from '../_services/auth.service';
+import { OnboardingService } from '../_services/onboarding.service';
 
 // models
 import { UserLogIn } from '../_models/user';
@@ -34,7 +35,8 @@ export class LogInComponent {
 
   constructor(
     private route: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private onboardingService: OnboardingService
   ) {}
 
   /**
@@ -91,7 +93,13 @@ export class LogInComponent {
     ).subscribe(() => {
       this.resetForm();
       this.showLoginError = false;
-      this.route.navigate(['/onboarding']);
+      this.authService.getOnboardingStatus().subscribe(onboardingStatus => {
+        if (!onboardingStatus) {
+          this.route.navigate(['/onboarding']);
+        } else {
+          this.route.navigate(['/home']);
+        }
+      });
     });
   }
 }
