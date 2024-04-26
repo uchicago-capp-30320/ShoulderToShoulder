@@ -74,7 +74,7 @@ The backend employs a poetry virtual environment with Python 3.12. To create the
 cd backend
 poetry env use 3.12
 poetry shell
-poetry install --no-root
+poetry install 
 
 #to exit the environment
 exit
@@ -86,6 +86,7 @@ If you have already created the environment before, you can enter it by followin
 <pre>
 ```
 cd backend
+poetry env use 3.12
 poetry shell
 
 #to exit the environment
