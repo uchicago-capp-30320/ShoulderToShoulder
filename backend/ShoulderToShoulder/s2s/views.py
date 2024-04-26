@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 import environ
 import requests
+import boto3
 
 from .serializers import *
 from .db_models import *
@@ -84,11 +85,14 @@ class ScenariosiewSet(viewsets.ModelViewSet):
     
     
 class ProfilesViewSet(viewsets.ModelViewSet):
-    queryset = Scenarios.objects.all()
-    serializer_class = ScenariosSerializer
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     # add functionality for the photos to be added with s3 boto3
+    def create(self, request, *args, **kwargs):
+        pass
+
 
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"
@@ -100,3 +104,8 @@ class ZipCodeViewSet(viewsets.ModelViewSet):
             response = requests.get(f"{self.endpoint}&codes={zip_code}&apikey={self.api_key}")
             return Response(response.json())
         return Response({"error": "Zip code not provided"}, status=400)
+    
+class EventSuggestionsViewSet(viewsets.ModelViewSet):
+    queryset = EventSuggestions.objects.all()
+    serializer_class = EventSuggestions
+    permission_classes = [permissions.IsAuthenticated]

@@ -39,7 +39,6 @@ class ScenariosSerializer:
         model = Scenarios
         fields = "__all__"    
        
-       
         
 class AvialabilitySerializer(ModelSerializer):
     class Meta:
@@ -56,4 +55,9 @@ class ChoiceSerializer(ModelSerializer):
 class ProfileSerializer(ModelSerializer):
     class Meta:
         model = Profile
+        fields = "__all__"
+        
+class EventSuggestionsSerializer(ModelSerializer):
+    class Meta:
+        model = EventSuggestions
         fields = "__all__"
