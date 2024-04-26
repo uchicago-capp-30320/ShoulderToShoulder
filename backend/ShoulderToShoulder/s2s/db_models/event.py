@@ -12,6 +12,7 @@ class Event(models.Model):
         location: Character Field containing the event location
         attendees: ManytoMany Field connecting the User Model
     """
+    event_id = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
     datetime = models.DateTimeField()
     duration_h = models.IntegerField(validators=[

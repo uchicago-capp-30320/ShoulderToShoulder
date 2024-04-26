@@ -7,3 +7,4 @@ from s2s.db_models.onboarding import Onboarding
 from s2s.db_models.choice import Choice
 from s2s.db_models.scenarios import Scenarios
 from s2s.db_models.profile import Profile
+from s2s.db_models.event_suggestion import EventSuggestion
