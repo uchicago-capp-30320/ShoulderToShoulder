@@ -46,12 +46,6 @@ export class OnboardingComponent implements OnInit{
   nextPage() {
     this.goToTop();
     this.page++;
-
-    // test - submitting availability form
-    if ((this.page-1) == 3) {
-      console.log(this.page)
-      this.onboardingService.submitAvailabilityForm();
-    }
   }
 
   nextButtonDisabled(){
@@ -94,7 +88,12 @@ export class OnboardingComponent implements OnInit{
     // if the button is disabled, the form is invalid
     if (event.target.querySelector('button') && event.target.querySelector('button').disabled){
       let form = pageFormMap[this.page];
-      form.markAllAsTouched();
+      for (let control in form.controls) {
+        let formControl = form.controls[control]
+        if (formControl.invalid) {
+          formControl.markAsDirty();
+        }
+      }
       this.showInvalidDialog = form.invalid ? true : false;
       this.invalidDialogMessage += " The following fields are missing values: "
 

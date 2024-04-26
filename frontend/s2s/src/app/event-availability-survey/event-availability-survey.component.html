@@ -12,7 +12,7 @@
         <div class="light-text" style="margin-right: 30%">
             <p class="light-text" style="text-align: center; font-size: 18px; margin-bottom: 0;"><b>Weekdays</b></p>
             <div style="margin-left: 0%" *ngFor="let controlLabel of weekdayFormControlLabelMapList">
-                <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekdayTimes()" [disabled]="getWeekdayDisabledState(controlLabel.control)"></p-checkbox><br>
+                <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekdayTimes()"></p-checkbox><br>
             </div>
         </div>
 
@@ -20,7 +20,7 @@
         <div class="light-text" >
             <p class="light-text" style="text-align: center; font-size: 18px; margin-bottom: 0;"><b>Weekends</b></p>
             <div style="margin-left: 0%" *ngFor="let controlLabel of weekendFormControlLabelMapList">
-                <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekendTimes()" [disabled]="getWeekendDisabledState(controlLabel.control)"></p-checkbox><br>            
+                <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekendTimes()"></p-checkbox><br>            
             </div>
         </div>
     </form>
@@ -37,4 +37,4 @@
     </form>
 </div> -->
 
-<app-availability-display></app-availability-display>
+<!-- <app-availability-display></app-availability-display> -->

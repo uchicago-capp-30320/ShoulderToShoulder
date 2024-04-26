@@ -38,8 +38,11 @@ export class AuthService {
   login(user: UserLogIn): Observable<any> {
     return this.http.post<any>(this.loginEndpoint, user).pipe(
       switchMap(response => {
-        localStorage.setItem('token', response.access);
-        return this.fetchUser();
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('refresh_token', response.refresh_token);
+        let user = response.user;
+        this.userSubject.next(user);
+        return of(user);
       })
     );
   }

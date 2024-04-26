@@ -2,9 +2,10 @@
  * An interface for representing a hobby that a user can select.
  */
 export interface Hobby {
+    id: number;
     name: string;
-    scenarioForm: string;
-    maxParticipants: number;
+    scenario_format: string;
+    max_participants: number;
     type: string;
 
 }

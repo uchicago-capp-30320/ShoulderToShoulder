@@ -55,14 +55,18 @@ export class HobbyService {
   }
 
   generateHobbies(hobbies: Hobby[]) {
-    console.log(hobbies)
-    // Generate random hobbies for the preferences form
+    if (!hobbies.length) return;  // Prevent running on empty arrays
+  
     this.preferencesHobbiesSubject.next(getRandomSubset(hobbies, 20));
+  
+    let remainingHobbies = hobbies.filter(hobby =>
+      !this.preferencesHobbiesSubject.getValue().includes(hobby)
+    );
 
-    // Remove the preferences hobbies from the list
-    let remainingHobbies = hobbies.filter(hobby => !this.preferencesHobbiesSubject.getValue().includes(hobby));
-
-    // Generate random hobbies for the scenarios form
+    console.log(remainingHobbies)
+  
     this.scenarioHobbiesSubject.next(getRandomSubset(remainingHobbies, 20));
+
+    console.log(this.scenarioHobbiesSubject.getValue())
   }
 }

@@ -41,10 +41,23 @@ class ScenariosSerializer:
        
        
         
-class AvialabilitySerializer(ModelSerializer):
+class AvailabilitySerializer(ModelSerializer):
     class Meta:
         model = Availability
         fields = "__all__"
+
+class BulkAvailabilitySerializer(ModelSerializer):
+    class Meta:
+        model = Availability
+        fields = "__all__"
+
+    def create(self, validated_data):
+        # Custom method to handle list of availability data
+        return [Availability.objects.create(**item) for item in validated_data]
+
+    def update(self, instances, validated_data):
+        # Handle updates if necessary
+        pass
 
 
 class ChoiceSerializer(ModelSerializer):

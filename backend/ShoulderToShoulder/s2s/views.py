@@ -8,6 +8,8 @@ import environ
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from rest_framework.decorators import action
+from django.db import transaction
 
 from .serializers import *
 from .db_models import *
@@ -85,8 +87,38 @@ class OnbordingViewSet(viewsets.ModelViewSet):
     
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.all()
-    serializer_class = AvialabilitySerializer
+    serializer_class = AvailabilitySerializer
     permission_classes = [HasAppToken]
+
+    @action(methods=['post'], detail=False, url_path='bulk_update')
+    def bulk_update(self, request, *args, **kwargs):
+        self.serializer_class = BulkAvailabilitySerializer
+        data = request.data
+        if not isinstance(data, list):
+            return Response({"error": "Expected a list of items"}, status=400)
+
+        with transaction.atomic():
+            responses = []
+            for item in data:
+                email = item.get('email')
+                day_of_week = item.get('day_of_week')
+                hour = item.get('hour')
+                available = item.get('available')
+
+                if not all([email, day_of_week, hour]):
+                    continue  # Skip invalid items
+
+                user_id = User.objects.get(email=email)
+                calendar_id = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
+                instance, created = Availability.objects.update_or_create(
+                    user_id=user_id,
+                    calendar_id=calendar_id,
+                    defaults={'available': available}
+                )
+
+                responses.append(self.get_serializer(instance).data)
+
+            return Response({"Number of updated rows": len(responses)}, status=200)
     
     def update(self, request, *args, **kwargs):
         if not all([request.data.get('email'), request.data.get('day_of_week'), request.data.get('hour')]):

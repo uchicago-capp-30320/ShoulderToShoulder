@@ -21,8 +21,8 @@
             <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
             
             <!-- error messages -->
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('zipCode')?.touched && this.onboardingService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('zipCode')?.touched && this.zipcodeInvalid">Zipcode does not exist. Please enter a different value.</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('zipCode')?.dirty && this.onboardingService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('zipCode')?.dirty && this.zipcodeInvalid">Zipcode does not exist. Please enter a different value.</small>
             
             <!-- zipcode input -->
             <input 
@@ -86,7 +86,7 @@
                     ></i>
                 </span>
             </label>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.touched && this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.invalid">This field is required</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.dirty && this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.invalid">This field is required</small>
             <p-multiSelect 
                 [virtualScroll]="true" 
                 [virtualScrollItemSize]="48"
@@ -111,7 +111,7 @@
         <!-- hobbies - least interested -->
         <div class="field">
             <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?</label>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.touched && this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.invalid">This field is required</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.dirty && this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.invalid">This field is required</small>
             <p-multiSelect 
                 [virtualScroll]="true" 
                 [virtualScrollItemSize]="48"
@@ -131,7 +131,7 @@
         <!-- event distance -->
         <div class="field">
             <label for="distances" class="label">What is the maximum distance you would want your events to be from you?<span class="required">*</span></label>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('distances')?.touched && this.onboardingService.preferencesForm.get('distances')?.invalid">This field is required</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('distances')?.dirty && this.onboardingService.preferencesForm.get('distances')?.invalid">This field is required</small>
             <p-dropdown 
                 [options]="choices['distance']" 
                 formControlName="distances" 
@@ -145,7 +145,7 @@
         <!-- group sizes -->
         <div class="field">
             <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('groupSizes')?.touched && this.onboardingService.preferencesForm.get('groupSizes')?.invalid">This field is required</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('groupSizes')?.dirty && this.onboardingService.preferencesForm.get('groupSizes')?.invalid">This field is required</small>
             <p-multiSelect 
                 [options]="choices['group_size']" 
                 formControlName="groupSizes" 
@@ -160,7 +160,7 @@
         <!-- event frequency -->
         <div class="field">
             <label for="eventFrequency" class="label">How often do you want to attend Shoulder to Shoulder events?<span class="required">*</span></label>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('eventFrequency')?.touched && this.onboardingService.preferencesForm.get('eventFrequency')?.invalid">This field is required</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('eventFrequency')?.dirty && this.onboardingService.preferencesForm.get('eventFrequency')?.invalid">This field is required</small>
             <p-dropdown 
                 [options]="choices['event_frequency']" 
                 formControlName="eventFrequency" 
@@ -174,7 +174,7 @@
         <!-- event notifications -->
         <div class="field">
             <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
-            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('eventNotifications')?.touched && this.onboardingService.preferencesForm.get('eventNotifications')?.invalid">This field is required</small>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('eventNotifications')?.dirty && this.onboardingService.preferencesForm.get('eventNotifications')?.invalid">This field is required</small>
             <p-dropdown 
                 [options]="choices['notification_method']" 
                 formControlName="eventNotifications" 

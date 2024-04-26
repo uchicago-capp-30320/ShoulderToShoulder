@@ -82,11 +82,6 @@ export class OnboardingService {
   ) { }
 
   submitAvailabilityForm(): void {
-    this.calendarService.updateAvailability(this.calendarService.userAvailability).subscribe(
-      response => {
-        console.log(response)
-      }
-    )
-    console.log(this.calendarService.userAvailability)
+    this.calendarService.updateAvailability()
   }
 }

@@ -44,36 +44,36 @@ export class Scenario {
         // altering the time
         if (this.alteredVariable === "time")
             return `You receive an invitation for two different events.<br><br>
-                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenarioForm}</b> with ${this.numPeople}
+                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
-                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
+                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${altered}</b>.<br><br> 
                `
         
         // altering the day
         else if (this.alteredVariable === "day")
             return `You receive an invitation for two different events.<br><br>
-                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenarioForm}</b> with ${this.numPeople}
+                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
-                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
+                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is ${this.mileage} of you on a <b>${altered} ${this.time}</b>.<br><br> 
                `
 
         // altering the number of people
         else if (this.alteredVariable === "numPeople")
             return `You receive an invitation for two different events.<br><br>
-                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenarioForm}</b> with <b>${this.numPeople}</b>
+                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with <b>${this.numPeople}</b>
                 other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
-                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with <b>${altered}</b>
+                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with <b>${altered}</b>
                 other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
                `
 
         // altering the mileage
         else if (this.alteredVariable === "mileage")
             return `You receive an invitation for two different events.<br><br>
-                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenarioForm}</b> with ${this.numPeople}
+                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is <b>${this.mileage}</b> of you on a ${this.day} ${this.time}.<br><br> 
-                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenarioForm}</b> with ${this.numPeople}
+                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
                 other people at a location that is <b>${altered}</b> of you on a ${this.day} ${this.time}.<br><br> 
                `
 

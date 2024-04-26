@@ -75,7 +75,10 @@ export class ScenariosSurveyComponent implements OnInit{
   ngOnInit(): void {
     this.subscription.add(
       this.HobbyService.scenarioHobbies.subscribe(hobbies => {
+        console.log(hobbies);
         this.availableHobbies = hobbies;
+        this.getScenarios();
+        this.getScenarioNavigation();
       })
     );
   }
@@ -85,8 +88,6 @@ export class ScenariosSurveyComponent implements OnInit{
     private sanitizer: DomSanitizer,
     private HobbyService: HobbyService
   ) {
-    this.getScenarios();
-    this.getScenarioNavigation();
   }
 
   /**
@@ -131,6 +132,8 @@ export class ScenariosSurveyComponent implements OnInit{
       // Get two hobbies that are not the same
       let hobby1 = this.getHobby();
       let hobby2 = this.getHobby();
+
+      console.log(hobby1, hobby2);
 
       // get other attributes
       const time = this.timeCategories[getRandomInt(0, this.timeCategories.length - 1)];

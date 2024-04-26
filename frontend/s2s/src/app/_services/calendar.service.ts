@@ -96,7 +96,7 @@ export class CalendarService {
    * schedule in the UI.
    * 
    * @param availability The availability data from the database.
-   * @returns The availability data as a 2D array.
+   * @returns The availability data as an array of AvailabilitySlot objects.
    */
   convertAvailability(availability: AvailabilityObj[]): AvailabilitySlot[] {
     const calendar = this.calendarSubject.getValue();  // Use the latest value directly
@@ -122,26 +122,31 @@ export class CalendarService {
    * 
    * @param availabilityArray The availability array to update.  
    * This will be an array of AvailabilitySlot objects.
-   */
-  updateAvailability(availability: AvailabilitySlot[]): Observable<any> {
-    const requests = availability.flatMap(slot =>
-      slot.days.flatMap((available, dayIndex) => {
-        if (!available) return EMPTY;
+   */  
+  updateAvailability() {
+    const updates = this.userAvailability.map(slot => slot.days.map((available, dayIndex) => {
         const day = daysOfTheWeek[dayIndex];
         const hour = slot.time.value;
         const email = this.userService.user?.email;
-        const availabilityPut: AvailabilityPut = {
-          email: email,
-          day_of_week: day,
-          hour: hour,
-          available: available
+        
+        return {
+            email: email,
+            day_of_week: day,
+            hour: hour,
+            available: available
         };
-        return this.http.put(this.availabilityEndpoint + '1/', availabilityPut);
-      })
-    );
-    return forkJoin(requests);  // Execute all requests and wait for all to complete
+    }));
+    console.log(updates);
+
+    // this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates.flat()).pipe(
+    //     catchError(error => {
+    //         console.error('Error updating availability:', error);
+    //         return EMPTY;
+    //     })
+    //   ).subscribe(() => {
+    //       console.log('Availability updated successfully!');
+    //   });
   }
-  
 
   /**
    * Submits the onboarding availability form. Converts the form data into
@@ -159,6 +164,7 @@ export class CalendarService {
       });
       availability.push({time: time, days: days});
     });
-    this.updateAvailability(availability);
+    this.userAvailability = availability;
+    this.updateAvailability();
   }
 }
