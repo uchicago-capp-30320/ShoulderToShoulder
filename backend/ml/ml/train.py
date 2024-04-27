@@ -1,14 +1,42 @@
+import os
 import jax
-from tqdm import tqdm
 import optax
 import pickle
 import jaxlib
+from tqdm import tqdm
 import jax.numpy as jnp
-import matplotlib.pyplot as plt
 from ml.dataset import Dataset
+import matplotlib.pyplot as plt
 
 from jax import value_and_grad, jit
 from ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_embedding
+
+
+def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list) -> None:
+    """
+    Save diagnostic plots and weights from training a DeepFM
+
+    Parameters:
+    -----------
+        epochs (list): a list of training epochs
+        loss_list (list): a list of losses at each epoch
+        acc_list (list): a list of accuracy for each epoch
+        params (list): a list of model parameters
+    """
+    # Make sure we remove old plots
+    if os.path.isfile('ml/ml/figures/training_curves.jpg'):
+        os.remove('ml/ml/figures/training_curves.jpg')
+
+    plt.plot(epochs, loss_list, label='Loss')
+    plt.plot(epochs, acc_list, label='Accuracy')
+    plt.legend()
+    plt.title("Training Loss and Accuracy")
+    plt.savefig('ml/ml/figures/training_curves.jpg')
+    plt.close()
+
+    # Saving the weights
+    with open('ml/ml/weights/parameters.pkl', 'wb') as file:
+        pickle.dump(params, file)
 
 
 @jit
@@ -71,33 +99,34 @@ def train(params: list, data: Dataset, num_epochs: int):
         if epoch % 10 == 0:
             print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc}")
 
-    plt.plot(epochs, loss_list, label='Loss')
-    plt.plot(epochs, acc_list, label='Accuracy')
-    plt.legend()
-    plt.title("Training Loss and Accuracy")
-    plt.savefig('ml/ml/figures/training_curves.jpg')
-
-    # Saving the weights
-    with open('ml/ml/weights/parameters.pickle', 'wb') as file:
-        pickle.dump(params, file)
+    save_outputs(epochs, loss_list, acc_list, params)
 
     return epochs, loss_list, acc_list, params
 
 
-def predict(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
+def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     """
     Predict the probability of a user RSVPing to an event
 
     Parameters:
     -----------
-        params (tuple): the parameters used to initialize the DeepFM being used to 
-            make predictions
         X (array): an array of features to use for prediction
 
     Returns:
     --------
         predictions (array): predicted probabilities of users RSVPing for events
     """
+    # Check if params is a global variable and if not, read them from a pkl file and add 
+    # the parameters to the gloabl scoe so we don't have to keep reading them in when we 
+    # call predict
+    if "params" in globals():
+        params = globals["params"]
+    else:
+        with open('ml/ml/weights/parameters.pkl', 'rb') as file:
+            params = pickle.load(file)
+
+        globals()["params"] = params
+
     embedding_params, fm_params, mlp_params = params
     embeddings = foward_embedding(embedding_params, X)
     fm_out = foward_fm(fm_params, embeddings)
@@ -105,3 +134,4 @@ def predict(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     y = jax.nn.sigmoid(fm_out + mlp_out)
 
     return y
+

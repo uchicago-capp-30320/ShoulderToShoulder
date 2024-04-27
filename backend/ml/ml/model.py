@@ -1,7 +1,7 @@
 import jax
-import jax.numpy as jnp
 import jaxlib
 from jax import random
+import jax.numpy as jnp
 
 
 def xavier(seed: int, n_in: int, n_out: int) -> jaxlib.xla_extension.ArrayImpl:
@@ -225,3 +225,4 @@ def foward_deep_fm(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl
     y = jax.nn.sigmoid(fm_out + mlp_out.T).T
 
     return y
+
