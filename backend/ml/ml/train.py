@@ -25,7 +25,7 @@ def step(params, x, y):
     return params, loss, grads, accuracy
 
 
-def train(params, data, num_epochs, batch_size):
+def train(params, data, num_epochs):
     epochs, loss_list, acc_list = [], [], []
     solver = optax.adam(0.0001)
     solver_state = solver.init(params)
