@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
-from backend.ShoulderToShoulder.s2s.db_models.event import Event
+from backend.shoulder.s2s.db_models.event import Event
 
 class EventSuggestion(models.Model):
     '''

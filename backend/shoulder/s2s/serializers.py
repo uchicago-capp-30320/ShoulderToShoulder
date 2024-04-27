@@ -59,5 +59,5 @@ class ProfileSerializer(ModelSerializer):
         
 class EventSuggestionsSerializer(ModelSerializer):
     class Meta:
-        model = EventSuggestions
+        model = EventSuggestion
         fields = "__all__"
