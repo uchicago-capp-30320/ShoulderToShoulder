@@ -106,6 +106,6 @@ class ZipCodeViewSet(viewsets.ModelViewSet):
         return Response({"error": "Zip code not provided"}, status=400)
     
 class EventSuggestionsViewSet(viewsets.ModelViewSet):
-    queryset = EventSuggestions.objects.all()
-    serializer_class = EventSuggestions
+    queryset = EventSuggestion.objects.all()
+    serializer_class = EventSuggestion
     permission_classes = [permissions.IsAuthenticated]
