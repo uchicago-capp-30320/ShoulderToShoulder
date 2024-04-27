@@ -30,6 +30,7 @@ def test_train():
     assert loss[0] > loss[9]
     assert accuracy[9] > accuracy[0]
     assert Path('ml/ml/figures/training_curves.jpg').is_file()
+    assert Path('ml/ml/weights/parameters.pickle').is_file()
 
 
 def test_predict():

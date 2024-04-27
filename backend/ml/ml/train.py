@@ -1,6 +1,7 @@
 import jax
 from tqdm import tqdm
 import optax
+import pickle
 import jaxlib
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
@@ -11,7 +12,21 @@ from ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_embedding
 
 
 @jit
-def step(params, x, y):
+def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl, 
+         y: jaxlib.xla_extension.ArrayImpl) -> tuple:
+    """
+    Make one update to a DeepFM
+
+    Parameters:
+    -----------
+        params (list): a list of DeepFM parameters
+        x (jaxlib.xla_extension.ArrayImpl): a minibatch of features
+        y (jaxlib.xla_extension.ArrayImpl): a minibatch of targets
+
+    Returns:
+    --------
+        A tuple of updated parameters, loss, gradients, and accuracy
+    """
 
     def loss_fn(params, x, y):
         ys = foward_deep_fm(params, x)
@@ -25,7 +40,20 @@ def step(params, x, y):
     return params, loss, grads, accuracy
 
 
-def train(params, data, num_epochs):
+def train(params: list, data: Dataset, num_epochs: int):
+    """
+    Train a deep factorization machine, visualize the results, and save the weights
+
+    Parameters:
+    -----------
+        params (list): a list of DeepFM parameters
+        data (Dataset): a Dataset object
+        num_epochs (int): the number of epochs to train for
+
+    Returns:
+    --------
+        A tuple containing lists of epochs, loss, accuracy, and parameters
+    """
     epochs, loss_list, acc_list = [], [], []
     solver = optax.adam(0.0001)
     solver_state = solver.init(params)
@@ -49,6 +77,10 @@ def train(params, data, num_epochs):
     plt.title("Training Loss and Accuracy")
     plt.savefig('ml/ml/figures/training_curves.jpg')
 
+    # Saving the weights
+    with open('ml/ml/weights/parameters.pickle', 'wb') as file:
+        pickle.dump(params, file)
+
     return epochs, loss_list, acc_list, params
 
 
@@ -60,7 +92,7 @@ def predict(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     -----------
         params (tuple): the parameters used to initialize the DeepFM being used to 
             make predictions
-        X (array): ana rray of features to use for prediction
+        X (array): an array of features to use for prediction
 
     Returns:
     --------
