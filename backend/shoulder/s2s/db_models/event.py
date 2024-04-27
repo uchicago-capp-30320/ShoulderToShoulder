@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
 
+
 class Event(models.Model):
     """
     Creates a Django Model representing the Events table in the Shoulder to Shoulder Database
@@ -29,4 +30,3 @@ class Event(models.Model):
     def __str__(self) -> str:
         return 'Event name {}, DateTime {}, Duration {}, Address {}, Max Attendees {}, Attendees {}'.format(
             self.title, self.datetime, self.duration_h, self.address, self.max_attendees, self.attendees)
-    
