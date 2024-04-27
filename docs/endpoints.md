@@ -148,10 +148,11 @@ Retrieves the list of scenario information, this model allows GET requests. Retu
 ## Zipcodes Endpoint
 
 #### Description
-Retrieves zip code information
+Retrieves zip code information to fill the onboarding survey.
 
 #### Response Attributes 
-[INSERT HERE]
+- zipcode: The zipcode inputted
+- city: The city populated from the zipcode
 
 
 ## Event Suggestions Endpoint
