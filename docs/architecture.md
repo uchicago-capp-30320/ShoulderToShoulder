@@ -24,6 +24,8 @@ Once users begin attending events, their experiences will be tracked on their pr
 
 ![Data Flow Diagram](model_data_flow.png)
 
+![Detailed Data Flow Diagram](architecture.png)
+
 ## New Member Onboarding
 
 After cloning the repository to your local machine, you will need to set up the virtual environment and install necessary dependencies in order to begin developing. 
