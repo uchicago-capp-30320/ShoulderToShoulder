@@ -60,42 +60,36 @@ def foward_embedding(params: list[dict], X: jax.Array) -> jaxlib.xla_extension.A
     """
     embedding_weights = params[0]["embedding_weights"]
     embeddings = jnp.take(embedding_weights, jnp.astype(X, int), axis=0)
+    embeddings = embeddings.reshape(embeddings.shape[0],  # Concatenate embeddings into rows
+                                    embeddings.shape[1] * embeddings.shape[2])
 
     return embeddings
 
 
-def init_fm(seed: int, embedding_params: jaxlib.xla_extension.ArrayImpl) -> list:
+def init_fm(seed: int, num_features: int, num_factors: int) -> list:
     """
     Initilaize weights to a factorization machine
 
     Parameters:
     -----------
         seed (int): a seed for the random number generator
-        embeddings (Array): an embedding array
+        num_features: the number of input features
+        num_factors: the number of factors to consider
 
     Returns:
     --------
-        params (list): a list that contains embeddings, the fc parameters, and the 
-            linear layer parameters
+        params (list): a list that contains dictionaries of the w, V, and bias terms for a 
+            factorization machine
     """
     params = []
     new_key = random.PRNGKey(seed)
-    params.append(dict(embedding_weights=embedding_params[0]["embedding_weights"]))
 
-    # The fully connected layer of the factorization machine
-    # Dimensions: number of data points by one
+    w = xavier(seed, num_features, 1)
     new_seed = int(random.randint(new_key, (1,), -jnp.inf, jnp.inf)[0])
-    fully_conn = init_embedding_params(new_seed, 
-                                       embedding_params[0]["embedding_weights"]
-                                       .shape[0], 1
-                                    )
-    params.append(dict(embedding_weights=fully_conn[0]["embedding_weights"]))
-
-    new_key, subkey = random.split(new_key)
-    new_seed = int(random.randint(new_key, (1,), -jnp.inf, jnp.inf)[0])
-    linear_layer = xavier(new_seed, 1, 1)
-    params.append(dict(linear_weights=linear_layer, 
-                       biases=jnp.zeros(linear_layer.shape[1])))
+    V = xavier(new_seed, num_features, num_factors)
+    bias = 0.0
+    
+    params.extend([dict(w=w), dict(V=V), dict(bias=bias)])
 
     return params
 
@@ -113,15 +107,15 @@ def foward_fm(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     --------
         scores (Array): an array of raw scores from the factorization machine
     """
-    X_emb = foward_embedding([params[0]], X)
-    fc = jnp.sum(foward_embedding([params[1]], X), axis=1).reshape((-1, 1))
-    linear = params[2]
-    power_of_sums = (jnp.sum(X_emb, axis=1) ** 2).reshape((-1, 1))
-    sums_of_powers = jnp.sum(X_emb ** 2, axis=1).reshape((-1, 1))
-    linear_out = jnp.dot(fc, linear["linear_weights"]) + linear["biases"]
-    raw_output = 0.5 * jnp.sum(power_of_sums - sums_of_powers, axis=1)
+    w, v, b = params
+    linear_term = jnp.dot(X, w["w"]) + b["bias"]
+    squares_of_sums = jnp.dot(X, v["V"])**2
+    sums_of_squares = jnp.dot(X**2, v["V"]**2)
 
-    return jnp.sum(linear_out + raw_output, axis=1)
+    # Calculate pairwise interactions
+    interactions = 0.5 * (squares_of_sums - sums_of_squares).sum(axis=1)
+
+    return (linear_term.T + interactions).T
 
 
 def init_mlp_params(seed: int, layer_widths: list[int]) -> list:
@@ -186,7 +180,7 @@ def foward_mlp(params: list, X: jax.Array, dropout: int=0.01,
     return x
 
 
-def init_deep_fm(vocab_length: int, hidden_factors: int, layer_widths: list[int], 
+def init_deep_fm(vocab_length: int, num_features: int, num_factors: int, 
                  seeds: tuple[int]=(1, 42, 99)) -> tuple:
     """
     Initialize parameters for a deep factorization machine
@@ -194,10 +188,8 @@ def init_deep_fm(vocab_length: int, hidden_factors: int, layer_widths: list[int]
     Parameters:
     -----------
         vocab_length (int): the number of unique values across all features
-        hidden_factors (int): the number of hidden factors to consider
-        layer_widths (list[int]): dimensions for MLP layers, which should be 
-            [num_input_features, desired_output, desired_output = new_input, 
-            new_desired_output, ...]
+        num_features (int): the number of features in the dataset
+        num_factors (int): the number of hidden factors to consider
         seeds (tuple[int]): a tuple of three integers to use for initialization
 
     Returns:
@@ -205,8 +197,10 @@ def init_deep_fm(vocab_length: int, hidden_factors: int, layer_widths: list[int]
         params (tuple): parameters for the embeddings, MLP, and factorization model
     """
     seed_1, seed_2, seed_3 = seeds
-    embedding_params = init_embedding_params(seed_1, vocab_length, hidden_factors)
-    fm_params = init_fm(seed_2, embedding_params)
+    embedding_params = init_embedding_params(seed_1, vocab_length, num_factors)
+    n_in = embedding_params[0]['embedding_weights'].shape[1]
+    layer_widths = [n_in * num_features, 128, 128, 64, 64, 32, 32, 1]
+    fm_params = init_fm(seed_2, num_features * n_in, num_factors)
     mlp_params = init_mlp_params(seed_3, layer_widths)
 
     return embedding_params, fm_params, mlp_params
@@ -224,9 +218,10 @@ def foward_deep_fm(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl
     --------
         predictions (jax.Array): predicted probabilities of users RSVPing to events
     """
-    _, fm_params, mlp_params = params
-    fm_out = foward_fm(fm_params, X)
-    mlp_out = foward_mlp(mlp_params, X)
+    embedding_params, fm_params, mlp_params = params
+    embeddings = foward_embedding(embedding_params, X)
+    fm_out = foward_fm(fm_params, embeddings)
+    mlp_out = foward_mlp(mlp_params, embeddings)
     y = jax.nn.sigmoid(fm_out + mlp_out.T).T
 
     return y
