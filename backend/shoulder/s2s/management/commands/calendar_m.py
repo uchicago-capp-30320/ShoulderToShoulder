@@ -22,4 +22,3 @@ class Command(BaseCommand):
         
         except Exception as e:
             self.stdout.write(self.style.ERROR('Error importing data: {}'.format(str(e))))
-

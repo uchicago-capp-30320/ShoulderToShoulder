@@ -359,3 +359,57 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(token=token)
         
         return queryset
+    
+class EventSuggestionsViewSet(viewsets.ModelViewSet):
+    queryset = EventSuggestion.objects.all()
+    serializer_class = EventSuggestion
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def populate_suggestions_table(self, request, *args, **kwargs):
+        user_id = request.query_params.get('user_id')
+        
+        # Query Onboarding model for user's preferences
+        onboarding_data = Onboarding.objects.get(user_id=user_id)
+        
+        if onboarding_data:
+            calendar_data = Calendar.objects.all()
+            
+            user_availability = Availability.objects.filter(user_id=user_id)
+            
+            event_suggestions_data = {
+                'user_id': User.objects.get(pk=user_id)
+            }
+
+            
+            time_period_mapping = {
+                'early_morning': [5, 6, 7, 8],
+                'morning': [9, 10, 11],
+                'afternoon': [12, 13, 14, 15, 16],
+                'evening': [17, 18, 19],
+                'night': [20, 21, 22],
+                'late_night': [23, 0, 1, 2, 3, 4]
+            }
+            
+            for availability in user_availability:
+                # should iterate in order beginning with Monday
+                day_of_week = availability.calendar.day_of_week
+                hour = availability.calendar.hour
+                
+                # grabs the time period associated with the given time 
+                time_period = next((period for period, hours in time_period_mapping.items() if hour in hours), None)
+                
+                preference_field = f"pref_{day_of_week.lower()}_{time_period}"
+                
+                event_suggestions_data[preference_field] = availability.available
+                
+            
+                
+            serializer = EventSuggestionsSerializer(data=event_suggestions_data)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=201)
+            else:
+                return Response({"error": "Serializer Error"}, status=400)
+        else:
+            return Response({"error": "Onboarding not completed"}, status=400)

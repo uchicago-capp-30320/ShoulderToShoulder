@@ -70,7 +70,7 @@ class Onboarding(models.Model):
     event_notification = models.CharField(choices=EVENT_NOTIFICATIONS, max_length=100, null=True, blank=True)
 
     # hobbies stored as JSON or use ManyToManyField if applicable
-    most_interested_hobby_types = models.ManyToManyField(HobbyType, blank=True, related_name='most_interested_hobby_types')
+    most_interested_hobby_types = models.ManyToManyField(HobbyType, blank=True)
     most_interested_hobbies = models.ManyToManyField(Hobby, blank=True, related_name='most_interested_hobbies')
     least_interested_hobbies = models.ManyToManyField(Hobby, blank=True, related_name='least_interested_hobbies')
 

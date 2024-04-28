@@ -24,10 +24,10 @@ class Calendar(models.Model):
         return 'Day of Week {}, Hour {}'.format(self.day_of_week, self.hour)
     
     def save(self, *args, **kwargs):
-         if not self.pk:  # Only populate on creation, not on update
+         if not self.pk:  # only populate on creation, not on update
             for day in self.DAY_CHOICES:
                 for hour in range(24):
-                    self.pk = None  # Reset primary key to create a new record
+                    self.pk = None  # reset primary key to create a new record
                     self.day_of_week = day[0]
                     self.hour = str(hour)
                     super().save(*args, **kwargs)
