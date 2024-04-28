@@ -30,7 +30,10 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -45,17 +48,42 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     'rest_framework_simplejwt',
+    "corsheaders",
+    "storages",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "s2s.middleware.ApplicationTokenMiddleware",
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "POST",
+    "PUT",
+)
+
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "authorization",
+    "content-type",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+    "x-app-token",
+)
 
 ROOT_URLCONF = "ShoulderToShoulder.urls"
 
@@ -157,6 +185,8 @@ SIMPLE_JWT = {
 # Configure AWS S3 settings
 AWS_STORAGE_BUCKET_NAME = 's2s-profile-photos'
 AWS_S3_REGION_NAME = 'us-east-2' 
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 
 # Use S3 storage for media files
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

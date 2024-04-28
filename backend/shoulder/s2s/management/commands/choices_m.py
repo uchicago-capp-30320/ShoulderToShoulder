@@ -1,12 +1,13 @@
 from csv import reader
 from s2s.db_models import Choice
+import os
 
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
     help = "Seed choice data from CSV files"
     def add_arguments(self, parser):
-        parser.add_argument('file_path', type=str, help='Path to the CSV file')
+        parser.add_argument('file_path', nargs='?', type=str, help='Path to the CSV file', default='s2s/management/migration_files/choices.csv')
 
 
     def handle(self, *args, **kwargs):
@@ -40,4 +41,3 @@ class Command(BaseCommand):
         
         except Exception as e:
             self.stdout.write(self.style.ERROR('Error importing data: {}'.format(str(e))))
-
