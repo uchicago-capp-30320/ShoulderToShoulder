@@ -285,5 +285,4 @@ export class OnboardingService {
     // send availability data to the backend
     this.calendarService.updateAvailability();
   }
-
 }

@@ -29,7 +29,14 @@ export class OnboardingComponent implements OnInit{
   maxPage: number = 4;
   showConfirm: boolean = false;
   showInvalidDialog: boolean = false;
+  showExit: boolean = false;
   invalidDialogMessage: string = "Please fill out all required fields.";
+  progressBarColorMap: { [index: number]: string[] } = {
+    1: ['#104C56', '#FFECD1'],
+    2: ['#166A79', '#FFECD1'],
+    3: ['#1C889B', '#FFECD1'],
+    4: ['#23A6BE', '#001524'],
+  }
 
   constructor(
     public onboardingService: OnboardingService,
@@ -117,6 +124,13 @@ export class OnboardingComponent implements OnInit{
    */
   showConfirmDialog() {
     this.showConfirm = true;
+  }
+
+  /**
+   * Shows the exit dialog.
+   */
+  showExitDialog() {
+    this.showExit = true;
   }
 
   /**

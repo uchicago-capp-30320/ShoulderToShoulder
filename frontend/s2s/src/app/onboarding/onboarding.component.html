@@ -1,8 +1,19 @@
 <main style="margin-bottom: 3rem;">
     <!-- Exit Button -->
     <div *ngIf="this.page > -1 && this.page <= maxPage" class="exitDiv">
-        <button id="exit-button" pButton (click)="exitOnboarding()" class="exitButton">Exit Onboarding</button>
+        <button id="exit-button" pButton (click)="showExitDialog()" class="exitButton">Exit Onboarding</button>
     </div>
+
+    <!-- Confirmation dialog -->
+    <p-dialog header="Are you sure you want to exit onboarding?" [(visible)]="showExit" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p class="m-0">All of your current responses will be saved. If your onboarding is not complete, you will need to complete it the next time you log in to continue to the application.</p>
+        <p class="m-0">Press confirm to exit onboarding.</p>
+
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" class="p-button-text" (click)="showExit = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="exitOnboarding()" class="confirmButton">Confirm</button>
+        </div>
+    </p-dialog>
 
     <!-- Intro message -->
     <div *ngIf="this.page === 0" class="onboardingIntro">
@@ -22,27 +33,28 @@
         <p class="subtitle dark-text"> To get started, we'd like to learn a few things about you. These surveys will help us calibrate event recommendations to your specific preferences. </p>
     </div>
 
+    <!-- Progress bar -->
+    <div *ngIf="this.page > 0 && this.page <= maxPage">
+        <app-progress-indicator [current]="page" [max]="maxPage" [display]="true" [color]="progressBarColorMap[page][0]" [textColor]="progressBarColorMap[page][1]"></app-progress-indicator>
+    </div>
+
     <!-- Preferences/Interests survey (First page) -->
     <div *ngIf="this.page === 1">
-        <app-progress-indicator [current]="1" [max]="4" [display]="true" color="#104C56"></app-progress-indicator>
         <app-preferences-survey></app-preferences-survey>
     </div>
 
     <!-- Demographics survey (Second page) -->
     <div *ngIf="this.page === 2" style="width: 100%; ">
-        <app-progress-indicator [current]="2" [max]="4" [display]="true" color="#166A79"></app-progress-indicator>
         <app-demographics-survey></app-demographics-survey>
     </div>
 
     <!-- Event availability survey (Third page) -->
     <div *ngIf="this.page === 3">
-        <app-progress-indicator [current]="3" [max]="4" [display]="true" color="#1C889B"></app-progress-indicator>
         <app-event-availability-survey></app-event-availability-survey>
     </div>
 
     <!-- Scenarios survey (Fourth page) -->
     <div *ngIf="this.page === 4">
-        <app-progress-indicator [current]="4" [max]="4" [display]="true" color="#23A6BE" textColor="#001524"></app-progress-indicator>
         <app-scenarios-survey></app-scenarios-survey>
     </div>
 
