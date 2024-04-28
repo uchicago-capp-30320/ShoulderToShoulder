@@ -1,0 +1,49 @@
+name,scenario form,max_participants,type
+Arcade bar,an arcade bar,10,GAMING
+Art Museums,an art museum,10,ARTS AND CULTURE
+Attending Book Signing,a book signing,5,LITERATURE
+Attending Neighborhood Parade,a neighborhood parade,20,COMMUNITY EVENTS
+Biking,go on a bike ride,10,SPORT/EXERCISE
+Board Games,play board games,4,GAMING
+Book Club,a book club,10,LITERATURE
+Bouldering,go bouldering,5,SPORT/EXERCISE
+Bowling,go bowling,8,SPORT/EXERCISE
+Chess,play chess,1,GAMING
+City tour ,a city tour,5,HISTORY AND LEARNING
+Collaging,a collaging circle,5,CRAFTING
+Comedy Clubs,a comedy club,5,ARTS AND CULTURE
+Concert,a concert,20,ARTS AND CULTURE
+Exploring a Nearby Town,explore a nearby town,5,TRAVEL
+Exploring breweries,explore breweries,5,FOOD AND DRINK
+Gardening,go gardening,5,OUTDOORS
+Getting coffee,get coffee,5,FOOD AND DRINK
+Going to the beach,go to the beach,10,OUTDOORS
+Hiking,go on a hike,10,SPORT/EXERCISE
+History Museums,a history museum,10,HISTORY AND LEARNING
+Jazz Concerts,go to a jazz concert,10,ARTS AND CULTURE
+Jigsaw Puzzles,do a jigsaw puzzle,5,GAMING
+Knitting,a knitting circle,5,CRAFTING
+Live ameatur sporting event,an ameatur sporting event,10,SPORT/EXERCISE
+Picnic,go on a picnic,5,OUTDOORS
+Playing baseball/softball,play softball/baseball,10,SPORT/EXERCISE
+Playing basketball,play basketball,10,SPORT/EXERCISE
+Playing Soccer,play soccer,11,SPORT/EXERCISE
+Playing Tennis,play tennis,4,SPORT/EXERCISE
+Playing volleyball,play vollyball,10,SPORT/EXERCISE
+Poetry Writing,attend a poetry workshop,5,LITERATURE
+Professional Sporting Events,a professional sporting event,20,SPORT/EXERCISE
+Quilting,a quilting circle,5,CRAFTING
+Role Playing Video Games,play a role-playing video game,10,GAMING
+Rollerskating,go rollerskating,5,SPORT/EXERCISE
+Running (club),a running club,10,SPORT/EXERCISE
+Skateboarding,go skateboarding,5,SPORT/EXERCISE
+Swimming,go swimming,10,SPORT/EXERCISE
+Taking Cooking Classes,take a cooking class,5,COOKING/BAKING
+Trying New Restaurants,try a new restaurant,5,COOKING/BAKING
+Volunteer Work,volunteer,10,COMMUNITY EVENTS
+Volunteering at an animal shelter,volunteer at an animal shelter,10,COMMUNITY EVENTS
+Walking (club),a walking club,10,SPORT/EXERCISE
+Watching Ballet,see a ballet performance,5,ARTS AND CULTURE
+Watching Musicals,see a musical,5,ARTS AND CULTURE
+Watching Opera,see an opera performance,5,ARTS AND CULTURE
+Watching Plays,see a play,5,ARTS AND CULTURE

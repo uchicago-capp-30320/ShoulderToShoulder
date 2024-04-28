@@ -1,0 +1,152 @@
+.scenario-form {
+    background-color: #23A6BE;
+    width: 70%;
+    height: auto;
+    padding: 2rem;
+    border-radius: 20px;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+.label {
+    margin-bottom: 5px;
+    text-align: left;
+    color: #001524;
+}
+
+.event-button {
+    background-color: #001524;
+    border: none;
+}
+
+.event-button:hover {
+    background-color: #001524a2;
+}
+
+.selected-button {
+    background-color: #001524a2;
+    box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.1), 2px 2px 4px 2px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.p-error {
+    text-align: left;
+}
+
+.required {
+    color: rgb(231, 75, 75);
+}
+
+h3 {
+    text-align: center;
+    margin: 0;
+}
+
+p {
+    text-align: center;
+}
+
+.nextButton {
+    background-color: #001524;
+    border-color: #001524;
+    color: #26c6e2;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: fit-content;
+    text-align: right;
+    font-weight: normal;
+    font-size: 15px;
+}
+
+.nextButtonDiv {
+    margin-left: auto;
+
+}
+
+.prevButton {
+    background-color: #78290f00;
+    border-color: #001524;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: fit-content;
+    text-align: right;
+    font-weight: normal;
+    font-size: 15px;
+}
+
+.prevButton:disabled {
+    border-color:#00152499
+}
+
+.prevButtonDiv {
+    margin-right: auto;
+}
+
+.buttons {
+    display: flex;
+    width: 100%;
+    margin-top: 1.5rem;
+    font-size: smaller;
+}
+
+label.ml-2 {
+    margin-left: 5px;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box {
+    width: 25px;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight {
+    border-color: #15616D;
+    background: #15616D;
+}
+
+::ng-deep .p-radiobutton .p-radiobutton-box:hover {
+    border-color: #15616D;
+}
+
+.scenarioDropdown {
+    width: 40%;
+    background: #FF7D00;
+}
+
+::ng-deep .p-dropdown {
+    background: none;
+    border-color: #001524;
+}
+
+::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+    color: #001524;
+}
+
+::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+::ng-deep .p-dropdown .p-dropdown-trigger {
+    color: #001524;
+}

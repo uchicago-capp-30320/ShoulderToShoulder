@@ -1,0 +1,99 @@
+.buttonsDiv {
+    position: relative;
+    bottom: 0; 
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* Adjust alignment as per your requirement */
+}
+
+.nextButtonDiv {
+    margin-left: auto;
+}
+
+.nextButton {
+    background-color: #FF7D00;
+    border-color: #FF7D00;
+}
+
+.nextButton:hover {
+    background-color: #ff7b0090;
+    border-color: #ff7b0090;
+    left: 10nx;
+}
+
+.prevButton {
+    background-color: #78290F;
+    border-color: #78290F;
+}
+
+.prevButton:hover {
+    background-color: #78290fb3;
+    border-color: #78290fb3;
+    right: 10px;
+}
+
+.onboardingIntro {
+    margin-top: 12rem;
+    margin-bottom: 10rem;
+}
+
+.onboardingOutro {
+    margin-top: 12rem;
+    margin-bottom: 10rem;
+}
+
+
+.confirmButton {
+    background-color: #15616D;
+    border-color: #15616D;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.confirmButton:hover {
+    background-color: #15616db3;
+    border-color: #15616db3;
+}
+
+.cancelButton {
+    background: none;
+    border-color: #15616D;
+    color: #15616D;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.cancelButton:hover {
+    background-color: #15616d21;
+    border-color: #15616db3;
+}
+
+.progressIndicator{
+    display: flex;
+    align-items: center;
+    margin-top: 2rem;
+    border: #001524 3px solid;
+    border-radius: 20px;
+    width: 70%;
+}
+
+#progressBar{
+    border-radius: 20px; 
+    background-color: #001524; 
+    text-align: center;
+    color: #FFECD1;
+}
+
+.exitDiv {
+    display: ruby-text;
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.exitButton {
+    background: none;
+    border: 1px solid #15616D;
+    color: #15616D;
+    font-size: 1rem;
+}

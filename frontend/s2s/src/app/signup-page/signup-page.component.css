@@ -1,0 +1,90 @@
+.signup-form {
+    background-color: #15616D;
+    width: 60%;
+    height: auto;
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.field {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-bottom: 5px;
+    text-align: left;
+    color: #FFECD1;
+}
+
+.submit-button {
+    background-color: #FF7D00;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 50%;
+    text-align: center;
+    font-weight: normal;
+}
+
+.p-error {
+    text-align: left;
+}
+
+.required {
+    color: rgb(233, 98, 98);
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to cover the whole application */
+  }
+  
+.loading-overlay-content {
+    background-color: #FFECD1;
+    height: 11rem;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    text-align: center;
+}
+
+.loading-overlay-content p {
+    color: #15616D;
+}
+
+.loading-overlay-content h3 {
+    color: #001524;
+}
+
+.error-message {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: rgb(233, 98, 98);    
+}
