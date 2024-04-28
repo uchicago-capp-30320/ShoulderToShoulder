@@ -10,6 +10,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db import transaction
+import boto3
+
 
 from .serializers import *
 from .db_models import *
@@ -229,11 +231,14 @@ class ScenariosiewSet(viewsets.ModelViewSet):
         return queryset
       
 class ProfilesViewSet(viewsets.ModelViewSet):
-    queryset = Scenarios.objects.all()
-    serializer_class = ScenariosSerializer
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     # add functionality for the photos to be added with s3 boto3
+    def create(self, request, *args, **kwargs):
+        pass
+
 
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"
@@ -321,3 +326,7 @@ class LoginViewSet(viewsets.ViewSet):
                 return Response({'error': 'Invalid credentials'}, status=401)
         else:
             return Response({'error': 'Method not allowed'}, status=405)
+class EventSuggestionsViewSet(viewsets.ModelViewSet):
+    queryset = EventSuggestion.objects.all()
+    serializer_class = EventSuggestion
+    permission_classes = [permissions.IsAuthenticated]

@@ -14,6 +14,7 @@ router.register(r"choices", views.ChoiceViewSet)
 router.register(r"scenarios", views.ScenariosiewSet)
 router.register(r"profiles", views.ProfilesViewSet, basename="profiles")
 router.register(r"zipcodes", views.ZipCodeViewSet, basename="zipcodes")
+router.register(r"eventsuggestions", views.ScenariosiewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

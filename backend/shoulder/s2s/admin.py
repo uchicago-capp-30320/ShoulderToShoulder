@@ -11,6 +11,7 @@ admin.site.register(Onboarding)
 admin.site.register(Choice)
 admin.site.register(Scenarios)
 admin.site.register(Profile)
+admin.site.register(EventSuggestion)
 @admin.register(ApplicationToken)
 class ApplicationTokenAdmin(admin.ModelAdmin):
     list_display = ('name', 'token', 'created_at')

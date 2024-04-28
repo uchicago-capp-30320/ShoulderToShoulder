@@ -28,6 +28,7 @@ class Command(BaseCommand):
                     name, scenario_format, max_participants, _type = row[:4]
                     hobbies.append(Hobby(name=name, scenario_format=scenario_format, max_participants=max_participants, type=_type))
             
+
                 # bulk create hobbies
                 Hobby.objects.bulk_create(hobbies)
                 self.stdout.write(self.style.SUCCESS('Data imported successfully'))

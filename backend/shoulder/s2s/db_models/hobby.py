@@ -3,6 +3,7 @@ from django.db import models
 
 class Hobby(models.Model):
     class HobbyType(models.TextChoices):
+
         CRAFTS = 'Arts & Crafts',
         BOOKS = 'Books',
         COOKING = 'Cooking/Baking',
@@ -18,6 +19,7 @@ class Hobby(models.Model):
 
     name = models.CharField(max_length=100)
     scenario_format = models.CharField(max_length=100, null=True, blank=True, default=None)
+
     max_participants = models.IntegerField()
     type = models.CharField(
         max_length=20,
