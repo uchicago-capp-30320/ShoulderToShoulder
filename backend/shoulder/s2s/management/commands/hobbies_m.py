@@ -33,5 +33,5 @@ class Command(BaseCommand):
                 Hobby.objects.bulk_create(hobbies)
                 self.stdout.write(self.style.SUCCESS('Data imported successfully'))
         
-        except Exception:
-            self.stdout.write(self.style.ERROR('Error importing data'))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR('Error importing data: {}'.format(str(e))))

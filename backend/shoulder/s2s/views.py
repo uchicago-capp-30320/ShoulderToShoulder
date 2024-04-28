@@ -295,7 +295,6 @@ class CreateUserViewSet(viewsets.ModelViewSet):
             return Response(data, status=201)
         return Response(serializer.errors, status=400)
 
-
 class LoginViewSet(viewsets.ViewSet):
     permission_classes = [HasAppToken]
     
@@ -326,6 +325,7 @@ class LoginViewSet(viewsets.ViewSet):
                 return Response({'error': 'Invalid credentials'}, status=401)
         else:
             return Response({'error': 'Method not allowed'}, status=405)
+
 class EventSuggestionsViewSet(viewsets.ModelViewSet):
     queryset = EventSuggestion.objects.all()
     serializer_class = EventSuggestion
