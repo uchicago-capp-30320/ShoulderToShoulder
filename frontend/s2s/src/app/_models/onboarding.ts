@@ -1,5 +1,3 @@
-import { Hobby, HobbyType } from "./hobby"
-
 export interface Onboarding {
     user_id: number | 0,
     onboarded: boolean | false,
@@ -10,6 +8,7 @@ export interface Onboarding {
     distance: string | '',
     similarity_to_group: string | '',
     similarity_metrics: string[] | string | [],
+    pronouns: string | '',
     gender: string[] | string | [],
     gender_description: string | '',
     race: string[] | string | [],
