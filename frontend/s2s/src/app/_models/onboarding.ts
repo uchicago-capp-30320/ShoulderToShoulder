@@ -1,8 +1,11 @@
+import { Hobby, HobbyType } from "./hobby"
+
 export interface Onboarding {
     user_id: number | 0,
     onboarded: boolean | false,
-    most_interested_hobbies: string[] | string | [],
-    least_interested_hobbies: string[] | string | [],
+    most_interested_hobby_types: number[] | [],
+    most_interested_hobbies: number[] | [],
+    least_interested_hobbies: number[] | [],
     num_participants: string[] | string | [],
     distance: string | '',
     similarity_to_group: string | '',

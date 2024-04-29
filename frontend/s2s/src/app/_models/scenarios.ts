@@ -1,7 +1,7 @@
 export interface ScenarioObj {
     user_id: number,
-    hobby1: string,
-    hobby2: string,
+    hobby1: number,
+    hobby2: number,
     distance1: string,
     distance2: string,
     num_participants1: string,

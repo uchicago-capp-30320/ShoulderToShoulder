@@ -26,10 +26,37 @@ class HobbyTypeViewSet(viewsets.ModelViewSet):
     serializer_class = HobbyTypeSerializer
     permission_classes = [HasAppToken]
 
+    def get_queryset(self):
+        queryset = self.queryset
+        types = self.request.GET.getlist('type')
+        ids = self.request.GET.getlist('id')
+
+        if types:
+            queryset = queryset.filter(type__in=types)
+        
+        if ids:
+            queryset = queryset.filter(id__in=ids)
+
+        return queryset
+
 class HobbyViewSet(viewsets.ModelViewSet):
     queryset = Hobby.objects.all()
     serializer_class = HobbySerializer
     permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        names = self.request.GET.getlist('name')
+        print(names)
+        ids = self.request.GET.getlist('id')
+
+        if names:
+            queryset = queryset.filter(name__in=names)
+        
+        if ids:
+            queryset = queryset.filter(id__in=ids)
+
+        return queryset
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()

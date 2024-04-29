@@ -45,8 +45,8 @@ export class Scenario {
 
     public scenarioObj: ScenarioObj = {
         user_id: this.user.id,
-        hobby1: this.hobby1.name,
-        hobby2: this.hobby2.name,
+        hobby1: this.hobby1.id,
+        hobby2: this.hobby2.id,
         distance1: this.distanceMap[this.mileage.toLowerCase()],
         distance2: this.distanceMap[this.mileage.toLowerCase()],
         num_participants1: this.numPeople,

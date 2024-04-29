@@ -144,7 +144,7 @@ export class OnboardingComponent implements OnInit{
    * signing user out.
    */
   exitOnboarding() {
-    let submit = this.page === this.maxPage + 1 ? false : true;
+    let submit = this.page === this.maxPage + 1 ? true : false;
     this.onboardingService.exitOnboarding(submit);
   }
 

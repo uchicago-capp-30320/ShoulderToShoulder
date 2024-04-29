@@ -9,6 +9,7 @@ import { ChoicesService } from '../_services/choices.service';
 
 // helpers
 import { states } from '../_helpers/location';
+import { Hobby, HobbyType } from '../_models/hobby';
 
 @Component({
   selector: 'app-preferences-survey',
@@ -16,9 +17,10 @@ import { states } from '../_helpers/location';
   styleUrls: ['./preferences-survey.component.css']
 })
 export class PreferencesSurveyComponent implements OnInit {
-  hobbies: string[] = [];
-  leastInterestedHobbies: string[] = [];
-  mostInterestedHobbies: string[] = [];
+  hobbies: Hobby[] = [];
+  mostInterestedHobbyTypes: HobbyType[] = [];
+  leastInterestedHobbies: Hobby[] = [];
+  mostInterestedHobbies: Hobby[] = [];
   states = states;
   zipcodeInvalid = false;
   choices: { [index: string]: any[]; } = {};
@@ -34,9 +36,15 @@ export class PreferencesSurveyComponent implements OnInit {
   ngOnInit() {
     this.subscription.add(
       this.hobbyService.preferencesHobbies.subscribe(hobbies => {
-        this.hobbies = hobbies.map(hobby => hobby.name);
+        this.hobbies = hobbies;
         this.mostInterestedHobbies = [...this.hobbies];
         this.leastInterestedHobbies = [...this.hobbies];
+      })
+    );
+
+    this.subscription.add(
+      this.hobbyService.hobbyTypes.subscribe(hobbyTypes => {
+        this.mostInterestedHobbyTypes = hobbyTypes;
       })
     );
     this.getChoices();

@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { EMPTY, race } from 'rxjs';
+import { EMPTY } from 'rxjs';
 
 // services
 import { CalendarService } from './calendar.service';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
+import { HobbyService } from './hobbies.service';
 
 // helpers
 import { NumberRegx } from '../_helpers/patterns';
@@ -16,6 +17,7 @@ import { Scenario } from '../_helpers/scenario';
 import { Onboarding, OnboardingResp } from '../_models/onboarding';
 import { User } from '../_models/user';
 import { getState } from '../_helpers/utils';
+import { Hobby } from '../_models/hobby';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +54,7 @@ export class OnboardingService {
     city: new FormControl(''),
     state: new FormControl(''),
     addressLine1: new FormControl(''),
+    mostInterestedHobbyTypes: new FormControl([], Validators.required),
     mostInterestedHobbies: new FormControl([], Validators.required),
     leastInterestedHobbies: new FormControl([]),
     groupSizes: new FormControl([], Validators.required),
@@ -85,7 +88,9 @@ export class OnboardingService {
     public calendarService: CalendarService,
     public authService: AuthService,
     private http: HttpClient,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private hobbyService: HobbyService,
+
   ) { 
     this.authService.user.subscribe(user => {
       if (user && user.id > -1) {
@@ -150,17 +155,59 @@ export class OnboardingService {
    * @param onboarding 
    */
   setPreferencesForm(onboarding: Onboarding): void {
-    this.preferencesForm.setValue({
+    this.preferencesForm.patchValue({
       zipCode: onboarding.zip_code,
       city: onboarding.city,
       state: getState(onboarding.state),
       addressLine1: onboarding.address_line1,
-      mostInterestedHobbies: onboarding.most_interested_hobbies,
-      leastInterestedHobbies: onboarding.least_interested_hobbies,
       groupSizes: onboarding.num_participants,
       eventFrequency: onboarding.event_frequency,
       eventNotifications: onboarding.event_notification,
       distances: onboarding.distance,
+    });
+
+    this.getMostInterestedHobbies(onboarding.most_interested_hobbies);
+    this.getLeastInterestedHobbies(onboarding.least_interested_hobbies);
+    this.getHobbyTypes(onboarding.most_interested_hobby_types);
+  }
+
+  /**
+   * Gets the user's previously select most interested hobbies from the current, 
+   * randomly generated list of hobbies.
+   * @param ids - The IDs of the selected hobbies.
+   */
+  getMostInterestedHobbies(ids: number[]) {
+    this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+      this.preferencesForm.patchValue({
+        mostInterestedHobbies: hobbies.filter(hobby => ids.includes(hobby.id))
+      });
+    });
+  }
+
+  /**
+   * Gets the user's previously select least interested hobbies from the current, 
+   * randomly generated list of hobbies.
+   * @param ids - The IDs of the selected hobbies.
+   */
+  getLeastInterestedHobbies(ids: number[]) {
+    this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+      this.preferencesForm.patchValue({
+        leastInterestedHobbies: hobbies.filter(hobby => ids.includes(hobby.id))
+      });
+    });
+  }
+
+  /**
+   * Gets the user's previously select most interested hobby types from the current,
+   * randomly generated list of hobby types.
+   * 
+   * @param ids - The IDs of the selected hobby types.
+   */
+  getHobbyTypes(ids: number[]) {
+    this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
+      this.preferencesForm.patchValue({
+        mostInterestedHobbyTypes: hobbyTypes
+      });
     });
   }
 
@@ -168,15 +215,15 @@ export class OnboardingService {
    * Exist onboarding by sending current data to the backend and
    * signing user out.
    */
-  exitOnboarding(submit: boolean = false): void {
+  exitOnboarding(onboarded: boolean = false): void {
     let user = this.authService.userValue;
 
-    if (submit) {
-      this.submitOnboarding(user);
-      this.submitScenarios(user);
-      this.submitAvailabilityForm();
+    this.submitOnboarding(user, onboarded);
+    if (onboarded) { // only submit scenarios if the user has completed the onboarding process
+      this.submitScenarios();
     }
-
+    
+    this.submitAvailabilityForm();
     this.authService.logout();
   }
 
@@ -186,7 +233,7 @@ export class OnboardingService {
   submitOnboardingForms(): void {
     let user = this.authService.userValue;
     this.submitOnboarding(user);
-    this.submitScenarios(user);
+    this.submitScenarios();
     this.submitAvailabilityForm();
   }
 
@@ -197,8 +244,9 @@ export class OnboardingService {
       onboarded: onboarded,
 
       // preferences form
-      most_interested_hobbies: this.getStringToListChar("mostInterestedHobbies", this.preferencesForm),
-      least_interested_hobbies: this.getStringToListChar("leastInterestedHobbies", this.preferencesForm),
+      most_interested_hobby_types: this.getHobbyList("mostInterestedHobbyTypes", this.preferencesForm),
+      most_interested_hobbies: this.getHobbyList("mostInterestedHobbies", this.preferencesForm),
+      least_interested_hobbies: this.getHobbyList("leastInterestedHobbies", this.preferencesForm),
       num_participants: this.getStringToListChar("groupSizes", this.preferencesForm), 
       distance: this.preferencesForm.get('distances')?.value,
       zip_code: this.preferencesForm.get('zipCode')?.value,
@@ -225,6 +273,7 @@ export class OnboardingService {
     }
 
     // send onboarding data to the backend
+    console.log(onboarding)
     this.http.post(this.onboardingUpdateEndpoint, onboarding).pipe(
       catchError(error => {
         console.error('Error submitting onboarding:', error);
@@ -235,6 +284,15 @@ export class OnboardingService {
     });
   }
 
+  
+  getHobbyList(controlName: string, form: FormGroup): number[] {
+    let hobbies = form.get(controlName)?.value;
+    if (!hobbies || hobbies.length == 0) {
+      return [];
+    }
+    return hobbies.map((hobby: Hobby) => hobby.id);
+  }
+  
   getStringToListChar(controlName: string, form: FormGroup): string | string[] {
     let char = form.get(controlName)?.value;
     if (!char || char.length == 0) {
@@ -243,7 +301,7 @@ export class OnboardingService {
     return char; 
   }
 
-  submitScenarios(user: User): void {
+  submitScenarios(): void {
     // collect data
     let scenarioObjs: ScenarioObj[] = [];
 

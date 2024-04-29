@@ -10,9 +10,21 @@ export interface Hobby {
 
 }
 
+export interface HobbyType {
+    id: number;
+    type: string;
+}
+
 export interface HobbyResponse {
     count: number;
     next: string;
     previous: string;
     results: Hobby[];
+}
+
+export interface HobbyTypeResponse {
+    count: number;
+    next: string;
+    previous: string;
+    results: HobbyType[];
 }

@@ -73,6 +73,26 @@
     <h3 class="light-text" style="text-align: center">Event Preferences</h3>
     <p class="light-text subtitle">The following fields are <b>required</b> as they determine your specific event recommendations.</p>
     <form [formGroup]="this.onboardingService.preferencesForm" (ngSubmit)="onSubmit()" class="form-container">
+        <!-- hobby types - most interested -->
+        <div class="field">
+            <label for="mostInterestedHobbyTypes" class="label">
+                Which types of hobbies are you <b>most</b> interested in?<span class="required">* </span> 
+            </label>
+            <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('mostInterestedHobbyTypes')?.dirty && this.onboardingService.preferencesForm.get('mostInterestedHobbyTypes')?.invalid">This field is required</small>
+            <p-multiSelect 
+                [virtualScroll]="true" 
+                [virtualScrollItemSize]="48"
+                [options]="mostInterestedHobbyTypes" 
+                formControlName="mostInterestedHobbyTypes" 
+                placeholder="Choose a hobby type" 
+                autoWidth="false" 
+                [style]="{'width':'100%'}" 
+                [maxSelectedLabels]="3" 
+                required 
+                optionLabel="type">
+            </p-multiSelect>
+        </div>
+        
         <!-- hobbies - most interested -->
         <div class="field">
             <label for="mostInterestedHobbies" class="label">
@@ -97,6 +117,7 @@
                 [style]="{'width':'100%'}" 
                 [maxSelectedLabels]="3" 
                 required 
+                optionLabel="name"
                 (onChange)="getLeastInterestedHobbiesArray()">
             </p-multiSelect>
         </div>
@@ -123,6 +144,7 @@
                 [maxSelectedLabels]="3" 
                 (onChange)="getMostInterestedHobbiesArray()"
                 tooltipStyleClass="customtooltip" 
+                optionLabel="name"
                 tooltipEvent="hover" 
                 pTooltip="This field is optional" >
             </p-multiSelect>
