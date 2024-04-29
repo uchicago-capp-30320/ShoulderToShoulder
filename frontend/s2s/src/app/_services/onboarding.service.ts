@@ -26,6 +26,8 @@ export class OnboardingService {
   onboardingEndpoint = this.apiService.BASE_API_URL + '/onboarding/';
   onboardingUpdateEndpoint = this.apiService.BASE_API_URL + '/onboarding/update/';
   scenariosEndpoint = this.apiService.BASE_API_URL + '/scenarios/';
+  maxDescLen: number = 50;
+  maxAddrLen: number = 100;
 
   // onboarding forms
   public demographicsForm: FormGroup = this.fb.group({
@@ -33,15 +35,15 @@ export class OnboardingService {
     groupSimilarityAttrs: new FormControl([], Validators.required),
     ageRange: new FormControl(''),
     race: new FormControl(''),
-    raceDesc: new FormControl(''),
+    raceDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
     gender: new FormControl(''),
-    genderDesc: new FormControl(''),
+    genderDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
     sexualOrientation: new FormControl(''),
-    sexualOrientationDesc: new FormControl(''),
+    sexualOrientationDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
     religiousAffiliation: new FormControl(''),
-    religiousAffiliationDesc: new FormControl(''),
+    religiousAffiliationDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
     politicalLeaning: new FormControl(''),
-    politicalLeaningDesc: new FormControl(''),
+    politicalLeaningDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
   });
 
   public preferencesForm: FormGroup = this.fb.group({
@@ -51,9 +53,9 @@ export class OnboardingService {
       Validators.required,
       Validators.pattern(NumberRegx)
     ]),
-    city: new FormControl(''),
+    city: new FormControl('', Validators.maxLength(this.maxDescLen)),
     state: new FormControl(''),
-    addressLine1: new FormControl(''),
+    addressLine1: new FormControl('', Validators.maxLength(this.maxAddrLen)),
     mostInterestedHobbyTypes: new FormControl([], Validators.required),
     mostInterestedHobbies: new FormControl([], Validators.required),
     leastInterestedHobbies: new FormControl([]),

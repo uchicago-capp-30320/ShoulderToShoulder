@@ -13,6 +13,7 @@
                 tooltipStyleClass="customtooltip" 
                 tooltipEvent="hover" 
                 pTooltip="This field is optional" 
+                maxlength="100"
             >
         </div>
 
@@ -33,6 +34,7 @@
                 placeholder="Zip Code" 
                 style="width: 100%" 
                 (blur)="getZipCodeData()"
+                maxLength="5"
             >
         </div>
 
@@ -51,6 +53,7 @@
                     tooltipStyleClass="customtooltip" 
                     tooltipEvent="hover" 
                     pTooltip="This field is optional" 
+                    maxlength="50"
                 >
                 <p-dropdown 
                     [options]="states" 
