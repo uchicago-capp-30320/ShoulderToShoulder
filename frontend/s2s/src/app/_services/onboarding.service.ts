@@ -36,6 +36,7 @@ export class OnboardingService {
     ageRange: new FormControl(''),
     race: new FormControl(''),
     raceDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
+    pronouns: new FormControl('', Validators.maxLength(this.maxDescLen)),
     gender: new FormControl(''),
     genderDesc: new FormControl('', Validators.maxLength(this.maxDescLen)),
     sexualOrientation: new FormControl(''),
@@ -140,6 +141,7 @@ export class OnboardingService {
       ageRange: onboarding.age,
       race: onboarding.race,
       raceDesc: onboarding.race_description,
+      pronounts: onboarding.pronouns,
       gender: onboarding.gender,
       genderDesc: onboarding.gender_description,
       sexualOrientation: onboarding.sexual_orientation,
@@ -261,6 +263,7 @@ export class OnboardingService {
       // demographics form
       similarity_to_group: this.demographicsForm.get('groupSimilarity')?.value,
       similarity_metrics: this.getStringToListChar("groupSimilarityAttrs", this.demographicsForm), 
+      pronouns: this.demographicsForm.get('pronouns')?.value,
       gender: this.getStringToListChar("gender", this.demographicsForm), 
       gender_description: this.demographicsForm.get('genderDesc')?.value,
       race: this.getStringToListChar("race", this.demographicsForm), 
