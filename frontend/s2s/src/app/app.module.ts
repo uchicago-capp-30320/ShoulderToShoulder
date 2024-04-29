@@ -53,6 +53,7 @@ import { ProgressIndicatorComponent } from './progress-indicator/progress-indica
 import { AuthInterceptor } from './_helpers/interceptor';
 import { LogInComponent } from './log-in/log-in.component';
 import { AvailabilityDisplayComponent } from './availability-display/availability-display.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { AvailabilityDisplayComponent } from './availability-display/availabilit
     ProgressIndicatorComponent,
     LogInComponent,
     AvailabilityDisplayComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

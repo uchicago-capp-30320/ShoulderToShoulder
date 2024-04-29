@@ -10,6 +10,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { SignupPageComponent } from './signup-page/signup-page.component';
 import { OnboardingComponent } from './onboarding/onboarding.component';
 import { LogInComponent } from './log-in/log-in.component';
+import { ProfileComponent } from './profile/profile.component';
 
 // Routes
 const appRoutes: Routes = [
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
     { path: 'sign-up', component: SignupPageComponent },
     { path: 'onboarding', component: OnboardingComponent, canActivate: [canActivateProfile]},
     { path: 'log-in', component: LogInComponent },
+    { path: 'profile', component: ProfileComponent, canActivate: [canActivateProfile]},
     { path: '', redirectTo: 'home', pathMatch: 'full' }
 ]
 
