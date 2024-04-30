@@ -10,11 +10,21 @@ class Onboarding(models.Model):
     
     Table Columns:
         user_id (str): user ID fk from user table
+        onboarded (bool): has user done onboarding
+        zip_code (str): user zip code
+        city (str): user address city
+        state (str): user address state
+        address_line1 (str): user address line 1
+        event_frequency (str): prefered frequency of events
+        event_notification (str): preferred mode of communicaton from app
         num_participants (str): prefered number of participants
         distance (str): prefered maximum distance to travel for event
         similarity_to_group (int): prefered level of similarity to group
         simialrity_metrics (str): string of list including characteristics user 
             would like to be similar on
+        most_interested_hobby_types: fk to hobby types model
+        most_interested_hobbies: fk to hobby model
+        least_interested_hobbies: fk to hobby model
         [Multiple demographic columns including dropdown answers and 
         user-entered short answer (*_description)]
 

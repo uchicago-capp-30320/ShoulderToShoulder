@@ -15,5 +15,6 @@ admin.site.register(EventSuggestion)
 admin.site.register(ApplicationToken)
 admin.site.register(HobbyType)
 admin.site.register(UserEvents)
+admin.site.register(SuggestionResults)
 class ApplicationTokenAdmin(admin.ModelAdmin):
     list_display = ('name', 'token', 'created_at')

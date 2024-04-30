@@ -28,8 +28,8 @@ class Command(BaseCommand):
                 types_raw = set()
                 types = []
                 for row in csv_reader:
-                    name, scenario_format, max_participants, _type = row[:4]
-                    hobbies_raw.append((name, scenario_format, max_participants, _type))
+                    name, scenario_format, _type = row[:4]
+                    hobbies_raw.append((name, scenario_format, _type))
                     types_raw.add(_type)
 
                 # create types
@@ -40,7 +40,7 @@ class Command(BaseCommand):
 
                 # create hobbies
                 for hobby in hobbies_raw:
-                    name, scenario_format, max_participants, _type = hobby
+                    name, scenario_format, _type = hobby
 
                     # find the ID of the associated type
                     typeObj = HobbyType.objects.filter(type=_type).first()
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                         return
                     
                     # create hobby
-                    hobby = Hobby(name=name, scenario_format=scenario_format, max_participants=max_participants, type=typeObj)
+                    hobby = Hobby(name=name, scenario_format=scenario_format, type=typeObj)
                     hobbies.append(hobby)
                 
                 # bulk create hobbies
