@@ -20,6 +20,8 @@ class Scenarios(models.Model):
         day_of_week2: day of week of event 2
         time_of_day1: time of day of event 1
         time_of_day2: time of day of event 2
+        duration_h1: duration of event 1
+        duration_h2: duration of event 2
         prefers_event1: does participant prefer event 1 over event 2 [0,1]
         preferes_event2: does participant prefer event 2 over event 1 [0,1]
 

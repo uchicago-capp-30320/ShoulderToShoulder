@@ -191,7 +191,6 @@ AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
 # Use S3 storage for media files
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
-# MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
 
 # Default profile picture path
 DEFAULT_PROFILE_IMAGE_PATH = 'default_profile.jpeg'

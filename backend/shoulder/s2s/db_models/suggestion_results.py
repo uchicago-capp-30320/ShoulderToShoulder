@@ -8,10 +8,10 @@ class SuggestionResults(models.Model):
     Creates Django Model to store ML model event suggestions for each user.
 
     Columns:
-        user_id:
-        event_id:
+        user_id: fk to user table
+        event_id: fk to event table
         event_date: datetime of event from Event model
-        probability_of_attendance: [0,1] ML predicted likelihood user will 
+        probability_of_attendance: (0-1) ML predicted likelihood user will 
             attend given event
     '''
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
