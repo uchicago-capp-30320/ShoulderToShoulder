@@ -182,7 +182,7 @@ export class OnboardingService {
       ageRange: this.onboarding.age,
       race: this.onboarding.race,
       raceDesc: this.onboarding.race_description,
-      pronounts: this.onboarding.pronouns,
+      pronouns: this.onboarding.pronouns,
       gender: this.onboarding.gender,
       genderDesc: this.onboarding.gender_description,
       sexualOrientation: this.onboarding.sexual_orientation,
