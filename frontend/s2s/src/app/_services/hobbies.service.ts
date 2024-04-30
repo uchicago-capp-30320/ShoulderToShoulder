@@ -12,6 +12,15 @@ import { Hobby, HobbyResponse, HobbyType, HobbyTypeResponse} from '../_models/ho
 // helpers
 import { getRandomSubset } from '../_helpers/utils';
 
+/**
+ * Service responsible for managing hobbies and hobby types, including fetching 
+ * hobby data from the API.
+ * 
+ * This service interacts with the API service to perform hobby-related HTTP 
+ * requests.
+ * 
+ * @see ApiService
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -34,6 +43,9 @@ export class HobbyService {
     this.loadAllHobbies();
   }
 
+  /**
+   * Loads all hobbies and hobby types from the API.
+   */
   loadAllHobbies(): void {
     this.fetchHobbies(this.hobbyEndpoint).subscribe(hobbies => {
       this.hobbySubject.next(hobbies);
@@ -45,6 +57,12 @@ export class HobbyService {
     });
   }
 
+  /**
+   * Fetches hobbies data from the API.
+   * 
+   * @param url The URL of the API endpoint to fetch hobbies data from.
+   * @returns An Observable of hobbies data as an array.
+   */
   private fetchHobbies(url: string): Observable<Hobby[]> {
     return this.http.get<HobbyResponse>(url, this.httpOptions).pipe(
       switchMap(response => {
@@ -61,6 +79,12 @@ export class HobbyService {
     );
   }
 
+  /**
+   * Fetches hobby types data from the API.
+   * 
+   * @param url The URL of the API endpoint to fetch hobby types data from.
+   * @returns An Observable of hobby types data as an array.
+   */
   private fetchHobbyTypes(url: string): Observable<HobbyType[]> {
     return this.http.get<HobbyTypeResponse>(url, this.httpOptions).pipe(
       switchMap(response => {
@@ -77,6 +101,11 @@ export class HobbyService {
     );
   }
 
+  /**
+   * Generates random subsets of hobbies for preferences and scenarios.
+   * 
+   * @param hobbies The array of hobbies from which to generate subsets.
+   */
   generateHobbies(hobbies: Hobby[]) {
     if (!hobbies.length) return;  // Prevent running on empty arrays
   
@@ -89,6 +118,13 @@ export class HobbyService {
     this.scenarioHobbiesSubject.next(getRandomSubset(remainingHobbies, 20));
   }
 
+  /**
+   * Fetches filtered hobbies data from the API based on provided parameters.
+   * 
+   * @param names An array of hobby names to filter by.
+   * @param ids An array of hobby IDs to filter by.
+   * @returns An Observable of filtered hobbies data as an array.
+   */
   getFilteredHobbies(names?: string[], ids?: number[]): Observable<Hobby[]> {
     let parameters: string[] = []
     if (names) {
@@ -109,6 +145,13 @@ export class HobbyService {
     return this.fetchHobbies(url);
   }
 
+  /**
+   * Fetches filtered hobby types data from the API based on provided parameters.
+   * 
+   * @param names An array of hobby type names to filter by.
+   * @param ids An array of hobby type IDs to filter by.
+   * @returns An Observable of filtered hobby types data as an array.
+   */
   getFilteredHobbyTypes(names?: string[], ids?: number[]): Observable<HobbyType[]> {
     let parameters: string[] = []
     if (names) {

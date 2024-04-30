@@ -6,6 +6,13 @@ import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 // services
 import { ApiService } from './api.service';
 
+/**
+ * Service responsible for managing choices data, including fetching choices from the API.
+ * 
+ * This service interacts with the API service to perform choices-related HTTP requests.
+ * 
+ * @see ApiService
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -26,9 +33,7 @@ export class ChoicesService {
    }
 
   /**
-   * Gets the choices from the choices API.
-   * 
-   * @returns The choices data.
+   * Gets the choices data from the choices API and updates the choices subject.
    */
   getChoices() {
     let columnMap: {[index: string]: any[]} = {
@@ -65,6 +70,13 @@ export class ChoicesService {
     });
   }
 
+  /**
+   * Fetches choices for a specific column from the API.
+   * 
+   * @param url The URL of the API endpoint to fetch choices from.
+   * @param column The column for which choices are to be fetched.
+   * @returns An Observable of choices data as an array.
+   */
   private fetchChoices(url: string, column: string): Observable<any[]> {
     return this.http.get<any[]>(`${url}/?column=${column}`, this.httpOptions).pipe(
       switchMap(response => {

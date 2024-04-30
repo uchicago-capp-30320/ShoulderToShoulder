@@ -11,6 +11,16 @@ import { ApiService } from './api.service';
 import { User, UserSignUp, UserLogIn, UserResponse } from '../_models/user';
 import { OnboardingResp } from '../_models/onboarding';
 
+/**
+ * Service responsible for user authentication and authorization.
+ * Handles user sign-up, login, logout, and provides information about the 
+ * user's authentication status.
+ * 
+ * This service interacts with the API service to perform authentication-related 
+ * HTTP requests.
+ * 
+ * @see ApiService
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +42,7 @@ export class AuthService {
    * Signs a user up for the application.
    * 
    * @param user A UserSignUp object containing the user's information.
-   * @returns An Observable of the signed up user.
+   * @returns An Observable of the signed-up user.
    */
   signup(user: UserSignUp): Observable<User> {
     return this.http.post<UserResponse>(this.signupEndpoint, user).pipe(
@@ -74,11 +84,13 @@ export class AuthService {
   }
 
   /**
-   * Returns the user's onboarding status.
+   * Determines the user's onboarding status.
    * 
    * If a user is not onboarded, then when they log in, they are 
    * automatically redirected to the onboarding page. If a user is onboarded,
    * they are taken to their profile page.
+   * 
+   * @returns An Observable<boolean> representing the user's onboarding status.
    */
   getOnboardingStatus(): Observable<boolean> {
     let userValue = this.userValue;
@@ -99,7 +111,9 @@ export class AuthService {
   }
 
   /**
-   * Returns the user's information.
+   * Extracts the user's information.
+   * 
+   * @returns The user object containing user information.
    */
   get userValue(): User {
     let userStr = localStorage.getItem('user');
