@@ -62,9 +62,9 @@ describe('ScenariosSurveyComponent', () => {
   });
 
   it('should correctly get a random hobby', () => {
-    let hobby1: Hobby = { id: 0, name: 'Arcade bar', scenario_format: 'an arcade bar', max_participants: 10, type: 'GAMING' };
-    let hobby2: Hobby = { id: 1, name: 'Art Museums', scenario_format: 'an art museum', max_participants: 10, type: 'ARTS AND CULTURE' };
-    let hobby3: Hobby = { id: 2, name: 'Attending Book Signing', scenario_format: 'a book signing', max_participants: 5, type: 'LITERATURE' };
+    let hobby1: Hobby = { id: 0, name: 'Arcade bar', scenario_format: 'an arcade bar', type: 'GAMING' };
+    let hobby2: Hobby = { id: 1, name: 'Art Museums', scenario_format: 'an art museum', type: 'ARTS AND CULTURE' };
+    let hobby3: Hobby = { id: 2, name: 'Attending Book Signing', scenario_format: 'a book signing', type: 'LITERATURE' };
 
     component.availableHobbies = [hobby1, hobby2, hobby3];
     component.usedHobbyIndexes = [];
