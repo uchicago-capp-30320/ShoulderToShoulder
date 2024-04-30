@@ -5,7 +5,6 @@ export interface Hobby {
     id: number;
     name: string;
     scenario_format: string;
-    max_participants: number;
     type: string;
 
 }

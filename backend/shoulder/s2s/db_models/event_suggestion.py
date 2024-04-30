@@ -5,8 +5,8 @@ from .event import Event
 
 class EventSuggestion(models.Model):
     '''
-    Creates a Django Model representing the Events table in the Shoulder to 
-    Shoulder Database
+    Creates a Django Model gathering information for ML training for event 
+    suggestions.
 
     Table Columns:
         user_id (fk): user id
@@ -17,7 +17,7 @@ class EventSuggestion(models.Model):
         [prefered distance ranges] (bool): prefered event max distance from 
             user 0 (not preferred) or 1 (preferred)
         [pref_similarity_to_group nums] (bool): degree of similarity user 
-            preferes to event group [1,4] where ower is less similar; 
+            preferes to event group [1,4] where lower is less similar; 
             0 (not preferred) or 1 (preferred)
         [preference similarity categories] (bool): what characteristics user
             would like to be more similar to group on; 0 (not preferred) or 
@@ -100,6 +100,7 @@ class EventSuggestion(models.Model):
     pref_similarity_to_group_2 = models.BooleanField()
     pref_similarity_to_group_3 = models.BooleanField()
     pref_similarity_to_group_4 = models.BooleanField()
+    
     pref_gender_similar = models.BooleanField()
     pref_race_similar = models.BooleanField()
     pref_age_similar = models.BooleanField()
@@ -136,7 +137,7 @@ class EventSuggestion(models.Model):
     num_particip_10to15 = models.BooleanField()
     num_particip_15p = models.BooleanField()
 
-    moday_early_morning = models.BooleanField()
+    monday_early_morning = models.BooleanField()
     monday_morning = models.BooleanField()
     monday_afternoon = models.BooleanField()
     monday_everning = models.BooleanField()
@@ -188,20 +189,5 @@ class EventSuggestion(models.Model):
     duration_6hr = models.BooleanField()
     duration_7hr = models.BooleanField()
     duration_8hr = models.BooleanField()
-    duration_9hr = models.BooleanField()
-    duration_10hr = models.BooleanField()
-    duration_11hr = models.BooleanField()
-    duration_12hr = models.BooleanField()
 
-    attended_event =   models.BooleanField()
-  
-    # event2_id = 
-    # hobby2 = 
-    # distance2, 
-    # num_participants2, 
-    # day_of_week2,
-    # time_of_day2, 
-    # duration2,
-    # max_attendees1, 
-    # prefers_event1,
-    # prefers_event2,
+    attended_event = models.BooleanField()

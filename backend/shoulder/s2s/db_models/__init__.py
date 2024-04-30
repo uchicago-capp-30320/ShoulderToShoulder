@@ -10,3 +10,5 @@ from s2s.db_models.scenarios import Scenarios
 from s2s.db_models.profile import Profile
 from s2s.db_models.app_token import ApplicationToken
 from s2s.db_models.event_suggestion import EventSuggestion
+from s2s.db_models.user_events import UserEvents
+from s2s.db_models.suggestion_results import SuggestionResults

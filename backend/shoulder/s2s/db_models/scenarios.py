@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
 from .hobby import Hobby
 
 class Scenarios(models.Model):
@@ -19,6 +20,8 @@ class Scenarios(models.Model):
         day_of_week2: day of week of event 2
         time_of_day1: time of day of event 1
         time_of_day2: time of day of event 2
+        duration_h1: duration of event 1
+        duration_h2: duration of event 2
         prefers_event1: does participant prefer event 1 over event 2 [0,1]
         preferes_event2: does participant prefer event 2 over event 1 [0,1]
 
@@ -77,6 +80,13 @@ class Scenarios(models.Model):
 
     time_of_day1 = models.CharField(choices=ALLOWED_TOD)
     time_of_day2 = models.CharField(choices=ALLOWED_TOD)
+
+    duration_h1 = models.IntegerField(validators=[
+            MaxValueValidator(8),
+            MinValueValidator(1)])
+    duration_h2 = models.IntegerField(validators=[
+            MaxValueValidator(8),
+            MinValueValidator(1)])
 
     prefers_event1 = models.BooleanField()
     prefers_event2 = models.BooleanField()

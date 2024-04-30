@@ -57,6 +57,8 @@ export class Scenario {
         time_of_day2: this.timeOfDayMap[this.time],
         prefers_event1: false,
         prefers_event2: false,
+        duration_h1: this.duration,
+        duration_h2: this.duration
     };
 
     constructor(
@@ -66,6 +68,7 @@ export class Scenario {
         public day: string,
         public numPeople: string,
         public mileage: string,
+        public duration: number,
         private alteredVariable: string,
         public alteredVariableValue?: string
     ) {}
@@ -82,9 +85,11 @@ export class Scenario {
             this.scenarioObj.time_of_day2 = this.timeOfDayMap[altered];
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b> 
+                for up to ${this.duration} hours.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${altered}</b>.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${altered}</b>
+                for up to ${this.duration} hours.<br><br> 
                `
         }
         
@@ -93,37 +98,52 @@ export class Scenario {
             this.scenarioObj.day_of_week2 = altered;
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${this.day} ${this.time}</b>
+                for up to ${this.duration} hours.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
-                other people at a location that is ${this.mileage} of you on a <b>${altered} ${this.time}</b>.<br><br> 
+                other people at a location that is ${this.mileage} of you on a <b>${altered} ${this.time}</b>
+                for up to ${this.duration} hours.<br><br> 
                `
-        }
-            
+        }   
 
         // altering the number of people
         else if (this.alteredVariable === "numPeople") {
             this.scenarioObj.num_participants2 = altered;
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with <b>${this.numPeople}</b>
-                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
+                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}
+                for up to ${this.duration} hours.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with <b>${altered}</b>
-                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}.<br><br> 
+                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}
+                for up to ${this.duration} hours.<br><br> 
                `
         }
             
-
         // altering the mileage
         else if (this.alteredVariable === "mileage") {
             this.scenarioObj.distance2 = this.distanceMap[altered.toLowerCase()];
             return `You receive an invitation for two different events.<br><br>
                 <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
-                other people at a location that is <b>${this.mileage}</b> of you on a ${this.day} ${this.time}.<br><br> 
+                other people at a location that is <b>${this.mileage}</b> of you on a ${this.day} ${this.time}
+                for up to ${this.duration} hours.<br><br> 
                 <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
-                other people at a location that is <b>${altered}</b> of you on a ${this.day} ${this.time}.<br><br> 
+                other people at a location that is <b>${altered}</b> of you on a ${this.day} ${this.time}
+                for up to ${this.duration} hours.<br><br> 
                `
         }
-            
 
+        // altering the duration
+        else if (this.alteredVariable === "duration") {
+            return `You receive an invitation for two different events.<br><br>
+                <b>Event 1</b>: You are invited to <b>${this.hobby1.scenario_format}</b> with ${this.numPeople}
+                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}
+                for up to <b>${this.duration} hours</b>.<br><br> 
+                <b>Event 2</b>: You are invited to <b>${this.hobby2.scenario_format}</b> with ${this.numPeople}
+                other people at a location that is ${this.mileage} of you on a ${this.day} ${this.time}
+                for up to <b>${altered} hours</b>.<br><br> 
+                `
+        }
+            
         // error
         else
             return `Error: Altered variable ${altered} not found. Please enter

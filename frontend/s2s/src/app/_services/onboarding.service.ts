@@ -12,7 +12,7 @@ import { HobbyService } from './hobbies.service';
 
 // helpers
 import { NumberRegx } from '../_helpers/patterns';
-import { ScenarioObj } from '../_models/scenarios';
+import { ScenarioObj, maxScenarios } from '../_models/scenarios';
 import { Scenario } from '../_helpers/scenario';
 import { Onboarding, OnboardingResp } from '../_models/onboarding';
 import { User } from '../_models/user';
@@ -84,6 +84,10 @@ export class OnboardingService {
     scenario7Choice: new FormControl(undefined, Validators.required),
     scenario8: new FormControl(undefined, Validators.required),
     scenario8Choice: new FormControl(undefined, Validators.required),
+    scenario9: new FormControl(undefined, Validators.required),
+    scenario9Choice: new FormControl(undefined, Validators.required),
+    scenario10: new FormControl(undefined, Validators.required),
+    scenario10Choice: new FormControl(undefined, Validators.required),
   });
   onboarded: boolean = false;
 
@@ -347,7 +351,7 @@ export class OnboardingService {
     // collect data
     let scenarioObjs: ScenarioObj[] = [];
 
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= maxScenarios; i++) {
       let scenario: Scenario = this.scenariosForm.get(`scenario${i}`)?.value;
       if (scenario) {
         let scenarioObj: ScenarioObj = scenario.scenarioObj;
