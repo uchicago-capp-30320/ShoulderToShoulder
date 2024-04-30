@@ -15,5 +15,5 @@ class UserEvents(models.Model):
         ("4", "4")
     )
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    event_id = models.ForeignKey(Event, on_delet=models.CASCADE)
+    event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
     user_rating = models.ForeignKey(choices=ALLOWED_RATINGS)
