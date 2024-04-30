@@ -100,6 +100,7 @@ class EventSuggestion(models.Model):
     pref_similarity_to_group_2 = models.BooleanField()
     pref_similarity_to_group_3 = models.BooleanField()
     pref_similarity_to_group_4 = models.BooleanField()
+    
     pref_gender_similar = models.BooleanField()
     pref_race_similar = models.BooleanField()
     pref_age_similar = models.BooleanField()
@@ -193,7 +194,7 @@ class EventSuggestion(models.Model):
     duration_11hr = models.BooleanField()
     duration_12hr = models.BooleanField()
 
-    attended_event =   models.BooleanField()
+    attended_event = models.BooleanField()
   
     # event2_id = 
     # hobby2 = 
