@@ -1,3 +1,5 @@
+export var maxScenarios = 10;
+
 export interface ScenarioObj {
     user_id: number,
     hobby1: number,
@@ -12,4 +14,6 @@ export interface ScenarioObj {
     time_of_day2: string,
     prefers_event1: boolean,
     prefers_event2: boolean,
+    duration_h1: number,
+    duration_h2: number
 }

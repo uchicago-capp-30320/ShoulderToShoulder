@@ -83,6 +83,7 @@ class Onboarding(models.Model):
     # demographics
     gender = JSONField(null=True, blank=True) 
     gender_description = models.CharField(max_length=50, null=True, blank=True)
+    pronouns = models.CharField(max_length=50, null=True, blank=True)
     race = JSONField(null=True, blank=True) 
     race_description = models.CharField(max_length=50, null=True, blank=True)
     age = models.CharField(max_length=50, null=True, blank=True)

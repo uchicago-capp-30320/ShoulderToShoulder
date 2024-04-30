@@ -9,9 +9,9 @@ import { HobbyService } from '../_services/hobbies.service';
 // helpers
 import { Scenario, ScenarioInterface } from '../_helpers/scenario';
 import { days } from '../_helpers/preferences';
-import { getRandomInt } from '../_helpers/utils';
+import { getRandomInt, range } from '../_helpers/utils';
 import { Hobby } from '../_models/hobby';
-import { getRandomSubset } from '../_helpers/utils';
+import { maxScenarios } from '../_models/scenarios';
 
 /**
  * ScenariosSurveyComponent
@@ -37,9 +37,10 @@ import { getRandomSubset } from '../_helpers/utils';
 export class ScenariosSurveyComponent implements OnInit{
   // scenario information
   scenarioNum = 1;
-  maxScenarios = 8;
+  maxScenarios = maxScenarios;
   scenarios: ScenarioInterface[] = []
   scenarioNavigation: any[] = [];
+  durationMax = 6;
   private subscription = new Subscription();
 
   // hobby information
@@ -69,7 +70,8 @@ export class ScenariosSurveyComponent implements OnInit{
     "time": this.timeCategories,
     "day": days,
     "numPeople": this.groupSizes,
-    "mileage": this.distances
+    "mileage": this.distances,
+    "duration": range(1, this.durationMax+1)
   }
 
   ngOnInit(): void {
@@ -93,8 +95,8 @@ export class ScenariosSurveyComponent implements OnInit{
    * Gets the scenario navigation (e.g., Scenario X of Y).
    */
   getScenarioNavigation() {
-    for (let i = 1; i <= this.maxScenarios; i++) {
-      let nav = {label: `Scenario ${i} of ${this.maxScenarios}`, value: i}
+    for (let i = 1; i <= maxScenarios; i++) {
+      let nav = {label: `Scenario ${i} of ${maxScenarios}`, value: i}
       this.scenarioNavigation.push(nav);
     }
   }
@@ -109,9 +111,9 @@ export class ScenariosSurveyComponent implements OnInit{
 }
 
   /**
-   * Gets 8 scenarios for the form.
+   * Gets maxScenarios scenarios for the form.
    * 
-   * In the scenarios form, the user is presented with 8 scenarios comparing 
+   * In the scenarios form, the user is presented with maxScenarios scenarios comparing 
    * two types of events. Each scenario includes a hobby, a time, a day, the 
    * maximum number of people, and a mileage. In each scenario, one of the
    * variables is altered to create a comparison between the two events.
@@ -119,11 +121,11 @@ export class ScenariosSurveyComponent implements OnInit{
    */
 
   getScenarios() {
-    const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage'];
+    const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage', 'duration'];
     const numVariables: number = alteredVariables.length;
 
     // Generate scenarios using the remaining items
-    for (let i = 0; i < this.maxScenarios; i++) {
+    for (let i = 0; i < maxScenarios; i++) {
       // get the variable to alter
       const typeIndex = i % numVariables;
       let alteredVariable = alteredVariables[typeIndex];
@@ -138,12 +140,14 @@ export class ScenariosSurveyComponent implements OnInit{
       const day = days[getRandomInt(0, days.length - 1)];
       const numPeople = this.groupSizes[getRandomInt(0, this.groupSizes.length - 1)];
       const mileage = this.distances[getRandomInt(0, this.distances.length - 1)];
+      const duration = String(getRandomInt(1, this.durationMax))
 
       let altVariableMap: {[index: string]: string} = {
         "time": time,
         "day": day,
         "numPeople": numPeople,
-        "mileage": mileage
+        "mileage": mileage,
+        "duration": duration
       };
 
       // create the scenario
@@ -155,6 +159,7 @@ export class ScenariosSurveyComponent implements OnInit{
           day, 
           numPeople, 
           mileage, 
+          duration as unknown as number,
           alteredVariable
         );
 
@@ -223,7 +228,7 @@ export class ScenariosSurveyComponent implements OnInit{
    * Moves to the next scenario.
    */
   nextScenario() {
-    if (this.scenarioNum === this.maxScenarios) {
+    if (this.scenarioNum === maxScenarios) {
       return;
     }
     this.scenarioNum++;
@@ -275,7 +280,7 @@ export class ScenariosSurveyComponent implements OnInit{
    * @returns The class for the scenario button.
    */
   getClass(scenario: ScenarioInterface, value: number) {
-    let controlName = `scenario${scenario.id}`;
+    let controlName = `scenario${scenario.id}Choice`;
     let selectedScenario = this.onboardingService.scenariosForm.controls[controlName].value;
     return selectedScenario === value ? 'selected-button' : 'event-button';
   }

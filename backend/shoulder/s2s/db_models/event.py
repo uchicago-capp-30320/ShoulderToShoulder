@@ -17,7 +17,7 @@ class Event(models.Model):
     title = models.CharField(max_length=100)
     datetime = models.DateTimeField()
     duration_h = models.IntegerField(validators=[
-            MaxValueValidator(24),
+            MaxValueValidator(8),
             MinValueValidator(1)])
     address = models.CharField(max_length=200)
     latitude = models.DecimalField(max_digits=12, decimal_places=10)
