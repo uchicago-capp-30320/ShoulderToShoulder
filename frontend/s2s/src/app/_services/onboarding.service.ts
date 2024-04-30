@@ -28,6 +28,7 @@ export class OnboardingService {
   scenariosEndpoint = this.apiService.BASE_API_URL + '/scenarios/';
   maxDescLen: number = 50;
   maxAddrLen: number = 100;
+  onboarding: Onboarding;
 
   // onboarding forms
   public demographicsForm: FormGroup = this.fb.group({
@@ -99,11 +100,45 @@ export class OnboardingService {
     private hobbyService: HobbyService,
 
   ) { 
+    this.onboarding = this.getDefaultOnboarding();
     this.authService.user.subscribe(user => {
       if (user && user.id > -1) {
         this.fetchOnboarding();
       }
     });
+  }
+
+  getDefaultOnboarding(): Onboarding {
+    let defaultOnboarding: Onboarding = {
+      user_id: -1,
+      onboarded: false,
+      most_interested_hobby_types: [],
+      most_interested_hobbies: [],
+      least_interested_hobbies: [],
+      num_participants: [],
+      distance: '',
+      zip_code: '',
+      city: '',
+      state: '',
+      address_line1: '',
+      event_frequency: '',
+      event_notification: '',
+      similarity_to_group: '',
+      similarity_metrics: [],
+      pronouns: '',
+      gender: [],
+      gender_description: '',
+      race: [],
+      race_description: '',
+      age: '',
+      sexual_orientation: '',
+      sexual_orientation_description: '',
+      religion: '',
+      religion_description: '',
+      political_leaning: '',
+      political_description: '',
+    }
+    return defaultOnboarding;
   }
 
   /**
@@ -115,6 +150,9 @@ export class OnboardingService {
    */
   fetchOnboarding(): void {
     let user = this.authService.userValue;
+    if (user.id < 0) {
+      return;
+    }
     this.http.get<OnboardingResp>(`${this.onboardingEndpoint}?user_id=${user.id}`).pipe(
       catchError(error => {
         console.error('Error fetching onboarding:', error);
@@ -122,11 +160,11 @@ export class OnboardingService {
       })
     ).subscribe(onboardingResp => {
       if (onboardingResp) {
-        let onboarding = onboardingResp.results[0];
+        this.onboarding = onboardingResp.results[0];
         console.log('Onboarding fetched successfully!')
-        this.onboarded = onboarding.onboarded;
-        this.setDemographicsForm(onboarding);
-        this.setPreferencesForm(onboarding);
+        this.onboarded = this.onboarding.onboarded;
+        this.setDemographicsForm(this.onboarding);
+        this.setPreferencesForm(this.onboarding);
         this.calendarService.loadAllCalendar();
       }
     });
@@ -139,20 +177,20 @@ export class OnboardingService {
    */
   setDemographicsForm(onboarding: Onboarding): void {
     this.demographicsForm.setValue({
-      groupSimilarity: onboarding.similarity_to_group,
-      groupSimilarityAttrs: onboarding.similarity_metrics,
-      ageRange: onboarding.age,
-      race: onboarding.race,
-      raceDesc: onboarding.race_description,
-      pronounts: onboarding.pronouns,
-      gender: onboarding.gender,
-      genderDesc: onboarding.gender_description,
-      sexualOrientation: onboarding.sexual_orientation,
-      sexualOrientationDesc: onboarding.sexual_orientation_description,
-      religiousAffiliation: onboarding.religion,
-      religiousAffiliationDesc: onboarding.religion_description,
-      politicalLeaning: onboarding.political_leaning,
-      politicalLeaningDesc: onboarding.political_description,
+      groupSimilarity: this.onboarding.similarity_to_group,
+      groupSimilarityAttrs: this.onboarding.similarity_metrics,
+      ageRange: this.onboarding.age,
+      race: this.onboarding.race,
+      raceDesc: this.onboarding.race_description,
+      pronounts: this.onboarding.pronouns,
+      gender: this.onboarding.gender,
+      genderDesc: this.onboarding.gender_description,
+      sexualOrientation: this.onboarding.sexual_orientation,
+      sexualOrientationDesc: this.onboarding.sexual_orientation_description,
+      religiousAffiliation: this.onboarding.religion,
+      religiousAffiliationDesc: this.onboarding.religion_description,
+      politicalLeaning: this.onboarding.political_leaning,
+      politicalLeaningDesc: this.onboarding.political_description,
     });
   }
 
@@ -163,19 +201,19 @@ export class OnboardingService {
    */
   setPreferencesForm(onboarding: Onboarding): void {
     this.preferencesForm.patchValue({
-      zipCode: onboarding.zip_code,
-      city: onboarding.city,
-      state: getState(onboarding.state),
-      addressLine1: onboarding.address_line1,
-      groupSizes: onboarding.num_participants,
-      eventFrequency: onboarding.event_frequency,
-      eventNotifications: onboarding.event_notification,
-      distances: onboarding.distance,
+      zipCode: this.onboarding.zip_code,
+      city: this.onboarding.city,
+      state: getState(this.onboarding.state),
+      addressLine1: this.onboarding.address_line1,
+      groupSizes: this.onboarding.num_participants,
+      eventFrequency: this.onboarding.event_frequency,
+      eventNotifications: this.onboarding.event_notification,
+      distances: this.onboarding.distance,
     });
 
-    this.getMostInterestedHobbies(onboarding.most_interested_hobbies);
-    this.getLeastInterestedHobbies(onboarding.least_interested_hobbies);
-    this.getHobbyTypes(onboarding.most_interested_hobby_types);
+    this.getMostInterestedHobbies(this.onboarding.most_interested_hobbies);
+    this.getLeastInterestedHobbies(this.onboarding.least_interested_hobbies);
+    this.getHobbyTypes(this.onboarding.most_interested_hobby_types);
   }
 
   /**
@@ -246,7 +284,7 @@ export class OnboardingService {
 
   submitOnboarding(user: User, onboarded: boolean = true): void {
     // collect data
-    let onboarding: Onboarding = {
+    this.onboarding = {
       user_id: user.id,
       onboarded: onboarded,
 
@@ -281,7 +319,8 @@ export class OnboardingService {
     }
 
     // send onboarding data to the backend
-    this.http.post(this.onboardingUpdateEndpoint, onboarding).pipe(
+    console.log(this.onboarding)
+    this.http.post(this.onboardingUpdateEndpoint, this.onboarding).pipe(
       catchError(error => {
         console.error('Error submitting onboarding:', error);
         return EMPTY;
