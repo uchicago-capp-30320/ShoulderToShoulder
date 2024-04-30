@@ -30,6 +30,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
+import { TableModule } from 'primeng/table';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -54,6 +55,7 @@ import { AuthInterceptor } from './_helpers/interceptor';
 import { LogInComponent } from './log-in/log-in.component';
 import { AvailabilityDisplayComponent } from './availability-display/availability-display.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ProfileOverviewComponent } from './profile-overview/profile-overview.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +75,7 @@ import { ProfileComponent } from './profile/profile.component';
     LogInComponent,
     AvailabilityDisplayComponent,
     ProfileComponent,
+    ProfileOverviewComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,7 +102,8 @@ import { ProfileComponent } from './profile/profile.component';
     CheckboxModule,
     DialogModule,
     ProgressBarModule,
-    ToastModule
+    ToastModule,
+    TableModule,
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

@@ -1,0 +1,132 @@
+<div class="events-preferences">
+    <!-- Attended events + event preferences (left side) -->
+    <div class="leftside">
+        <!-- attended events -->
+        <div class="content drop-shadow">
+            <div class="first-column">
+                <i class="pi pi-calendar" style="font-size: 3.125rem"></i>
+            </div>
+            <div class="second-column">
+                <p>You have attended {{ numEventsAttended }} event(s)!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming events (right side) -->
+    <div class="leftside">
+        <!-- event preferences -->
+        <div class="content drop-shadow">
+            <div class="first-column">
+                <i class="pi pi-face-smile" style="font-size: 3.125rem"></i>
+            </div>
+            <div class="second-column">
+                <p>You enjoy {{ enjoys }}!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Events -->
+<div class="full-div drop-shadow">
+    <h3>Upcoming Events</h3>
+    <p-table [value]="upcomingEvents" [tableStyle]="{ 'min-width': '30%'}" styleClass="p-datatable-striped p-datatable-md">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Activity</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Additional Event Information</th>
+            </tr>
+        </ng-template>
+
+        <!-- No upcoming events -->
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="4">You have no upcoming events.</td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-event>
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.datetime }}</td>
+                <td>{{ event.address }}</td>
+                <td><button (click)="showAddlEventInformationDialog(event)" class="additional-info link-dark-text"> Additional Information</button></td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Past events -->
+<div class="full-div drop-shadow">
+    <h3>Past Events</h3>
+    <p-table [value]="pastEvents" [tableStyle]="{ 'min-width': '30%'}" styleClass="p-datatable-striped p-datatable-md">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Activity</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Rating</th>
+            </tr>
+        </ng-template>
+
+        <!-- No past events -->
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="4">You have not attended any events.</td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-event>
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ formatDate(event.datetime) }}</td>
+                <td>{{ event.address }}</td>
+                <td>
+                    <ng-container *ngFor="let i of arrayOfRating(event.rating)">
+                        <i class="pi pi-star-fill" style="color: #FF7D00"></i>
+                    </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Group membership -->
+<div class="full-div drop-shadow">
+    <h3>Group Membership</h3>
+    <p-table [value]="groupsService.groups" [tableStyle]="{ 'min-width': '30%'}" styleClass="p-datatable-striped p-datatable-md">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Group Name</th>
+                <th>Total Members</th>
+                <th>Group Page</th>
+            </tr>
+        </ng-template>
+
+        <!-- No group memberships -->
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="3">You are not a member of any groups.</td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-group>
+            <tr>
+                <td>{{ group.group }}</td>
+                <td>{{ group.members }}</td>
+                <td><a href="{{ group.link }}" class="link-dark-text">View Group</a></td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Additional Event Information Dialog -->
+<p-dialog [header]="currentEvent?.title" [(visible)]="showAddlEventInformation" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <div class="event-details">
+        <div><strong>Date:</strong> {{ currentEvent?.datetime }}</div>
+        <div><strong>Duration:</strong> {{ currentEvent?.duration_h }} hour(s)</div>
+        <div><strong>Location:</strong> {{ currentEvent?.address }}</div>
+        <div><strong>Group Size:</strong> {{ currentEvent?.max_attendees }}</div>
+    </div>
+</p-dialog>

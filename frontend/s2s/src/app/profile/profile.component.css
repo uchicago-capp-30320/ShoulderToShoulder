@@ -1,0 +1,61 @@
+.main-content {
+    position: relative;
+    margin-top: 10rem;
+    z-index: 10;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.profile-picture {
+    width: 25rem;
+    border-radius: 20%;
+    margin: 0 auto;
+    display: block;
+}
+
+.navigation {
+    display: flex;
+    background-color: #78290f;
+    height: 5rem;
+    align-items: center;
+    border-radius: 0.625rem;
+    justify-content: space-between;
+    padding: 0.625rem; 
+}
+
+.navigation button {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 0.625rem;
+}
+
+.active {
+    background-color: #FFECD1;
+    border: #FFECD1;
+    color: #78290f;
+    font-weight: 700;
+}
+
+.header-content {
+    width: 100%;
+}
+
+::ng-deep .p-button {
+    background-color: #ae6249;
+    color: #FFECD1;
+    border: 0.063rem solid #78290f;
+}
+
+.leftside {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin-right: 5%;
+    margin-left: 2%;
+}
+
+.rightside {
+    width: 60%;
+    margin-right: 2%
+}

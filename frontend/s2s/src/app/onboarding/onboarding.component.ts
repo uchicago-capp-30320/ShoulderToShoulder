@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { PrimeNGConfig } from "primeng/api"; 
+import { Router } from '@angular/router';
 
 // services
 import { OnboardingService } from '../_services/onboarding.service';
@@ -42,7 +43,8 @@ export class OnboardingComponent implements OnInit{
   constructor(
     public onboardingService: OnboardingService,
     private primengConfig: PrimeNGConfig,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
   }
 
@@ -156,6 +158,11 @@ export class OnboardingComponent implements OnInit{
     this.page = this.maxPage + 1;
     this.onboardingService.submitOnboardingForms()
     console.log("Onboading forms submitted")
+
+    // wait for redirect
+    setTimeout(() => {
+      this.router.navigate(['/profile']);
+    }, 4000);
   }
 
 }

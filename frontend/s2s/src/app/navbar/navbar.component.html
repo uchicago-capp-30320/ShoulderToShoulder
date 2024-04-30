@@ -1,17 +1,30 @@
-<p-menubar [model]="items" styleClass="navbar">
-    <ng-template pTemplate="start">
-        <a [routerLink]="defaultRoute">
-            <img src="assets/logo.png" height="60" class="mr-2" alt="Shoulder To Shoulder Logo"/>
-        </a>
-    </ng-template>
-    <ng-template pTemplate="item" let-item>
-        <a *ngIf="!item?.url" [attr.tabindex]="-1" class="p-menuitem-link flex justify-content-between align-items-center p-3" [routerLink]="item.routerLink">
-            <div *ngIf="item.class" class="{{ item.class }}">
-                <span> {{ item.label }}</span>
+<div class="nav-bar">
+    <p-menubar [model]="items" styleClass="navbar">
+        <ng-template pTemplate="start" *ngIf="!loggedIn">
+            <a [routerLink]="defaultRoute">
+                <img src="assets/logo.png" height="60" class="mr-2" alt="Shoulder To Shoulder Logo"/>
+            </a>
+        </ng-template>
+        <ng-template pTemplate="start" *ngIf="loggedIn">
+            <a [routerLink]="defaultRoute">
+                <img src="{{ profilePictureUrl }}" alt="{{ user?.username }}" class="avatar"/>
+            </a>
+        </ng-template>
+        <ng-template pTemplate="item" let-item>
+            <a *ngIf="!item?.url" [attr.tabindex]="-1" class="p-menuitem-link flex justify-content-between align-items-center p-3" [routerLink]="item.routerLink">
+                <div *ngIf="item.class" class="{{ item.class }}">
+                    <span> {{ item.label }}</span>
+                </div>
+                <div *ngIf="!item.class">
+                    <span> {{ item.label }}</span>
+                </div>
+            </a>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div *ngIf="loggedIn" class="flex justify-content-between align-items-center">
+                <button pButton type="button" class="login-button" (click)="authService.logout()">Log Out</button>
             </div>
-            <div *ngIf="!item.class">
-                <span> {{ item.label }}</span>
-            </div>
-        </a>
-    </ng-template>
-</p-menubar>
+        </ng-template>
+
+    </p-menubar>
+</div>

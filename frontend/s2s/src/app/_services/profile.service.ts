@@ -16,7 +16,9 @@ export class ProfileService {
   constructor(
     private apiService: ApiService,
     private http: HttpClient,
-  ) { }
+  ) {
+    this.getProfilePicture();
+   }
 
   getProfilePicture() {
     let user = localStorage.getItem('user');
@@ -27,7 +29,6 @@ export class ProfileService {
         response => {
           if (response.results.length > 0) {
             let profile = response.results[0];
-            console.log(profile)
             this.profilePicture.next(profile.profile_picture);
           }
         },
