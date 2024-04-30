@@ -85,10 +85,6 @@ export class NavbarComponent implements OnInit {
         routerLink: '/profile'
       },
       {
-        label: 'Groups',
-        routerLink: '/groups'
-      },
-      {
         label: 'Event Creator',
         routerLink: '/event-creator'
       }

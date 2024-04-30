@@ -92,35 +92,6 @@
     </p-table>
 </div>
 
-<!-- Group membership -->
-<div class="full-div drop-shadow">
-    <h3>Group Membership</h3>
-    <p-table [value]="groupsService.groups" [tableStyle]="{ 'min-width': '30%'}" styleClass="p-datatable-striped p-datatable-md">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>Group Name</th>
-                <th>Total Members</th>
-                <th>Group Page</th>
-            </tr>
-        </ng-template>
-
-        <!-- No group memberships -->
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="3">You are not a member of any groups.</td>
-            </tr>
-        </ng-template>
-
-        <ng-template pTemplate="body" let-group>
-            <tr>
-                <td>{{ group.group }}</td>
-                <td>{{ group.members }}</td>
-                <td><a href="{{ group.link }}" class="link-dark-text">View Group</a></td>
-            </tr>
-        </ng-template>
-    </p-table>
-</div>
-
 <!-- Additional Event Information Dialog -->
 <p-dialog [header]="currentEvent?.title" [(visible)]="showAddlEventInformation" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
     <div class="event-details">

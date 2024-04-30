@@ -5,7 +5,6 @@ import { formatDate } from '@angular/common';
 import { AuthService } from '../_services/auth.service';
 import { OnboardingService } from '../_services/onboarding.service';
 import { EventService } from '../_services/event.service';
-import { GroupsService } from '../_services/groups.service';
 import { HobbyService } from '../_services/hobbies.service';
 
 // helpers
@@ -28,7 +27,6 @@ export class ProfileOverviewComponent implements OnInit {
     public authService: AuthService,
     public onboardingService: OnboardingService,
     public eventService: EventService,
-    public groupsService: GroupsService,
     public hobbyService: HobbyService
   ) { }
 
