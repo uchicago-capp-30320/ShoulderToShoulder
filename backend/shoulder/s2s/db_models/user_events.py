@@ -12,7 +12,6 @@ class UserEvents(models.Model):
         ("1", "1"),
         ("2", "2"),
         ("3", "3"),
-        ("3", "3"),
         ("4", "4")
     )
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

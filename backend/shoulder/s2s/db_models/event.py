@@ -25,7 +25,6 @@ class Event(models.Model):
     max_attendees = models.IntegerField(validators=[
             MaxValueValidator(2),
             MinValueValidator(50)])
-    attendees = models.ManyToManyField(User)
     
     def __str__(self) -> str:
         return 'Event name {}, DateTime {}, Duration {}, Address {}, Max Attendees {}, Attendees {}'.format(
