@@ -20,6 +20,7 @@ import { UserUpdate } from '../_models/user';
 })
 export class ProfileSettingsComponent {
   showOnboardingDialog = false;
+  showDeleteDialog = false;
   user = this.authService.userValue;
 
   changePasswordForm = new FormGroup({
@@ -49,6 +50,10 @@ export class ProfileSettingsComponent {
 
   openOnboardingDialog() {
     this.showOnboardingDialog = true;
+  }
+
+  openDeleteDialog() {
+    this.showDeleteDialog = true;
   }
 
   /**
@@ -115,5 +120,12 @@ export class ProfileSettingsComponent {
     console.log('submitting onboarding changes');
     this.showOnboardingDialog = false;
     this.onboardingService.updateOnboarding();
+  }
+
+  deleteAccount() {
+    console.log('deleting account');
+    this.showDeleteDialog = false;
+    this.authService.deleteAccount(this.user);
+    this.authService.logout();
   }
 }

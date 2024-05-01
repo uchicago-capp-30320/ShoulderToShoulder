@@ -40,7 +40,7 @@ export class LogInComponent {
   });
 
   constructor(
-    private route: Router,
+    private router: Router,
     private authService: AuthService,
   ) {}
 
@@ -100,9 +100,9 @@ export class LogInComponent {
       this.showLoginError = false;
       this.authService.getOnboardingStatus().subscribe(onboardingStatus => {
         if (!onboardingStatus) {
-          this.route.navigate(['/onboarding']);
+          this.router.navigate(['/onboarding']);
         } else {
-          this.route.navigate(['/home']);
+          this.router.navigate(['/profile']);
         }
         this.resetForm();
       });

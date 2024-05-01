@@ -158,4 +158,19 @@ export class AuthService {
   updateUser(userUpdate: UserUpdate): Observable<any> {
     return of({"message": "User information updated successfully!"});
   }
+
+  /**
+   * Deletes a user's account.
+   * This function should trigger an endpoint in the backend that deletes the
+   * user's account and erases all instances of that user from the database,
+   * including their availability, events attended, upcoming events, etc.
+   * 
+   * TODO - Implement this method once the user delete endpoint is available.
+   * 
+   * @param user The user to delete.
+   * @returns An Observable of the delete response.
+   */
+  deleteAccount(user: User): Observable<any> {
+    return of({"message": "User deleted successfully!"});
+  }
 }

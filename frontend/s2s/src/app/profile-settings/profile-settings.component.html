@@ -1,4 +1,5 @@
 <div class="settings drop-shadow">
+    <!-- Edit Onboarding Form -->
     <button class="edit-onboarding drop-shadow dark-text" pButton (click)="openOnboardingDialog()">Editing Onboarding Responses</button>
 
     <!-- Change Password Form -->
@@ -117,10 +118,13 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" pButton class="p-button-raised submit-button" [disabled]="changePasswordForm.invalid">Submit</button>
+            <button type="submit" pButton class="p-button-raised submit-button" [disabled]="updateUserInformationForm.invalid">Submit</button>
 
         </form>
     </div>
+
+    <!-- Delete Account Button -->
+    <button class="delete-account drop-shadow" pButton (click)="openDeleteDialog()">Delete my Shoulder to Shoulder Account</button>
 </div>
 
 <!-- Edit Onboarding Form Dialog -->
@@ -132,6 +136,36 @@
         <div class="p-d-flex p-jc-end">
             <button pButton class="cancelButton" type="button" (click)="showOnboardingDialog = false">Cancel</button>
             <button pButton class="confirmButton" type="button" (click)="submitOnboardingChanges()">Submit</button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Delete Account Dialog -->
+<p-dialog class="delete-dialog" header="Are you sure you want to delete your account?" [(visible)]="showDeleteDialog" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <div class="delete-dialog-content">
+        <p>
+            <b>This action cannot be undone.</b>
+        </p>
+        
+        <p>
+            Given our committment to data privacy, by deleting your account, you will be removing all instances of your user's interactions
+            in our databases. This includes all events you have attended, all preferences you have set, and all demographic information you have provided.
+        </p>
+        <p>
+            If you ever wish to return to Shoulder to Shoulder, you will need to create a new account.
+        </p>
+        <p>
+            We appreciate your time with us and hope you have found our platform useful. 
+        </p>
+        <p>
+            <b>If you would like to continue, please click "Delete Account" below.</b>
+        </p>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="p-d-flex p-jc-end">
+            <button pButton class="cancelButton" type="button" (click)="showDeleteDialog = false">Cancel</button>
+            <button pButton class="confirmButton" type="button" (click)="deleteAccount()">Delete Account</button>
         </div>
     </ng-template>
 </p-dialog>
