@@ -1,6 +1,6 @@
-// Description: Utils functions
+// Purpose: Common utility functions.
 import { states } from "./location";
-import { labelValueString } from "./constants";
+import { labelValueString } from "./abstractInterfaces";
 
 /**
  * Get random integer between min and max.
@@ -36,9 +36,9 @@ export function getRandomSubset(arr: any[], size: number) {
 export function shuffleArray(arr: any[]) {
   let shuffled = arr.slice(0), i = arr.length, temp, index;
 
-  // While there remain elements to shuffle...
+  // while there remain elements to shuffle...
   while (i--) {
-    // Pick a remaining element and swap it with the current element.
+    // pick a remaining element and swap it with the current element.
     index = Math.floor((i + 1) * Math.random());
     temp = shuffled[index];
     shuffled[index] = shuffled[i];
@@ -55,16 +55,16 @@ export function shuffleArray(arr: any[]) {
  * @returns The formatted string.
  */
 export function splitString(input: string): string {
-  const index = input.search(/\d/);  // Find the index of the first digit
+  const index = input.search(/\d/);  // find the index of the first digit
   if (index === -1) {
-      return input;  // Return the original input if no digits are found
+      return input;  // return the original input if no digits are found
   }
 
-  // Split the string at the found index
+  // split the string at the found index
   let prefix = input.substring(0, index);
   let suffix = input.substring(index);
 
-  // Capitalize the first letter of the prefix if necessary
+  // capitalize the first letter of the prefix if necessary
   prefix = prefix.charAt(0).toUpperCase() + prefix.slice(1);
 
   return prefix + " " + suffix;

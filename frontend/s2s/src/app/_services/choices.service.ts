@@ -18,11 +18,9 @@ import { ApiService } from './api.service';
 })
 export class ChoicesService {
   endpoint = this.apiService.BASE_API_URL + '/choices';
-  httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
-  };
 
-  private choicesSubject: BehaviorSubject<{ [index: string]: any[]; }> = new BehaviorSubject<{ [index: string]: any[]; }>({});
+  private choicesSubject: BehaviorSubject<{ [index: string]: any[]; }> = 
+    new BehaviorSubject<{ [index: string]: any[]; }>({});
   choices = this.choicesSubject.asObservable();
 
   constructor(
@@ -52,7 +50,7 @@ export class ChoicesService {
       'similarity_attribute': [],
     }
 
-    this.http.get<any>(this.endpoint, this.httpOptions).pipe(
+    this.http.get<any>(this.endpoint).pipe(
       switchMap(response => {
         let results = response.results[0].categories;
         let columnMapKeys = Object.keys(columnMap);
@@ -78,7 +76,7 @@ export class ChoicesService {
    * @returns An Observable of choices data as an array.
    */
   private fetchChoices(url: string, column: string): Observable<any[]> {
-    return this.http.get<any[]>(`${url}/?column=${column}`, this.httpOptions).pipe(
+    return this.http.get<any[]>(`${url}/?column=${column}`).pipe(
       switchMap(response => {
         return of(response);
       }),

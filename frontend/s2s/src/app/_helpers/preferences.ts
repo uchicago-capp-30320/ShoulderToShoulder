@@ -1,5 +1,5 @@
-// Description: Contains the preferences for the user to select from.
-import { labelValueInt, labelValueIntArray } from "./constants";
+// Purpose: Contains the preferences for the user to select from.
+import { labelValueInt, labelValueIntArray } from "./abstractInterfaces";
 
 export var timeCategories: string[] = [
     "Early morning (5-8a)",
@@ -120,3 +120,21 @@ export var formControlFieldMap: { [index: string]: string } = {
     'scenario8': 'Scenario 8',
     'scenario8Choice': 'Scenario 8 Choice'
 };
+
+export var groupSizes = [
+    '1-5',
+    '5-10',
+    '10-15',
+    '15+',
+];
+
+export var distances = [
+    'within 1 mile',
+    'within 5 miles',
+    'within 10 miles',
+    'within 15 miles',
+    'within 20 miles',
+    'within 30 miles',
+    'within 40 miles',
+    'within 50 miles',
+];

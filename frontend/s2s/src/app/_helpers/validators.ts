@@ -1,3 +1,4 @@
+// Purpose: Contains custom validators for Angular forms.
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**

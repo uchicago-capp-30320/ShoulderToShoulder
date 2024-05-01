@@ -8,7 +8,7 @@ import { ApiService } from './api.service';
  * Service for the zipcode API. It calls the zipcodes api endpoint to query 
  * zipcode data.
  * 
- * Example:
+ * @example
  * ```
  * constructor(
  *  private zipcodeService: ZipcodeService,
@@ -21,11 +21,6 @@ import { ApiService } from './api.service';
 })
 export class ZipcodeService {
   enpoint = this.apiService.BASE_API_URL + '/zipcodes';
-  httpOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }
 
   constructor(
     private http: HttpClient,
@@ -40,7 +35,6 @@ export class ZipcodeService {
    */
   getZipcode(zipcode: string) {
     return this.http.get(
-      `${this.enpoint}/?zip_code=${zipcode}`,
-      this.httpOptions,);
+      `${this.enpoint}/?zip_code=${zipcode}`);
   }
 }

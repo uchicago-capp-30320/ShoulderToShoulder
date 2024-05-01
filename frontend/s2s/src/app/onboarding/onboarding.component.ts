@@ -4,8 +4,10 @@ import { PrimeNGConfig } from "primeng/api";
 
 // services
 import { OnboardingService } from '../_services/onboarding.service';
-import { formControlFieldMap } from '../_helpers/preferences';
 import { AuthService } from '../_services/auth.service';
+
+// helpers
+import { formControlFieldMap } from '../_helpers/preferences';
 
 /**
  * OnboardingComponent
@@ -15,10 +17,13 @@ import { AuthService } from '../_services/auth.service';
  * preferences, event availability, and scenarios. Users can navigate between 
  * pages, submit the collected data, and view a confirmation dialog.
  * 
- * Example:
+ * @example
  * ```
  * <app-onboarding></app-onboarding>
  * ```
+ * 
+ * @see OnboardingService
+ * @see AuthService
  */
 @Component({
   selector: 'app-onboarding',
@@ -28,10 +33,13 @@ import { AuthService } from '../_services/auth.service';
 export class OnboardingComponent implements OnInit{
   page: number = -1;
   maxPage: number = 4;
+
   showConfirm: boolean = false;
   showInvalidDialog: boolean = false;
+
   showExit: boolean = false;
   invalidDialogMessage: string = "Please fill out all required fields.";
+
   progressBarColorMap: { [index: number]: string[] } = {
     1: ['#104C56', '#FFECD1'],
     2: ['#166A79', '#FFECD1'],
@@ -56,20 +64,25 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Moves to the next page.
+   * Moves to the next page of the onboarding process.
    */
   nextPage() {
     this.goToTop();
     this.page++;
   }
 
+  /**
+   * Determines if the next button should be disabled.
+   * 
+   * @returns True if the next button should be disabled, false otherwise.
+   */
   nextButtonDisabled(){
     return (this.page === 1 && this.onboardingService.preferencesForm.invalid)
     || (this.page===2 && this.onboardingService.demographicsForm.invalid)
   }
 
   /**
-   * Moves to the previous page.
+   * Moves to the previous page of the onboarding process.
    */
   previousPage() {
     this.goToTop();
@@ -140,8 +153,8 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Exist onboarding by sending current data to the backend and 
-   * signing user out.
+   * Exits onboarding by sending current data to the backend and signing 
+   * user out.
    */
   exitOnboarding() {
     let submit = this.page === this.maxPage + 1 ? true : false;
@@ -149,7 +162,7 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Submits the demographics form.
+   * Submits the onboarding forms.
    */
   onSubmit() {
     this.showConfirm = false;
@@ -157,5 +170,4 @@ export class OnboardingComponent implements OnInit{
     this.onboardingService.submitOnboardingForms()
     console.log("Onboading forms submitted")
   }
-
 }

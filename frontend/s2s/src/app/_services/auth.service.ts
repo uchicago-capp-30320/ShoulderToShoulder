@@ -28,6 +28,7 @@ export class AuthService {
   signupEndpoint = `${this.apiService.BASE_API_URL}/create/`;
   loginEndpoint = `${this.apiService.BASE_API_URL}/login/`;
   onboardingEndpoint = `${this.apiService.BASE_API_URL}/onboarding/`;
+  
   signingUp = new BehaviorSubject<boolean>(false);
   user = new BehaviorSubject<User>(this.userValue);
   userSubject = this.user.asObservable();

@@ -27,9 +27,7 @@ import { getRandomSubset } from '../_helpers/utils';
 export class HobbyService {
   hobbyEndpoint = `${this.apiService.BASE_API_URL}/hobbies/`;
   hobbyTypesEndpoint = `${this.apiService.BASE_API_URL}/hobbytypes/`;
-  httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
-  };
+
   private hobbySubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
   public hobbies: Observable<Hobby[]> = this.hobbySubject.asObservable();
   private hobbyTypesSubject: BehaviorSubject<HobbyType[]> = new BehaviorSubject<HobbyType[]>([]);
@@ -64,7 +62,7 @@ export class HobbyService {
    * @returns An Observable of hobbies data as an array.
    */
   private fetchHobbies(url: string): Observable<Hobby[]> {
-    return this.http.get<HobbyResponse>(url, this.httpOptions).pipe(
+    return this.http.get<HobbyResponse>(url).pipe(
       switchMap(response => {
         const hobbies = response.results;
         const nextUrl = response.next;
@@ -86,7 +84,7 @@ export class HobbyService {
    * @returns An Observable of hobby types data as an array.
    */
   private fetchHobbyTypes(url: string): Observable<HobbyType[]> {
-    return this.http.get<HobbyTypeResponse>(url, this.httpOptions).pipe(
+    return this.http.get<HobbyTypeResponse>(url).pipe(
       switchMap(response => {
         const hobbyTypes = response.results;
         const nextUrl = response.next;

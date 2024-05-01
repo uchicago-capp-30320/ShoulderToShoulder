@@ -16,12 +16,13 @@ import { daysOfTheWeek } from '../_models/calendar';
  * events. It allows users to select their availability for different time 
  * categories on weekdays and weekends.
  * 
- * Example:
+ * @example
  * ```
  * <app-event-availability-survey></app-event-availability-survey>
  * ```
  * 
  * @see OnboardingService
+ * @see CalendarService
  */
 @Component({
   selector: 'app-event-availability-survey',
@@ -191,39 +192,38 @@ export class EventAvailabilitySurveyComponent {
     }
   }
 
-
   /**
    * Updates the times for the weekdays.
    */
   updateWeekdayTimes() {
-    let weekdayTimes: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    for (let controlLabel of this.weekdayFormControlLabelMapList) {
-      // available
-      if (this.generalAvailabilityForm.value[controlLabel.control]) {
-        this.addTimeRange(controlLabel.label, weekdayTimes);
-      } 
-      
-      // unavailable
-      else {
-        this.removeTimeRange(controlLabel.label, weekdayTimes);
-      }
-    }
+    let weekDays: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    this.updateTimes(weekDays, this.weekdayFormControlLabelMapList);
   }
 
   /**
    * Updates the times for the weekends.
    */
   updateWeekendTimes() {
-    let weekendTimes: string[] = ['Saturday', 'Sunday'];
-    for (let controlLabel of this.weekendFormControlLabelMapList) {
+    let weekendDays: string[] = ['Saturday', 'Sunday'];
+    this.updateTimes(weekendDays, this.weekendFormControlLabelMapList);
+  }
+
+  /**
+   * Updates times.
+   * 
+   * @param days the days to update the times for
+   * @param formControlMapList the form control map list for the given days
+   */
+  updateTimes(days: string[], formControlMapList: {control: string, label: string}[]) {
+    for (let controlLabel of formControlMapList) {
       // available
       if (this.generalAvailabilityForm.value[controlLabel.control]) {
-        this.addTimeRange(controlLabel.label, weekendTimes);
+        this.addTimeRange(controlLabel.label, days);
       } 
       
       // unavailable
       else {
-        this.removeTimeRange(controlLabel.label, weekendTimes);
+        this.removeTimeRange(controlLabel.label, days);
       }
     }
   }

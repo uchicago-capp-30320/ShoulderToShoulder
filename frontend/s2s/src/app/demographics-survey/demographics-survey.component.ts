@@ -10,11 +10,15 @@ import { ChoicesService } from '../_services/choices.service';
  * This component handles the survey for users to input their demographic 
  * information. It allows users to select their age range, race, religious 
  * affiliation, gender, sexual orientation, and political affiliation.
+ * The actual demographics survey form is defined in the onboarding service.
  * 
- * Example:
+ * @example
  * ```
  * <app-demographics-survey></app-demographics-survey>
  * ```
+ * 
+ * @see OnboardingService
+ * @see ChoicesService
  */
 @Component({
   selector: 'app-demographics-survey',

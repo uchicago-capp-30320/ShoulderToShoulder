@@ -1,6 +1,4 @@
-/**
- * An interface for representing a hobby that a user can select.
- */
+// Purpose: Interface for hobby and hobby type objects.
 export interface Hobby {
     id: number;
     name: string;

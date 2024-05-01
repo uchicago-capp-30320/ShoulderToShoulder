@@ -1,3 +1,4 @@
+// Purpose: Contains the interface for the Scenario object.
 export var maxScenarios = 10;
 
 export interface ScenarioObj {

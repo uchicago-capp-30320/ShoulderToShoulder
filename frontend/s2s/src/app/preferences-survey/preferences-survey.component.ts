@@ -11,6 +11,24 @@ import { ChoicesService } from '../_services/choices.service';
 import { states } from '../_helpers/location';
 import { Hobby, HobbyType } from '../_models/hobby';
 
+
+/**
+ * Defines the preferences survey component.
+ * 
+ * This component handles the survey for users to input their preferences for 
+ * hobbies, location, and other information. It allows users to select their 
+ * most and least interested hobbies, as well as their location information.
+ * 
+ * @example
+ * ```
+ * <app-preferences-survey></app-preferences-survey>
+ * ```
+ * 
+ * @see OnboardingService
+ * @see HobbyService
+ * @see ZipcodeService
+ * @see ChoicesService
+ */
 @Component({
   selector: 'app-preferences-survey',
   templateUrl: './preferences-survey.component.html',
@@ -21,8 +39,10 @@ export class PreferencesSurveyComponent implements OnInit {
   mostInterestedHobbyTypes: HobbyType[] = [];
   leastInterestedHobbies: Hobby[] = [];
   mostInterestedHobbies: Hobby[] = [];
+
   states = states;
   zipcodeInvalid = false;
+
   choices: { [index: string]: any[]; } = {};
   private subscription = new Subscription();
 
@@ -34,6 +54,7 @@ export class PreferencesSurveyComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // get hobbies and hobby types
     this.subscription.add(
       this.hobbyService.preferencesHobbies.subscribe(hobbies => {
         this.hobbies = hobbies;
@@ -50,6 +71,10 @@ export class PreferencesSurveyComponent implements OnInit {
     this.getChoices();
   }
 
+
+  /**
+   * Gets the choices from the choices service.
+   */
   getChoices() {
     this.choicesService.choices.subscribe(choices => {
       this.choices = choices;
@@ -60,14 +85,18 @@ export class PreferencesSurveyComponent implements OnInit {
    * Extracts an array of hobbies that are in the most interested hobbies array.
    */
   getMostInterestedHobbiesArray() {
-    this.mostInterestedHobbies = this.hobbies.filter(hobby => !this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.value.includes(hobby));
+    this.mostInterestedHobbies = this.hobbies
+    .filter(hobby => !this.onboardingService.preferencesForm
+      .get('leastInterestedHobbies')?.value.includes(hobby));
   }
 
   /**
    * Extracts an array of hobbies that are not in the most interested hobbies array.
    */
   getLeastInterestedHobbiesArray() {
-    this.leastInterestedHobbies = this.hobbies.filter(hobby => !this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.value.includes(hobby));
+    this.leastInterestedHobbies = this.hobbies
+    .filter(hobby => !this.onboardingService.preferencesForm
+      .get('mostInterestedHobbies')?.value.includes(hobby));
   }
 
   /**
@@ -75,10 +104,8 @@ export class PreferencesSurveyComponent implements OnInit {
    * the zipcode API endpoint to get the city and state data.
    * 
    * @returns null if the zip code is null.
-   * 
    */
   getZipCodeData() {
-    // extracts the zipcode from the form
     let zipCode = this.onboardingService.preferencesForm.get('zipCode')?.value
     if (zipCode == null) {
       return
@@ -86,8 +113,6 @@ export class PreferencesSurveyComponent implements OnInit {
 
     // sets city and state based on the response from the API
     this.zipCodeService.getZipcode(zipCode).subscribe(data => {
-
-      // ZipCodeStack response is JSON - need to parse
       try {
         let results = (data as any).results
 
@@ -119,5 +144,4 @@ export class PreferencesSurveyComponent implements OnInit {
   onSubmit() {
     console.log(this.onboardingService.preferencesForm.value);
   }
-
 }
