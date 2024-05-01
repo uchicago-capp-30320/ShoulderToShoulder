@@ -10,6 +10,7 @@ import { ApiService } from './api.service';
 // models
 import { User, UserSignUp, UserLogIn, UserResponse } from '../_models/user';
 import { OnboardingResp } from '../_models/onboarding';
+import { PasswordChange } from '../_models/password-change';
 
 /**
  * Service responsible for user authentication and authorization.
@@ -132,5 +133,17 @@ export class AuthService {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
     this.router.navigate(['/log-in']);
+  }
+
+  /**
+   * Changes a user's password.
+   * TODO - Implement this method once the password change endpoint is available.
+   * 
+   * @param passwordChange A PasswordChange object containing the user's current
+   *                       password, new password, and confirmation of the new
+   *                       password.
+   */
+  changePassword(passwordChange: PasswordChange): Observable<any> {
+    return of({"message": "Password changed successfully!"})
   }
 }

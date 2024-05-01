@@ -114,7 +114,8 @@ export class CalendarService {
    */
   convertAvailability(availability: AvailabilityObj[], calendar: CalendarObj[]): AvailabilitySlot[] {
     return hours.map(hour => {
-      const timeLabel = `${hour % 12 === 0 ? 12 : hour % 12}:00` + (hour >= 12 ? ' PM' : ' AM');
+      const timeOfDay = hour >= 12 && hour < 24 ? ' PM' : ' AM';
+      const timeLabel = `${hour % 12 === 0 ? 12 : hour % 12}:00` + timeOfDay;
       const time = { label: timeLabel, value: hour };
       const days = daysOfTheWeek.map(day => {
         const dayAvailability = availability.find(a => {

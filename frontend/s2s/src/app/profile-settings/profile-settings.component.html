@@ -1,0 +1,91 @@
+<div class="settings drop-shadow">
+    <button class="edit-onboarding drop-shadow dark-text" pButton (click)="openOnboardingDialog()">Editing Onboarding Responses</button>
+
+    <!-- Change Password Form -->
+    <div class="settings-form drop-shadow">
+        <form [formGroup]="this.changePasswordForm" (ngSubmit)="submitNewPassword()" class="form-container dark-text">
+            <!-- Hidden Username Field -->
+            <input 
+                type="hidden" 
+                formControlName="username" 
+                autocomplete="username" 
+                id="username"
+                value="{{ this.user.username }}">
+
+            <!-- Current Password -->
+            <div class="form-group">
+                <label for="currentPassword" >Current Password</label>
+                <input #currentPasswordInput
+                    pInputText
+                    type="password" 
+                    formControlName="currentPassword" 
+                    class="form-control input-field" 
+                    id="currentPassword" 
+                    autocomplete="current-password"
+                    placeholder="Enter current password"
+                    (focus)="togglePasswordField(currentPasswordInput)" 
+                    (blur)="togglePasswordField(currentPasswordInput)"
+                >
+            </div>
+
+            <!-- New Password -->
+            <div class="form-group">
+                <label 
+                    for="password">New Password</label>
+                <small class="p-error" *ngIf="changePasswordForm.get('password')?.dirty && changePasswordForm.get('password')?.invalid">Password is required</small>
+                <small class="p-error" *ngIf="changePasswordForm.get('password')?.dirty && changePasswordForm.errors?.['PasswordMatch']">New password should be different from old password</small>
+                <input #passwordInput
+                    pInputText
+                    type="password" 
+                    formControlName="password" 
+                    class="form-control" 
+                    id="password" 
+                    placeholder="Enter new password"
+                    autocomplete="new-password" 
+                    (focus)="togglePasswordField(passwordInput)" 
+                    (blur)="togglePasswordField(passwordInput)"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="focus" 
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." 
+                >
+            </div>
+
+            <!-- Confirm New Password -->
+            <div class="form-group">
+                <label for="confirmPassword" >Confirm New Password</label>
+                <small class="p-error" *ngIf="changePasswordForm.get('confirmPassword')?.dirty && changePasswordForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
+                <input #confirmPasswordInput
+                    pInputText
+                    type="password" 
+                    formControlName="confirmPassword" 
+                    class="form-control" 
+                    id="confirmPassword" 
+                    placeholder="Confirm new password"
+                    autocomplete="new-password"
+                    (focus)="togglePasswordField(confirmPasswordInput)" 
+                    (blur)="togglePasswordField(confirmPasswordInput)"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="focus" 
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." 
+                >
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" pButton class="p-button-raised submit-button" [disabled]="changePasswordForm.invalid">Submit</button>
+
+        </form>
+    </div>
+</div>
+
+<!-- Edit Onboarding Form Dialog -->
+<p-dialog class="onboarding-dialog" header="Edit Onboarding Responses" [(visible)]="showOnboardingDialog" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <app-preferences-survey></app-preferences-survey>
+    <app-demographics-survey></app-demographics-survey>
+
+    <ng-template pTemplate="footer">
+        <div class="p-d-flex p-jc-end">
+            <button pButton class="cancelButton" type="button" (click)="showOnboardingDialog = false">Cancel</button>
+            <button pButton class="confirmButton" type="button" (click)="showOnboardingDialog = false">Submit</button>
+        </div>
+    </ng-template>
+</p-dialog>

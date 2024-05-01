@@ -1,0 +1,83 @@
+.settings {
+    padding: 2rem;
+    background-color: white;
+    border-radius: 0.625rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-onboarding {
+    background-color: #FFECD1;
+    border-color: #FFECD1;
+    margin-bottom: 1rem;
+}
+
+.edit-onboarding:hover {
+    background-color: #F06E28;
+    border-color: #F06E28;
+    color: #FFECD1;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 90%;
+    align-items: baseline;
+}
+
+.settings-form{
+    padding: 1rem;
+    margin: 1rem;
+    background-color: #FFECD1;
+    width: 70%;
+    border-radius: 0.625rem;
+}
+
+.form-group {
+    margin: .5rem;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.submit-button {
+    border-radius: 1rem;
+    padding: .625rem;
+    width: 8rem;
+    text-align: center;
+    border-color: #F06E28;
+    background-color: #F06E28;
+    color: #FFECD1;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.confirmButton {
+    margin-top: 1rem;
+    background-color: #15616D;
+    border-color: #15616D;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.confirmButton:hover {
+    background-color: #15616db3;
+    border-color: #15616db3;
+}
+
+.cancelButton {
+    margin-top: 1rem;
+    background: none;
+    border-color: #15616D;
+    color: #15616D;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.cancelButton:hover {
+    background-color: #15616d21;
+    border-color: #15616db3;
+}

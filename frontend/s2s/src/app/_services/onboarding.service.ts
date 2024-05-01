@@ -289,6 +289,19 @@ export class OnboardingService {
     this.authService.logout();
   }
 
+
+  /**
+   * Updates onboarding information for the preferences survey
+   * and demographics survey.
+   * This function is primarily used to update onboarding information on the 
+   * user profile settings page.
+   */
+  updateOnboarding(): void {
+    let user = this.authService.userValue;
+    this.submitOnboarding(user, this.onboarded);
+
+  }
+
   /**
    * Submits the onboarding forms to the backend.
    */
@@ -350,6 +363,7 @@ export class OnboardingService {
       })
     ).subscribe(() => {
       console.log('Onboarding submitted successfully!');
+      this.fetchOnboarding(); // update onboarding data
     });
   }
 

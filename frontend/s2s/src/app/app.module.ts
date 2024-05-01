@@ -56,6 +56,7 @@ import { LogInComponent } from './log-in/log-in.component';
 import { AvailabilityDisplayComponent } from './availability-display/availability-display.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileOverviewComponent } from './profile-overview/profile-overview.component';
+import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { ProfileOverviewComponent } from './profile-overview/profile-overview.co
     AvailabilityDisplayComponent,
     ProfileComponent,
     ProfileOverviewComponent,
+    ProfileSettingsComponent,
   ],
   imports: [
     BrowserModule,

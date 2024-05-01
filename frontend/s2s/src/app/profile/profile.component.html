@@ -13,9 +13,9 @@
         
         <!--Subpage Navigation-->
         <div class="navigation">
-            <button pButton type="button" (click)="setPage(1)" [class.active]="page === 1">Overview</button>
-            <button pButton type="button" (click)="setPage(2)" [class.active]="page === 2">Preferences</button>
-            <button pButton type="button" (click)="setPage(3)" [class.active]="page === 3">Settings</button>
+            <button class="navigation-button" pButton type="button" (click)="setPage(1)" [class.active]="page === 1">Overview</button>
+            <button class="navigation-button" pButton type="button" (click)="setPage(2)" [class.active]="page === 2">Availability</button>
+            <button class="navigation-button" pButton type="button" (click)="setPage(3)" [class.active]="page === 3">Settings</button>
         </div>
     </div>
 
@@ -26,10 +26,9 @@
             <app-profile-overview></app-profile-overview>
         </div>
 
-        <!--Preferences Page-->
+        <!--Availability Page-->
         <div *ngIf="page === 2">
-            <h2 class="light-text">Event Preferences</h2>
-            <!-- Add preferences page -->
+            <h2 class="light-text">Event Availability</h2>
             <!-- Availability Calendar -->
             <app-availability-display></app-availability-display>
         </div>
@@ -37,7 +36,7 @@
         <!--Settings Page-->
         <div *ngIf="page === 3">
             <h2 class="light-text">Settings</h2>
-            Add settings page
+            <app-profile-settings></app-profile-settings>
         </div>
     </div>
 </div>
