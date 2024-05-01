@@ -3,6 +3,7 @@
 
     <!-- Change Password Form -->
     <div class="settings-form drop-shadow">
+        <h4>Change Password Form</h4>
         <form [formGroup]="this.changePasswordForm" (ngSubmit)="submitNewPassword()" class="form-container dark-text">
             <!-- Hidden Username Field -->
             <input 
@@ -75,6 +76,51 @@
 
         </form>
     </div>
+
+    <!-- Update User Information Form -->
+    <div class="settings-form drop-shadow">
+        <h4>Update User Information Form</h4>
+        <form [formGroup]="this.updateUserInformationForm" (ngSubmit)="submitUserUpdate()" class="form-container dark-text">
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="firstName" >First Name</label>
+                <input
+                    pInputText
+                    formControlName="firstName" 
+                    class="form-control input-field" 
+                    id="firstName" 
+                >
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="lastName" >Last Name</label>
+                <input
+                    pInputText
+                    formControlName="lastName" 
+                    class="form-control input-field" 
+                    id="lastName" 
+                >
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email" >Email Address</label>
+                <small class="p-error light-error" *ngIf="updateUserInformationForm.get('email')?.dirty && updateUserInformationForm.get('email')?.invalid">Please enter a valid email</small>
+                <input
+                    pInputText
+                    formControlName="email" 
+                    class="form-control input-field" 
+                    id="email" 
+                    type="email"
+                >
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" pButton class="p-button-raised submit-button" [disabled]="changePasswordForm.invalid">Submit</button>
+
+        </form>
+    </div>
 </div>
 
 <!-- Edit Onboarding Form Dialog -->
@@ -85,7 +131,7 @@
     <ng-template pTemplate="footer">
         <div class="p-d-flex p-jc-end">
             <button pButton class="cancelButton" type="button" (click)="showOnboardingDialog = false">Cancel</button>
-            <button pButton class="confirmButton" type="button" (click)="showOnboardingDialog = false">Submit</button>
+            <button pButton class="confirmButton" type="button" (click)="submitOnboardingChanges()">Submit</button>
         </div>
     </ng-template>
 </p-dialog>

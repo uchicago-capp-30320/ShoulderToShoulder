@@ -28,6 +28,13 @@ export interface User {
     id: number,
 }
 
+export interface UserUpdate {
+    first_name: string,
+    last_name: string,
+    email: string,
+    username: string,
+}
+
 export interface UserResponse {
     user: User,
     access_token: string

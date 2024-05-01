@@ -11,6 +11,7 @@ import { OnboardingService } from '../_services/onboarding.service';
 import { StrongPasswordRegx } from '../_helpers/patterns';
 import { confirmPasswordValidator, differentPasswordValidator } from '../_helpers/validators';
 import { PasswordChange } from '../_models/password-change';
+import { UserUpdate } from '../_models/user';
 
 @Component({
   selector: 'app-profile-settings',
@@ -38,7 +39,7 @@ export class ProfileSettingsComponent {
   updateUserInformationForm = new FormGroup({
     firstName: new FormControl(this.user.first_name, Validators.required),
     lastName: new FormControl(this.user.last_name, Validators.required),
-    email: new FormControl(this.user.email, Validators.required),
+    email: new FormControl(this.user.email, [Validators.required, Validators.email]),
   });
 
   constructor(
@@ -84,6 +85,30 @@ export class ProfileSettingsComponent {
       this.changePasswordForm.reset();
     });
     this.changePasswordForm.reset();
+  }
+
+  submitUserUpdate() {
+    console.log('submitting user update');
+    let firstName = this.updateUserInformationForm.get('firstName')?.value;
+    let lastName = this.updateUserInformationForm.get('lastName')?.value;
+    let email = this.updateUserInformationForm.get('email')?.value;
+
+    let userUpdate: UserUpdate = {
+      first_name: firstName ? firstName : '',
+      last_name: lastName ? lastName : '',
+      email: email ? email : '',
+      username: this.user.username
+    };
+
+    this.authService.updateUser(userUpdate).pipe(
+      catchError(error => {
+        console.error('Error updating user:', error);
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      console.log('User updated successfully!');
+      this.updateUserInformationForm.reset();
+    });
   }
 
   submitOnboardingChanges() {

@@ -8,7 +8,7 @@ import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { ApiService } from './api.service';
 
 // models
-import { User, UserSignUp, UserLogIn, UserResponse } from '../_models/user';
+import { User, UserSignUp, UserLogIn, UserResponse, UserUpdate } from '../_models/user';
 import { OnboardingResp } from '../_models/onboarding';
 import { PasswordChange } from '../_models/password-change';
 
@@ -142,8 +142,20 @@ export class AuthService {
    * @param passwordChange A PasswordChange object containing the user's current
    *                       password, new password, and confirmation of the new
    *                       password.
+   * @returns An Observable of the password change response.
    */
   changePassword(passwordChange: PasswordChange): Observable<any> {
     return of({"message": "Password changed successfully!"})
+  }
+
+  /**
+   * Updates a user's information.
+   * TODO - Implement this method once the user update endpoint is available.
+   * 
+   * @param userUpdate A UserUpdate object containing the user's updated information.
+   * @returns An Observable of the updated user.
+   */
+  updateUser(userUpdate: UserUpdate): Observable<any> {
+    return of({"message": "User information updated successfully!"});
   }
 }

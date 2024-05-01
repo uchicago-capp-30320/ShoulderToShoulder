@@ -299,7 +299,6 @@ export class OnboardingService {
   updateOnboarding(): void {
     let user = this.authService.userValue;
     this.submitOnboarding(user, this.onboarded);
-
   }
 
   /**
