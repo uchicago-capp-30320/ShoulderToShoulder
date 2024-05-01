@@ -11,6 +11,7 @@ import { ApiService } from './api.service';
 })
 export class ProfileService {
   endpoint = this.apiService.BASE_API_URL + '/profiles';
+  uploadPhotoEndpoint = this.apiService.BASE_API_URL + '/profiles/upload/';
   profilePicture = new BehaviorSubject<any>(null);
 
   constructor(
@@ -37,5 +38,17 @@ export class ProfileService {
         }
       )
     }
+  }
+
+  /**
+   * Uploads a new profile picture for the current user.
+   * 
+   * TODO - Implement this method once the profile picture upload endpoint is available.
+   * 
+   * @param file The file to upload.
+   * @returns An Observable with the upload response.
+   */
+  uploadProfilePicture(file: File) {
+    return of({"message" : "Profile picture uploaded."})
   }
 }

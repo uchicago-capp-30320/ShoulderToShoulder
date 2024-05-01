@@ -123,6 +123,19 @@
         </form>
     </div>
 
+    <!-- Update profile picture -->
+    <div class="settings-form drop-shadow">
+        <h4>Update Profile Picture</h4>
+        <p-fileUpload 
+            name="profilePicture" 
+            url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user?.id }}" 
+            (onUpload)="onUpload($event)" 
+            accept="image/*" 
+            [maxFileSize]="1000000"
+        >
+        </p-fileUpload>
+    </div>
+
     <!-- Delete Account Button -->
     <button class="delete-account drop-shadow" pButton (click)="openDeleteDialog()">Delete my Shoulder to Shoulder Account</button>
 </div>

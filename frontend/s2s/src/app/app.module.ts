@@ -31,6 +31,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
+import { FileUploadModule } from 'primeng/fileupload';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -106,6 +107,7 @@ import { ProfileSettingsComponent } from './profile-settings/profile-settings.co
     ProgressBarModule,
     ToastModule,
     TableModule,
+    FileUploadModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),

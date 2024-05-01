@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -6,6 +6,7 @@ import { EMPTY } from 'rxjs';
 // services
 import { AuthService } from '../_services/auth.service';
 import { OnboardingService } from '../_services/onboarding.service';
+import { ProfileService } from '../_services/profile.service';
 
 // helpers
 import { StrongPasswordRegx } from '../_helpers/patterns';
@@ -13,15 +14,23 @@ import { confirmPasswordValidator, differentPasswordValidator } from '../_helper
 import { PasswordChange } from '../_models/password-change';
 import { UserUpdate } from '../_models/user';
 
+interface UploadEvent {
+  originalEvent: Event;
+  files: File[];
+}
+
 @Component({
   selector: 'app-profile-settings',
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.css'
 })
-export class ProfileSettingsComponent {
+export class ProfileSettingsComponent implements OnInit {
   showOnboardingDialog = false;
   showDeleteDialog = false;
   user = this.authService.userValue;
+  profilePictureUrl: string = '';
+  reader = new FileReader(); 
+  uploadedFiles: any[] = [];
 
   changePasswordForm = new FormGroup({
     username: new FormControl(this.user.username, Validators.required),
@@ -45,8 +54,15 @@ export class ProfileSettingsComponent {
 
   constructor(
     private authService: AuthService,
-    private onboardingService: OnboardingService
+    private onboardingService: OnboardingService,
+    public profileService: ProfileService
   ) {}
+
+  ngOnInit(): void {
+    this.profileService.profilePicture.subscribe(profilePictureUrl => {
+      this.profilePictureUrl = profilePictureUrl;
+    });
+  }
 
   openOnboardingDialog() {
     this.showOnboardingDialog = true;
@@ -128,4 +144,28 @@ export class ProfileSettingsComponent {
     this.authService.deleteAccount(this.user);
     this.authService.logout();
   }
+
+  // onUpload(event: any) {
+  //   console.log('selected file:', event);
+  //   this.profileService.uploadProfilePicture(event);
+  // }
+
+  onUpload(event: any) {
+    console.log(event)
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+
+      reader.readAsDataURL(event.target.files[0]); // read file as data url
+
+      reader.onload = (event) => { // called once readAsDataURL is completed
+        this.profilePictureUrl = event.target?.result as unknown as string;
+      }
+    }
+  }
+
+  // onUpload(event: any) {
+  //   for(let file of event.files) {
+  //       this.uploadedFiles.push(file);
+  //   }
+  // }
 }

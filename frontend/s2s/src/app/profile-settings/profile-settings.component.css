@@ -11,6 +11,9 @@
     background-color: #FFECD1;
     border-color: #FFECD1;
     margin-bottom: 1rem;
+    width: 70%;
+    justify-content: center;
+    font-weight: 700;
 }
 
 .edit-onboarding:hover {
@@ -28,7 +31,7 @@
     padding: 1rem;
 }
 
-.settings-form{
+.settings-form {
     padding: 1rem;
     margin: 1rem;
     background-color: #FFECD1;
@@ -94,4 +97,26 @@
 .delete-account:hover {
     background-color: #ff0000;
     border-color: #ff0000;
+}
+
+::ng-deep .p-fileupload-buttonbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+::ng-deep .p-ripple.p-element.p-button.p-component {
+    background-color: #F06E28;
+    border-color: #F06E28;
+    color: #FFECD1;
+}
+
+::ng-deep button.p-element.p-button-icon-only.p-button.p-component {
+    background-color: #F06E28;
+    border-color: #F06E28;
+    color: #FFECD1;
+}
+
+h4 {
+    margin-bottom: 1rem;
 }
