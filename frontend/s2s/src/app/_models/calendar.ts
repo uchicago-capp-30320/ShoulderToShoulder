@@ -1,5 +1,6 @@
+// Description: This file contains the interfaces for the calendar and availability objects.
 import { range } from "../_helpers/utils";
-import { labelValueInt } from "../_helpers/constants";
+import { labelValueInt } from "../_helpers/abstractInterfaces";
 
 export interface AvailabilityPut {
     email: string | undefined;

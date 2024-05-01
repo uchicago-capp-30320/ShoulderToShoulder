@@ -1,4 +1,4 @@
-// Description: Contains the scenario class.
+// Purpose: Contains the scenario class.
 
 import { Hobby } from "../_models/hobby"
 import { SafeHtml } from "@angular/platform-browser";
@@ -20,6 +20,7 @@ export interface ScenarioInterface {
  * @param day The day to do the hobby.
  * @param numPeople The number of people to do the hobby with.
  * @param mileage The mileage to travel to do the hobby.
+ * @param time The time of day to do the hobby.
  * 
  * @returns A scenario object describing the activity.
  */

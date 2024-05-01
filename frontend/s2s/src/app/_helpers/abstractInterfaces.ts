@@ -1,4 +1,4 @@
-// Description: General constants used throughout the application.
+// Purpose: General abstract interfaces for the application.
 
 /**
  * A label-value pair with a number value.

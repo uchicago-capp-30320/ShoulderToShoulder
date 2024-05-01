@@ -42,10 +42,6 @@ import { confirmPasswordValidator } from '../_helpers/validators';
   styleUrl: './signup-page.component.css'
 })
 export class SignupPageComponent {
-  /**
-   * The sign-up form.
-   */
-  // Initialize the form group
   signupForm: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),

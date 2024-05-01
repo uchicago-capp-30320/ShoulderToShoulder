@@ -5,7 +5,7 @@ import { environment } from '../../environments/environment';
  * Service for managing API calls. Interacts with the environment file to get 
  * the base API URL and the application token.
  * 
- * Example:
+ * @example
  * ```
  * this.http.get(`${this.apiService.BASE_API_URL}/endpoint/`);
  * ```

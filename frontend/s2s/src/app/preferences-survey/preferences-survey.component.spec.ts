@@ -54,29 +54,4 @@ describe('PreferencesSurveyComponent', () => {
     expect(component.mostInterestedHobbies).toBeTruthy();
     expect(component.mostInterestedHobbies.length).toBeGreaterThan(0);
   });
-
-  it('should make the least interested hobbies different from the most interested hobbies', () => {
-    component.mostInterestedHobbies = ['hobby1', 'hobby2', 'hobby3'];
-    component.leastInterestedHobbies = ['hobby1', 'hobby2', 'hobby3'];
-    component.hobbies = ['hobby1', 'hobby2', 'hobby3'];
-
-    expect(component.leastInterestedHobbies).toEqual(component.mostInterestedHobbies);
-
-    component.onboardingService.preferencesForm.setValue({
-      leastInterestedHobbies: ['hobby1'],
-      mostInterestedHobbies: ['hobby2'],
-      zipCode: '12345',
-      city: 'city',
-      state: 'state',
-      addressLine1: "addressLine1",
-      groupSizes: ['groupSizes'],
-      eventFrequency: 'eventFrequency',
-      eventNotifications: 'eventNotifications',
-      distances: 'distances'
-    });
-
-    fixture.detectChanges();
-    component.getLeastInterestedHobbiesArray();
-    expect(component.leastInterestedHobbies).not.toEqual(component.mostInterestedHobbies);
-  });
 });

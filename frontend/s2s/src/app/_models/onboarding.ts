@@ -1,3 +1,4 @@
+// Purpose: Interface for onboarding data.
 export interface Onboarding {
     user_id: number | 0,
     onboarded: boolean | false,

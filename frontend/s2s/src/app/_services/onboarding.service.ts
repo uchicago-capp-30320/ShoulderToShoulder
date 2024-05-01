@@ -19,6 +19,17 @@ import { User } from '../_models/user';
 import { getState } from '../_helpers/utils';
 import { Hobby } from '../_models/hobby';
 
+/**
+ * Service responsible for managing the onboarding process for users, including handling onboarding data,
+ * submitting forms, and fetching existing onboarding data.
+ * 
+ * This service interacts with other services and the API service to perform onboarding-related tasks.
+ * 
+ * @see ApiService
+ * @see CalendarService
+ * @see AuthService
+ * @see HobbyService
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -108,6 +119,11 @@ export class OnboardingService {
     });
   }
 
+  /**
+   * Retrieves the default onboarding data structure.
+   * 
+   * @returns Default onboarding data structure.
+   */
   getDefaultOnboarding(): Onboarding {
     let defaultOnboarding: Onboarding = {
       user_id: -1,
@@ -142,11 +158,11 @@ export class OnboardingService {
   }
 
   /**
-   * Fetches any existing onboarding data for the user. This function allows
-   * a user to start the onboarding process, exit it, and return later without
-   * losing their progress.
+   * Fetches any existing onboarding data for the user. 
    * 
-   * @returns 
+   * This function allows a user to start the onboarding process, exit it, 
+   * and return later without losing their progress.
+   * 
    */
   fetchOnboarding(): void {
     let user = this.authService.userValue;
@@ -217,9 +233,9 @@ export class OnboardingService {
   }
 
   /**
-   * Gets the user's previously select most interested hobbies from the current, 
-   * randomly generated list of hobbies.
-   * @param ids - The IDs of the selected hobbies.
+   * Retrieves the most interested hobbies from the current list of hobbies.
+   * 
+   * @param ids - IDs of the most interested hobbies.
    */
   getMostInterestedHobbies(ids: number[]) {
     this.hobbyService.preferencesHobbies.subscribe(hobbies => {
@@ -230,9 +246,9 @@ export class OnboardingService {
   }
 
   /**
-   * Gets the user's previously select least interested hobbies from the current, 
-   * randomly generated list of hobbies.
-   * @param ids - The IDs of the selected hobbies.
+   * Retrieves the least interested hobbies from the current list of hobbies.
+   * 
+   * @param ids - IDs of the least interested hobbies.
    */
   getLeastInterestedHobbies(ids: number[]) {
     this.hobbyService.preferencesHobbies.subscribe(hobbies => {
@@ -243,10 +259,9 @@ export class OnboardingService {
   }
 
   /**
-   * Gets the user's previously select most interested hobby types from the current,
-   * randomly generated list of hobby types.
+   * Retrieves the most interested hobby types from the current list of hobby types.
    * 
-   * @param ids - The IDs of the selected hobby types.
+   * @param ids - IDs of the most interested hobby types.
    */
   getHobbyTypes(ids: number[]) {
     this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
@@ -257,8 +272,10 @@ export class OnboardingService {
   }
 
   /**
-   * Exist onboarding by sending current data to the backend and
-   * signing user out.
+   * Exits the onboarding process by submitting current data to the backend and 
+   * signing the user out.
+   * 
+   * @param onboarded - Flag indicating if the user has completed onboarding.
    */
   exitOnboarding(onboarded: boolean = false): void {
     let user = this.authService.userValue;
@@ -282,6 +299,12 @@ export class OnboardingService {
     this.submitAvailabilityForm();
   }
 
+  /**
+   * Submits the onboarding data to the backend.
+   * 
+   * @param user - The user object.
+   * @param onboarded - Flag indicating if the user has completed onboarding.
+   */
   submitOnboarding(user: User, onboarded: boolean = true): void {
     // collect data
     this.onboarding = {
@@ -330,7 +353,13 @@ export class OnboardingService {
     });
   }
 
-  
+  /**
+   * Retrieves the list of hobbies from the form control.
+   * 
+   * @param controlName - The name of the form control.
+   * @param form - The form group.
+   * @returns List of hobby IDs.
+   */
   getHobbyList(controlName: string, form: FormGroup): number[] {
     let hobbies = form.get(controlName)?.value;
     if (!hobbies || hobbies.length == 0) {
@@ -339,6 +368,13 @@ export class OnboardingService {
     return hobbies.map((hobby: Hobby) => hobby.id);
   }
   
+  /**
+   * Retrieves the string or string array from the form control.
+   * 
+   * @param controlName - The name of the form control.
+   * @param form - The form group.
+   * @returns String or string array.
+   */
   getStringToListChar(controlName: string, form: FormGroup): string | string[] {
     let char = form.get(controlName)?.value;
     if (!char || char.length == 0) {
@@ -347,6 +383,9 @@ export class OnboardingService {
     return char; 
   }
 
+  /**
+   * Submits the scenarios data to the backend.
+   */
   submitScenarios(): void {
     // collect data
     let scenarioObjs: ScenarioObj[] = [];
@@ -375,8 +414,10 @@ export class OnboardingService {
     }
   }
 
+  /**
+   * Submits the availability form data to the backend.
+   */
   submitAvailabilityForm(): void {
-    // send availability data to the backend
     this.calendarService.updateAvailability();
   }
 }

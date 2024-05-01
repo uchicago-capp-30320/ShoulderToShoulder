@@ -6,16 +6,21 @@ import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 // services
 import { ApiService } from './api.service';
 
+/**
+ * Service responsible for managing choices data, including fetching choices from the API.
+ * 
+ * This service interacts with the API service to perform choices-related HTTP requests.
+ * 
+ * @see ApiService
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ChoicesService {
   endpoint = this.apiService.BASE_API_URL + '/choices';
-  httpOptions = {
-    headers: new HttpHeaders({'Content-Type': 'application/json'})
-  };
 
-  private choicesSubject: BehaviorSubject<{ [index: string]: any[]; }> = new BehaviorSubject<{ [index: string]: any[]; }>({});
+  private choicesSubject: BehaviorSubject<{ [index: string]: any[]; }> = 
+    new BehaviorSubject<{ [index: string]: any[]; }>({});
   choices = this.choicesSubject.asObservable();
 
   constructor(
@@ -26,9 +31,7 @@ export class ChoicesService {
    }
 
   /**
-   * Gets the choices from the choices API.
-   * 
-   * @returns The choices data.
+   * Gets the choices data from the choices API and updates the choices subject.
    */
   getChoices() {
     let columnMap: {[index: string]: any[]} = {
@@ -47,7 +50,7 @@ export class ChoicesService {
       'similarity_attribute': [],
     }
 
-    this.http.get<any>(this.endpoint, this.httpOptions).pipe(
+    this.http.get<any>(this.endpoint).pipe(
       switchMap(response => {
         let results = response.results[0].categories;
         let columnMapKeys = Object.keys(columnMap);
@@ -65,8 +68,15 @@ export class ChoicesService {
     });
   }
 
+  /**
+   * Fetches choices for a specific column from the API.
+   * 
+   * @param url The URL of the API endpoint to fetch choices from.
+   * @param column The column for which choices are to be fetched.
+   * @returns An Observable of choices data as an array.
+   */
   private fetchChoices(url: string, column: string): Observable<any[]> {
-    return this.http.get<any[]>(`${url}/?column=${column}`, this.httpOptions).pipe(
+    return this.http.get<any[]>(`${url}/?column=${column}`).pipe(
       switchMap(response => {
         return of(response);
       }),

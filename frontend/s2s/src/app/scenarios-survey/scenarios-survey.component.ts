@@ -8,7 +8,7 @@ import { HobbyService } from '../_services/hobbies.service';
 
 // helpers
 import { Scenario, ScenarioInterface } from '../_helpers/scenario';
-import { days } from '../_helpers/preferences';
+import { days, groupSizes, distances } from '../_helpers/preferences';
 import { getRandomInt, range } from '../_helpers/utils';
 import { Hobby } from '../_models/hobby';
 import { maxScenarios } from '../_models/scenarios';
@@ -21,7 +21,7 @@ import { maxScenarios } from '../_models/scenarios';
  * types of events, each with various attributes. Users are asked which event 
  * they would rather attend based on the provided information.
  * 
- * Example:
+ * @example
  * ```
  * <app-scenarios-survey></app-scenarios-survey>
  * ```
@@ -35,36 +35,23 @@ import { maxScenarios } from '../_models/scenarios';
   styleUrl: './scenarios-survey.component.css'
 })
 export class ScenariosSurveyComponent implements OnInit{
-  // scenario information
+  // scenario management
   scenarioNum = 1;
   maxScenarios = maxScenarios;
   scenarios: ScenarioInterface[] = []
   scenarioNavigation: any[] = [];
-  durationMax = 6;
+
   private subscription = new Subscription();
 
   // hobby information
   usedHobbyIndexes: number[] = [];
   availableHobbies: Hobby[] = [];
 
-  // scenario additional information
+  // scenario attributes
+  durationMax = 6;
   days = days;
-  groupSizes = [
-    '1-5',
-    '5-10',
-    '10-15',
-    '15+',
-  ];
-  distances = [
-    'within 1 mile',
-    'within 5 miles',
-    'within 10 miles',
-    'within 15 miles',
-    'within 20 miles',
-    'within 30 miles',
-    'within 40 miles',
-    'within 50 miles',
-  ];
+  groupSizes = groupSizes;
+  distances = distances;
   timeCategories = ["morning", "afternoon", "evening"]; // getting a limited subset
   alteredVariableMap: { [index: string]: any[] } = {
     "time": this.timeCategories,
@@ -74,6 +61,12 @@ export class ScenariosSurveyComponent implements OnInit{
     "duration": range(1, this.durationMax+1)
   }
 
+  constructor(
+    public onboardingService: OnboardingService,
+    private sanitizer: DomSanitizer,
+    private HobbyService: HobbyService
+  ) {}
+
   ngOnInit(): void {
     this.subscription.add(
       this.HobbyService.scenarioHobbies.subscribe(hobbies => {
@@ -82,13 +75,6 @@ export class ScenariosSurveyComponent implements OnInit{
         this.getScenarioNavigation();
       })
     );
-  }
-
-  constructor(
-    public onboardingService: OnboardingService,
-    private sanitizer: DomSanitizer,
-    private HobbyService: HobbyService
-  ) {
   }
 
   /**
@@ -119,21 +105,20 @@ export class ScenariosSurveyComponent implements OnInit{
    * variables is altered to create a comparison between the two events.
    * The user is then asked which event they would rather attend.
    */
-
   getScenarios() {
     const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage', 'duration'];
     const numVariables: number = alteredVariables.length;
 
     // Generate scenarios using the remaining items
     for (let i = 0; i < maxScenarios; i++) {
+      
       // get the variable to alter
       const typeIndex = i % numVariables;
       let alteredVariable = alteredVariables[typeIndex];
 
-      // Get two hobbies that are not the same
+      // Get two unique hobbies
       let hobby1 = this.getHobby();
       let hobby2 = this.getHobby();
-
 
       // get other attributes
       const time = this.timeCategories[getRandomInt(0, this.timeCategories.length - 1)];

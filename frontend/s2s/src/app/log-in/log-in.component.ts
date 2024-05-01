@@ -6,7 +6,6 @@ import { EMPTY } from 'rxjs';
 
 // services
 import { AuthService } from '../_services/auth.service';
-import { OnboardingService } from '../_services/onboarding.service';
 
 // models
 import { UserLogIn } from '../_models/user';
@@ -15,6 +14,18 @@ import { UserLogIn } from '../_models/user';
 
 /**
  * Implements the application's Log In page.
+ * 
+ * This component manages the log in form, including form validation, submission,
+ * and error handling. It uses the AuthService to log in users and saves their
+ * authentication tokens.
+ * 
+ * @example
+ * ```
+ * <app-login-page></app-login-page>
+ * ```
+ * 
+ * @see AuthService
+ * @see OnboardingService
  */
 @Component({
   selector: 'app-login-page',
@@ -23,20 +34,14 @@ import { UserLogIn } from '../_models/user';
 })
 export class LogInComponent {
   showLoginError: boolean = false;
-  /**
-   * The sign-up form.
-   */
-  // Initialize the form group
   loginForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [
-                                      Validators.required,]),
+    password: new FormControl('', [Validators.required,]),
   });
 
   constructor(
     private route: Router,
     private authService: AuthService,
-    private onboardingService: OnboardingService
   ) {}
 
   /**
@@ -47,9 +52,10 @@ export class LogInComponent {
   }
 
   /**
-   * Returns the form control for the specified field.
+   * Gets the form control for the specified field.
    * 
    * @param fieldName The name of the field.
+   * @returns The form control for the specified field.
    */
   getFormControl(fieldName: string) {
     return this.loginForm.get(fieldName);
