@@ -283,9 +283,49 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # add functionality for the photos to be added with s3 boto3
     def create(self, request, *args, **kwargs):
-        pass
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            # Save the Profile which includes saving the image to S3
+            serializer.save()
+            return Response(serializer.data, status=201)
+        else:
+            return Response(serializer.errors, status=400)
+        
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+
+        return queryset
+    
+    @action(methods=['post'], detail=False, url_path='upload')
+    def upload(self, request, *args, **kwargs):
+        # get the user's profile
+        user_id = request.data.get('user_id')
+        try:
+            profile = Profile.objects.get(user_id=user_id)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+        # get the image from the request
+        image = request.data.get('image')
+        if not image:
+            return Response({"error": "Image not provided"}, status=400)
+
+        # upload the image to S3
+        s3 = boto3.client('s3')
+        bucket = environ.Env().str('AWS_STORAGE_BUCKET_NAME')
+        key = f"profiles/{user_id}/{int(time.time())}.png"
+        s3.upload_fileobj(image, bucket, key)
+
+        # update the profile picture
+        profile.profile_picture = key
+        profile.save()
+
+        return Response({"detail": "Image uploaded"}, status=200)
 
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"
@@ -341,6 +381,59 @@ class CreateUserViewSet(viewsets.ModelViewSet):
 
             return Response(data, status=201)
         return Response(serializer.errors, status=400)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        email = self.request.query_params.get('email')
+
+        if email:
+            queryset = queryset.filter(email=email)
+
+        return queryset
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.delete()
+        return Response({"detail": "User deleted"}, status=204)
+    
+    @action(methods=['patch'], detail=False, url_path='change_password')
+    def change_password(self, request, *args, **kwargs):
+        # confirm all the correct data is provided
+        keys = ['email', 'current_password', 'password', 'confirm_password']
+        if not all([key in request.data for key in keys]):
+            return Response({"error": f"Missing required fields: {keys}"}, status=400)
+
+        # find the user
+        try:
+            user = User.objects.get(email=request.data.get('email', None))
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        # confirm the password they provided is correct
+        if not user.check_password(request.data.get('current_password')):
+            return Response({"error": "Invalid password"}, status=400)
+
+        # confirm the password equals the confirm password
+        if request.data.get('password') != request.data.get('confirm_password'):
+            return Response({"error": "Passwords do not match"}, status=400)
+
+        # change the password
+        user.set_password(request.data.get('password'))
+        user.save()
+        return Response({"detail": "Password changed"}, status=200)
 
 class LoginViewSet(viewsets.ViewSet):
     permission_classes = [HasAppToken]
