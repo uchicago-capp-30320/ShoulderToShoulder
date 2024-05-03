@@ -14,7 +14,7 @@ import { User } from '../_models/user';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-  page: number = 3;
+  page: number = 2;
   user?: User;
   profilePictureUrl: string = '';
 

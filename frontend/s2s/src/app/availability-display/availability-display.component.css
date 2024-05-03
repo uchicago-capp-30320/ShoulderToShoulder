@@ -10,6 +10,16 @@
     border-radius: 0.625rem;
 }
 
+.overlay {
+    background-color: rgba(255, 255, 255, 0.8); /* White overlay with some transparency */
+    pointer-events: none; /* Disable mouse events */
+}
+
+.disabled {
+    pointer-events: none; /* Disable mouse events */
+    opacity: 0.5; /* Visually indicate disabled state */
+}
+
 .header-row, .time-slot {
     display: grid;
     grid-template-columns: 100px repeat(7, 1fr);
@@ -53,5 +63,44 @@
 
 h3 {
     margin-top: 0;
+}
+
+.edit-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+.confirm-button {
+    margin-top: 1rem;
+    background-color: #78290f;
+    border-color: #78290f;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.confirm-button:hover {
+    background-color: #78290fb3;
+    border-color: #78290fb3;
+}
+
+.cancel-button, .edit-button {
+    margin-top: 1rem;
+    background: none;
+    border-color: #78290f;
+    color: #78290f;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.cancel-button:hover {
+    background-color: #78290f21;
+    border-color: #78290fb3;
+}
+
+.edit-button:hover {
+    background-color: #78290f21;
+    border-color: #78290fb3;  
 }
   

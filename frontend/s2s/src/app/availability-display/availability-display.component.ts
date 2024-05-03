@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 // services
 import { CalendarService } from '../_services/calendar.service';
+import { OnboardingService } from '../_services/onboarding.service';
 
 // helpers
 import { days } from '../_helpers/preferences';
@@ -30,12 +31,31 @@ import { days } from '../_helpers/preferences';
   templateUrl: './availability-display.component.html',
   styleUrl: './availability-display.component.css'
 })
-export class AvailabilityDisplayComponent {
+export class AvailabilityDisplayComponent implements OnInit {
+  @Input() isEditable: boolean = true;
+  @Input() profileView: boolean = false;
   days = days;
+  availabilityBackup: any[] = [];
 
   constructor(
-    public calendarService: CalendarService
-  ) { }
+    public calendarService: CalendarService,
+    public onboardingService: OnboardingService
+  ) {
+   }
+  
+  ngOnInit(): void {
+    this.copyAvailability();
+  }
+
+  /**
+   * Copies the user's availability data to a backup array.
+   */
+  copyAvailability(): void {
+    for (let i = 0; i < this.calendarService.userAvailability.length; i++) {
+      this.availabilityBackup.push({ ...this.calendarService.userAvailability[i] });
+    }
+    console.log(this.availabilityBackup)
+  }
 
   /**
    * Toggles the availability status for a specific slot and day.
@@ -45,7 +65,20 @@ export class AvailabilityDisplayComponent {
    * @memberof AvailabilityDisplayComponent
    */
   toggleAvailability(slotIndex: number, dayIndex: number): void {
-    this.calendarService.userAvailability[slotIndex].days[dayIndex] = 
+    if (this.isEditable) {
+      this.calendarService.userAvailability[slotIndex].days[dayIndex] = 
       !this.calendarService.userAvailability[slotIndex].days[dayIndex];
+    }
+  }
+
+  submitAvailability(): void {
+    this.onboardingService.submitAvailabilityForm();
+    this.isEditable = false;
+    this.availabilityBackup = this.calendarService.userAvailability;
+  }
+
+  cancelAvailability(): void {
+    this.copyAvailability();
+    this.isEditable = false;
   }
 }

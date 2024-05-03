@@ -7,8 +7,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button'; 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpCache, withHttpCacheInterceptor } from '@ngneat/cashew';
 const maskConfig: Partial<IConfig> = {
   validation: false,
 };
@@ -50,14 +50,17 @@ import { ScenariosSurveyComponent } from './scenarios-survey/scenarios-survey.co
 import { EventAvailabilitySurveyComponent } from './event-availability-survey/event-availability-survey.component';
 import { LoaderComponent } from './loader/loader.component';
 import { ProgressIndicatorComponent } from './progress-indicator/progress-indicator.component';
-
-// HTTP interceptor
-import { AuthInterceptor } from './_helpers/interceptor';
 import { LogInComponent } from './log-in/log-in.component';
 import { AvailabilityDisplayComponent } from './availability-display/availability-display.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileOverviewComponent } from './profile-overview/profile-overview.component';
 import { ProfileSettingsComponent } from './profile-settings/profile-settings.component';
+import { ProfileAvailabilityComponent } from './profile-availability/profile-availability.component';
+
+// HTTP interceptors
+import { AuthInterceptor } from './_interceptors/interceptor';
+import { CacheInterceptor } from './_interceptors/cache';
+
 
 @NgModule({
   declarations: [
@@ -79,6 +82,7 @@ import { ProfileSettingsComponent } from './profile-settings/profile-settings.co
     ProfileComponent,
     ProfileOverviewComponent,
     ProfileSettingsComponent,
+    ProfileAvailabilityComponent,
   ],
   imports: [
     BrowserModule,
@@ -113,7 +117,9 @@ import { ProfileSettingsComponent } from './profile-settings/profile-settings.co
     provideEnvironmentNgxMask(maskConfig),
     provideAnimationsAsync(),
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true },
+    provideHttpClient(withInterceptors([withHttpCacheInterceptor()])), provideHttpCache()
     ],
   bootstrap: [AppComponent]
 })

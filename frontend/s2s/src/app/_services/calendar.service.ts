@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, expand } from 'rxjs/operators';
 import { EMPTY, BehaviorSubject, Observable, throwError, reduce} from 'rxjs';
+import { withCache } from '@ngneat/cashew';
 
 // services
 import { ApiService } from './api.service';
@@ -70,7 +71,7 @@ export class CalendarService {
    * @returns The calendar data as a list of Calendar objects.
    */
   fetchCalendar(url: string): Observable<CalendarObj[]> {
-    return this.http.get<CalendarResponse>(url).pipe(
+    return this.http.get<CalendarResponse>(url, {context: withCache()}).pipe(
       expand(response => response.next ? this.http.get<CalendarResponse>(response.next) : EMPTY),
       map(response => response.results),
       reduce<CalendarObj[], CalendarObj[]>((acc, cur) => [...acc, ...cur], []),
@@ -97,7 +98,8 @@ export class CalendarService {
    * @returns An Observable of availability data as an array of Availability objects.
    */
   fetchAvailability(url: string): Observable<AvailabilityObj[]> {
-    return this.http.get<AvailabilityResponse>(url).pipe(
+    return this.http.get<AvailabilityResponse>(url, {context: withCache()}).
+    pipe(
       expand(response => response.next ? this.http.get<AvailabilityResponse>(response.next) : EMPTY),
       map(response => response.results),
       reduce<AvailabilityObj[], AvailabilityObj[]>((acc, cur) => [...acc, ...cur], []),

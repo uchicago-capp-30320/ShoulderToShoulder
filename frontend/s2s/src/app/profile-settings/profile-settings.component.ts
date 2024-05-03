@@ -145,11 +145,6 @@ export class ProfileSettingsComponent implements OnInit {
     this.authService.logout();
   }
 
-  // onUpload(event: any) {
-  //   console.log('selected file:', event);
-  //   this.profileService.uploadProfilePicture(event);
-  // }
-
   onUpload(event: any) {
     console.log(event)
     if (event.target.files && event.target.files[0]) {
@@ -162,10 +157,4 @@ export class ProfileSettingsComponent implements OnInit {
       }
     }
   }
-
-  // onUpload(event: any) {
-  //   for(let file of event.files) {
-  //       this.uploadedFiles.push(file);
-  //   }
-  // }
 }
