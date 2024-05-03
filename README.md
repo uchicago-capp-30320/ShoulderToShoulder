@@ -49,7 +49,7 @@ For more information on factorization machines and DeepFMs, see:
 
 - Guo, Huifeng, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. "DeepFM: a factorization-machine based neural network for CTR prediction." arXiv preprint arXiv:1703.04247 (2017).
 
-## Virtual Environments
+## Virtual Environments: Set Up
 
 #### `frontend`
 
@@ -76,12 +76,11 @@ poetry env use 3.12
 poetry shell
 poetry install 
 
-#to exit the environment
-exit
+exit //to exit the environment
 ```
 </pre>
 
-If you have already created the poetry environment once before, you will need to enter it every time you develop in the backend. Follow these steps to open the environment: 
+You will need to be inside the environment to develop in the backend. If you have already created the poetry environment once before, follow these steps to open the environment: 
 
 <pre>
 ```
@@ -89,14 +88,15 @@ cd backend
 poetry env use 3.12
 poetry shell
 
-#to exit the environment
-exit 
+exit //to exit the environment
 ```
 </pre>
 
 ## How to use our app
 
-To use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps:
+First, make sure you have successfully completed the set up of the virtual environments (see instructions above). 
+
+To open and use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps:
 
 <pre>
 ```
