@@ -103,9 +103,16 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(onboarding, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            self.trigger_event_suggestions(user.id)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
+    
+    def trigger_event_suggestions(self, user_id):
+        event_suggestions = EventSuggestionsViewSet()
+        event_suggestions.create(request=None, user_id=user_id)
+        
+        return Response({"detail": "Successfully updated"})
 
     def get_queryset(self):
         queryset = self.queryset
