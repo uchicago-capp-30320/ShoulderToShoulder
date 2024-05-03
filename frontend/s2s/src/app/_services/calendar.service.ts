@@ -132,26 +132,22 @@ export class CalendarService {
   /**
    * Updates user availability in the database.
    */
-  updateAvailability() {
-    const updates = this.userAvailability.map(slot => slot.days.map((available, dayIndex) => {
-      const day = daysOfTheWeek[dayIndex];
-      const hour = slot.time.value;
-      let user = this.authService.userValue;
-      return {
+  updateAvailability(): Observable<any> {
+    const user = this.authService.userValue; // assuming authService exposes user details
+    const updates = this.userAvailability.map(slot =>
+      slot.days.map((available, dayIndex) => ({
         email: user.email,
-        day_of_week: day,
-        hour: hour,
+        day_of_week: daysOfTheWeek[dayIndex], // Ensure daysOfTheWeek is defined and accessible
+        hour: slot.time.value,
         available: available
-      };
-      }));
-    
-    this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates.flat()).pipe(
-        catchError(error => {
-            console.error('Error updating availability:', error);
-            return EMPTY;
-        })
-      ).subscribe(() => {
-          console.log('Availability updated successfully!');
-      });
-    }
+      }))
+    ).flat(); // Flattening the array to pass as a single list
+
+    return this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates).pipe(
+      catchError(error => {
+        console.error('Error updating availability:', error);
+        return EMPTY; // Returning EMPTY to avoid breaking the observable chain in case of an error
+      })
+    );
+  }
 }

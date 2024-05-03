@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from s2s.permissions import HasAppToken
+from django.test.client import RequestFactory
 import environ
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,6 +12,8 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db import transaction
 import boto3
+import time
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from .serializers import *
@@ -47,7 +50,6 @@ class HobbyViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         names = self.request.GET.getlist('name')
-        print(names)
         ids = self.request.GET.getlist('id')
 
         if names:
@@ -131,16 +133,22 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             if request.data['onboarded']:
-                self.trigger_event_suggestions(user.id)
+                print("Loading event suggestions...")
+                return self.trigger_event_suggestions(user.id)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
     
     def trigger_event_suggestions(self, user_id):
+        # to mimic a request object
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
+
+        # create event suggestions
+        request.data = {'user_id': user_id}
         event_suggestions = EventSuggestionsViewSet()
-        event_suggestions.create(request=None, user_id=user_id)
-        
-        return Response({"detail": "Successfully updated"})
+        response = event_suggestions.create(request)
+        return response
 
     def get_queryset(self):
         queryset = self.queryset
@@ -395,41 +403,54 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        user_id = request.query_params.get('user_id')
-        onboarding_data = Onboarding.objects.filter(user_id=user_id)
+        # Ensure the user_id is provided in the request
+        user_id = request.data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
 
-        if not onboarding_data:
-            return Response({"error": "Onboarding data not found for this user"}, status=400)
+        # Attempt to fetch onboarding data for the user
+        try:
+            onboarding_data = Onboarding.objects.get(user_id=user_id)
+        except ObjectDoesNotExist:
+            return Response({"error": "Onboarding data not found for this user"}, status=404)
 
-        event_suggestions_data = self.prepare_event_suggestions_data(user_id, onboarding_data)
+        # Attempt to retrieve the user object
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
 
-        parsed_event_suggestions_lst = self.prepare_user_scenarios(user_id, event_suggestions_data)
-        serializer = EventSuggestionsSerializer(data=parsed_event_suggestions_lst, many=True)
-        for event_suggestion in parsed_event_suggestions_lst:
-            serializer = EventSuggestionsSerializer(data=event_suggestion)
-            if serializer.is_valid():
-                serializer.save()
-        return Response({"detail: Successfully updated"}, status=201)
+        # Prepare event suggestion data based on the user and their onboarding data
+        try:
+            event_suggestions_data = self.prepare_event_suggestions_data(user, onboarding_data)
+            parsed_event_suggestions_lst = self.prepare_user_scenarios(user_id, event_suggestions_data)
+            event_suggestion_objs = [EventSuggestion(**event_suggestion) for event_suggestion in parsed_event_suggestions_lst]
+            EventSuggestion.objects.bulk_create(event_suggestion_objs)
+        except Exception as e:
+            return Response({"error": f"Failed to create event suggestions: {str(e)}"}, status=400)
 
+        # Return a success response
+        return Response({"detail": "Successfully updated"}, status=201)
 
-    def prepare_event_suggestions_data(self, user_id, onboarding_data):
+    def prepare_event_suggestions_data(self, user, onboarding_data):
         """
         Creates the a dictionary and parses and fills out the user's
         onboarding data
 
         Inputs:
-            user_id: User's ID
+            user: the User object
             onboarding_data (Onboarding): User's rows on Onboarding data from the model
 
         Returns: event_suggestions_data (dict): dictionary containing user's
         onboarding information as necessary for the EventSuggestions row
         """
-        event_suggestions_data = {'user_id': user_id}
-        event_suggestions_data.update(self.parse_user_availability(user_id))
-        event_suggestions_data.update(self.parse_num_participants(onboarding_data.num_participants))
+        event_suggestions_data = {'user_id': user}
+        event_suggestions_data.update(self.parse_num_participants_pref(onboarding_data.num_participants))
         event_suggestions_data.update(self.parse_distance_preferences(onboarding_data.distance))
         event_suggestions_data.update(self.parse_similarity_preferences(onboarding_data.similarity_to_group))
         event_suggestions_data.update(self.parse_similarity_metrics(onboarding_data.similarity_metrics))
+        event_suggestions_data.update(self.parse_hobby_type_onboarding(onboarding_data.most_interested_hobby_types.all()))
+        event_suggestions_data.update(self.parse_user_availability(user.id))
         return event_suggestions_data
 
     def parse_user_availability(self, user_id):
@@ -448,25 +469,30 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             'morning': [9, 10, 11, 12],
             'afternoon': [13, 14, 15, 16],
             'evening': [17, 18, 19, 20],
-            'night': [21, 22, 23, 0],
+            'night': [21, 22, 23, 24],
             'late_night': [1, 2, 3, 4]
         }
-        availability_data = {}
+        availability_data_lst = {}
         for availability in user_availability:
-            day_of_week = availability.calendar.day_of_week
-            hour = availability.calendar.hour
-            time_period = next((period for period, hours in time_period_mapping.items() if hour in hours), None)
-            preference_field = f"pref_{day_of_week.lower()}_{time_period}"
-            availability_data[preference_field] = availability.available
+            day_of_week = availability.calendar_id.day_of_week
+            hour = availability.calendar_id.hour
+            for period, hours in time_period_mapping.items():
+                preference_field = f"pref_{day_of_week.lower()}_{period}"
+                if int(hour) in hours:
+                    availability_data_lst[preference_field] = availability_data_lst.get(preference_field, [])
+                    availability_data_lst[preference_field].append(availability.available)
+        
+        
+        availability_data = {key: any(value) for key, value in availability_data_lst.items()}
         return availability_data
 
-    def parse_distance_preferences(self, distances):
+    def parse_distance_preferences(self, distance):
         """
         Helper function to parse user distance preferences data, formatting and standardizing
         it into the EventSuggestions row
 
         Inputs:
-            distances (list): List of user's distance preferences for events
+            distance (string): The user's distance preferences
 
         Returns: distance_data (dict): dictionary of user's distance preferences data
         """
@@ -481,23 +507,22 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             'Within 50 miles': 'pref_dist_within_50mi'
         }
         distance_data = {}
-        for distance_value in distances:
-            if distance_value == "No preference":
-                for preference_field in distance_preference_mapping.values():
-                    distance_data[preference_field] = True
-            elif distance_value in distance_preference_mapping:
-                distance_data[distance_preference_mapping[distance_value]] = True
-            else:
-                distance_data[distance_preference_mapping[distance_value]] = False
+        if distance != "No preference":
+            distance_data[distance_preference_mapping[distance]] = True
+        
+        for pref, field in distance_preference_mapping.items():
+            if pref != distance:
+                distance_data[field] = False
+
         return distance_data
 
-    def parse_similarity_preferences(self, similarity_values):
+    def parse_similarity_preferences(self, similarity_value):
         """
         Helper function to parse user similarity preference data, formatting and standardizing
         it into the EventSuggestions row
 
         Inputs:
-            similarity_values (lst): List of iser's similarity preferences data
+            similarity_values (str): a user's similarity preferences data
 
         Returns: similarity_data (dict): dictionary of user's similarity data
         """
@@ -509,14 +534,13 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             'Completely similar': 'pref_similarity_to_group_4',
         }
         similarity_data = {}
-        for similarity_value in similarity_values:
-            if similarity_value in ["Neutral", "No preference"]:
-                for preference_field in similarity_mapping.values():
-                    similarity_data[preference_field] = True
-            elif similarity_value in similarity_mapping:
-                similarity_data[similarity_mapping[similarity_value]] = True
-            else:
-                similarity_data[similarity_mapping[similarity_value]] = False
+        if similarity_value in similarity_mapping:
+            similarity_data[similarity_mapping[similarity_value]] = True
+        
+        for pref, field in similarity_mapping.items():
+            if pref != similarity_value:
+                similarity_data[field] = False
+        
         return similarity_data
 
     def parse_similarity_metrics(self, metrics):
@@ -529,23 +553,23 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
 
         Returns: parsed_metrics (dict): dictionary of user's similarity metrics data
         """
-
         similarity_metrics_mapping = {
-            "pref_gender_similar": "gender",
-            "pref_race_similar": "race",
-            "pref_age_similar": "age",
-            "pref_sexual_orientation_similar": "sexual orientation",
-            "pref_religion_similar": "religion",
-            "pref_political_leaning_similar": "political leaning"
+            "Gender": "pref_gender_similar",
+            "Race or Ethnicity": "pref_race_similar",
+            "Age range": "pref_age_similar",
+            "Sexual Orientation": "pref_sexual_orientation_similar",
+            "Religious Affiliation": "pref_religion_similar",
+            "Political Leaning": "pref_political_leaning_similar"
         }
 
         if not metrics:
-            return {metric: False for metric in similarity_metrics_mapping.keys()}
+            return {metric: False for metric in similarity_metrics_mapping.values()}
         else:
             # If metrics list is not empty, set corresponding values to True
             parsed_metrics = {}
-            for field, preference in similarity_metrics_mapping.items():
+            for preference, field in similarity_metrics_mapping.items():
                 parsed_metrics[field] = preference in metrics
+            
             return parsed_metrics
 
     def num_participant_mapping(self, value):
@@ -593,7 +617,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             if scenario.prefers_event1 is not None or scenario.prefers_event2 is not None:
                 scenario_1_data, scenario_2_data = self.parse_scenario_data(scenario, user_event_suggestions_data_template)
 
-                scenario_lst.append(scenario_1_data, scenario_2_data)
+                scenario_lst.extend([scenario_1_data, scenario_2_data])
 
         return scenario_lst
 
@@ -619,8 +643,10 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         user_event_suggestions_scenario_1.update(self.parse_distance_mapping(scenario.distance1))
         user_event_suggestions_scenario_2.update(self.parse_distance_mapping(scenario.distance2))
 
-        user_event_suggestions_scenario_1.update(self.num_participant_mapping(scenario.num_participants1))
-        user_event_suggestions_scenario_2.update(self.num_participant_mapping(scenario.num_participants2))
+        num_part_1 = f"num_particip_{self.num_participant_mapping(scenario.num_participants1)}"
+        num_part_2 = f"num_particip_{self.num_participant_mapping(scenario.num_participants2)}"
+        user_event_suggestions_scenario_1.update({num_part_1: True})
+        user_event_suggestions_scenario_2.update({num_part_2: True})
 
         user_event_suggestions_scenario_1.update(self.parse_scenario_datetime(scenario.day_of_week1, scenario.time_of_day1))
         user_event_suggestions_scenario_2.update(self.parse_scenario_datetime(scenario.day_of_week2, scenario.time_of_day2))
@@ -632,6 +658,39 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         user_event_suggestions_scenario_2['attended_event'] = scenario.prefers_event2
 
         return user_event_suggestions_scenario_1, user_event_suggestions_scenario_2
+
+    def parse_hobby_type_onboarding(self, hobby_types):
+        """
+        Helper function to parse user's scenario hobby type data formatting and standardizing
+        it into the EventSuggestions row
+
+        Inputs:
+            hobby_types (list): list of HobbyType objects
+
+        Returns:
+            hobby_data (dict): dictionary of user's scenario hobby type
+        """
+        hobby_data = {}
+        hobby_type_str = [hobby_type.type for hobby_type in hobby_types]
+
+        category_mapping = {
+            "TRAVEL": "pref_hobby_category_travel",
+            "ARTS AND CULTURE": "pref_hobby_category_arts_and_culture",
+            "LITERATURE": "pref_hobby_category_literature",
+            "FOOD AND DRINK": "pref_hobby_category_food",
+            "COOKING/BAKING": "pref_hobby_category_cooking_and_baking",
+            "SPORT/EXERCISE": "pref_hobby_category_exercise",
+            "OUTDOORS":  "pref_hobby_category_outdoor_activities",
+            "CRAFTING": "pref_hobby_category_crafting",
+            "HISTORY AND LEARNING": "pref_hobby_category_history",
+            "COMMUNITY EVENTS": "pref_hobby_category_community",
+            "GAMING": "pref_hobby_category_gaming",
+        }
+
+        for hobby_type, pref_col in category_mapping.items():
+            hobby_data[pref_col] = hobby_type in hobby_type_str
+
+        return hobby_data
 
     def parse_hobby_type(self, hobby_type):
         """
@@ -647,25 +706,23 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         hobby_data = {}
 
         category_mapping = {
-        "Arts and Crafts": "hobby_category_arts_and_crafts",
-        "Books": "hobby_category_books",
-        "Cooking and Baking": "hobby_category_cooking_and_baking",
-        "Exercise": "hobby_category_exercise",
-        "Gaming": "hobby_category_gaming",
-        "Music": "hobby_category_music",
-        "Movies": "hobby_category_movies",
-        "Outdoor Activities": "hobby_category_outdoor_activities",
-        "Art": "hobby_category_art",
-        "Travel": "hobby_category_travel",
-        "Writing": "hobby_category_writing"
-    }
+            "TRAVEL": "hobby_category_travel",
+            "ARTS AND CULTURE": "hobby_category_arts_and_culture",
+            "LITERATURE": "hobby_category_literature",
+            "FOOD AND DRINK": "hobby_category_food",
+            "COOKING/BAKING": "hobby_category_cooking_and_baking",
+            "SPORT/EXERCISE": "hobby_category_exercise",
+            "OUTDOORS":  "hobby_category_outdoor_activities",
+            "CRAFTING": "hobby_category_crafting",
+            "HISTORY AND LEARNING": "hobby_category_history",
+            "COMMUNITY EVENTS": "hobby_category_community",
+            "GAMING": "hobby_category_gaming",
+        }
 
         for hobby_key in category_mapping.values():
             hobby_data[hobby_key] = False
-
-        if hobby_type in category_mapping:
-            hobby_category_key = category_mapping[hobby_type]
-            hobby_data[hobby_category_key] = True
+        
+        hobby_data[category_mapping[hobby_type.type]] = True
 
         return hobby_data
 
@@ -692,7 +749,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             'Within 40 miles': 'dist_within_40mi',
             'Within 50 miles': 'dist_within_50mi'
         }
-        distance_data.update({key: (distance == value) for key, value in distance_preference_mapping.items()})
+        distance_data.update({value: (distance == key) for key, value in distance_preference_mapping.items()})
 
         return distance_data
 
@@ -702,20 +759,47 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         it into the EventSuggestions row
 
         Inputs:
-            num_participants (Scenario): Number of participants in of user's scenario
+            num_participants (list): Number of participants in of user's scenario
 
         Returns:
             num_participants_data (dict): dictionary of user's scenario participant data
         """
         num_participant_data = {}
-
-        range_mapping_list = [self.num_participant_mapping(participant) for participant in num_participants]
+        if not num_participants:
+            range_mapping_list = []
+        else:
+            range_mapping_list = [self.num_participant_mapping(participant) for participant in num_participants]
         num_participant_data["num_particip_1to5"] = '1to5' in range_mapping_list
         num_participant_data["num_particip_5to10"] = '5to10' in range_mapping_list
         num_participant_data["num_particip_10to15"] = '10to15' in range_mapping_list
         num_participant_data["num_particip_15p"] = '15p' in range_mapping_list
 
         return num_participant_data
+    
+    def parse_num_participants_pref(self, num_participants):
+        """
+        Helper function to parse user's preferred number of participants data formatting and standardizing
+        it into the EventSuggestions row
+
+        Inputs:
+            num_participants (list): The user's preferred number of participants
+
+        Returns:
+            num_participants_data (dict): dictionary of user's preferred number of participants data
+        """
+        assert type(num_participants) == list, "num_participants must be a list"
+
+        num_participants_map = {
+            "1-5": "pref_num_particip_1to5",
+            "5-10": "pref_num_particip_5to10",
+            "10-15": "pref_num_particip_10to15",
+            "15+": "pref_num_particip_15p"
+        }
+        num_participants_data = {}
+        for num_participant in num_participants_map:
+            num_participants_data[num_participants_map[num_participant]] = num_participant in num_participants
+
+        return(num_participants_data)
 
     def parse_scenario_datetime(self, day_of_week, time_of_day):
         """
@@ -730,8 +814,8 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             scenario_datetime_mapping (dict): dictionary of user's scenario day and time data
         """
         scenario_datetime_mapping = {}
-
-        tod_string = "".join(time if time_of_day.isalpha() or time.isspace() else " " for time in time_of_day)
+        day_of_week = day_of_week.lower()
+        tod_string = time_of_day.split("(")[0].strip()
         tod_standardized = "_".join(tod_string.lower().split())
 
         days_of_week = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -743,7 +827,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
                 if field_name == f"{day_of_week}_{tod_standardized}":
                     scenario_datetime_mapping[field_name] = True
                 else:
-                    scenario_datetime_mapping = False
+                    scenario_datetime_mapping[field_name] = False
 
         return scenario_datetime_mapping
 

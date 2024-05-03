@@ -18,4 +18,4 @@ class Hobby(models.Model):
     type = models.ForeignKey(HobbyType, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{} ({}), {} participants max".format(self.name, self.type, self.max_participants)
+        return "{} ({})".format(self.name, self.type)
