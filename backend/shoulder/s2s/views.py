@@ -400,7 +400,18 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
 class EventSuggestionsViewSet(viewsets.ModelViewSet):
     queryset = EventSuggestion.objects.all()
     serializer_class = EventSuggestionsSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            user = User.objects.filter(id=user_id)
+            if user:
+                queryset = queryset.filter(user_id=user)
+
+        return queryset
 
     def create(self, request, *args, **kwargs):
         # Ensure the user_id is provided in the request
