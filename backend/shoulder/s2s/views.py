@@ -130,9 +130,17 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(onboarding, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            if request.data['onboarded']:
+                self.trigger_event_suggestions(user.id)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
+    
+    def trigger_event_suggestions(self, user_id):
+        event_suggestions = EventSuggestionsViewSet()
+        event_suggestions.create(request=None, user_id=user_id)
+        
+        return Response({"detail": "Successfully updated"})
 
     def get_queryset(self):
         queryset = self.queryset
@@ -271,7 +279,6 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         pass
 
-
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"
     api_key = environ.Env().str('ZIPCODE_API_KEY')
@@ -384,7 +391,7 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
 
 class EventSuggestionsViewSet(viewsets.ModelViewSet):
     queryset = EventSuggestion.objects.all()
-    serializer_class = EventSuggestion
+    serializer_class = EventSuggestionsSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
@@ -397,12 +404,12 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         event_suggestions_data = self.prepare_event_suggestions_data(user_id, onboarding_data)
 
         parsed_event_suggestions_lst = self.prepare_user_scenarios(user_id, event_suggestions_data)
-
+        serializer = EventSuggestionsSerializer(data=parsed_event_suggestions_lst, many=True)
         for event_suggestion in parsed_event_suggestions_lst:
             serializer = EventSuggestionsSerializer(data=event_suggestion)
             if serializer.is_valid():
                 serializer.save()
-        return Response(serializer.data, status=201)
+        return Response({"detail: Successfully updated"}, status=201)
 
 
     def prepare_event_suggestions_data(self, user_id, onboarding_data):
@@ -484,7 +491,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
                 distance_data[distance_preference_mapping[distance_value]] = False
         return distance_data
 
-
     def parse_similarity_preferences(self, similarity_values):
         """
         Helper function to parse user similarity preference data, formatting and standardizing
@@ -512,7 +518,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             else:
                 similarity_data[similarity_mapping[similarity_value]] = False
         return similarity_data
-
 
     def parse_similarity_metrics(self, metrics):
         """
@@ -542,29 +547,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             for field, preference in similarity_metrics_mapping.items():
                 parsed_metrics[field] = preference in metrics
             return parsed_metrics
-
-
-    def parse_user_num_participants(self, num_participants):
-        """
-        Helper function to parse user preference data on event participants, formatting and standardizing
-        it into the EventSuggestions row
-
-        Inputs:
-            num_participants (lst): List of user's event participant data
-
-        Returns: participants_data (dict): dictionary of user's event participant preference data
-        """
-
-        participants_data = {}
-
-        range_mapping_list = [self.num_participant_mapping(participant) for participant in num_participants]
-        participants_data["pref_num_particip_1to5"] = '1to5' in range_mapping_list
-        participants_data["pref_num_particip_5to10"] = '5to10' in range_mapping_list
-        participants_data["pref_num_particip_10to15"] = '10to15' in range_mapping_list
-        participants_data["pref_num_particip_15p"] = '15p' in range_mapping_list
-
-        return participants_data
-
 
     def num_participant_mapping(self, value):
         """
@@ -600,7 +582,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         Returns: scenario_lst (lst): List of dictionaries containing all of a
         user's unique scenarios and answers as well as onboarding information
         """
-        # parse both scenario 1 and scenario 2 to a list of  dictionaries that can be turned into rows in EventSuggestions
+        # parse both scenario 1 and scenario 2 to a list of dictionaries that can be turned into rows in EventSuggestions
         user_scenarios = Scenarios.objects.filter(user_id=user_id)
 
         scenario_lst = []
@@ -735,7 +717,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
 
         return num_participant_data
 
-
     def parse_scenario_datetime(self, day_of_week, time_of_day):
         """
         Helper function to parse user's scenario date and time data formatting and standardizing
@@ -778,6 +759,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             duration_data (dict): dictionary of user's scenario duration data
         """
         duration_data = {
-        f"duration_{i}hr": i == duration for i in range(1, 13)
+        f"duration_{i}hr": i == duration for i in range(1, 9)
     }
         return duration_data
