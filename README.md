@@ -118,7 +118,7 @@ python shoulder/manage.py runserver
 ```
 </pre>
 
-Navigate to `localhost:1800/` in your web browser and enter the superuser credentials.
+Navigate to `localhost:8000/admin` in your web browser and enter the superuser credentials.
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
