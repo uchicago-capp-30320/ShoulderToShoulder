@@ -11,7 +11,7 @@ import { ApiService } from './api.service';
 })
 export class ProfileService {
   endpoint = this.apiService.BASE_API_URL + '/profiles';
-  uploadPhotoEndpoint = this.apiService.BASE_API_URL + '/user/upload/';
+  uploadPhotoEndpoint = this.apiService.BASE_API_URL + '/profiles/upload/';
   profilePicture = new BehaviorSubject<any>(null);
 
   constructor(

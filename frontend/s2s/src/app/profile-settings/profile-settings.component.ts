@@ -168,12 +168,12 @@ export class ProfileSettingsComponent implements OnInit {
 
   onUpload(event: any) {
     console.log(event);
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
+    if (event.files && event.files[0]) {
+      const file = event.files[0];
       var reader = new FileReader();
-
+  
       reader.readAsDataURL(file); // Read file as data URL for preview purposes
-
+  
       reader.onload = (e) => { // Called once readAsDataURL is completed
         this.profilePictureUrl = e.target?.result as string;  // Update image preview
         this.uploadFileToServer(file);  // Call function to upload file to server

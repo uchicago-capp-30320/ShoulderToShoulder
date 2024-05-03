@@ -134,11 +134,11 @@
         <p-fileUpload 
             name="profilePicture" 
             url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user.id }}" 
-            (onUpload)="onUpload($event)" 
+            [customUpload]="true"
+            (uploadHandler)="onUpload($event)" 
             accept="image/*" 
             [maxFileSize]="1000000"
-            [customUpload]="true"
-        >
+            >
         </p-fileUpload>
     </div>
 
