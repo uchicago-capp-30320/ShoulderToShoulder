@@ -11,7 +11,7 @@ import { ApiService } from './api.service';
 })
 export class ProfileService {
   endpoint = this.apiService.BASE_API_URL + '/profiles';
-  uploadPhotoEndpoint = this.apiService.BASE_API_URL + '/profiles/upload/';
+  uploadPhotoEndpoint = this.apiService.BASE_API_URL + '/user/upload/';
   profilePicture = new BehaviorSubject<any>(null);
 
   constructor(
@@ -48,7 +48,18 @@ export class ProfileService {
    * @param file The file to upload.
    * @returns An Observable with the upload response.
    */
-  uploadProfilePicture(file: File) {
-    return of({"message" : "Profile picture uploaded."})
+  uploadProfilePicture(file: File, user_id: number) {
+    let data = {"user_id": user_id, "image": file}
+    return this.http.post<any>(this.uploadPhotoEndpoint, data).pipe(
+      catchError(error => {
+        console.error('Error uploading profile picture:', error);
+        return EMPTY;
+      })
+    ).subscribe(
+      response => {
+        console.log('Profile picture uploaded successfully:', response);
+        this.profilePicture.next(response.profile_picture);
+      }
+    );
   }
 }

@@ -13,6 +13,7 @@ import { StrongPasswordRegx } from '../_helpers/patterns';
 import { confirmPasswordValidator, differentPasswordValidator } from '../_helpers/validators';
 import { PasswordChange } from '../_models/password-change';
 import { UserUpdate } from '../_models/user';
+import { User } from '../_models/user';
 
 interface UploadEvent {
   originalEvent: Event;
@@ -31,6 +32,7 @@ export class ProfileSettingsComponent implements OnInit {
   profilePictureUrl: string = '';
   reader = new FileReader(); 
   uploadedFiles: any[] = [];
+  showInvalidPassword = false;
 
   changePasswordForm = new FormGroup({
     username: new FormControl(this.user.username, Validators.required),
@@ -51,6 +53,8 @@ export class ProfileSettingsComponent implements OnInit {
     lastName: new FormControl(this.user.last_name, Validators.required),
     email: new FormControl(this.user.email, [Validators.required, Validators.email]),
   });
+
+  showInvalidPasswordMessage = "Invalid password. Please try again."
 
   constructor(
     private authService: AuthService,
@@ -82,6 +86,14 @@ export class ProfileSettingsComponent implements OnInit {
     inputField.type = type === 'password' ? 'text' : 'password';
   }
 
+  resetUserForm() {
+    this.updateUserInformationForm = new FormGroup({
+      firstName: new FormControl(this.user.first_name, Validators.required),
+      lastName: new FormControl(this.user.last_name, Validators.required),
+      email: new FormControl(this.user.email, [Validators.required, Validators.email]),
+    })
+  }
+
   submitNewPassword() {
     console.log('submitting new password')
     let username = this.changePasswordForm.get('username')?.value;
@@ -90,7 +102,7 @@ export class ProfileSettingsComponent implements OnInit {
     let confirmPassword = this.changePasswordForm.get('confirmPassword')?.value;
 
     let passwordChange: PasswordChange = {
-      username: username ? username : '',
+      email: username ? username : '',
       current_password: currentPassword ? currentPassword : '',
       password: password ? password : '',
       confirm_password: confirmPassword ? confirmPassword : ''
@@ -99,13 +111,16 @@ export class ProfileSettingsComponent implements OnInit {
     this.authService.changePassword(passwordChange).pipe(
       catchError(error => {
         console.error('Error changing password:', error);
+        if (error.status == 400) {
+          this.showInvalidPassword = true;
+        }
         return EMPTY;
       })
     ).subscribe(() => {
       console.log('Password changed successfully');
       this.changePasswordForm.reset();
+      this.authService.logout();
     });
-    this.changePasswordForm.reset();
   }
 
   submitUserUpdate() {
@@ -118,7 +133,7 @@ export class ProfileSettingsComponent implements OnInit {
       first_name: firstName ? firstName : '',
       last_name: lastName ? lastName : '',
       email: email ? email : '',
-      username: this.user.username
+      username: email ? email : ''
     };
 
     this.authService.updateUser(userUpdate).pipe(
@@ -126,9 +141,15 @@ export class ProfileSettingsComponent implements OnInit {
         console.error('Error updating user:', error);
         return EMPTY;
       })
-    ).subscribe(() => {
+    ).subscribe((response) => {
+      // update user information
+      let newUser = response as User;
+      this.user = newUser;
+      localStorage.setItem('user', JSON.stringify(newUser));
+      this.authService.user.next(newUser);
+      this.resetUserForm();
+
       console.log('User updated successfully!');
-      this.updateUserInformationForm.reset();
     });
   }
 
@@ -146,15 +167,22 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   onUpload(event: any) {
-    console.log(event)
+    console.log(event);
     if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
       var reader = new FileReader();
 
-      reader.readAsDataURL(event.target.files[0]); // read file as data url
+      reader.readAsDataURL(file); // Read file as data URL for preview purposes
 
-      reader.onload = (event) => { // called once readAsDataURL is completed
-        this.profilePictureUrl = event.target?.result as unknown as string;
+      reader.onload = (e) => { // Called once readAsDataURL is completed
+        this.profilePictureUrl = e.target?.result as string;  // Update image preview
+        this.uploadFileToServer(file);  // Call function to upload file to server
       }
     }
   }
+
+  uploadFileToServer(file: File) {
+    this.profileService.uploadProfilePicture(file, this.user.id);
+  }
+
 }

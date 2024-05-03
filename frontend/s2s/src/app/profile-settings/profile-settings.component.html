@@ -6,6 +6,11 @@
     <div class="settings-form drop-shadow">
         <h4>Change Password Form</h4>
         <form [formGroup]="this.changePasswordForm" (ngSubmit)="submitNewPassword()" class="form-container dark-text">
+            <!-- Invalid password message -->
+            <div *ngIf="showInvalidPassword" class="p-error">
+                <p>Invalid password. Please try again.</p>
+            </div>
+            
             <!-- Hidden Username Field -->
             <input 
                 type="hidden" 
@@ -128,10 +133,11 @@
         <h4>Update Profile Picture</h4>
         <p-fileUpload 
             name="profilePicture" 
-            url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user?.id }}" 
+            url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user.id }}" 
             (onUpload)="onUpload($event)" 
             accept="image/*" 
             [maxFileSize]="1000000"
+            [customUpload]="true"
         >
         </p-fileUpload>
     </div>

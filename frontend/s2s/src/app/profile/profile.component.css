@@ -9,7 +9,9 @@
 
 .profile-picture {
     width: 25rem;
+    height: 25rem;
     border-radius: 20%;
+    object-fit: cover;
     margin: 0 auto;
     display: block;
 }

@@ -29,6 +29,8 @@ export class AuthService {
   signupEndpoint = `${this.apiService.BASE_API_URL}/create/`;
   loginEndpoint = `${this.apiService.BASE_API_URL}/login/`;
   onboardingEndpoint = `${this.apiService.BASE_API_URL}/onboarding/`;
+  changePasswordEndpoint = `${this.apiService.BASE_API_URL}/user/change_password/`;
+  userUpdateEndpoint = `${this.apiService.BASE_API_URL}/user/${this.userValue.id}/`;
   
   signingUp = new BehaviorSubject<boolean>(false);
   user = new BehaviorSubject<User>(this.userValue);
@@ -145,7 +147,7 @@ export class AuthService {
    * @returns An Observable of the password change response.
    */
   changePassword(passwordChange: PasswordChange): Observable<any> {
-    return of({"message": "Password changed successfully!"})
+    return this.http.patch<any>(this.changePasswordEndpoint, passwordChange);
   }
 
   /**
@@ -156,7 +158,7 @@ export class AuthService {
    * @returns An Observable of the updated user.
    */
   updateUser(userUpdate: UserUpdate): Observable<any> {
-    return of({"message": "User information updated successfully!"});
+    return this.http.put<any>(this.userUpdateEndpoint, userUpdate);
   }
 
   /**
