@@ -103,7 +103,8 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(onboarding, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            self.trigger_event_suggestions(user.id)
+            if request.data['onboarded']:
+                self.trigger_event_suggestions(user.id)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
@@ -250,7 +251,6 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     # add functionality for the photos to be added with s3 boto3
     def create(self, request, *args, **kwargs):
         pass
-
 
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"
@@ -464,7 +464,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
                 distance_data[distance_preference_mapping[distance_value]] = False
         return distance_data
 
-
     def parse_similarity_preferences(self, similarity_values):
         """
         Helper function to parse user similarity preference data, formatting and standardizing
@@ -492,7 +491,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             else:
                 similarity_data[similarity_mapping[similarity_value]] = False
         return similarity_data
-
 
     def parse_similarity_metrics(self, metrics):
         """
@@ -522,29 +520,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             for field, preference in similarity_metrics_mapping.items():
                 parsed_metrics[field] = preference in metrics
             return parsed_metrics
-
-
-    def parse_user_num_participants(self, num_participants):
-        """
-        Helper function to parse user preference data on event participants, formatting and standardizing
-        it into the EventSuggestions row
-
-        Inputs:
-            num_participants (lst): List of user's event participant data
-
-        Returns: participants_data (dict): dictionary of user's event participant preference data
-        """
-
-        participants_data = {}
-
-        range_mapping_list = [self.num_participant_mapping(participant) for participant in num_participants]
-        participants_data["pref_num_particip_1to5"] = '1to5' in range_mapping_list
-        participants_data["pref_num_particip_5to10"] = '5to10' in range_mapping_list
-        participants_data["pref_num_particip_10to15"] = '10to15' in range_mapping_list
-        participants_data["pref_num_particip_15p"] = '15p' in range_mapping_list
-
-        return participants_data
-
 
     def num_participant_mapping(self, value):
         """
@@ -714,7 +689,6 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         num_participant_data["num_particip_15p"] = '15p' in range_mapping_list
 
         return num_participant_data
-
 
     def parse_scenario_datetime(self, day_of_week, time_of_day):
         """
