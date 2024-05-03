@@ -9,8 +9,8 @@ def test_geocode_address():
 
 def test_geocode_zip():
     hyde_park_zip = geocode("60615")
-    assert (hyde_park_zip['coords'][0] > 41.80) and (hyde_park_zip['coords'][0] > 41.81)
-    assert (hyde_park_zip['coords'][1] > -77.04) and (hyde_park_zip['coords'][1] > -77.03)
+    assert (hyde_park_zip['coords'][0] > 41.80) and (hyde_park_zip['coords'][0] < 41.81)
+    assert (hyde_park_zip['coords'][1] < -77.04) and (hyde_park_zip['coords'][1] < -77.03)
 
 def test_distance_miles():
     washington_monument = geocode("Washington Monument")
