@@ -28,7 +28,7 @@ class Command(BaseCommand):
                 types_raw = set()
                 types = []
                 for row in csv_reader:
-                    name, scenario_format, _type = row[:4]
+                    name, scenario_format, _type = row[:3]
                     hobbies_raw.append((name, scenario_format, _type))
                     types_raw.add(_type)
 
