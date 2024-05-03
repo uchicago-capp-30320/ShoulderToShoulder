@@ -6,7 +6,6 @@ import { Input } from '@angular/core';
  * of the application as well as holds the navigation bar.
  * 
  * @summary Header component that displays the title and subtitle of the application.
- * @see NavbarComponent
  * 
  * @example
  * <app-header title="Title" subtitle="Subtitle"></app-header>

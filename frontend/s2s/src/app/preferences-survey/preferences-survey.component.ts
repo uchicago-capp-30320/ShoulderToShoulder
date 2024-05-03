@@ -1,130 +1,118 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 // services
-import { UserService } from '../_services/user.service';  
 import { HobbyService } from '../_services/hobbies.service';
+import { OnboardingService } from '../_services/onboarding.service';
+import { ZipcodeService } from '../_services/zipcode.service';
+import { ChoicesService } from '../_services/choices.service';
 
 // helpers
-import { 
-  groupSizes, 
-  groupSimilarity, 
-  groupSimilarityAttrs, 
-  eventFrequency, 
-  eventNotifications,
-  distances
-} from '../_helpers/preferences';
-
 import { states } from '../_helpers/location';
+import { Hobby, HobbyType } from '../_models/hobby';
+
 
 /**
- * Component for the preferences survey form. Also contains the logic for
- * extracting the zip code data from the form and sending a request to the USPS 
- * API.
+ * Defines the preferences survey component.
  * 
- * Example:
+ * This component handles the survey for users to input their preferences for 
+ * hobbies, location, and other information. It allows users to select their 
+ * most and least interested hobbies, as well as their location information.
+ * 
+ * @example
  * ```
  * <app-preferences-survey></app-preferences-survey>
  * ```
  * 
- * @see UserService
+ * @see OnboardingService
  * @see HobbyService
+ * @see ZipcodeService
+ * @see ChoicesService
  */
 @Component({
   selector: 'app-preferences-survey',
   templateUrl: './preferences-survey.component.html',
-  styleUrl: './preferences-survey.component.css'
+  styleUrls: ['./preferences-survey.component.css']
 })
 export class PreferencesSurveyComponent implements OnInit {
-  // hobby information
-  hobbies!: string[];
-  leastInterestedHobbies!: string[];
-  mostInterestedHobbies!: string[];
+  hobbies: Hobby[] = [];
+  mostInterestedHobbyTypes: HobbyType[] = [];
+  leastInterestedHobbies: Hobby[] = [];
+  mostInterestedHobbies: Hobby[] = [];
 
-  // group information
-  groupSizes = groupSizes;
-  groupSimilarity = groupSimilarity;
-  groupSimilarityAttrs = groupSimilarityAttrs;
-
-  // event information
-  eventFrequency = eventFrequency;
-  eventNotifications = eventNotifications;
-
-  // location information
   states = states;
-  distances = distances;
-  zipCodeApiUrl = "https://api.zipcodestack.com/v1/search?country=us"
-  zipCodeApiKeyFilepath = "assets/api_keys/zipcodestack.txt"
-  zipCodeApiKey: string | null = null;
-  zipcodeInvalid: boolean = false;
+  zipcodeInvalid = false;
+
+  choices: { [index: string]: any[]; } = {};
+  private subscription = new Subscription();
 
   constructor(
-    public userService: UserService,
-    private http: HttpClient,
-    private HobbyService: HobbyService
-  ) {
-    this.getHobbyArray();
-  }
+    public onboardingService: OnboardingService, 
+    private hobbyService: HobbyService, 
+    private zipCodeService: ZipcodeService,
+    private choicesService: ChoicesService,
+  ) {}
 
   ngOnInit() {
-    this.getZipCodeApiKey()
+    // get hobbies and hobby types
+    this.subscription.add(
+      this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+        this.hobbies = hobbies;
+        this.mostInterestedHobbies = [...this.hobbies];
+        this.leastInterestedHobbies = [...this.hobbies];
+      })
+    );
+
+    this.subscription.add(
+      this.hobbyService.hobbyTypes.subscribe(hobbyTypes => {
+        this.mostInterestedHobbyTypes = hobbyTypes;
+      })
+    );
+    this.getChoices();
   }
 
+
   /**
-   * Extracts an array of hobby names from the Hobby[] list. Sets this.hobbies
-   * to the hobby array.
+   * Gets the choices from the choices service.
    */
-  getHobbyArray() {
-    this.hobbies = this.HobbyService.preferencesHobbies.map(hobby => hobby.name);
-    this.leastInterestedHobbies = this.hobbies;
-    this.mostInterestedHobbies = this.hobbies;
+  getChoices() {
+    this.choicesService.choices.subscribe(choices => {
+      this.choices = choices;
+    });
   }
 
   /**
    * Extracts an array of hobbies that are in the most interested hobbies array.
    */
   getMostInterestedHobbiesArray() {
-    this.mostInterestedHobbies = this.hobbies.filter(hobby => !this.userService.preferencesForm.get('leastInterestedHobbies')?.value.includes(hobby));
+    this.mostInterestedHobbies = this.hobbies
+    .filter(hobby => !this.onboardingService.preferencesForm
+      .get('leastInterestedHobbies')?.value.includes(hobby));
   }
 
   /**
    * Extracts an array of hobbies that are not in the most interested hobbies array.
    */
   getLeastInterestedHobbiesArray() {
-    this.leastInterestedHobbies = this.hobbies.filter(hobby => !this.userService.preferencesForm.get('mostInterestedHobbies')?.value.includes(hobby));
-  }
-
-  /**
-   * Gets the USPS API key from the .txt file.
-   * 
-   */
-  getZipCodeApiKey() {
-    this.http.get(this.zipCodeApiKeyFilepath).subscribe(data => {
-      this.zipCodeApiKey = (data as string);
-    })
+    this.leastInterestedHobbies = this.hobbies
+    .filter(hobby => !this.onboardingService.preferencesForm
+      .get('mostInterestedHobbies')?.value.includes(hobby));
   }
 
   /**
    * Extracts the zip code data from the preferences form and sends a request to 
-   * the USPS API to get the city and state data.
+   * the zipcode API endpoint to get the city and state data.
    * 
    * @returns null if the zip code is null.
-   * 
    */
   getZipCodeData() {
-    // extracts the zipcode from the form
-    let zipCode = this.userService.preferencesForm.get('zipCode')?.value
+    let zipCode = this.onboardingService.preferencesForm.get('zipCode')?.value
     if (zipCode == null) {
       return
     }
 
-    // builds the API request URL
-    let requestUrl = this.zipCodeApiUrl + `&codes=${zipCode}&apikey=${this.zipCodeApiKey}`
-
-    // sets city and state based on the response from the USPS API
-    this.http.get(requestUrl, { responseType: 'json' }).subscribe(data => {
-
-      // ZipCodeStack response is JSON - need to parse
+    // sets city and state based on the response from the API
+    this.zipCodeService.getZipcode(zipCode).subscribe(data => {
       try {
         let results = (data as any).results
 
@@ -141,8 +129,8 @@ export class PreferencesSurveyComponent implements OnInit {
         let city = result.city
         let state = {label: result.state, value: result.state_code}
 
-        this.userService.preferencesForm.get('city')?.setValue(city)
-        this.userService.preferencesForm.get('state')?.setValue(state)
+        this.onboardingService.preferencesForm.get('city')?.setValue(city)
+        this.onboardingService.preferencesForm.get('state')?.setValue(state)
 
       } catch (error) {
         console.error(error);
@@ -154,7 +142,6 @@ export class PreferencesSurveyComponent implements OnInit {
    * Submits the preferences form.
    */
   onSubmit() {
-    console.log(this.userService.preferencesForm.value);
+    console.log(this.onboardingService.preferencesForm.value);
   }
-
 }

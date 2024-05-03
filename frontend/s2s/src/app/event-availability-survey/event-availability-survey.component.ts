@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 // services
-import { UserService } from '../_services/user.service';
+import { OnboardingService } from '../_services/onboarding.service';
+import { CalendarService } from '../_services/calendar.service';
 
 // helpers
-import { availableTimes, days, timeCategoryMap } from '../_helpers/preferences';
+import { availableTimes, timeCategoryMap } from '../_helpers/preferences';
+import { daysOfTheWeek } from '../_models/calendar';
 
 /**
  * EventAvailabilitySurveyComponent
@@ -14,12 +16,13 @@ import { availableTimes, days, timeCategoryMap } from '../_helpers/preferences';
  * events. It allows users to select their availability for different time 
  * categories on weekdays and weekends.
  * 
- * Example:
+ * @example
  * ```
  * <app-event-availability-survey></app-event-availability-survey>
  * ```
  * 
- * @see UserService
+ * @see OnboardingService
+ * @see CalendarService
  */
 @Component({
   selector: 'app-event-availability-survey',
@@ -29,7 +32,6 @@ import { availableTimes, days, timeCategoryMap } from '../_helpers/preferences';
 export class EventAvailabilitySurveyComponent {
   availableTimes = availableTimes;
   timeCategoryMap = timeCategoryMap;
-  days = days;
 
   // general availability form
   generalAvailabilityForm: FormGroup = this.fb.group({
@@ -94,8 +96,9 @@ export class EventAvailabilitySurveyComponent {
   ];
 
   constructor(
-    public userService: UserService,
-    private fb: FormBuilder
+    public onboardingService: OnboardingService,
+    private fb: FormBuilder,
+    public calendarService: CalendarService
   ) {}
 
   /**
@@ -150,23 +153,19 @@ export class EventAvailabilitySurveyComponent {
    */
   addTimeRange(timeRange: string, days: string[]) {
     let times = this.timeCategoryMap[timeRange];
+    for (let time of times) {
+      if (time === 0) {
+        continue;
+      }
       for (let day of days) {
-        // get the current availability for the day
-        let currentTimes = this.userService.eventAvailabilityForm.value[day];
+        let timeSlot = this.calendarService.userAvailability[time - 1];
+        let currentTimeAvailability = timeSlot.days;
+        currentTimeAvailability[daysOfTheWeek.indexOf(day)] = true;
 
-        // remove the unavailable time
-        currentTimes = currentTimes.filter((time: number) => time !== 0);
-
-        // add these times to the current availability
-        times.forEach((time: number) => {
-          if (!currentTimes.includes(time)) {
-            currentTimes.push(time);
-          }
-        });
-
-        // update the availability for the day
-        this.userService.eventAvailabilityForm.controls[day].setValue(currentTimes);
-      } 
+        // update the availability
+        this.calendarService.userAvailability[time - 1].days = currentTimeAvailability;
+      }
+    }
   }
 
   /**
@@ -178,55 +177,53 @@ export class EventAvailabilitySurveyComponent {
    */
   removeTimeRange(timeRange: string, days: string[]) {
     let times = this.timeCategoryMap[timeRange];
-    let currentTimes: number[] = [];
-    for (let day of days) {
-      // get the current availability for the day
-      let currentTimes = this.userService.eventAvailabilityForm.value[day];
+    for (let time of times) {
+      if (time === 0) {
+        continue;
+      }
+      for (let day of days) {
+        let timeSlot = this.calendarService.userAvailability[time - 1];
+        let currentTimeAvailability = timeSlot.days;
+        currentTimeAvailability[daysOfTheWeek.indexOf(day)] = false;
 
-      // remove the times from the current availability
-      times.forEach((time: number) => {
-        currentTimes = currentTimes.filter((t: number) => t !== time);
-      });
-
-      // update the form control
-      this.userService.eventAvailabilityForm.controls[day].setValue(currentTimes);
+        // update the availability
+        this.calendarService.userAvailability[time - 1].days = currentTimeAvailability;
+      }
     }
-    return currentTimes;
   }
-
 
   /**
    * Updates the times for the weekdays.
    */
   updateWeekdayTimes() {
-    let weekdayTimes: string[] = ['mondayTimes', 'tuesdayTimes', 'wednesdayTimes', 'thursdayTimes', 'fridayTimes'];
-    for (let controlLabel of this.weekdayFormControlLabelMapList) {
-      // available
-      if (this.generalAvailabilityForm.value[controlLabel.control]) {
-        this.addTimeRange(controlLabel.label, weekdayTimes);
-      } 
-      
-      // unavailable
-      else {
-        this.removeTimeRange(controlLabel.label, weekdayTimes);
-      }
-    }
+    let weekDays: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    this.updateTimes(weekDays, this.weekdayFormControlLabelMapList);
   }
 
   /**
    * Updates the times for the weekends.
    */
   updateWeekendTimes() {
-    let weekendTimes: string[] = ['saturdayTimes', 'sundayTimes'];
-    for (let controlLabel of this.weekendFormControlLabelMapList) {
+    let weekendDays: string[] = ['Saturday', 'Sunday'];
+    this.updateTimes(weekendDays, this.weekendFormControlLabelMapList);
+  }
+
+  /**
+   * Updates times.
+   * 
+   * @param days the days to update the times for
+   * @param formControlMapList the form control map list for the given days
+   */
+  updateTimes(days: string[], formControlMapList: {control: string, label: string}[]) {
+    for (let controlLabel of formControlMapList) {
       // available
       if (this.generalAvailabilityForm.value[controlLabel.control]) {
-        this.addTimeRange(controlLabel.label, weekendTimes);
+        this.addTimeRange(controlLabel.label, days);
       } 
       
       // unavailable
       else {
-        this.removeTimeRange(controlLabel.label, weekendTimes);
+        this.removeTimeRange(controlLabel.label, days);
       }
     }
   }
@@ -235,6 +232,6 @@ export class EventAvailabilitySurveyComponent {
    * Submits the event availability form.
    */
   onSubmit() {
-    console.log(this.userService.eventAvailabilityForm.value);
+    console.log(this.calendarService.userAvailability);
   }
 }

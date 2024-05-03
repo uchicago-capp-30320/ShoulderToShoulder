@@ -2,13 +2,11 @@ import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 /**
- * Defines the Navbar component that is used to display the navigation bar of 
- * the application. There are two types of navigation bars available: one for
- * a non-signed in user and one for a signed-in user. User status is determined
- * by the AuthService.
+ * Defines the Navbar component.
  * 
- * @summary Navbar component that displays the navigation bar of the application.
- * @see AuthService
+ * The navigation bar is used to display the different pages in the application. 
+ * There are two types of navigation bars available: one for a non-signed in user 
+ * and one for a signed-in user. User status is determined by the AuthService.
  * 
  * @example
  * <app-navbar></app-navbar>

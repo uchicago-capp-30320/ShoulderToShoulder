@@ -1,6 +1,14 @@
 import { Component} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+
+// services
+import { AuthService } from '../_services/auth.service';
+
+// models
+import { UserSignUp } from '../_models/user';
 
 // helpers
 import { StrongPasswordRegx } from '../_helpers/patterns';
@@ -34,10 +42,6 @@ import { confirmPasswordValidator } from '../_helpers/validators';
   styleUrl: './signup-page.component.css'
 })
 export class SignupPageComponent {
-  /**
-   * The sign-up form.
-   */
-  // Initialize the form group
   signupForm: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
@@ -58,9 +62,15 @@ export class SignupPageComponent {
     validators: confirmPasswordValidator
   });
 
+  isLoading: boolean = false;
+  showError = false;
+  errorMessage = '';
+
   constructor(
-    private route: Router
-  ) {}
+    private route: Router,
+    private authService: AuthService
+  ) {
+  }
 
   /**
    * Resets the sign up form.
@@ -89,9 +99,7 @@ export class SignupPageComponent {
   }
 
   /**
-   * Handles form submission.
-   * TODO: Implement form submission logic once the backend can handle user
-   *       registration.
+   * Handles submission for the sign up form.
    */
   onSubmit() {
     // check if the form is valid
@@ -101,8 +109,31 @@ export class SignupPageComponent {
       this.signupForm.markAllAsTouched();
       return;
     }
-    this.resetForm();
 
-    this.route.navigate(['/onboarding']);
+    // use auth service to sign user up
+    const user: UserSignUp = {
+      first_name: this.getFormControl('firstName')?.value,
+      last_name: this.getFormControl('lastName')?.value,
+      email: this.getFormControl('email')?.value,
+      password: this.getFormControl('password')?.value,
+    };
+
+    // sign up user
+    this.isLoading = true;
+    this.authService.signup(user).pipe(
+      catchError((error) => {
+        console.error('Error signing up user:', error);
+        if (error.status === 400) {
+          this.errorMessage = 'Email already exists. Please log in.';
+          this.showError = true;
+        }
+        this.isLoading = false;
+        return EMPTY;
+      }),
+    ).subscribe(() => {
+      this.resetForm();
+      this.isLoading = false;
+      this.route.navigate(['/onboarding']);
+    });
   }
 }

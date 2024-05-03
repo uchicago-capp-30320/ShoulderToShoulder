@@ -4,17 +4,20 @@
 
     <div class="signup-form drop-shadow">
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- Signup Error -->
+            <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
+            
             <!-- first name -->
             <div class="field">
                 <label for="firstName" class="label">First Name<span class="required">*</span></label>
-                <small class="p-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched">First name is required</small>
+                <small class="p-error light-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.dirty">First name is required</small>
                 <input type="text" pInputText placeholder="Daenerys" formControlName="firstName" />
             </div>
           
             <!-- last name -->
             <div class="field">
                 <label for="lastName" class="label">Last Name<span class="required">*</span></label>
-                <small class="p-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched">Last name is required</small>
+                <small class="p-error light-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.dirty">Last name is required</small>
                 <input type="text" pInputText placeholder="Targaryen" formControlName="lastName" />
             </div>
             
@@ -27,14 +30,14 @@
             <!-- email -->
             <div class="field">
                 <label for="email" class="label">Email<span class="required">*</span></label>
-                <small class="p-error" *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.invalid">Valid email is required</small>
+                <small class="p-error light-error" *ngIf="signupForm.get('email')?.dirty && signupForm.get('email')?.invalid">Valid email is required</small>
                 <input type="text" pInputText placeholder="t.daenerys@ironchair.net" formControlName="email" />
             </div>
 
             <!-- password -->
             <div class="field">
                 <label for="password" class="label">Password<span class="required">*</span></label>
-                <small class="p-error" *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.invalid">Password is required</small>
+                <small class="p-error light-error" *ngIf="signupForm.get('password')?.dirty && signupForm.get('password')?.invalid">Password is required</small>
                 <input #passwordInput
                     type="password" 
                     pInputText 
@@ -51,7 +54,7 @@
             <!-- confirm password -->
             <div class="field">
                 <label for="confirmPassword" class="label">Confirm Password<span class="required">*</span></label>
-                <small class="p-error" *ngIf="signupForm.get('confirmPassword')?.touched && signupForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
+                <small class="p-error light-error" *ngIf="signupForm.get('confirmPassword')?.dirty && signupForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
                 <input #confirmPasswordInput 
                     type="password" 
                     pInputText 
@@ -73,6 +76,15 @@
                 <button pButton type="submit" label="Create an account" class="submit-button" [disabled]="signupForm.invalid"></button>
             </div>
         </form>
+    </div>
+
+    <!-- Loading dialog -->
+    <div *ngIf="isLoading" class="loading-overlay">
+        <div class="loading-overlay-content">
+            <h3>Welcome to Shoulder to Shoulder!</h3>
+            <p class="m-0">Please wait while we sign you up.</p>
+            <app-loader></app-loader>
+        </div>
     </div>
 </main>
 <app-footer></app-footer>
