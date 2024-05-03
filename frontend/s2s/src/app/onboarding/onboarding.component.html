@@ -1,6 +1,6 @@
 <main style="margin-bottom: 3rem;">
     <!-- Exit Button -->
-    <div *ngIf="this.page >= 0" class="exitDiv">
+    <div *ngIf="this.page >= 0 && this.page < maxPage" class="exitDiv">
         <button id="exit-button" pButton (click)="showExitDialog()" class="exitButton">Exit Onboarding</button>
     </div>
 

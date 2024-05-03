@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Observable, switchMap, finalize, of } from 'rxjs';
 
 // services
 import { CalendarService } from './calendar.service';
@@ -279,14 +279,19 @@ export class OnboardingService {
    */
   exitOnboarding(onboarded: boolean = false): void {
     let user = this.authService.userValue;
-
-    this.submitOnboarding(user, onboarded);
-    if (onboarded) { // only submit scenarios if the user has completed the onboarding process
-      this.submitScenarios();
-    }
-    
-    this.submitAvailabilityForm();
+    console.log('User has been logged out.');
     this.authService.logout();
+
+    this.submitAvailabilityForm().pipe(
+      catchError(error => {
+        console.error('Error during exit onboarding:', error);
+        return EMPTY; // Handle errors or complete the chain without breaking
+      })
+    ).subscribe(() => {
+      // Handle successful completion of both submissions
+      console.log('All forms submitted successfully!');
+      this.submitOnboarding(user, onboarded);
+    });
   }
 
 
@@ -306,9 +311,18 @@ export class OnboardingService {
    */
   submitOnboardingForms(): void {
     let user = this.authService.userValue;
-    this.submitOnboarding(user);
-    this.submitScenarios();
-    this.submitAvailabilityForm();
+    this.calendarService.updateAvailability().pipe(
+      switchMap(() => {
+        return this.submitScenarios();
+      }),
+      catchError(error => {
+        console.error('Error in form submission process:', error);
+        return EMPTY;
+      })
+    ).subscribe(() => {
+      console.log('Scenarios and availability forms submitted successfully!');
+      return this.submitOnboarding(user, true);
+    });
   }
 
   /**
@@ -317,7 +331,7 @@ export class OnboardingService {
    * @param user - The user object.
    * @param onboarded - Flag indicating if the user has completed onboarding.
    */
-  submitOnboarding(user: User, onboarded: boolean = true): void {
+  submitOnboarding(user: User, onboarded: boolean = true) {
     // collect data
     this.onboarding = {
       user_id: user.id,
@@ -399,7 +413,7 @@ export class OnboardingService {
   /**
    * Submits the scenarios data to the backend.
    */
-  submitScenarios(): void {
+  submitScenarios(): Observable<any> {
     // collect data
     let scenarioObjs: ScenarioObj[] = [];
 
@@ -425,12 +439,13 @@ export class OnboardingService {
         });
       }
     }
+    return of(scenarioObjs);
   }
 
   /**
    * Submits the availability form data to the backend.
    */
-  submitAvailabilityForm(): void {
-    this.calendarService.updateAvailability();
+  submitAvailabilityForm(): Observable<any> {
+    return this.calendarService.updateAvailability();
   }
 }

@@ -83,10 +83,10 @@ class Scenarios(models.Model):
 
     duration_h1 = models.IntegerField(validators=[
             MaxValueValidator(8),
-            MinValueValidator(1)])
+            MinValueValidator(1)], null=True)
     duration_h2 = models.IntegerField(validators=[
             MaxValueValidator(8),
-            MinValueValidator(1)])
+            MinValueValidator(1)], null=True)
 
     prefers_event1 = models.BooleanField()
     prefers_event2 = models.BooleanField()

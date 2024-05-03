@@ -2,5 +2,5 @@ export var environment = {
     production: true,
     api: 'http://localhost:8000/api',
     s2s: 'http://localhost:4200',
-    appToken: 'PTlugGthrg-zwa583fCqerxn1DxvhmJw2TZh-x0T8ko'
+    appToken: 'vGYjtU_0M6uT8UUnBh5BOBxADIM5XWd8NZXwpiZAd9A'
 }
