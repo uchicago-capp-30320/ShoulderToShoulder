@@ -11,6 +11,7 @@ import { SignupPageComponent } from './signup-page/signup-page.component';
 import { OnboardingComponent } from './onboarding/onboarding.component';
 import { LogInComponent } from './log-in/log-in.component';
 import { ProfileComponent } from './profile/profile.component';
+import { EventCreationComponent } from './event-creation/event-creation.component';
 
 // Routes
 const appRoutes: Routes = [
@@ -19,6 +20,7 @@ const appRoutes: Routes = [
     { path: 'onboarding', component: OnboardingComponent, canActivate: [canActivateProfile]},
     { path: 'log-in', component: LogInComponent },
     { path: 'profile/:id', component: ProfileComponent, canActivate: [canActivateProfile]},
+    { path: 'event-creator', component: EventCreationComponent, canActivate: [canActivateProfile]},
     { path: '', redirectTo: 'home', pathMatch: 'full' }
 ]
 

@@ -5,6 +5,14 @@ import { Observable } from 'rxjs';
 // services
 import { ApiService } from '../_services/api.service';
 
+export var userTokenEndpoints: string[] = [
+    '/user/',
+    '/profiles',
+    '/change_password',
+    '/upload',
+    '/events',
+    ]
+
 /**
  * Interceptor for adding the application token to HTTP requests.
  * 
@@ -24,17 +32,20 @@ export class AuthInterceptor implements HttpInterceptor {
         let content_type = "Content-Type"
         let content_type_value = "application/json"
 
-        if (request.url.includes('profile') || request.url.includes('change_password') || request.url.includes('/user/')) {
+        // Check if the request is a user token endpoint
+        if (userTokenEndpoints.some(endpoint => request.url.includes(endpoint))){
             if (localStorage.getItem('access_token')) {
                 authToken = `Bearer ${localStorage.getItem('access_token') as string}`;
                 header = "Authorization";
             }
         }
 
+        // Add the token to the headers
         let authReq = request.clone({
             headers: request.headers.set(header, authToken).set(content_type, content_type_value),
         });
 
+        // Check if the request is an upload request
         if (request.url.includes('upload')) {
             authReq = request.clone({
                 headers: request.headers.set(header, authToken),

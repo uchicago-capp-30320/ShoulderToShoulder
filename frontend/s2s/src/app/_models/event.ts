@@ -1,14 +1,12 @@
 export interface Event {
-    id: number;
+    id?: number;
     title: string;
-    event_id: string;
     datetime: string;
     duration_h: number;
     address: string;
-    latitute: number;
-    longitude: number;
+    latitude?: number;
+    longitude?: number;
     max_attendees: number;
-    attendees: number[];
 }
 
 export interface EventResponse {

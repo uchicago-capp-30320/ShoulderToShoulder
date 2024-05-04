@@ -1,0 +1,77 @@
+<app-header></app-header>
+<div class="main-content">
+    <!-- Event creation form -->
+    <div class="event-form drop-shadow">
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- Event Error -->
+            <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
+            
+            <!-- title -->
+            <div class="field">
+                <label for="title" class="label">Title<span class="required">*</span></label>
+                <small class="p-error light-error" *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.dirty">First name is required</small>
+                <input type="text" pInputText placeholder="Event title (i.e., Running Club)" formControlName="title" />
+            </div>
+          
+            <!-- date -->
+            <div class="field">
+                <!-- TODO - Add primeng calendar module + date picker -->
+            </div>
+            
+            <!-- Duration -->
+            <div class="field">
+                <label for="duration_h" class="label">Phone Number</label>
+                <input type="text" pInputText placeholder="Event Duration in Hours" formControlName="duration_h" mask="(000) 000-0000" />
+            </div>
+
+            <!-- email -->
+            <div class="field">
+                <label for="email" class="label">Email<span class="required">*</span></label>
+                <small class="p-error light-error" *ngIf="eventForm.get('email')?.dirty && eventForm.get('email')?.invalid">Valid email is required</small>
+                <input type="text" pInputText placeholder="t.daenerys@ironchair.net" formControlName="email" />
+            </div>
+
+            <!-- password -->
+            <div class="field">
+                <label for="password" class="label">Password<span class="required">*</span></label>
+                <small class="p-error light-error" *ngIf="eventForm.get('password')?.dirty && eventForm.get('password')?.invalid">Password is required</small>
+                <input #passwordInput
+                    type="password" 
+                    pInputText 
+                    placeholder="••••••••••" 
+                    formControlName="password" 
+                    autocomplete="new-password" 
+                    (focus)="togglePasswordField(passwordInput)" 
+                    (blur)="togglePasswordField(passwordInput)"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="focus" 
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." />
+            </div>
+
+            <!-- confirm password -->
+            <div class="field">
+                <label for="confirmPassword" class="label">Confirm Password<span class="required">*</span></label>
+                <small class="p-error light-error" *ngIf="eventForm.get('confirmPassword')?.dirty && eventForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
+                <input #confirmPasswordInput 
+                    type="password" 
+                    pInputText 
+                    placeholder="••••••••••" 
+                    formControlName="confirmPassword" 
+                    autocomplete="new-password" 
+                    (focus)="togglePasswordField(confirmPasswordInput)" 
+                    (blur)="togglePasswordField(confirmPasswordInput)"  />
+            </div>
+
+            <!-- log in redirect -->
+            <div>
+                <p class="light-text">Already have an account? <a routerLink="/log-in" class="link">Log in here.</a></p>
+            </div>
+            
+            <!-- submit buttom -->
+            <div>
+                <!-- eslint-disable @angular-eslint/template/elements-content-->
+                <button pButton type="submit" label="Create an account" class="submit-button" [disabled]="eventForm.invalid"></button>
+            </div>
+        </form>
+    </div>
+</div>
