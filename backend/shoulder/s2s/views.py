@@ -317,7 +317,10 @@ class ProfilesViewSet(viewsets.ModelViewSet):
         except Profile.DoesNotExist:
             return Response({"error": "Profile not found"}, status=404)
 
-        object_key = "profiles" + str(profile.profile_picture).split("profiles")[-1] 
+        if profile.profile_picture != "default_profile.jpeg":
+            object_key = "profiles" + str(profile.profile_picture).split("profiles")[-1] 
+        else:
+            object_key = "default_profile.jpeg"
         presigned_url = self.generate_presigned_url(settings.AWS_STORAGE_BUCKET_NAME, object_key, 3600)
 
         if presigned_url:
@@ -449,8 +452,30 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
 
+    def delete_profile_picture(self, request, *args, **kwargs):
+        """
+        Delete the user's profile picture from S3.
+        """
+        user = self.get_object()
+        # delete the user's profile picture from S3
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+            if profile.profile_picture != "default_profile.jpeg":
+                object_key = "profiles" + str(profile.profile_picture).split("profiles")[-1]
+                s3 = boto3.client('s3',
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                region_name=settings.AWS_S3_REGION_NAME)
+                s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=object_key)
+            profile.profile_picture = "default_profile.jpeg"
+            profile.save()
+            return Response({"detail": "Profile picture deleted"}, status=200)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
     def destroy(self, request, *args, **kwargs):
         user = self.get_object()
+        self.delete_profile_picture(request, *args, **kwargs)
         user.delete()
         return Response({"detail": "User deleted"}, status=204)
     

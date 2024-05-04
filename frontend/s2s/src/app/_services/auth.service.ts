@@ -31,6 +31,7 @@ export class AuthService {
   onboardingEndpoint = `${this.apiService.BASE_API_URL}/onboarding/`;
   changePasswordEndpoint = `${this.apiService.BASE_API_URL}/user/change_password/`;
   userUpdateEndpoint = `${this.apiService.BASE_API_URL}/user/${this.userValue.id}/`;
+  endpoint = `${this.apiService.BASE_API_URL}/user/`;
   
   signingUp = new BehaviorSubject<boolean>(false);
   user = new BehaviorSubject<User>(this.userValue);
@@ -173,6 +174,11 @@ export class AuthService {
    * @returns An Observable of the delete response.
    */
   deleteAccount(user: User): Observable<any> {
-    return of({"message": "User deleted successfully!"});
+    return this.http.delete<any>(`${this.endpoint}${user.id}/`).pipe(
+      catchError(error => {
+        console.error('Error deleting account:', error);
+        return EMPTY;
+      })
+    )
   }
 }

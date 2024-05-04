@@ -163,8 +163,10 @@ export class ProfileSettingsComponent implements OnInit {
   deleteAccount() {
     console.log('deleting account');
     this.showDeleteDialog = false;
-    this.authService.deleteAccount(this.user);
-    this.authService.logout();
+    this.authService.deleteAccount(this.user).subscribe(() => {
+      this.authService.logout();
+      console.log('Account deleted successfully');
+    })
   }
 
   onUpload(event: any) {

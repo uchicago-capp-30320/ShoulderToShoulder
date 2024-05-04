@@ -85,7 +85,7 @@ export class CalendarService {
    * @param calendar The calendar data used to map availability slots.
    */
   loadAllAvailability(calendar: CalendarObj[]): void {
-    this.fetchAvailability(this.availabilityEndpoint).subscribe(availability => {
+    this.fetchAvailability(this.availabilityEndpoint + "?user_id=" + this.authService.userValue.id).subscribe(availability => {
       this.availabilitySubject.next(availability);
       this.userAvailability = this.convertAvailability(availability, calendar);
     });
@@ -98,7 +98,7 @@ export class CalendarService {
    * @returns An Observable of availability data as an array of Availability objects.
    */
   fetchAvailability(url: string): Observable<AvailabilityObj[]> {
-    return this.http.get<AvailabilityResponse>(url, {context: withCache()}).
+    return this.http.get<AvailabilityResponse>(url).
     pipe(
       expand(response => response.next ? this.http.get<AvailabilityResponse>(response.next) : EMPTY),
       map(response => response.results),
