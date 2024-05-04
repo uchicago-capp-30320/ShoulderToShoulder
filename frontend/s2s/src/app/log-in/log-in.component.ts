@@ -102,7 +102,7 @@ export class LogInComponent {
         if (!onboardingStatus) {
           this.router.navigate(['/onboarding']);
         } else {
-          this.router.navigate(['/profile']);
+          this.router.navigate(['/profile/1']);
         }
         this.resetForm();
       });

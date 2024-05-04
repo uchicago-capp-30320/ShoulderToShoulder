@@ -42,6 +42,8 @@ export class CalendarService {
   availabilitySubject = new BehaviorSubject<AvailabilityObj[]>([]);
   availability = this.availabilitySubject.asObservable();
 
+  userAvailabilityObserver = new BehaviorSubject<AvailabilitySlot[]>([]);
+  userAvailability$ = this.userAvailabilityObserver.asObservable();
   userAvailability: AvailabilitySlot[] = [];
 
   constructor(
@@ -88,6 +90,7 @@ export class CalendarService {
     this.fetchAvailability(this.availabilityEndpoint + "?user_id=" + this.authService.userValue.id).subscribe(availability => {
       this.availabilitySubject.next(availability);
       this.userAvailability = this.convertAvailability(availability, calendar);
+      this.userAvailabilityObserver.next(this.userAvailability);
     });
   }
 
@@ -156,5 +159,17 @@ export class CalendarService {
         return EMPTY; // Returning EMPTY to avoid breaking the observable chain in case of an error
       })
     );
+  }
+
+  /**
+   * Sets user's availability to the backup availability data.
+   * 
+   * This method is used to reset the user's availability data to the last saved state.
+   * 
+   * @param availability The availability data to set as the user's availability.
+   */
+  setAvailability(availability: AvailabilitySlot[]): void {
+    this.userAvailability = availability;
+    this.userAvailabilityObserver.next(this.userAvailability);
   }
 }

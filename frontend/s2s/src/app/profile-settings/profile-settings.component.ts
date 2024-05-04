@@ -15,11 +15,29 @@ import { PasswordChange } from '../_models/password-change';
 import { UserUpdate } from '../_models/user';
 import { User } from '../_models/user';
 
-interface UploadEvent {
-  originalEvent: Event;
-  files: File[];
-}
-
+/**
+ * Component to display user profile settings.
+ * 
+ * This component displays the user's profile settings, including the ability to 
+ * change their password, update their user information, upload a profile picture, 
+ * and delete their account.
+ * 
+ * @example
+ * ```
+ * <app-profile-settings></app-profile-settings>
+ * ```
+ * 
+ * @remarks
+ * This component relies on the AuthService, OnboardingService, and ProfileService 
+ * to manage user profile settings.
+ * 
+ * @see AuthService
+ * @see OnboardingService
+ * @see ProfileService
+ * 
+ * @export
+ * @class ProfileSettingsComponent
+ */
 @Component({
   selector: 'app-profile-settings',
   templateUrl: './profile-settings.component.html',
@@ -35,6 +53,7 @@ export class ProfileSettingsComponent implements OnInit {
   showInvalidPassword = false;
   @ViewChild('fileUpload') fileUpload: any;
 
+  // form used to change user password
   changePasswordForm = new FormGroup({
     username: new FormControl(this.user.username, Validators.required),
     currentPassword: new FormControl('', Validators.required),
@@ -49,6 +68,7 @@ export class ProfileSettingsComponent implements OnInit {
     validators: [differentPasswordValidator, confirmPasswordValidator]
   });
 
+  // form used to update user information
   updateUserInformationForm = new FormGroup({
     firstName: new FormControl(this.user.first_name, Validators.required),
     lastName: new FormControl(this.user.last_name, Validators.required),
@@ -69,10 +89,16 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
+  /**
+   * Opens the onboarding dialog.
+   */
   openOnboardingDialog() {
     this.showOnboardingDialog = true;
   }
 
+  /**
+   * Opens the delete dialog.
+   */
   openDeleteDialog() {
     this.showDeleteDialog = true;
   }
@@ -87,6 +113,9 @@ export class ProfileSettingsComponent implements OnInit {
     inputField.type = type === 'password' ? 'text' : 'password';
   }
 
+  /**
+   * Resets the user form.
+   */
   resetUserForm() {
     this.updateUserInformationForm = new FormGroup({
       firstName: new FormControl(this.user.first_name, Validators.required),
@@ -95,6 +124,9 @@ export class ProfileSettingsComponent implements OnInit {
     })
   }
 
+  /**
+   * Submits the new password.
+   */
   submitNewPassword() {
     console.log('submitting new password')
     let username = this.changePasswordForm.get('username')?.value;
@@ -102,6 +134,7 @@ export class ProfileSettingsComponent implements OnInit {
     let password = this.changePasswordForm.get('password')?.value;
     let confirmPassword = this.changePasswordForm.get('confirmPassword')?.value;
 
+    // create password change object
     let passwordChange: PasswordChange = {
       email: username ? username : '',
       current_password: currentPassword ? currentPassword : '',
@@ -109,6 +142,7 @@ export class ProfileSettingsComponent implements OnInit {
       confirm_password: confirmPassword ? confirmPassword : ''
     };
 
+    // change password
     this.authService.changePassword(passwordChange).pipe(
       catchError(error => {
         console.error('Error changing password:', error);
@@ -124,12 +158,16 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
+  /**
+   * Submits the user update.
+   */
   submitUserUpdate() {
     console.log('submitting user update');
     let firstName = this.updateUserInformationForm.get('firstName')?.value;
     let lastName = this.updateUserInformationForm.get('lastName')?.value;
     let email = this.updateUserInformationForm.get('email')?.value;
 
+    // create user update object
     let userUpdate: UserUpdate = {
       first_name: firstName ? firstName : '',
       last_name: lastName ? lastName : '',
@@ -137,6 +175,7 @@ export class ProfileSettingsComponent implements OnInit {
       username: email ? email : ''
     };
 
+    // update user information
     this.authService.updateUser(userUpdate).pipe(
       catchError(error => {
         console.error('Error updating user:', error);
@@ -154,12 +193,18 @@ export class ProfileSettingsComponent implements OnInit {
     });
   }
 
+  /**
+   * Submits the onboarding changes.
+   */
   submitOnboardingChanges() {
     console.log('submitting onboarding changes');
     this.showOnboardingDialog = false;
     this.onboardingService.updateOnboarding();
   }
 
+  /**
+   * Deletes the user account.
+   */
   deleteAccount() {
     console.log('deleting account');
     this.showDeleteDialog = false;
@@ -169,6 +214,11 @@ export class ProfileSettingsComponent implements OnInit {
     })
   }
 
+  /**
+   * Handles the file upload event.
+   * 
+   * @param event The file upload event.
+   */
   onUpload(event: any) {
     if (event.files && event.files[0]) {
       const file = event.files[0];
@@ -185,13 +235,22 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
+  /**
+   * Uploads a file to the server.
+   * 
+   * @param file The file to upload.
+   */
   uploadFileToServer(file: File) {
     this.profileService.uploadProfilePicture(file, this.user.id);
   }
 
+  /**
+   * Clears the file upload.
+   * 
+   * @param event The file upload event.
+   */
   clearUpload(event: any) {
     event.files = []; // Clear the files array
     this.fileUpload.clear(); // Assuming `fileUpload` is a ViewChild reference to the p-fileUpload component
-}
-
+  }
 }

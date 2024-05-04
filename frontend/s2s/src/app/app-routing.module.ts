@@ -18,7 +18,7 @@ const appRoutes: Routes = [
     { path: 'sign-up', component: SignupPageComponent },
     { path: 'onboarding', component: OnboardingComponent, canActivate: [canActivateProfile]},
     { path: 'log-in', component: LogInComponent },
-    { path: 'profile', component: ProfileComponent, canActivate: [canActivateProfile]},
+    { path: 'profile/:id', component: ProfileComponent, canActivate: [canActivateProfile]},
     { path: '', redirectTo: 'home', pathMatch: 'full' }
 ]
 

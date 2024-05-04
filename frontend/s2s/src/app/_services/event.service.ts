@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { switchMap, catchError, concatMap } from 'rxjs/operators';
-import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import moment from 'moment';
 
 // services
@@ -9,9 +8,19 @@ import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 
 // helpers
-import { Event, EventResponse } from '../_models/event';
+import { Event } from '../_models/event';
 import { User } from '../_models/user';
 
+/**
+ * Service responsible for managing event-related functionalities, including 
+ * fetching event data from the API and organizing events for display.
+ * 
+ * This service interacts with the API service and authentication service to 
+ * perform event-related HTTP requests.
+ * 
+ * @see ApiService
+ * @see AuthService
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -28,6 +37,9 @@ export class EventService {
     private authService: AuthService
   ) { }
 
+  /**
+   * Loads all events for the current user.
+   */
   loadAllEvents() {
     this.authService.userSubject.subscribe(user => {
       this.user = user as User;
@@ -38,26 +50,24 @@ export class EventService {
     });
   }
 
+  /**
+   * Fetches all events from the API.
+   * 
+   * TODO - Implement this function to fetch events from the API.
+   * 
+   * @param url The URL to fetch events from.
+   * @returns An Observable of the fetched events.
+   */
   fetchEvents(url: string): Observable<Event[]> {
-    // return this.http.get<EventResponse>(url).pipe(
-    //   switchMap(response => {
-    //     const events = response.results;
-    //     const nextUrl = response.next;
-    //     return nextUrl ? this.fetchEvents(nextUrl).pipe(
-    //       concatMap(nextEvents => of([...events, ...nextEvents]))
-    //     ) : of(events);
-    //   }),
-    //   catchError(error => {
-    //     console.error('Error fetching events:', error);
-    //     return EMPTY;
-    //   })
-    // );
     return of(this.getTestEvents());
   }
 
+  /**
+   * Returns a list of test events for development purposes.
+   * 
+   * @returns A list of test events.
+   */
   getTestEvents(): Event[] {
-    let now = moment().format('LLLL');
-    let date = new Date;
     let futureDate = moment().add(10, 'days').format('LLLL');
     return [
       // upcoming dates
@@ -114,12 +124,22 @@ export class EventService {
     ];
   }
 
+  /**
+   * Gets the past events attended by the user.
+   * 
+   * @param events The list of all events.
+   */
   getPastEvents(events: Event[]): void {
     const pastEvents = events.filter(event => new Date(event.datetime) < new Date());
     this.pastEvents.next(pastEvents);
     this.numEventsAttended.next(pastEvents.length);
   }
 
+  /**
+   * Gets the upcoming events for the user.
+   * 
+   * @param events The list of all events.
+   */
   getUpcomingEvents(events: Event[]): void {
     const upcomingEvents = events.filter(event => new Date(event.datetime) >= new Date());
     this.upcomingEvents.next(upcomingEvents);

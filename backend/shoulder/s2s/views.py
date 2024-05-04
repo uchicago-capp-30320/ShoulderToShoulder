@@ -317,10 +317,7 @@ class ProfilesViewSet(viewsets.ModelViewSet):
         except Profile.DoesNotExist:
             return Response({"error": "Profile not found"}, status=404)
 
-        if profile.profile_picture != "default_profile.jpeg":
-            object_key = "profiles" + str(profile.profile_picture).split("profiles")[-1] 
-        else:
-            object_key = "default_profile.jpeg"
+        object_key = str(profile.profile_picture).split("/")[-1] 
         presigned_url = self.generate_presigned_url(settings.AWS_STORAGE_BUCKET_NAME, object_key, 3600)
 
         if presigned_url:
@@ -360,7 +357,7 @@ class ProfilesViewSet(viewsets.ModelViewSet):
                         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                         region_name=settings.AWS_S3_REGION_NAME)
         bucket = settings.AWS_STORAGE_BUCKET_NAME  # Directly use settings to avoid errors
-        key = f"profiles/{user_id}/{int(time.time())}.png"
+        key = f"user_{user_id}.png"
 
         # Upload the file to S3
         try:
@@ -461,7 +458,7 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             profile = Profile.objects.get(user_id=user.id)
             if profile.profile_picture != "default_profile.jpeg":
-                object_key = "profiles" + str(profile.profile_picture).split("profiles")[-1]
+                object_key = str(profile.profile_picture).split("/")[-1]
                 s3 = boto3.client('s3',
                                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,

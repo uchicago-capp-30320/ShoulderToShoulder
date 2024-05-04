@@ -11,6 +11,29 @@ import { HobbyService } from '../_services/hobbies.service';
 import { Event } from '../_models/event';
 import { Hobby } from '../_models/hobby';
 
+/**
+ * Component to display user profile information.
+ * 
+ * This component displays the user's profile information, including their name, 
+ * email, and profile picture.
+ * 
+ * @example
+ * ```
+ * <app-profile></app-profile>
+ * ```
+ * 
+ * @remarks
+ * This component relies on the AuthService, OnboardingService, EventService, and 
+ * HobbyService to manage user profile data.
+ * 
+ * @see AuthService
+ * @see OnboardingService
+ * @see EventService
+ * @see HobbyService
+ * 
+ * @export
+ * @class ProfileOverviewComponent
+ */
 @Component({
   selector: 'app-profile-overview',
   templateUrl: './profile-overview.component.html',
@@ -37,6 +60,9 @@ export class ProfileOverviewComponent implements OnInit {
     this.eventService.numEventsAttended.subscribe(num => this.numEventsAttended = num);
   }
 
+  /**
+   * Gets the user's most enjoyed hobbies.
+   */
   get enjoys(): string {
     const max = 3;
     const hobbyIds = this.onboardingService.onboarding.most_interested_hobbies;
@@ -66,15 +92,24 @@ export class ProfileOverviewComponent implements OnInit {
     }
   }
 
+  /**
+   * Gets the user's least enjoyed hobbies.
+   */
   arrayOfRating(rating: number): number[] {
     return Array(rating).fill(0).map((x, i) => i);
   }
 
+  /**
+   * Gets the user's least enjoyed hobbies.
+   */
   showAddlEventInformationDialog(event: Event): void {
     this.showAddlEventInformation = true;
     this.currentEvent = event;
   }
 
+  /**
+   * Closes the additional event information dialog.
+   */
   formatDate(date: string): string {
     return formatDate(date, 'medium', 'en-US');
   }

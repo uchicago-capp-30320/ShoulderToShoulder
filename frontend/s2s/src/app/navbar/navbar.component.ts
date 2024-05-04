@@ -80,14 +80,14 @@ export class NavbarComponent implements OnInit {
       },
       {
         label: 'Profile',
-        routerLink: '/profile'
+        routerLink: '/profile/1'
       },
       {
         label: 'Event Creator',
         routerLink: '/event-creator'
       }
     ];
-    this.defaultRoute = '/profile';
+    this.defaultRoute = '/profile/1';
 
     this.authService.userSubject.subscribe(user => {
       this.user = user;

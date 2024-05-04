@@ -238,7 +238,7 @@ export class OnboardingService {
    * @param ids - IDs of the most interested hobbies.
    */
   getMostInterestedHobbies(ids: number[]) {
-    this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+    this.hobbyService.hobbies.subscribe(hobbies => {
       this.preferencesForm.patchValue({
         mostInterestedHobbies: hobbies.filter(hobby => ids.includes(hobby.id))
       });
@@ -251,7 +251,7 @@ export class OnboardingService {
    * @param ids - IDs of the least interested hobbies.
    */
   getLeastInterestedHobbies(ids: number[]) {
-    this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+    this.hobbyService.hobbies.subscribe(hobbies => {
       this.preferencesForm.patchValue({
         leastInterestedHobbies: hobbies.filter(hobby => ids.includes(hobby.id))
       });

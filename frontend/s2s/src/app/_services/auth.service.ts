@@ -140,7 +140,7 @@ export class AuthService {
 
   /**
    * Changes a user's password.
-   * TODO - Implement this method once the password change endpoint is available.
+   * Implement this method once the password change endpoint is available.
    * 
    * @param passwordChange A PasswordChange object containing the user's current
    *                       password, new password, and confirmation of the new
@@ -153,7 +153,7 @@ export class AuthService {
 
   /**
    * Updates a user's information.
-   * TODO - Implement this method once the user update endpoint is available.
+   * Implement this method once the user update endpoint is available.
    * 
    * @param userUpdate A UserUpdate object containing the user's updated information.
    * @returns An Observable of the updated user.
@@ -168,7 +168,7 @@ export class AuthService {
    * user's account and erases all instances of that user from the database,
    * including their availability, events attended, upcoming events, etc.
    * 
-   * TODO - Implement this method once the user delete endpoint is available.
+   * Implement this method once the user delete endpoint is available.
    * 
    * @param user The user to delete.
    * @returns An Observable of the delete response.

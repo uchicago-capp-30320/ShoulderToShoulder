@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { switchMap, catchError, concatMap } from 'rxjs/operators';
 import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 
@@ -32,8 +32,6 @@ export class HobbyService {
   public hobbies: Observable<Hobby[]> = this.hobbySubject.asObservable();
   private hobbyTypesSubject: BehaviorSubject<HobbyType[]> = new BehaviorSubject<HobbyType[]>([]);
   public hobbyTypes: Observable<HobbyType[]> = this.hobbyTypesSubject.asObservable();
-  private preferencesHobbiesSubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
-  preferencesHobbies: Observable<Hobby[]> = this.preferencesHobbiesSubject.asObservable();
   scenarioHobbiesSubject: BehaviorSubject<Hobby[]> = new BehaviorSubject<Hobby[]>([]);
   scenarioHobbies: Observable<Hobby[]> = this.scenarioHobbiesSubject.asObservable();
 
@@ -106,14 +104,7 @@ export class HobbyService {
    */
   generateHobbies(hobbies: Hobby[]) {
     if (!hobbies.length) return;  // Prevent running on empty arrays
-  
-    this.preferencesHobbiesSubject.next(getRandomSubset(hobbies, 20));
-  
-    let remainingHobbies = hobbies.filter(hobby =>
-      !this.preferencesHobbiesSubject.getValue().includes(hobby)
-    );
-  
-    this.scenarioHobbiesSubject.next(getRandomSubset(remainingHobbies, 20));
+    this.scenarioHobbiesSubject.next(getRandomSubset(hobbies, 20));
   }
 
   /**

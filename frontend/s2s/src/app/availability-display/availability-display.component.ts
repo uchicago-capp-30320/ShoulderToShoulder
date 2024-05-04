@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Router } from '@angular/router';
 
 // services
 import { CalendarService } from '../_services/calendar.service';
@@ -31,7 +32,7 @@ import { days } from '../_helpers/preferences';
   templateUrl: './availability-display.component.html',
   styleUrl: './availability-display.component.css'
 })
-export class AvailabilityDisplayComponent implements OnInit {
+export class AvailabilityDisplayComponent implements OnChanges {
   @Input() isEditable: boolean = true;
   @Input() profileView: boolean = false;
   days = days;
@@ -39,11 +40,12 @@ export class AvailabilityDisplayComponent implements OnInit {
 
   constructor(
     public calendarService: CalendarService,
-    public onboardingService: OnboardingService
+    public onboardingService: OnboardingService,
+    private router: Router
   ) {
    }
   
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.copyAvailability();
   }
 
@@ -51,9 +53,10 @@ export class AvailabilityDisplayComponent implements OnInit {
    * Copies the user's availability data to a backup array.
    */
   copyAvailability(): void {
-    for (let i = 0; i < this.calendarService.userAvailability.length; i++) {
-      this.availabilityBackup.push({ ...this.calendarService.userAvailability[i] });
-    }
+    this.calendarService.userAvailability$.subscribe(availability => {
+      this.availabilityBackup = availability;
+      console.log(this.availabilityBackup)
+    });
   }
 
   /**
@@ -70,14 +73,23 @@ export class AvailabilityDisplayComponent implements OnInit {
     }
   }
 
+  /**
+   * Submits the availability form to the server.
+   */
   submitAvailability(): void {
-    this.onboardingService.submitAvailabilityForm();
     this.isEditable = false;
-    this.availabilityBackup = this.calendarService.userAvailability;
+    this.onboardingService.submitAvailabilityForm().subscribe(() => {
+      this.copyAvailability();
+    });
   }
 
+  /**
+   * Cancels the availability form and resets the availability data.
+   */
   cancelAvailability(): void {
-    this.copyAvailability();
     this.isEditable = false;
+    this.calendarService.setAvailability(this.availabilityBackup);
+    this.router.navigate(['/profile', 2]);
+    location.reload();
   }
 }
