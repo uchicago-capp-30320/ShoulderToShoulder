@@ -54,7 +54,6 @@ export class AvailabilityDisplayComponent implements OnInit {
     for (let i = 0; i < this.calendarService.userAvailability.length; i++) {
       this.availabilityBackup.push({ ...this.calendarService.userAvailability[i] });
     }
-    console.log(this.availabilityBackup)
   }
 
   /**

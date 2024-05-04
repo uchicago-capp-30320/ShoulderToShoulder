@@ -71,7 +71,6 @@ export class ProfileOverviewComponent implements OnInit {
   }
 
   showAddlEventInformationDialog(event: Event): void {
-    console.log(event);
     this.showAddlEventInformation = true;
     this.currentEvent = event;
   }

@@ -58,7 +58,6 @@ export class EventService {
   getTestEvents(): Event[] {
     let now = moment().format('LLLL');
     let date = new Date;
-    console.log(date.setDate(date.getDate() + 10))
     let futureDate = moment().add(10, 'days').format('LLLL');
     return [
       // upcoming dates

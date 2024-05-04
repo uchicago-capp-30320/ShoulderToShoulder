@@ -14,6 +14,7 @@ from django.db import transaction
 import boto3
 import time
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 
 from .serializers import *
@@ -292,6 +293,38 @@ class ProfilesViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=400)
         
+    def generate_presigned_url(self, bucket_name, object_key, expiration=3600):
+        """Generate a presigned URL for an S3 object."""
+        s3_client = boto3.client('s3',
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                region_name=settings.AWS_S3_REGION_NAME)
+        try:
+            url = s3_client.generate_presigned_url('get_object',
+                                                Params={'Bucket': bucket_name,
+                                                        'Key': object_key},
+                                                ExpiresIn=expiration)
+        except Exception as e:
+            print(f"Error generating presigned URL: {e}")
+            return None
+        return url
+    
+    @action(detail=True, methods=['get'], url_path='get-presigned-url')
+    def get_presigned_url(self, request, pk=None):
+        print("Getting presigned URL")
+        try:
+            profile = Profile.objects.get(pk=pk, user_id=request.user.id)  # Ensuring access control
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+        object_key = "profiles" + str(profile.profile_picture).split("profiles")[-1] 
+        presigned_url = self.generate_presigned_url(settings.AWS_STORAGE_BUCKET_NAME, object_key, 3600)
+
+        if presigned_url:
+            return Response({"profile_picture": presigned_url}, status=200)
+        else:
+            return Response({"error": "Unable to generate URL"}, status=403)
+        
     def get_queryset(self):
         queryset = self.queryset
         user_id = self.request.query_params.get('user_id')
@@ -303,29 +336,41 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     
     @action(methods=['post'], detail=False, url_path='upload')
     def upload(self, request, *args, **kwargs):
-        # get the user's profile
-        user_id = request.data.get('user_id')
+        # Retrieve user_id from request.POST (not request.data when using FormData)
+        user_id = request.POST.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
         try:
             profile = Profile.objects.get(user_id=user_id)
         except Profile.DoesNotExist:
             return Response({"error": "Profile not found"}, status=404)
 
-        # get the image from the request
-        image = request.data.get('image')
+        # Retrieve the image from request.FILES (not request.data)
+        image = request.FILES.get('image')
         if not image:
             return Response({"error": "Image not provided"}, status=400)
 
-        # upload the image to S3
-        s3 = boto3.client('s3')
-        bucket = environ.Env().str('AWS_STORAGE_BUCKET_NAME')
+        # Setup the S3 client
+        s3 = boto3.client('s3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME)
+        bucket = settings.AWS_STORAGE_BUCKET_NAME  # Directly use settings to avoid errors
         key = f"profiles/{user_id}/{int(time.time())}.png"
-        s3.upload_fileobj(image, bucket, key)
 
-        # update the profile picture
-        profile.profile_picture = key
-        profile.save()
-
-        return Response({"detail": "Image uploaded"}, status=200)
+        # Upload the file to S3
+        try:
+            s3.upload_fileobj(image, bucket, key)
+            
+            # Update the profile picture URL (if storing the URL)
+            profile.profile_picture = key # "https://" + bucket + ".s3." + settings.AWS_S3_REGION_NAME + ".amazonaws.com/" + key
+            profile.save()
+            profile_picture = self.generate_presigned_url(bucket, key)
+            
+            return Response({"detail": "Image uploaded", "profile_picture": profile_picture}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"

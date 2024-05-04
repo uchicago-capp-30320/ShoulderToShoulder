@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -33,6 +33,7 @@ export class ProfileSettingsComponent implements OnInit {
   reader = new FileReader(); 
   uploadedFiles: any[] = [];
   showInvalidPassword = false;
+  @ViewChild('fileUpload') fileUpload: any;
 
   changePasswordForm = new FormGroup({
     username: new FormControl(this.user.username, Validators.required),
@@ -167,7 +168,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   onUpload(event: any) {
-    console.log(event);
     if (event.files && event.files[0]) {
       const file = event.files[0];
       var reader = new FileReader();
@@ -178,11 +178,18 @@ export class ProfileSettingsComponent implements OnInit {
         this.profilePictureUrl = e.target?.result as string;  // Update image preview
         this.uploadFileToServer(file);  // Call function to upload file to server
       }
+
+      this.clearUpload(event);
     }
   }
 
   uploadFileToServer(file: File) {
     this.profileService.uploadProfilePicture(file, this.user.id);
   }
+
+  clearUpload(event: any) {
+    event.files = []; // Clear the files array
+    this.fileUpload.clear(); // Assuming `fileUpload` is a ViewChild reference to the p-fileUpload component
+}
 
 }

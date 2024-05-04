@@ -21,6 +21,8 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         let authToken = this.apiService.appToken; // Assume a service that handles token retrieval
         let header = "X-App-Token"
+        let content_type = "Content-Type"
+        let content_type_value = "application/json"
 
         if (request.url.includes('profile') || request.url.includes('change_password') || request.url.includes('/user/')) {
             if (localStorage.getItem('access_token')) {
@@ -29,9 +31,15 @@ export class AuthInterceptor implements HttpInterceptor {
             }
         }
 
-        const authReq = request.clone({
-            headers: request.headers.set(header, authToken).set("Content-Type", "application/json"),
+        let authReq = request.clone({
+            headers: request.headers.set(header, authToken).set(content_type, content_type_value),
         });
+
+        if (request.url.includes('upload')) {
+            authReq = request.clone({
+                headers: request.headers.set(header, authToken),
+            });
+        }
         
         return next.handle(authReq);
     }

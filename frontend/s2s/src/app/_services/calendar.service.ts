@@ -124,7 +124,6 @@ export class CalendarService {
           const calendarObj = calendar.find(c => c.id === a.calendar_id && c.day_of_week === day && c.hour == hour);
           return calendarObj && a.available;
         });
-        console.log(dayAvailability)
 
         // converts undefined values to false and defined values to true
         // if a user is available at a given time and day, the will convert the 

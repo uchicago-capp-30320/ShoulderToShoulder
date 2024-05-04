@@ -91,7 +91,7 @@ export class NavbarComponent implements OnInit {
 
     this.authService.userSubject.subscribe(user => {
       this.user = user;
-      this.profileService.getProfilePicture();
+      this.profileService.getProfile();
       this.profileService.profilePicture.subscribe(picture => {
         this.profilePictureUrl = picture;
       });

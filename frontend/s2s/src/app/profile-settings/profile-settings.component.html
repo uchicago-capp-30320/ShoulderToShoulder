@@ -131,7 +131,7 @@
     <!-- Update profile picture -->
     <div class="settings-form drop-shadow">
         <h4>Update Profile Picture</h4>
-        <p-fileUpload 
+        <p-fileUpload #fileUpload
             name="profilePicture" 
             url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user.id }}" 
             [customUpload]="true"
