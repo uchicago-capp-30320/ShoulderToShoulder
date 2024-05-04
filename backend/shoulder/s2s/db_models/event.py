@@ -15,7 +15,6 @@ class Event(models.Model):
         longitude: longitude of event
         max_attendees: max number of attendees for an event
     """
-    event_id = models.CharField(max_length=100)
     title = models.CharField(max_length=100)
     datetime = models.DateTimeField()
     duration_h = models.IntegerField(validators=[
@@ -25,8 +24,8 @@ class Event(models.Model):
     latitude = models.DecimalField(max_digits=12, decimal_places=10)
     longitude = models.DecimalField(max_digits=13, decimal_places=11)
     max_attendees = models.IntegerField(validators=[
-            MaxValueValidator(2),
-            MinValueValidator(50)])
+            MinValueValidator(2),
+            MaxValueValidator(50)])
     
     def __str__(self) -> str:
         return 'Event name {}, DateTime {}, Duration {}, Address {}, Max Attendees {}, Attendees {}'.format(
