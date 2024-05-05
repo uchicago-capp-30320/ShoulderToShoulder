@@ -14,6 +14,7 @@ from django.db import transaction
 import boto3
 import time
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
 
 from .serializers import *
@@ -283,9 +284,93 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # add functionality for the photos to be added with s3 boto3
     def create(self, request, *args, **kwargs):
-        pass
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            # Save the Profile which includes saving the image to S3
+            serializer.save()
+            return Response(serializer.data, status=201)
+        else:
+            return Response(serializer.errors, status=400)
+        
+    def generate_presigned_url(self, bucket_name, object_key, expiration=3600):
+        """Generate a presigned URL for an S3 object."""
+        s3_client = boto3.client('s3',
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                region_name=settings.AWS_S3_REGION_NAME)
+        try:
+            url = s3_client.generate_presigned_url('get_object',
+                                                Params={'Bucket': bucket_name,
+                                                        'Key': object_key},
+                                                ExpiresIn=expiration)
+        except Exception as e:
+            print(f"Error generating presigned URL: {e}")
+            return None
+        return url
+    
+    @action(detail=True, methods=['get'], url_path='get-presigned-url')
+    def get_presigned_url(self, request, pk=None):
+        print("Getting presigned URL")
+        try:
+            profile = Profile.objects.get(pk=pk, user_id=request.user.id)  # Ensuring access control
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+        object_key = str(profile.profile_picture).split("/")[-1] 
+        presigned_url = self.generate_presigned_url(settings.AWS_STORAGE_BUCKET_NAME, object_key, 3600)
+
+        if presigned_url:
+            return Response({"profile_picture": presigned_url}, status=200)
+        else:
+            return Response({"error": "Unable to generate URL"}, status=403)
+        
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+
+        return queryset
+    
+    @action(methods=['post'], detail=False, url_path='upload')
+    def upload(self, request, *args, **kwargs):
+        # Retrieve user_id from request.POST (not request.data when using FormData)
+        user_id = request.POST.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        try:
+            profile = Profile.objects.get(user_id=user_id)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+        # Retrieve the image from request.FILES (not request.data)
+        image = request.FILES.get('image')
+        if not image:
+            return Response({"error": "Image not provided"}, status=400)
+
+        # Setup the S3 client
+        s3 = boto3.client('s3',
+                        aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                        region_name=settings.AWS_S3_REGION_NAME)
+        bucket = settings.AWS_STORAGE_BUCKET_NAME  # Directly use settings to avoid errors
+        key = f"user_{user_id}.png"
+
+        # Upload the file to S3
+        try:
+            s3.upload_fileobj(image, bucket, key)
+            
+            # Update the profile picture URL (if storing the URL)
+            profile.profile_picture = key # "https://" + bucket + ".s3." + settings.AWS_S3_REGION_NAME + ".amazonaws.com/" + key
+            profile.save()
+            profile_picture = self.generate_presigned_url(bucket, key)
+            
+            return Response({"detail": "Image uploaded", "profile_picture": profile_picture}, status=200)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
 
 class ZipCodeViewSet(viewsets.ModelViewSet):
     endpoint = "https://api.zipcodestack.com/v1/search?country=us"
@@ -341,6 +426,81 @@ class CreateUserViewSet(viewsets.ModelViewSet):
 
             return Response(data, status=201)
         return Response(serializer.errors, status=400)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        email = self.request.query_params.get('email')
+
+        if email:
+            queryset = queryset.filter(email=email)
+
+        return queryset
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors, status=400)
+
+    def delete_profile_picture(self, request, *args, **kwargs):
+        """
+        Delete the user's profile picture from S3.
+        """
+        user = self.get_object()
+        # delete the user's profile picture from S3
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+            if profile.profile_picture != "default_profile.jpeg":
+                object_key = str(profile.profile_picture).split("/")[-1]
+                s3 = boto3.client('s3',
+                                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                region_name=settings.AWS_S3_REGION_NAME)
+                s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=object_key)
+            profile.profile_picture = "default_profile.jpeg"
+            profile.save()
+            return Response({"detail": "Profile picture deleted"}, status=200)
+        except Profile.DoesNotExist:
+            return Response({"error": "Profile not found"}, status=404)
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        self.delete_profile_picture(request, *args, **kwargs)
+        user.delete()
+        return Response({"detail": "User deleted"}, status=204)
+    
+    @action(methods=['patch'], detail=False, url_path='change_password')
+    def change_password(self, request, *args, **kwargs):
+        # confirm all the correct data is provided
+        keys = ['email', 'current_password', 'password', 'confirm_password']
+        if not all([key in request.data for key in keys]):
+            return Response({"error": f"Missing required fields: {keys}"}, status=400)
+
+        # find the user
+        try:
+            user = User.objects.get(email=request.data.get('email', None))
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        # confirm the password they provided is correct
+        if not user.check_password(request.data.get('current_password')):
+            return Response({"error": "Invalid password"}, status=400)
+
+        # confirm the password equals the confirm password
+        if request.data.get('password') != request.data.get('confirm_password'):
+            return Response({"error": "Passwords do not match"}, status=400)
+
+        # change the password
+        user.set_password(request.data.get('password'))
+        user.save()
+        return Response({"detail": "Password changed"}, status=200)
 
 class LoginViewSet(viewsets.ViewSet):
     permission_classes = [HasAppToken]

@@ -56,7 +56,7 @@ export class PreferencesSurveyComponent implements OnInit {
   ngOnInit() {
     // get hobbies and hobby types
     this.subscription.add(
-      this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+      this.hobbyService.hobbies.subscribe(hobbies => {
         this.hobbies = hobbies;
         this.mostInterestedHobbies = [...this.hobbies];
         this.leastInterestedHobbies = [...this.hobbies];

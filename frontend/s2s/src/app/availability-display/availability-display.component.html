@@ -1,8 +1,15 @@
 <div class="scheduler drop-shadow">
-    <h3>Event Availability</h3>
-    <div class="schedule-availability">
+    <!-- Edit and submit buttons for profile view -->
+    <div *ngIf="!isEditable" class="edit-buttons">
+        <button pButton (click)="isEditable = true" class="edit-button">Edit Availability</button>
+    </div>
+    <div *ngIf="isEditable" class="edit-buttons">
+        <button pButton (click)="cancelAvailability()" class="cancel-button">Cancel</button>
+        <button pButton (click)="submitAvailability()" class="confirm-button">Confirm</button>
+    </div>
+    <div [class.overlay]="!isEditable" class="schedule-availability">
         <!-- Headers -->
-        <div class="header-cell" style="color: white">Time</div> <!-- Placeholder for the time column -->
+        <div class="header-cell">Time</div>
         <div class="header-cell" *ngFor="let day of days">{{ day }}</div>
 
         <!-- Time slots and day cells -->
@@ -13,7 +20,8 @@
             *ngFor="let available of slot.days; let j = index" 
             (click)="toggleAvailability(i, j)" 
             (keyup.enter)="toggleAvailability(i, j)"
-            tabindex="0"
+            [attr.tabindex]="isEditable ? '0' : '-1'"
+            [class.disabled]="!isEditable"
         >
             <div *ngIf="available" class="filled">Available</div>
         </div>

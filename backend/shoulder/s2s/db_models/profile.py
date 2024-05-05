@@ -13,8 +13,7 @@ class Profile(models.Model):
     '''
 
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture = models.ImageField(
-        upload_to=s2s_settings.AWS_STORAGE_BUCKET_NAME, 
+    profile_picture = models.URLField(
         default=s2s_settings.DEFAULT_PROFILE_IMAGE_PATH) 
 
 def __str__(self):

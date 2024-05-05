@@ -22,10 +22,6 @@ main {
     min-height: 70vh;
 }
 
-.content {
-    margin-top: -5rem;
-}
-
 .subtitle {
     font-size: 1.1rem;
     font-weight: light;
@@ -100,7 +96,6 @@ a {
 .p-tooltip .p-tooltip-text {
 color: green ;
 }
-  
 
 .customtooltip.p-tooltip .p-tooltip-text {
 color: #FFECD1 ;
@@ -114,4 +109,24 @@ color: #FFECD1 ;
 
 .light-error {
     color: rgb(233, 98, 98);
+}
+
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+    background: #FFECD1;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: #15616D;
+    color: #FFECD1;
+}
+
+.p-datatable>.p-datatable-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.p-datatable-table {
+    width: 90%;
+    border: solid;
+    border-color: #15616D;
 }

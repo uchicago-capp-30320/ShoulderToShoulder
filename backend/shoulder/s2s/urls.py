@@ -17,9 +17,10 @@ router.register(r"zipcodes", views.ZipCodeViewSet, basename="zipcodes")
 router.register(r"eventsuggestions", views.EventSuggestionsViewSet)
 router.register(r"applicationtokens", views.ApplicationTokenViewSet)
 router.register(r"hobbytypes", views.HobbyTypeViewSet)
+router.register(r"user", views.UserViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('create/', views.CreateUserViewSet.as_view({'post': 'create'}), name='create_user'),
-    path('login/', views.LoginViewSet.as_view({'post': 'login'}), name='login')
+    path('login/', views.LoginViewSet.as_view({'post': 'login'}), name='login'),
 ]

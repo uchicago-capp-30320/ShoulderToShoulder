@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, expand } from 'rxjs/operators';
 import { EMPTY, BehaviorSubject, Observable, throwError, reduce} from 'rxjs';
+import { withCache } from '@ngneat/cashew';
 
 // services
 import { ApiService } from './api.service';
@@ -41,6 +42,8 @@ export class CalendarService {
   availabilitySubject = new BehaviorSubject<AvailabilityObj[]>([]);
   availability = this.availabilitySubject.asObservable();
 
+  userAvailabilityObserver = new BehaviorSubject<AvailabilitySlot[]>([]);
+  userAvailability$ = this.userAvailabilityObserver.asObservable();
   userAvailability: AvailabilitySlot[] = [];
 
   constructor(
@@ -70,7 +73,7 @@ export class CalendarService {
    * @returns The calendar data as a list of Calendar objects.
    */
   fetchCalendar(url: string): Observable<CalendarObj[]> {
-    return this.http.get<CalendarResponse>(url).pipe(
+    return this.http.get<CalendarResponse>(url, {context: withCache()}).pipe(
       expand(response => response.next ? this.http.get<CalendarResponse>(response.next) : EMPTY),
       map(response => response.results),
       reduce<CalendarObj[], CalendarObj[]>((acc, cur) => [...acc, ...cur], []),
@@ -84,9 +87,10 @@ export class CalendarService {
    * @param calendar The calendar data used to map availability slots.
    */
   loadAllAvailability(calendar: CalendarObj[]): void {
-    this.fetchAvailability(this.availabilityEndpoint).subscribe(availability => {
+    this.fetchAvailability(this.availabilityEndpoint + "?user_id=" + this.authService.userValue.id).subscribe(availability => {
       this.availabilitySubject.next(availability);
       this.userAvailability = this.convertAvailability(availability, calendar);
+      this.userAvailabilityObserver.next(this.userAvailability);
     });
   }
 
@@ -97,7 +101,8 @@ export class CalendarService {
    * @returns An Observable of availability data as an array of Availability objects.
    */
   fetchAvailability(url: string): Observable<AvailabilityObj[]> {
-    return this.http.get<AvailabilityResponse>(url).pipe(
+    return this.http.get<AvailabilityResponse>(url).
+    pipe(
       expand(response => response.next ? this.http.get<AvailabilityResponse>(response.next) : EMPTY),
       map(response => response.results),
       reduce<AvailabilityObj[], AvailabilityObj[]>((acc, cur) => [...acc, ...cur], []),
@@ -114,14 +119,14 @@ export class CalendarService {
    */
   convertAvailability(availability: AvailabilityObj[], calendar: CalendarObj[]): AvailabilitySlot[] {
     return hours.map(hour => {
-      const timeLabel = `${hour % 12 === 0 ? 12 : hour % 12}:00` + (hour >= 12 ? ' PM' : ' AM');
+      const timeOfDay = hour >= 12 && hour < 24 ? ' PM' : ' AM';
+      const timeLabel = `${hour % 12 === 0 ? 12 : hour % 12}:00` + timeOfDay;
       const time = { label: timeLabel, value: hour };
       const days = daysOfTheWeek.map(day => {
         const dayAvailability = availability.find(a => {
           const calendarObj = calendar.find(c => c.id === a.calendar_id && c.day_of_week === day && c.hour == hour);
           return calendarObj && a.available;
         });
-        console.log(dayAvailability)
 
         // converts undefined values to false and defined values to true
         // if a user is available at a given time and day, the will convert the 
@@ -154,5 +159,17 @@ export class CalendarService {
         return EMPTY; // Returning EMPTY to avoid breaking the observable chain in case of an error
       })
     );
+  }
+
+  /**
+   * Sets user's availability to the backup availability data.
+   * 
+   * This method is used to reset the user's availability data to the last saved state.
+   * 
+   * @param availability The availability data to set as the user's availability.
+   */
+  setAvailability(availability: AvailabilitySlot[]): void {
+    this.userAvailability = availability;
+    this.userAvailabilityObserver.next(this.userAvailability);
   }
 }

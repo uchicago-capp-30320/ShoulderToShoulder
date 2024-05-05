@@ -1,5 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, SimpleChanges, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+
+// services
+import { AuthService } from '../_services/auth.service';
+import { ProfileService } from '../_services/profile.service';
+
+// helpers
+import { User } from '../_models/user';
 
 /**
  * Defines the Navbar component.
@@ -16,31 +23,78 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
-  items?: MenuItem[] = [
-    {
-      label: '',
-    },
-    {
-      label: 'About Us',
-      routerLink: '/about-us'
-    },
-    {
-      label: 'Contact Us',
-      routerLink: '/contact-us'
-    },
-    {
-      label: 'Sign Up',
-      routerLink: '/sign-up',
-      class: 'signup-button'
-    },
-    {
-      label: 'Log In',
-      routerLink: '/log-in',
-      class: 'login-button'
-    }
-  ];
-  defaultRoute = '/home';
+export class NavbarComponent implements OnInit {
+  @Input() loggedIn: boolean;
+  items?: MenuItem[] = []
+  defaultRoute?: string;
+  user?: User;
+  profilePictureUrl?: string;
 
-  constructor() { }
+  constructor(
+    public authService: AuthService,
+    public profileService: ProfileService
+  ) {
+    this.loggedIn = this.authService.loggedIn;
+  }
+
+  ngOnInit(): void {
+    this.loggedIn = this.authService.loggedIn;
+    if (this.loggedIn) {
+      this.setLoggedIn();
+    } else {
+      this.setLoggedOut();
+    }
+  }
+
+  setLoggedOut(){
+    this.items = [
+      {
+        label: '',
+      },
+      {
+        label: 'About Us',
+        routerLink: '/about-us'
+      },
+      {
+        label: 'Contact Us',
+        routerLink: '/contact-us'
+      },
+      {
+        label: 'Sign Up',
+        routerLink: '/sign-up',
+        class: 'signup-button'
+      },
+      {
+        label: 'Log In',
+        routerLink: '/log-in',
+        class: 'login-button'
+      }
+    ];
+    this.defaultRoute = '/home';
+  }
+
+  setLoggedIn(){
+    this.items = [
+      {
+        label: '',
+      },
+      {
+        label: 'Profile',
+        routerLink: '/profile/1'
+      },
+      {
+        label: 'Event Creator',
+        routerLink: '/event-creator'
+      }
+    ];
+    this.defaultRoute = '/profile/1';
+
+    this.authService.userSubject.subscribe(user => {
+      this.user = user;
+      this.profileService.getProfile();
+      this.profileService.profilePicture.subscribe(picture => {
+        this.profilePictureUrl = picture;
+      });
+    });
+  }
 }

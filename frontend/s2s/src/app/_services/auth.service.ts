@@ -8,8 +8,9 @@ import { BehaviorSubject, EMPTY, Observable, of } from 'rxjs';
 import { ApiService } from './api.service';
 
 // models
-import { User, UserSignUp, UserLogIn, UserResponse } from '../_models/user';
+import { User, UserSignUp, UserLogIn, UserResponse, UserUpdate } from '../_models/user';
 import { OnboardingResp } from '../_models/onboarding';
+import { PasswordChange } from '../_models/password-change';
 
 /**
  * Service responsible for user authentication and authorization.
@@ -28,6 +29,9 @@ export class AuthService {
   signupEndpoint = `${this.apiService.BASE_API_URL}/create/`;
   loginEndpoint = `${this.apiService.BASE_API_URL}/login/`;
   onboardingEndpoint = `${this.apiService.BASE_API_URL}/onboarding/`;
+  changePasswordEndpoint = `${this.apiService.BASE_API_URL}/user/change_password/`;
+  userUpdateEndpoint = `${this.apiService.BASE_API_URL}/user/${this.userValue.id}/`;
+  endpoint = `${this.apiService.BASE_API_URL}/user/`;
   
   signingUp = new BehaviorSubject<boolean>(false);
   user = new BehaviorSubject<User>(this.userValue);
@@ -132,5 +136,49 @@ export class AuthService {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user');
     this.router.navigate(['/log-in']);
+  }
+
+  /**
+   * Changes a user's password.
+   * Implement this method once the password change endpoint is available.
+   * 
+   * @param passwordChange A PasswordChange object containing the user's current
+   *                       password, new password, and confirmation of the new
+   *                       password.
+   * @returns An Observable of the password change response.
+   */
+  changePassword(passwordChange: PasswordChange): Observable<any> {
+    return this.http.patch<any>(this.changePasswordEndpoint, passwordChange);
+  }
+
+  /**
+   * Updates a user's information.
+   * Implement this method once the user update endpoint is available.
+   * 
+   * @param userUpdate A UserUpdate object containing the user's updated information.
+   * @returns An Observable of the updated user.
+   */
+  updateUser(userUpdate: UserUpdate): Observable<any> {
+    return this.http.put<any>(this.userUpdateEndpoint, userUpdate);
+  }
+
+  /**
+   * Deletes a user's account.
+   * This function should trigger an endpoint in the backend that deletes the
+   * user's account and erases all instances of that user from the database,
+   * including their availability, events attended, upcoming events, etc.
+   * 
+   * Implement this method once the user delete endpoint is available.
+   * 
+   * @param user The user to delete.
+   * @returns An Observable of the delete response.
+   */
+  deleteAccount(user: User): Observable<any> {
+    return this.http.delete<any>(`${this.endpoint}${user.id}/`).pipe(
+      catchError(error => {
+        console.error('Error deleting account:', error);
+        return EMPTY;
+      })
+    )
   }
 }

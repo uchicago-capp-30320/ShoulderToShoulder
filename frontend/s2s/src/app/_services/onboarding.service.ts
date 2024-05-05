@@ -238,7 +238,7 @@ export class OnboardingService {
    * @param ids - IDs of the most interested hobbies.
    */
   getMostInterestedHobbies(ids: number[]) {
-    this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+    this.hobbyService.hobbies.subscribe(hobbies => {
       this.preferencesForm.patchValue({
         mostInterestedHobbies: hobbies.filter(hobby => ids.includes(hobby.id))
       });
@@ -251,7 +251,7 @@ export class OnboardingService {
    * @param ids - IDs of the least interested hobbies.
    */
   getLeastInterestedHobbies(ids: number[]) {
-    this.hobbyService.preferencesHobbies.subscribe(hobbies => {
+    this.hobbyService.hobbies.subscribe(hobbies => {
       this.preferencesForm.patchValue({
         leastInterestedHobbies: hobbies.filter(hobby => ids.includes(hobby.id))
       });
@@ -292,6 +292,18 @@ export class OnboardingService {
       console.log('All forms submitted successfully!');
       this.submitOnboarding(user, onboarded);
     });
+  }
+
+
+  /**
+   * Updates onboarding information for the preferences survey
+   * and demographics survey.
+   * This function is primarily used to update onboarding information on the 
+   * user profile settings page.
+   */
+  updateOnboarding(): void {
+    let user = this.authService.userValue;
+    this.submitOnboarding(user, this.onboarded);
   }
 
   /**
@@ -364,6 +376,7 @@ export class OnboardingService {
       })
     ).subscribe(() => {
       console.log('Onboarding submitted successfully!');
+      this.fetchOnboarding(); // update onboarding data
     });
   }
 
