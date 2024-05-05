@@ -21,9 +21,9 @@ class Event(models.Model):
             MaxValueValidator(8),
             MinValueValidator(1)])
     address1 = models.CharField(max_length=200)
-    address2 = models.CharField(max_length=200)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
+    address2 = models.CharField(max_length=200, blank=True, null=True)
+    city = models.CharField(max_length=100, default='Chicago')
+    state = models.CharField(max_length=100, default='IL')
     latitude = models.DecimalField(max_digits=12, decimal_places=10)
     longitude = models.DecimalField(max_digits=13, decimal_places=11)
     max_attendees = models.IntegerField(validators=[
