@@ -1,14 +1,21 @@
+// Purpose: This file contains the interface for Event model.
 export interface Event {
-    id: number;
+    id?: number;
+    created_by?: number;
     title: string;
-    event_id: string;
+    description?: string;
+    hobby_type?: string;
     datetime: string;
     duration_h: number;
-    address: string;
-    latitute: number;
-    longitude: number;
+    address1: string;
+    address2?: string;
+    city: string;
+    state: string;
+    zipcode: string;
+    latitude?: number;
+    longitude?: number;
     max_attendees: number;
-    attendees: number[];
+    add_user?: boolean;
 }
 
 export interface EventResponse {

@@ -32,6 +32,10 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -60,6 +64,7 @@ import { ProfileAvailabilityComponent } from './profile-availability/profile-ava
 // HTTP interceptors
 import { AuthInterceptor } from './_interceptors/interceptor';
 import { CacheInterceptor } from './_interceptors/cache';
+import { EventCreationComponent } from './event-creation/event-creation.component';
 
 
 @NgModule({
@@ -83,6 +88,7 @@ import { CacheInterceptor } from './_interceptors/cache';
     ProfileOverviewComponent,
     ProfileSettingsComponent,
     ProfileAvailabilityComponent,
+    EventCreationComponent
   ],
   imports: [
     BrowserModule,
@@ -111,9 +117,13 @@ import { CacheInterceptor } from './_interceptors/cache';
     ProgressBarModule,
     ToastModule,
     TableModule,
-    FileUploadModule
+    FileUploadModule,
+    CalendarModule,
+    InputTextareaModule,
+    MessagesModule
   ],
   providers: [
+    MessageService,
     provideEnvironmentNgxMask(maskConfig),
     provideAnimationsAsync(),
     { provide: LocationStrategy, useClass: HashLocationStrategy },

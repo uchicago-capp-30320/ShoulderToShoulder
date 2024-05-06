@@ -1,5 +1,4 @@
-// Purpose: Interface for User object.
-
+// Purpose: This file contains interfaces for the User object.
 export interface UserLocation {
     city: string,
     state: string, 

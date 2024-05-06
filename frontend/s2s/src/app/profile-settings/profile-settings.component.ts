@@ -185,7 +185,7 @@ export class ProfileSettingsComponent implements OnInit {
       // update user information
       let newUser = response as User;
       this.user = newUser;
-      localStorage.setItem('user', JSON.stringify(newUser));
+      sessionStorage.setItem('user', JSON.stringify(newUser));
       this.authService.user.next(newUser);
       this.resetUserForm();
 

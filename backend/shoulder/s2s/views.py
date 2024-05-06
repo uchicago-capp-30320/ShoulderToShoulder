@@ -12,10 +12,9 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db import transaction
 import boto3
-import time
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-
+from gis.gis_module import geocode
 
 from .serializers import *
 from .db_models import *
@@ -93,6 +92,59 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode']
+        if not all([field in request.data for field in required_fields]):
+            return Response({"error": f"Missing required fields: {required_fields}"}, status=400)
+        
+        # get the hobby type object
+        hobby_type = HobbyType.objects.get(type=request.data['hobby_type'])
+
+        # get the user/created_by
+        if 'created_by' not in request.data:
+            user = None
+        else:
+            user = User.objects.get(id=request.data['created_by'])
+
+        # get the latitute and longitude from the address
+        full_address = f"{request.data['address1']} {request.data['city']}, {request.data['state']}"
+        addr_resp = geocode(full_address)
+        if not addr_resp:
+            return Response({"error": "Invalid address"}, status=400)
+        latitude, longitude = addr_resp['coords']
+        latitude = '%.10f'%(latitude)
+        longitude = '%.11f'%(longitude)
+
+        # create the event
+        data = {
+            'title': request.data['title'],
+            'description': request.data.get('description', None),
+            'hobby_type': hobby_type.id,
+            'created_by': user.id,
+            'datetime': request.data['datetime'],
+            'duration_h': request.data['duration_h'],
+            'address1': request.data['address1'],
+            'address2': request.data.get('address2', None),
+            'city': request.data['city'],
+            'state': request.data['state'],
+            'latitude': latitude,
+            'longitude': longitude,
+            'max_attendees': request.data['max_attendees'],
+            'zipcode': request.data['zipcode']
+        }
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            serializer.save()
+
+            # add user to event if applicable
+            if request.data.get('add_user', None):
+                event = Event.objects.get(id=serializer.data['id'])
+                user_event = UserEvents(user_id=user, event_id=event)
+                user_event.save()
+
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()

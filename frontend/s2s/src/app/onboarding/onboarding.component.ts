@@ -108,6 +108,8 @@ export class OnboardingComponent implements OnInit{
    * @param event The click event.
    */
   highlightInvalidFields(event: any) {
+    this.invalidDialogMessage = '';
+    
     // map the page number to the form
     let pageFormMap: { [index: number]: FormGroup} = {
       1: this.onboardingService.preferencesForm,

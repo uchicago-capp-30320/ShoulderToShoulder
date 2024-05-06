@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, catchError, EMPTY, throwError } from 'rxjs';
 import moment from 'moment';
 
 // services
@@ -25,7 +25,7 @@ import { User } from '../_models/user';
   providedIn: 'root'
 })
 export class EventService {
-  endpoint = this.apiService.BASE_API_URL + '/events';
+  endpoint = this.apiService.BASE_API_URL + '/events/';
   numEventsAttended = new BehaviorSubject<number>(0);
   pastEvents = new BehaviorSubject<Event[]>([]);
   upcomingEvents = new BehaviorSubject<Event[]>([]);
@@ -74,52 +74,60 @@ export class EventService {
       {
         id: 3,
         title: 'Test Event 3',
-        event_id: 'test-event-3',
+        description: 'This is a test event.',
         datetime: futureDate.toString(),
         duration_h: 1,
-        address: 'Chicago, IL',
-        latitute: 41.8781,
+        address1: '1234 Michcigan Ave',
+        city: 'Chicago',
+        state: 'IL',
+        zipcode: '60601',
+        latitude: 41.8781,
         longitude: -87.6298,
         max_attendees: 10,
-        attendees: [7, 8, 9]
       },
       {
         id: 4,
         title: 'Test Event 4',
-        event_id: 'test-event-4',
+        description: 'This is a test event.',
         datetime: futureDate.toString(),
         duration_h: 1,
-        address: 'Chicago, IL',
-        latitute: 41.8781,
+        address1: '1234 Michcigan Ave',
+        city: 'Chicago',
+        state: 'IL',
+        zipcode: '60601',
+        latitude: 41.8781,
         longitude: -87.6298,
         max_attendees: 10,
-        attendees: [10, 11, 12]
       },
 
       // past dates
       {
         id: 1,
         title: 'Test Event 1',
-        event_id: 'test-event-1',
+        description: 'This is a test event.',
         datetime: '2021-08-01T12:00:00Z',
         duration_h: 2,
-        address: 'Chicago, IL',
-        latitute: 41.8781,
+        address1: '1234 Michcigan Ave',
+        city: 'Chicago',
+        state: 'IL',
+        zipcode: '60601',
+        latitude: 41.8781,
         longitude: -87.6298,
         max_attendees: 5,
-        attendees: [1, 2, 3]
       },
       {
         id: 2,
         title: 'Test Event 2',
-        event_id: 'test-event-2',
+        description: 'This is a test event.',
         datetime: '2021-08-02T12:00:00Z',
         duration_h: 3,
-        address: 'Chicago, IL',
-        latitute: 41.8781,
+        address1: '1234 Michcigan Ave',
+        city: 'Chicago',
+        state: 'IL',
+        zipcode: '60601',
+        latitude: 41.8781,
         longitude: -87.6298,
         max_attendees: 10,
-        attendees: [4, 5, 6]
       }
     ];
   }
@@ -143,5 +151,19 @@ export class EventService {
   getUpcomingEvents(events: Event[]): void {
     const upcomingEvents = events.filter(event => new Date(event.datetime) >= new Date());
     this.upcomingEvents.next(upcomingEvents);
+  }
+
+  /**
+   * Allows a user to add a new event.
+   * 
+   * @param event The event to add.
+   * @returns An Observable of the added event.
+  */
+  createEvent(event: Event): Observable<Event> {
+    return this.http.post<Event>(this.endpoint, event).pipe(
+      catchError(error => {
+        console.error('Error adding event: ', error);
+        return throwError(() => error);
+      }));
   }
 }

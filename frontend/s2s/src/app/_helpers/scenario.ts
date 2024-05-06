@@ -1,5 +1,4 @@
 // Purpose: Contains the scenario class.
-
 import { Hobby } from "../_models/hobby"
 import { SafeHtml } from "@angular/platform-browser";
 import { ScenarioObj } from "../_models/scenarios";
@@ -25,7 +24,7 @@ export interface ScenarioInterface {
  * @returns A scenario object describing the activity.
  */
 export class Scenario {
-    userStorage = localStorage.getItem('user');
+    userStorage = sessionStorage.getItem('user');
     user = this.userStorage ? JSON.parse(this.userStorage) : {id: 0};
     timeOfDayMap: { [index: string]: string } = {
         "morning": "Morning (9a-12p)",

@@ -53,9 +53,9 @@ export class AuthService {
     return this.http.post<UserResponse>(this.signupEndpoint, user).pipe(
       switchMap(response => {
         this.signingUp.next(true);
-        localStorage.setItem('access_token', response.access_token);
-        localStorage.setItem('refresh_token', response.refresh_token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        sessionStorage.setItem('access_token', response.access_token);
+        sessionStorage.setItem('refresh_token', response.refresh_token);
+        sessionStorage.setItem('user', JSON.stringify(response.user));
         this.signingUp.next(false);
         return of(response.user);
 
@@ -72,9 +72,9 @@ export class AuthService {
   login(user: UserLogIn): Observable<any> {
     return this.http.post<any>(this.loginEndpoint, user).pipe(
       switchMap(response => {
-        localStorage.setItem('access_token', response.access_token);
-        localStorage.setItem('refresh_token', response.refresh_token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        sessionStorage.setItem('access_token', response.access_token);
+        sessionStorage.setItem('refresh_token', response.refresh_token);
+        sessionStorage.setItem('user', JSON.stringify(response.user));
         this.user.next(response.user);
         return of(response.user);
       })
@@ -85,7 +85,7 @@ export class AuthService {
    * Returns whether a user is logged in.
    */
   get loggedIn(): boolean {
-    return !!localStorage.getItem('user');
+    return !!sessionStorage.getItem('user');
   }
 
   /**
@@ -121,7 +121,7 @@ export class AuthService {
    * @returns The user object containing user information.
    */
   get userValue(): User {
-    let userStr = localStorage.getItem('user');
+    let userStr = sessionStorage.getItem('user');
     if (userStr) {
       return JSON.parse(userStr);
     }
@@ -132,9 +132,9 @@ export class AuthService {
    * Logs a user out of the application.
    */
   logout(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+    sessionStorage.removeItem('user');
     this.router.navigate(['/log-in']);
   }
 

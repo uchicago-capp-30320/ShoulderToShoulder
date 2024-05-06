@@ -54,7 +54,6 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     let page = this.route.snapshot.paramMap.get('id');
     if (page) {
-      console.log(page);
       this.page = parseInt(page);
     }
     this.authService.userSubject.subscribe(user => {
@@ -66,7 +65,7 @@ export class ProfileComponent implements OnInit {
    * Fetches the current user from local storage.
    */
   getUser() {
-    let user = localStorage.getItem('user');
+    let user = sessionStorage.getItem('user');
     if (user) {
       this.user = JSON.parse(user);
       this.profileService.profilePicture.subscribe(profilePictureUrl => {
