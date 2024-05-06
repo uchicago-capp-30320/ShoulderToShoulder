@@ -34,8 +34,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
         // Check if the request is a user token endpoint
         if (userTokenEndpoints.some(endpoint => request.url.includes(endpoint))){
-            if (localStorage.getItem('access_token')) {
-                authToken = `Bearer ${localStorage.getItem('access_token') as string}`;
+            if (sessionStorage.getItem('access_token')) {
+                authToken = `Bearer ${sessionStorage.getItem('access_token') as string}`;
                 header = "Authorization";
             }
         }

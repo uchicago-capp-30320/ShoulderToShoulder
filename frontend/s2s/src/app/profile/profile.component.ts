@@ -66,7 +66,7 @@ export class ProfileComponent implements OnInit {
    * Fetches the current user from local storage.
    */
   getUser() {
-    let user = localStorage.getItem('user');
+    let user = sessionStorage.getItem('user');
     if (user) {
       this.user = JSON.parse(user);
       this.profileService.profilePicture.subscribe(profilePictureUrl => {

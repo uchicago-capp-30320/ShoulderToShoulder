@@ -39,7 +39,7 @@ export class ProfileService {
    * @returns An Observable of the user's profile data.
    */
   getProfile() {
-    let user = localStorage.getItem('user');
+    let user = sessionStorage.getItem('user');
     if (user) {
       let userObj = JSON.parse(user);
       let userId = userObj.id;
