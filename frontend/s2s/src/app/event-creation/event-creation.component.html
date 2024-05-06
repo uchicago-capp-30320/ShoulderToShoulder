@@ -8,15 +8,32 @@
             <!-- Event Error -->
             <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
             
-            <!-- title -->
-            <div class="title-field">
-                <label for="title" class="label">Event Title<span class="required">*</span></label>
-                <small class="p-error light-error" *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.dirty">Event title is required</small>
-                <input type="text" pInputText placeholder="{{ sampleEvent.title }}" formControlName="title" />
+            <div class="row">
+                <!-- title -->
+                <div class="event-title">
+                    <label for="title" class="label">Event Title<span class="required">*</span></label>
+                    <small class="p-error light-error" *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.dirty">Event title is required</small>
+                    <input type="text" pInputText placeholder="{{ sampleEvent.title }}" formControlName="title" />
+                </div>   
+                
+                <!-- category -->
+                <div class="event-category">
+                    <label for="hobby_type" class="label">Event Category<span class="required">*</span></label>
+                    <small class="p-error light-error" *ngIf="eventForm.get('hobby_type')?.invalid && eventForm.get('hobby_type')?.dirty">Category is required</small>
+                    <p-dropdown 
+                        [virtualScroll]="true" 
+                        [virtualScrollItemSize]="48"
+                        [style]="{'width':'100%', 'text-align':'left'}"
+                        [options]="hobbyTypes" 
+                        optionLabel="type"
+                        formControlName="hobby_type" 
+                        placeholder="CRAFTING"></p-dropdown>
+                </div>
             </div>
 
+
             <!-- description -->
-            <div class="title-field">
+            <div class="desc-field">
                 <label for="description" class="label">Description</label>
                 <textarea 
                     pInputTextarea 
@@ -84,6 +101,8 @@
                     <label for="state" class="label">State<span class="required">*</span></label>
                     <small class="p-error light-error" *ngIf="eventForm.get('state')?.invalid && eventForm.get('state')?.dirty">State is required</small>
                     <p-dropdown 
+                        [virtualScroll]="true" 
+                        [virtualScrollItemSize]="48"
                         [style]="{'width':'100%', 'text-align':'left'}"
                         [options]="states" 
                         formControlName="state" 
@@ -120,18 +139,21 @@
 
 <!-- Confirmation Dialog -->
 <p-dialog header="Please confirm your event information" [(visible)]="showConfirmDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-    <p class="m-0"><b>Title:</b> {{ event.title }}</p>
-    <p class="m-0"><b>Description</b>: {{ event.description ? event.description : 'Not Provided' }}</p>
-    <p class="m-0"><b>Date:</b> {{ event.datetime }}</p>
-    <p class="m-0"><b>Duration:</b> {{ event.duration_h }} hours</p>
-    <p class="m-0"><b>Max Attendees:</b> {{ event.max_attendees }} {{ event.max_attendees === 1 ? "person" : "people" }}</p>
-    <p class="m-0"><b>Address:</b> {{ event.address1 + "," }} {{ event.address2 ? event.address2 + "," : "" }} {{ event.city + "," }} {{ event.state }}</p>
-    <p class="m-0"><b>You {{ event.add_user ? "will" : "will NOT" }} be automatically added to this event</b></p>
+    @if (event) {
+        <p class="m-0"><b>Title:</b> {{ event.title }}</p>
+        <p class="m-0"><b>Category:</b> {{ event.hobby_type }}</p>
+        <p class="m-0"><b>Description</b>: {{ event.description ? event.description : 'Not Provided' }}</p>
+        <p class="m-0"><b>Date:</b> {{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</p>
+        <p class="m-0"><b>Duration:</b> {{ event.duration_h }} hours</p>
+        <p class="m-0"><b>Max Attendees:</b> {{ event.max_attendees }} {{ event.max_attendees === 1 ? "person" : "people" }}</p>
+        <p class="m-0"><b>Address:</b> {{ event.address1 + "," }} {{ event.address2 ? event.address2 + "," : "" }} {{ event.city + "," }} {{ event.state }}</p>
+        <p class="m-0"><b>You {{ event.add_user ? "will" : "will NOT" }} be automatically added to this event</b></p>
 
-    <div class="p-d-flex p-jc-end">
-        <button pButton type="button" class="p-button-text" (click)="showConfirmDialog = false" class="cancelButton">Cancel</button>
-        <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
-    </div>
+        <div class="p-d-flex p-jc-end">
+            <button pButton type="button" class="p-button-text" (click)="showConfirmDialog = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
+        </div>
+    }
 </p-dialog>
 
 <app-footer></app-footer>

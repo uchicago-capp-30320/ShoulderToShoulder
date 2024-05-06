@@ -1,32 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 // services
 import { EventService } from '../_services/event.service';
 import { AuthService } from '../_services/auth.service';
+import { HobbyService } from '../_services/hobbies.service';
 
 // helpers
-import { Event } from '../_models/event';
+import { Event, EventPost } from '../_models/event';
 import { states } from '../_helpers/location';
 import { labelValueString } from '../_helpers/abstractInterfaces';
 import { formControlFieldMap } from '../_helpers/preferences';
 import { User } from '../_models/user';
+import { HobbyType } from '../_models/hobby';
 
 @Component({
   selector: 'app-event-creation',
   templateUrl: './event-creation.component.html',
   styleUrl: './event-creation.component.css'
 })
-export class EventCreationComponent {
+export class EventCreationComponent implements OnInit {
   showConfirmDialog = false;
   states = states;
+  hobbyTypes: HobbyType[] = [];
   user: User = this.authService.userValue;
-  
-  event!: Event;
-  
+  event!: EventPost;
   eventForm = new FormGroup({
     title: new FormControl('', Validators.required),
     description: new FormControl(''),
+    hobby_type: new FormControl('', Validators.required),
     datetime: new FormControl('', Validators.required),
     duration_h: new FormControl('', [
       Validators.required,
@@ -44,8 +46,9 @@ export class EventCreationComponent {
   });
 
   // sample event
-  sampleEvent: Event = {
+  sampleEvent: EventPost = {
     title: 'Cozy Knitting Circle',
+    hobby_type: "CRAFTING",
     description: "Join us for a cozy knitting circle at the Bourgeois Pig Cafe! Whether you're a beginner or an experienced knitter, bring your yarn and needles and enjoy a relaxing afternoon of knitting, coffee, and conversation. All skill levels are welcome!",
     datetime: 'May 14, 2024 at 05:30 PM',
     duration_h: 2,
@@ -64,8 +67,15 @@ export class EventCreationComponent {
 
   constructor(
     private eventService: EventService,
-    private authService: AuthService
+    private authService: AuthService,
+    private hobbyService: HobbyService
   ) {
+  }
+
+  ngOnInit(): void {
+    this.hobbyService.hobbyTypes.subscribe(hobbies => {
+      this.hobbyTypes = hobbies;
+    });
   }
 
   resetForm(): void {
@@ -102,6 +112,7 @@ export class EventCreationComponent {
   formToEvent(): void {
     let title = this.eventForm.get('title')?.value;
     let description = this.eventForm.get('description')?.value;
+    let event_type = this.eventForm.get('hobby_type')?.value;
     let datetime = this.eventForm.get('datetime')?.value;
     let duration_h = this.eventForm.get('duration_h')?.value;
     let address1 = this.eventForm.get('address1')?.value;
@@ -109,21 +120,24 @@ export class EventCreationComponent {
     let city = this.eventForm.get('city')?.value;
     let state = this.eventForm.get('state')?.value;
     let max_attendees = this.eventForm.get('max_attendees')?.value;
+    let add_user = this.eventForm.get('add_user')?.value;
 
-    if (title && datetime && duration_h && address1 && max_attendees && city && state) {
+    if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type) {
       state = (state as unknown as labelValueString).value;
       datetime = new Date(datetime).toISOString();
-      let newEvent: Event = {
+      let newEvent: EventPost = {
         title: title,
         created_by: this.user.id,
         description: description ? description : '',
+        hobby_type: event_type ? (event_type as unknown as HobbyType).type: "OTHER",
         datetime: datetime,
         duration_h: parseInt(duration_h),
         address1: address1,
         address2: address2 ? address2 : '',
         city: city,
         state: state,
-        max_attendees: parseInt(max_attendees)
+        max_attendees: parseInt(max_attendees),
+        add_user: add_user ? add_user : false
       };
       this.event = newEvent;
     }
@@ -137,6 +151,7 @@ export class EventCreationComponent {
 
   onSubmit(): void {
     this.showConfirmDialog = false;
+    this.resetForm();
     console.log(this.event)
 
     // this.eventService.createEvent(this.event).subscribe(() => {
