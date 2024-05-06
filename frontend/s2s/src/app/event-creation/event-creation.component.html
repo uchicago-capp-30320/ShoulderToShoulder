@@ -1,9 +1,14 @@
 <app-header></app-header>
 <!-- Event creation form -->
 <div class="main-content">
+
     <div class="event-form drop-shadow">
         <h2 class="light-text">Event Creation Form</h2>
         <p class="subtitle light-text">Please fill out the form below to create an event.</p>
+
+        <!-- Message Service -->
+        <p-messages></p-messages>
+
         <form [formGroup]="eventForm" (ngSubmit)="openConfirmationDialog()" class="form-container">
             <!-- Event Error -->
             <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
@@ -128,7 +133,8 @@
         </form>
 
         <!-- Invalid Dialog -->
-        <p-dialog header="Required Fields Missing" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+        <p-dialog header="Event Creation Error" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+            <h3>{{ errorHeader }}</h3>
             <p class="m-0">{{ invalidDialogMessage }}</p>
             <div class="p-d-flex p-jc-end">
                 <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
@@ -155,5 +161,14 @@
         </div>
     }
 </p-dialog>
+
+<!-- Loading Dialog -->
+<div *ngIf="showLoadingDialog" class="loading-overlay">
+    <div class="loading-overlay-content">
+        <h3>Creating event...</h3>
+        <p class="m-0">Please wait while we create your event.</p>
+        <app-loader></app-loader>
+    </div>
+</div>
 
 <app-footer></app-footer>

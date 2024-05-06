@@ -39,5 +39,5 @@ class Event(models.Model):
             MaxValueValidator(50)])
     
     def __str__(self) -> str:
-        return 'Event name {}, DateTime {}, Duration {}, Address {}, Max Attendees {}, Attendees {}'.format(
-            self.title, self.datetime, self.duration_h, self.address, self.max_attendees)
+        return 'Event name {} (DateTime {}) - Created By {}'.format(
+            self.title, self.datetime, self.created_by)

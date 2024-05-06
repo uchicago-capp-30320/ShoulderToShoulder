@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, catchError, EMPTY } from 'rxjs';
+import { BehaviorSubject, Observable, of, catchError, EMPTY, throwError } from 'rxjs';
 import moment from 'moment';
 
 // services
@@ -25,7 +25,7 @@ import { User } from '../_models/user';
   providedIn: 'root'
 })
 export class EventService {
-  endpoint = this.apiService.BASE_API_URL + '/events';
+  endpoint = this.apiService.BASE_API_URL + '/events/';
   numEventsAttended = new BehaviorSubject<number>(0);
   pastEvents = new BehaviorSubject<Event[]>([]);
   upcomingEvents = new BehaviorSubject<Event[]>([]);
@@ -161,7 +161,7 @@ export class EventService {
     return this.http.post<Event>(this.endpoint, event).pipe(
       catchError(error => {
         console.error('Error adding event: ', error);
-        return EMPTY;
+        return throwError(() => error);
       }));
   }
 }

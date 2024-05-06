@@ -34,6 +34,8 @@ import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -117,9 +119,11 @@ import { EventCreationComponent } from './event-creation/event-creation.componen
     TableModule,
     FileUploadModule,
     CalendarModule,
-    InputTextareaModule
+    InputTextareaModule,
+    MessagesModule
   ],
   providers: [
+    MessageService,
     provideEnvironmentNgxMask(maskConfig),
     provideAnimationsAsync(),
     { provide: LocationStrategy, useClass: HashLocationStrategy },

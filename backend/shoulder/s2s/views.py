@@ -40,7 +40,8 @@ def geocode(address):
     # I am using my (Ethan's) email as the registered user.
     geolocator = Nominatim(user_agent = "ethanarsht@gmail.com", scheme='http')
     location = geolocator.geocode(address)
-
+    if not location:
+        return None
     return {'address': location.address, 'coords': (location.latitude, location.longitude)}
 
 # viewsets
@@ -128,7 +129,11 @@ class EventViewSet(viewsets.ModelViewSet):
             user = User.objects.get(id=request.data['created_by'])
 
         # get the latitute and longitude from the address
-        latitude, longitude = geocode(request.data['address1'])['coords']
+        full_address = f"{request.data['address1']} {request.data['city']}, {request.data['state']}"
+        addr_resp = geocode(full_address)
+        if not addr_resp:
+            return Response({"error": "Invalid address"}, status=400)
+        latitude, longitude = addr_resp['coords']
         latitude = '%.10f'%(latitude)
         longitude = '%.11f'%(longitude)
 

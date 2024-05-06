@@ -5,11 +5,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { EventService } from '../_services/event.service';
 import { AuthService } from '../_services/auth.service';
 import { HobbyService } from '../_services/hobbies.service';
+import { MessageService } from 'primeng/api';
 
 // helpers
-import { Event, EventPost } from '../_models/event';
+import { Event } from '../_models/event';
 import { states } from '../_helpers/location';
-import { labelValueString } from '../_helpers/abstractInterfaces';
 import { formControlFieldMap } from '../_helpers/preferences';
 import { User } from '../_models/user';
 import { HobbyType } from '../_models/hobby';
@@ -21,10 +21,11 @@ import { HobbyType } from '../_models/hobby';
 })
 export class EventCreationComponent implements OnInit {
   showConfirmDialog = false;
+  showLoadingDialog = false;
   states = states;
   hobbyTypes: HobbyType[] = [];
   user: User = this.authService.userValue;
-  event!: EventPost;
+  event!: Event;
   eventForm = new FormGroup({
     title: new FormControl('', Validators.required),
     description: new FormControl(''),
@@ -46,7 +47,7 @@ export class EventCreationComponent implements OnInit {
   });
 
   // sample event
-  sampleEvent: EventPost = {
+  sampleEvent: Event = {
     title: 'Cozy Knitting Circle',
     hobby_type: "CRAFTING",
     description: "Join us for a cozy knitting circle at the Bourgeois Pig Cafe! Whether you're a beginner or an experienced knitter, bring your yarn and needles and enjoy a relaxing afternoon of knitting, coffee, and conversation. All skill levels are welcome!",
@@ -61,6 +62,7 @@ export class EventCreationComponent implements OnInit {
 
   // error handling
   errorMessage = "Please fill out all required fields."
+  errorHeader = "Required Fields Missing"
   invalidDialogMessage: string = "Please fill out all required fields.";
   showInvalidDialog = false;
   showError = false;
@@ -68,7 +70,8 @@ export class EventCreationComponent implements OnInit {
   constructor(
     private eventService: EventService,
     private authService: AuthService,
-    private hobbyService: HobbyService
+    private hobbyService: HobbyService,
+    public messageService: MessageService
   ) {
   }
 
@@ -82,11 +85,18 @@ export class EventCreationComponent implements OnInit {
     this.eventForm.reset();
   }
 
+  clearMessages() {
+    this.messageService.clear();
+  }
+
   highlightInvalidFields(event: any): void {
     // if the button is disabled, the form is invalid
-    this.invalidDialogMessage = '';
     let form: FormGroup = this.eventForm;
     if (event.target.querySelector('button') && event.target.querySelector('button').disabled){
+      this.messageService.add({severity: 'error', detail: 'Please fill out all required fields.'})
+      this.invalidDialogMessage = '';
+      this.errorHeader = "Required Fields Missing"
+      
       for (let control in form.controls) {
         let formControl = form.controls[control];
         if (formControl.invalid) {
@@ -123,9 +133,8 @@ export class EventCreationComponent implements OnInit {
     let add_user = this.eventForm.get('add_user')?.value;
 
     if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type) {
-      state = (state as unknown as labelValueString).value;
       datetime = new Date(datetime).toISOString();
-      let newEvent: EventPost = {
+      let newEvent: Event = {
         title: title,
         created_by: this.user.id,
         description: description ? description : '',
@@ -146,16 +155,31 @@ export class EventCreationComponent implements OnInit {
   openConfirmationDialog(): void {
     this.formToEvent();
     this.showConfirmDialog = true;
-    console.log(this.eventForm.value);
+    console.log(this.event);
   }
 
   onSubmit(): void {
     this.showConfirmDialog = false;
-    this.resetForm();
+    this.showLoadingDialog = true;
     console.log(this.event)
 
-    // this.eventService.createEvent(this.event).subscribe(() => {
-    //   console.log('Event created successfully');
-    // });
+    this.eventService.createEvent(this.event).subscribe(
+      data => {
+        console.log(data);
+        this.clearMessages();
+        this.messageService.add({severity: 'success', detail: 'Event created successfully!'});
+        this.showLoadingDialog = false;
+        this.resetForm();
+      },
+      error => {
+        console.log(error);
+        this.clearMessages();
+        this.messageService.add({severity: 'error', detail: 'There was an error creating the event. Please try again.'});
+        this.showLoadingDialog = false;
+        this.invalidDialogMessage = "There was an error creating an event. The following error occurred: " + error.error.error;
+        this.errorHeader = "Error Creating Event";
+        this.showInvalidDialog = true;
+      }
+    );
   }
 }

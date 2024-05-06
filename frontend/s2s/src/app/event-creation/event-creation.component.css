@@ -3,8 +3,8 @@
     margin-top: 10rem;
     z-index: 10;
     min-height: 70vh;
-    display: flex;
-    flex-direction: row;
+    /* display: flex;
+    flex-direction: row; */
 }
 
 .event-form {
@@ -160,4 +160,39 @@
 .cancelButton:hover {
     background-color: #15616d21;
     border-color: #15616db3;
+}
+
+h3 {
+    margin: 0;
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to cover the whole application */
+  }
+  
+.loading-overlay-content {
+    background-color: #FFECD1;
+    height: 11rem;
+    width: 25rem;
+    padding: 2rem;
+    border-radius: 0.8rem;
+    text-align: center;
+}
+
+.loading-overlay-content p {
+    color: #15616D;
+}
+
+.loading-overlay-content h3 {
+    color: #001524;
 }
