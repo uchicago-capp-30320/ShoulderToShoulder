@@ -11,6 +11,7 @@ export interface Event {
     address2?: string;
     city: string;
     state: string;
+    zipcode: string;
     latitude?: number;
     longitude?: number;
     max_attendees: number;

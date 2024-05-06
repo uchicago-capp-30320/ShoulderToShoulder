@@ -5,15 +5,27 @@
     min-height: 70vh;
 }
 
-.event-form {
+.event-form-header {
     background-color: #78290F;
     width: 60%;
     height: auto;
     padding: 2rem;
-    border-radius: 20px;
+    border-radius: 20px 20px 0px 0px;
+    text-align: center;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.event-form {
+    background-color: #f7e0bf;
+    border: 2px solid #78290F;
+    width: 60%;
+    height: auto;
+    padding: 2rem;
+    border-radius: 0px 0px 20px 20px;
     text-align: center;
     margin-bottom: 2rem;
-    margin-top: 2rem;
     margin-left: auto;
     margin-right: auto;
 }
@@ -40,7 +52,6 @@
 .label {
     margin-bottom: 5px;
     text-align: left;
-    color: #FFECD1;
 }
 
 .submit-button {
@@ -95,12 +106,28 @@
     width: 45%;
 }
 
-.adr1, .city, .event-title {
+.adr1, .event-title {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
     width: 55%;
     text-align: left;
+}
+
+.city {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    text-align: left;
+}
+
+.zipcode {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+    text-align: left; 
 }
 
 .adr2, .state, .event-category {

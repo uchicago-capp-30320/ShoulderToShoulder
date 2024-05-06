@@ -54,7 +54,6 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     let page = this.route.snapshot.paramMap.get('id');
     if (page) {
-      console.log(page);
       this.page = parseInt(page);
     }
     this.authService.userSubject.subscribe(user => {

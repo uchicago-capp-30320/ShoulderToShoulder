@@ -94,7 +94,7 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state']
+        required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode']
         if not all([field in request.data for field in required_fields]):
             return Response({"error": f"Missing required fields: {required_fields}"}, status=400)
         
@@ -130,7 +130,8 @@ class EventViewSet(viewsets.ModelViewSet):
             'state': request.data['state'],
             'latitude': latitude,
             'longitude': longitude,
-            'max_attendees': request.data['max_attendees']
+            'max_attendees': request.data['max_attendees'],
+            'zipcode': request.data['zipcode']
         }
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():

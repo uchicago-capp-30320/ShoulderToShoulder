@@ -1,10 +1,12 @@
 <app-header></app-header>
 <div class="main-content">
 
-    <div class="event-form drop-shadow">
+    <div class="event-form-header">
         <h2 class="light-text">Event Creation Form</h2>
         <p class="subtitle light-text">Please fill out the form below to create an event.</p>
+    </div>
 
+    <div class="event-form drop-shadow">
         <!-- Message Service -->
         <p-messages></p-messages>
 
@@ -112,7 +114,14 @@
                         [options]="states" 
                         formControlName="state" 
                         placeholder="{{ sampleEvent.state }}"></p-dropdown>
-                </div>                
+                </div>
+                
+                <!-- zipcode -->
+                <div class="zipcode">
+                    <label for="zipcode" class="label">Zip Code<span class="required">*</span></label>
+                    <small class="p-error light-error" *ngIf="eventForm.get('zipcode')?.invalid && eventForm.get('zipcode')?.dirty">City is required</small>
+                    <input type="text" pInputText placeholder="{{ sampleEvent.zipcode }}" formControlName="zipcode" />
+                </div>
             </div>
 
             <!-- add creator to the event -->
