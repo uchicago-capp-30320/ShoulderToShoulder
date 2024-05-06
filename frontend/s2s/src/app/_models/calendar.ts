@@ -1,4 +1,4 @@
-// Description: This file contains the interfaces for the calendar and availability objects.
+// Purpose: This file contains the interfaces for the calendar and availability objects.
 import { range } from "../_helpers/utils";
 import { labelValueInt } from "../_helpers/abstractInterfaces";
 

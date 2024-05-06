@@ -12,16 +12,9 @@ from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db import transaction
 import boto3
-import time
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-import certifi
-import ssl
-import geopy.geocoders
-from geopy.geocoders import Nominatim
-ctx = ssl.create_default_context(cafile=certifi.where())
-geopy.geocoders.options.default_ssl_context = ctx
-
+from gis.gis_module import geocode
 
 from .serializers import *
 from .db_models import *
@@ -29,20 +22,6 @@ from .db_models import *
 # functions
 def index(request):
     return HttpResponse("Hello, world. You're at the ShoulderToShoulder index.")
-
-def geocode(address):
-    '''
-    Geocode an address as a string and returns dictionarity with the standardized address and a 
-    returns a 'coords' key with a tuple that has latitude, then longitude.
-    '''
-
-    # Nominatim has a rate limit of 1 second. For testing purposes, 
-    # I am using my (Ethan's) email as the registered user.
-    geolocator = Nominatim(user_agent = "ethanarsht@gmail.com", scheme='http')
-    location = geolocator.geocode(address)
-    if not location:
-        return None
-    return {'address': location.address, 'coords': (location.latitude, location.longitude)}
 
 # viewsets
 class HobbyTypeViewSet(viewsets.ModelViewSet):

@@ -1,5 +1,4 @@
 <app-header></app-header>
-<!-- Event creation form -->
 <div class="main-content">
 
     <div class="event-form drop-shadow">
@@ -9,6 +8,7 @@
         <!-- Message Service -->
         <p-messages></p-messages>
 
+        <!-- Event creation form -->
         <form [formGroup]="eventForm" (ngSubmit)="openConfirmationDialog()" class="form-container">
             <!-- Event Error -->
             <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
@@ -131,17 +131,17 @@
                 <button pButton type="reset" label="Reset form" class="reset-button" (click)="resetForm()"></button>
             </div>
         </form>
-
-        <!-- Invalid Dialog -->
-        <p-dialog header="Event Creation Error" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-            <h3>{{ errorHeader }}</h3>
-            <p class="m-0">{{ invalidDialogMessage }}</p>
-            <div class="p-d-flex p-jc-end">
-                <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
-            </div>
-        </p-dialog>
     </div>
 </div>
+
+<!-- Invalid Dialog -->
+<p-dialog header="Event Creation Error" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <h3>{{ errorHeader }}</h3>
+    <p class="m-0">{{ invalidDialogMessage }}</p>
+    <div class="p-d-flex p-jc-end">
+        <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
+    </div>
+</p-dialog>
 
 <!-- Confirmation Dialog -->
 <p-dialog header="Please confirm your event information" [(visible)]="showConfirmDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
@@ -163,12 +163,14 @@
 </p-dialog>
 
 <!-- Loading Dialog -->
-<div *ngIf="showLoadingDialog" class="loading-overlay">
-    <div class="loading-overlay-content">
-        <h3>Creating event...</h3>
-        <p class="m-0">Please wait while we create your event.</p>
-        <app-loader></app-loader>
+@if (showLoadingDialog) {
+    <div class="loading-overlay">
+        <div class="loading-overlay-content">
+            <h3>Creating event...</h3>
+            <p class="m-0">Please wait while we create your event.</p>
+            <app-loader></app-loader>
+        </div>
     </div>
-</div>
+}
 
 <app-footer></app-footer>

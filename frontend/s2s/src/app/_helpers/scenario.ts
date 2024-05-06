@@ -1,5 +1,4 @@
 // Purpose: Contains the scenario class.
-
 import { Hobby } from "../_models/hobby"
 import { SafeHtml } from "@angular/platform-browser";
 import { ScenarioObj } from "../_models/scenarios";

@@ -1,5 +1,4 @@
 // Purpose: This file contains the location data for the survey questions.
-
 export var states = [
     {label: 'Alabama', value: 'AL'},
     {label: 'Alaska', value: 'AK'},

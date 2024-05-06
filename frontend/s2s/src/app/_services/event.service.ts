@@ -152,8 +152,6 @@ export class EventService {
   /**
    * Allows a user to add a new event.
    * 
-   * TODO - When a user creates an event, are they automatically added to that event?
-   * 
    * @param event The event to add.
    * @returns An Observable of the added event.
   */

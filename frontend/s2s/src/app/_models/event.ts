@@ -1,3 +1,4 @@
+// Purpose: This file contains the interface for Event model.
 export interface Event {
     id?: number;
     created_by?: number;

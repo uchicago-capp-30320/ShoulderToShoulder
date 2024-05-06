@@ -14,17 +14,37 @@ import { formControlFieldMap } from '../_helpers/preferences';
 import { User } from '../_models/user';
 import { HobbyType } from '../_models/hobby';
 
+/**
+ * Component for creating an event.
+ * 
+ * This component allows users to create an event by filling out a form with
+ * event details. The form includes fields for the event title, description,
+ * hobby type, date and time, duration, address, city, state, and maximum number
+ * of attendees. Users can also choose to add themselves to the event as an
+ * attendee.
+ * 
+ * @example
+ * <app-event-creation></app-event-creation>
+ * 
+ * @see EventService
+ * @see AuthService
+ * @see HobbyService
+ */
 @Component({
   selector: 'app-event-creation',
   templateUrl: './event-creation.component.html',
   styleUrl: './event-creation.component.css'
 })
 export class EventCreationComponent implements OnInit {
+  user: User = this.authService.userValue;
+
+  // dialog flags
   showConfirmDialog = false;
   showLoadingDialog = false;
+
+  // event data
   states = states;
   hobbyTypes: HobbyType[] = [];
-  user: User = this.authService.userValue;
   event!: Event;
   eventForm = new FormGroup({
     title: new FormControl('', Validators.required),
@@ -81,14 +101,25 @@ export class EventCreationComponent implements OnInit {
     });
   }
 
+  /**
+   * Resets the form to its initial state.
+   */
   resetForm(): void {
     this.eventForm.reset();
   }
 
+  /**
+   * Clears all messages from the message service.
+   */
   clearMessages() {
     this.messageService.clear();
   }
 
+  /**
+   * Displays an error message if the form is invalid.
+   * 
+   * @param event The event that triggered the form submission.
+   */
   highlightInvalidFields(event: any): void {
     // if the button is disabled, the form is invalid
     let form: FormGroup = this.eventForm;
@@ -97,6 +128,7 @@ export class EventCreationComponent implements OnInit {
       this.invalidDialogMessage = '';
       this.errorHeader = "Required Fields Missing"
       
+      // mark all invalid fields as dirty
       for (let control in form.controls) {
         let formControl = form.controls[control];
         if (formControl.invalid) {
@@ -119,6 +151,9 @@ export class EventCreationComponent implements OnInit {
     }
   }
 
+  /**
+   * Converts the form data to an event object.
+   */
   formToEvent(): void {
     let title = this.eventForm.get('title')?.value;
     let description = this.eventForm.get('description')?.value;
@@ -132,6 +167,7 @@ export class EventCreationComponent implements OnInit {
     let max_attendees = this.eventForm.get('max_attendees')?.value;
     let add_user = this.eventForm.get('add_user')?.value;
 
+    // check if all required fields are filled out
     if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type) {
       datetime = new Date(datetime).toISOString();
       let newEvent: Event = {
@@ -152,19 +188,27 @@ export class EventCreationComponent implements OnInit {
     }
   }
 
+  /**
+   * Opens the confirmation dialog.
+   */
   openConfirmationDialog(): void {
     this.formToEvent();
     this.showConfirmDialog = true;
     console.log(this.event);
   }
 
+  /**
+   * Submits the event creation form.
+   */
   onSubmit(): void {
     this.showConfirmDialog = false;
     this.showLoadingDialog = true;
     console.log(this.event)
 
+    // create the event using the event service
     this.eventService.createEvent(this.event).subscribe(
       data => {
+        // if there were no errors, display a success message and reset form
         console.log(data);
         this.clearMessages();
         this.messageService.add({severity: 'success', detail: 'Event created successfully!'});
@@ -172,9 +216,11 @@ export class EventCreationComponent implements OnInit {
         this.resetForm();
       },
       error => {
+        // if there was an error, display an error message
         console.log(error);
         this.clearMessages();
-        this.messageService.add({severity: 'error', detail: 'There was an error creating the event. Please try again.'});
+        this.messageService.add({severity: 'error', 
+          detail: 'There was an error creating the event. Please try again.'});
         this.showLoadingDialog = false;
         this.invalidDialogMessage = "There was an error creating an event. The following error occurred: " + error.error.error;
         this.errorHeader = "Error Creating Event";
