@@ -1,0 +1,43 @@
+<app-header></app-header>
+<div class="main-content">
+    <div class="leftside">
+        <div style="width: 100%">
+            <img src="{{ profilePictureUrl }}" alt="{{ user?.username }}" class="profile-picture drop-shadow">
+        </div>
+        <div class="header-content">
+            <h2 style="margin-top: 0.5rem; margin-bottom: 0;">{{ user?.first_name }} {{ user?.last_name }}</h2>
+            <p class="subtitle" style="margin-top: 0;">{{ onboardingService.demographicsForm.controls['pronouns'].value }}</p>
+        </div>
+        <br>
+    
+        
+        <!--Subpage Navigation-->
+        <div class="navigation">
+            <button class="navigation-button" pButton type="button" (click)="setPage(1)" [class.active]="page === 1">Overview</button>
+            <button class="navigation-button" pButton type="button" (click)="setPage(2)" [class.active]="page === 2">Availability</button>
+            <button class="navigation-button" pButton type="button" (click)="setPage(3)" [class.active]="page === 3">Settings</button>
+        </div>
+    </div>
+
+    <div class="rightside">
+        <!--Profile Page-->
+        <div *ngIf="page === 1" style="width: 100%;">
+            <h2 class="light-text">Profile Overview</h2>
+            <app-profile-overview></app-profile-overview>
+        </div>
+
+        <!--Availability Page-->
+        <div *ngIf="page === 2">
+            <h2 class="light-text">Event Availability</h2>
+            <!-- Availability Calendar -->
+            <app-profile-availability></app-profile-availability>
+        </div>
+
+        <!--Settings Page-->
+        <div *ngIf="page === 3">
+            <h2 class="light-text">User Settings</h2>
+            <app-profile-settings></app-profile-settings>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

@@ -46,16 +46,18 @@ a {
     display: flex;
     justify-content: right;
     align-items: center;
+    margin-right: 1.5rem;
 }
 
 h3 {
     color: #454545; 
     margin-top: 1px; 
     margin-bottom: 1px;
+    text-align: right;
 }
 
 .credits {
     font-size: 10px; 
-    margin-right: 2.9rem; 
+    margin-right: 4.6rem; 
     margin-top: 1rem;
 }

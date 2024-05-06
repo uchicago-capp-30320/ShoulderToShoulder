@@ -1,9 +1,11 @@
 frontend/s2s/node_modules
 frontend/s2s/src/assets/api_keys/*
+backend/settings.py
 .DS_Store
 .vscode/
 *.log
 *.pyc
+curl.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

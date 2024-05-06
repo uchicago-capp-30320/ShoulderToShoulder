@@ -14,12 +14,8 @@ main {
     width: 70%;
     margin-left: auto;
     margin-right: auto;
-    display: ruby-text;
+    display: block;
     min-height: 70vh;
-}
-
-.content {
-    margin-top: -5rem;
 }
 
 .subtitle {
@@ -96,14 +92,37 @@ a {
 .p-tooltip .p-tooltip-text {
 color: green ;
 }
-  
 
 .customtooltip.p-tooltip .p-tooltip-text {
-color: #FFECD1 ;
+color: #FFECD1;
 }
 
 .is-invalid {
     border-color: rgb(255, 61, 61);
     border-width: 2px;
     background-color: rgb(253, 209, 209);
+}
+
+.light-error {
+    color: rgb(233, 98, 98);
+}
+
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+    background: #FFECD1;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: #15616D;
+    color: #FFECD1;
+}
+
+.p-datatable>.p-datatable-wrapper {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.p-datatable-table {
+    width: 90%;
+    border: solid;
+    border-color: #15616D;
 }

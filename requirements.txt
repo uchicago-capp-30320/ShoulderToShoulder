@@ -5,3 +5,4 @@ rest_framework_simplejwt==0.0.2
 psycopg2==2.9.9 
 django-environment==0.3.8 
 django-environ==0.11.2 
+boto3==1.34.92 

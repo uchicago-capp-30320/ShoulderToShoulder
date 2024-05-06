@@ -84,3 +84,16 @@
     text-align: center;
     color: #FFECD1;
 }
+
+.exitDiv {
+    display: ruby-text;
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.exitButton {
+    background: none;
+    border: 1px solid #15616D;
+    color: #15616D;
+    font-size: 1rem;
+}
