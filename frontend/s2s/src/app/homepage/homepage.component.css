@@ -2,6 +2,130 @@ h1 {
     color: #FFECD1
 }
 
-.content {
-    top: 5rem;
+h2 {
+    margin-top: 1rem;
+}
+
+.main-content {
+    position: relative;
+    margin-top: 5rem;
+    z-index: 10;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+}
+
+.how-it-works-header {
+    margin-top: 11rem;
+    background-color: #78290F;
+    border-radius: 20px 20px 0px 0px;
+    padding: 1rem;
+}
+
+.how-it-works {
+    background: none;
+    border-radius: 0px 0px 20px 20px;
+    border: 2px solid #78290F;
+    padding: 2rem;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.centered-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+h3 {
+    margin: 0;
+}
+
+.signup, .onboard, .setup {
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    width: 25%;
+    height: 8rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 1rem;
+}
+
+.signup {
+    background-color: #104C56;
+
+}
+
+.onboard {
+    background-color: #166A79;
+}
+
+.setup {
+    background-color: #1C889B;
+}
+
+.create {
+    background-color: #23A6BE;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    width: 40%;
+    height: 8rem;
+    text-align: center;
+    font-weight: normal;
+    margin: 1rem;
+}
+
+.arrow {
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    width: 10%;
+    text-align: center;
+    font-weight: normal;
+    align-items: center;
+    margin: 1rem;
+    color: #78290F;
+}
+
+.pi.pi-arrow-right {
+    font-size: 3rem;
+}
+
+.group {
+    width: 20rem;
+}
+
+.get-started{
+    margin: 1rem;
+    background-color: #FF7D00;
+    color: #FFECD1;
+    border-color: #FF7D00;
+}
+
+.log-in {
+    margin: 1rem;
+    background: none;
+    color: #FF7D00;
+    border-color: #FF7D00;
+}
+
+button {
+    width: 30%;
+    height: 4rem;
+    font-size: 1.2rem;
+    justify-content: center;
 }
