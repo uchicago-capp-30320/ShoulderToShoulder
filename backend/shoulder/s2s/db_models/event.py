@@ -8,6 +8,7 @@ class Event(models.Model):
     
      Table Columns:
         title: Character Field containing the title of the event
+        description: Text Field containing the description of the event
         datetime: datetime of event
         duration_h: duration of event in hours
         address: Character Field containing the event address
@@ -16,6 +17,7 @@ class Event(models.Model):
         max_attendees: max number of attendees for an event
     """
     title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
     datetime = models.DateTimeField()
     duration_h = models.IntegerField(validators=[
             MaxValueValidator(8),

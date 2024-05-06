@@ -32,6 +32,8 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
+import { CalendarModule } from 'primeng/calendar';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -84,7 +86,7 @@ import { EventCreationComponent } from './event-creation/event-creation.componen
     ProfileOverviewComponent,
     ProfileSettingsComponent,
     ProfileAvailabilityComponent,
-    EventCreationComponent,
+    EventCreationComponent
   ],
   imports: [
     BrowserModule,
@@ -113,7 +115,9 @@ import { EventCreationComponent } from './event-creation/event-creation.componen
     ProgressBarModule,
     ToastModule,
     TableModule,
-    FileUploadModule
+    FileUploadModule,
+    CalendarModule,
+    InputTextareaModule
   ],
   providers: [
     provideEnvironmentNgxMask(maskConfig),
