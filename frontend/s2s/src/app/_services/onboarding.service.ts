@@ -368,7 +368,6 @@ export class OnboardingService {
     }
 
     // send onboarding data to the backend
-    console.log(this.onboarding)
     this.http.post(this.onboardingUpdateEndpoint, this.onboarding).pipe(
       catchError(error => {
         console.error('Error submitting onboarding:', error);

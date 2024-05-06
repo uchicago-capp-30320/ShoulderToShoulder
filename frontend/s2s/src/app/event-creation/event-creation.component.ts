@@ -59,6 +59,7 @@ export class EventCreationComponent implements OnInit {
     address2: new FormControl(''),
     city: new FormControl('', Validators.required),
     state: new FormControl('', Validators.required),
+    zipcode: new FormControl('', Validators.required),
     max_attendees: new FormControl('', [
       Validators.required,
       Validators.min(1),
@@ -76,6 +77,7 @@ export class EventCreationComponent implements OnInit {
     address1: '738 W Fullerton Ave',
     city: 'Chicago',
     state: 'Illinois',
+    zipcode: '60614',
     max_attendees: 5,
   };
   dateFormat = 'yyyy-MM-ddTHH:mm:ss';
@@ -166,9 +168,10 @@ export class EventCreationComponent implements OnInit {
     let state = this.eventForm.get('state')?.value;
     let max_attendees = this.eventForm.get('max_attendees')?.value;
     let add_user = this.eventForm.get('add_user')?.value;
+    let zipcode = this.eventForm.get('zipcode')?.value;
 
     // check if all required fields are filled out
-    if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type) {
+    if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type && zipcode) {
       datetime = new Date(datetime).toISOString();
       let newEvent: Event = {
         title: title,
@@ -181,6 +184,7 @@ export class EventCreationComponent implements OnInit {
         address2: address2 ? address2 : '',
         city: city,
         state: state,
+        zipcode: zipcode,
         max_attendees: parseInt(max_attendees),
         add_user: add_user ? add_user : false
       };
@@ -194,7 +198,6 @@ export class EventCreationComponent implements OnInit {
   openConfirmationDialog(): void {
     this.formToEvent();
     this.showConfirmDialog = true;
-    console.log(this.event);
   }
 
   /**
@@ -203,13 +206,11 @@ export class EventCreationComponent implements OnInit {
   onSubmit(): void {
     this.showConfirmDialog = false;
     this.showLoadingDialog = true;
-    console.log(this.event)
 
     // create the event using the event service
     this.eventService.createEvent(this.event).subscribe(
       data => {
         // if there were no errors, display a success message and reset form
-        console.log(data);
         this.clearMessages();
         this.messageService.add({severity: 'success', detail: 'Event created successfully!'});
         this.showLoadingDialog = false;
@@ -217,7 +218,6 @@ export class EventCreationComponent implements OnInit {
       },
       error => {
         // if there was an error, display an error message
-        console.log(error);
         this.clearMessages();
         this.messageService.add({severity: 'error', 
           detail: 'There was an error creating the event. Please try again.'});

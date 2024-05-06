@@ -1,0 +1,29 @@
+.main-content {
+    position: relative;
+    margin-top: 12.5rem;
+    z-index: 10;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    align-items: center;
+}
+
+.header-image {
+    width: 35rem;
+    z-index: 1;
+    opacity: 0.95;
+    border-radius: 10px;
+    border: 1px solid #8e3875;
+}
+
+.description {
+    width: 40rem;
+    text-align: justify;
+}
+
+a {
+   color: blue;
+   text-decoration: none;
+}
