@@ -39,6 +39,9 @@ def init_embedding_params(seed: int, vocab_length: int, output_size: int) -> tup
     params = []
     new_key, subkey = random.PRNGKey(seed)
     initial_weights = xavier(subkey, vocab_length, output_size)
+
+    # Adds a vectro of zeros for unseed vocab
+    initial_weights = jnp.vstack((initial_weights, jnp.zeros(initial_weights.shape[1])))
     params.append(dict(embedding_weights=initial_weights))
 
     return params
@@ -60,6 +63,7 @@ def foward_embedding(params: list[dict], X: jax.Array) -> jaxlib.xla_extension.A
     """
     embedding_weights = params[0]["embedding_weights"]
     embeddings = jnp.take(embedding_weights, jnp.astype(X, int), axis=0)
+    
     embeddings = embeddings.reshape(embeddings.shape[0],  # Concatenate embeddings into rows
                                     embeddings.shape[1] * embeddings.shape[2])
 

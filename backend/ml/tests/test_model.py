@@ -13,7 +13,7 @@ def test_xavier_initialization():
 def test_init_embedding_params():
     assert jax.tree.map(lambda x: x.shape, 
                         init_embedding_params(22, 10, 5)) == [
-                            {'embedding_weights': (10, 5)}
+                            {'embedding_weights': (11, 5)}
                             ]
     
 
@@ -61,7 +61,7 @@ def test_foward_mlp():
 def test_init_deep_fm():
     e, f, m = init_deep_fm(500, 10, 5)
     w, v, b = f
-    assert jax.tree.map(lambda x: x.shape, e) == [{'embedding_weights': (500, 5)}]
+    assert jax.tree.map(lambda x: x.shape, e) == [{'embedding_weights': (501, 5)}]
     assert w["w"].shape == (50, 1)
     assert v["V"].shape == (50, 5)
     assert b["bias"] == 0.0
