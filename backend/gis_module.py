@@ -1,6 +1,12 @@
 # Module for common GIS utilities relevant to shoulder2shoulder.
+import certifi 
+import ssl
+import geopy.geocoders
 from geopy.geocoders import Nominatim
-from geopy import distance
+
+# set up certificates 
+ctx = ssl.create_default_context(cafile=certifi.where()) 
+geopy.geocoders.options.default_ssl_context = ctx
 
 def geocode(address):
     '''
@@ -10,8 +16,10 @@ def geocode(address):
 
     # Nominatim has a rate limit of 1 second. For testing purposes, 
     # I am using my (Ethan's) email as the registered user.
-    geolocator = Nominatim(user_agent = "ethanarsht@gmail.com")
+    geolocator = Nominatim(user_agent = "ethanarsht@gmail.com", scheme = 'http')
     location = geolocator.geocode(address)
+    if not location:
+        return None
 
     return {'address': location.address, 'coords': (location.latitude, location.longitude)}
 
@@ -36,6 +44,7 @@ def travel_time(coord_one, coord_two, mode = 'car'):
     Takes in two coordinates and calculates travel time. Returns an integer in seconds of travel time.
     Not implemented.
     '''
+    pass
 
 
     
