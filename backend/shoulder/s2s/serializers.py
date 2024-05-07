@@ -84,3 +84,28 @@ class ApplicationTokenSerializer(ModelSerializer):
     class Meta:
         model = ApplicationToken
         fields = "__all__"
+
+class UserEventsSerializer(ModelSerializer):
+    class Meta:
+        model = UserEvents
+        fields = "__all__"
+
+class SuggestionResultsSerializer(ModelSerializer):
+    class Meta:
+        model = SuggestionResults
+        fields = "__all__"
+
+class PanelEventSerializer(ModelSerializer):
+    class Meta:
+        model = PanelEvent
+        fields = "__all__"
+
+class PanelUserPreferencesSerializer(ModelSerializer):
+    class Meta:
+        model = PanelUserPreferences
+        fields = "__all__"
+
+class PanelScenarioSerializer(ModelSerializer):
+    class Meta:
+        model = PanelScenario
+        fields = "__all__"

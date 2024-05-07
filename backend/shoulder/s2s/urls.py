@@ -18,6 +18,11 @@ router.register(r"eventsuggestions", views.EventSuggestionsViewSet)
 router.register(r"applicationtokens", views.ApplicationTokenViewSet)
 router.register(r"hobbytypes", views.HobbyTypeViewSet)
 router.register(r"user", views.UserViewSet)
+router.register(r"userevents", views.UserEventsViewSet)
+router.register(r"suggestionresults", views.SuggestionResultsViewSet)
+router.register(r"panel_events", views.PanelEventViewSet)
+router.register(r"panel_user_preferences", views.PanelUserPreferencesViewSet, basename="panel_user_preferences")
+router.register(r"panel_scenarios", views.PanelScenarioViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

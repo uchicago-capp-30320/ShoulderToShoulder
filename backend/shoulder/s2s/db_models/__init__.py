@@ -12,3 +12,6 @@ from s2s.db_models.app_token import ApplicationToken
 from s2s.db_models.event_suggestion import EventSuggestion
 from s2s.db_models.user_events import UserEvents
 from s2s.db_models.suggestion_results import SuggestionResults
+from s2s.db_models.panel_events import PanelEvent
+from s2s.db_models.panel_user_preferences import PanelUserPreferences
+from s2s.db_models.panel_scenarios import PanelScenario

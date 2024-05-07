@@ -6,6 +6,7 @@ backend/settings.py
 *.log
 *.pyc
 curl.txt
+playground*.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
