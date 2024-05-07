@@ -40,7 +40,7 @@ def init_embedding_params(seed: int, vocab_length: int, output_size: int) -> tup
     new_key, subkey = random.PRNGKey(seed)
     initial_weights = xavier(subkey, vocab_length, output_size)
 
-    # Adds a vectro of zeros for unseed vocab
+    # Adds a vector of zeros for unseed vocab
     initial_weights = jnp.vstack((initial_weights, jnp.zeros(initial_weights.shape[1])))
     params.append(dict(embedding_weights=initial_weights))
 
