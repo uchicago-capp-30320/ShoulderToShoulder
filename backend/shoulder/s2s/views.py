@@ -15,6 +15,7 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
+from django.db.models import Q
 
 from .serializers import *
 from .db_models import *
@@ -222,31 +223,30 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
     def bulk_update(self, request, *args, **kwargs):
         self.serializer_class = BulkAvailabilitySerializer
         data = request.data
+
         if not isinstance(data, list):
             return Response({"error": "Expected a list of items"}, status=400)
 
-        with transaction.atomic():
-            responses = []
-            for item in data:
-                email = item.get('email')
-                day_of_week = item.get('day_of_week')
-                hour = item.get('hour')
-                available = item.get('available')
+        # Validate items
+        valid_items = []
+        for item in data:
+            if all([item.get('email'), item.get('day_of_week'), item.get('hour')]):
+                valid_items.append(item)
 
-                if not all([email, day_of_week, hour]):
-                    continue  # Skip invalid items
+        avail_objs = []
+        for item in valid_items:
+            user = User.objects.get(email=item['email'])
+            calendar = Calendar.objects.get(day_of_week=item['day_of_week'], hour=item['hour'])
+            availability = Availability.objects.get(user_id=user, calendar_id=calendar)
+            availability.available = item['available']
+            avail_objs.append(availability)
+            
+        # bulk update
+        num_updated = Availability.objects.bulk_update(avail_objs, ['available'])
 
-                user_id = User.objects.get(email=email)
-                calendar_id = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
-                instance, created = Availability.objects.update_or_create(
-                    user_id=user_id,
-                    calendar_id=calendar_id,
-                    defaults={'available': available}
-                )
 
-                responses.append(self.get_serializer(instance).data)
+        return Response({"Number of updated rows": num_updated}, status=200)
 
-            return Response({"Number of updated rows": len(responses)}, status=200)
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')

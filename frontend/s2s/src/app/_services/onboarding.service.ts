@@ -229,7 +229,7 @@ export class OnboardingService {
 
     this.getMostInterestedHobbies(this.onboarding.most_interested_hobbies);
     this.getLeastInterestedHobbies(this.onboarding.least_interested_hobbies);
-    this.getHobbyTypes(this.onboarding.most_interested_hobby_types);
+    this.getMostInterestedHobbyTypes(this.onboarding.most_interested_hobby_types);
   }
 
   /**
@@ -263,12 +263,24 @@ export class OnboardingService {
    * 
    * @param ids - IDs of the most interested hobby types.
    */
-  getHobbyTypes(ids: number[]) {
-    this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
+  getMostInterestedHobbyTypes(ids: number[]) {
+    // clear most interested hobby types if no ids
+    if (!ids || ids.length == 0) {
       this.preferencesForm.patchValue({
-        mostInterestedHobbyTypes: hobbyTypes
+        mostInterestedHobbyTypes: []
       });
-    });
+    } 
+    
+    // fetch most interested hobby types
+    else {
+      this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
+        this.preferencesForm.patchValue({
+          mostInterestedHobbyTypes: hobbyTypes
+        });
+      });      
+    }
+
+
   }
 
   /**

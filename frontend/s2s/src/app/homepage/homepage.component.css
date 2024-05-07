@@ -8,28 +8,26 @@ h2 {
 
 .main-content {
     position: relative;
-    margin-top: 5rem;
+    margin-top: 17rem;
     z-index: 10;
     min-height: 70vh;
     display: flex;
     flex-direction: column;
-    margin-left: auto;
-    margin-right: auto;
-    width: 60%;
-}
-
-.how-it-works-header {
-    margin-top: 11rem;
-    background-color: #78290F;
-    border-radius: 20px 20px 0px 0px;
-    padding: 1rem;
+    width: 80%;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
 }
 
 .how-it-works {
-    background: none;
-    border-radius: 0px 0px 20px 20px;
-    border: 2px solid #78290F;
-    padding: 2rem;
+    background-color: #FFECD1;
+    border: 2px solid #FF7D00;
+    border-radius: 20px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    width: 65%;
 }
 
 .row {
@@ -105,8 +103,8 @@ h3 {
     font-size: 3rem;
 }
 
-.group {
-    width: 20rem;
+img {
+    height: 30rem;
 }
 
 .get-started{

@@ -176,7 +176,7 @@ export class OnboardingComponent implements OnInit{
 
     // wait for redirect
     setTimeout(() => {
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/profile/1']);
     }, 4000);
   }
 }
