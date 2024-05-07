@@ -200,12 +200,14 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             if request.data['onboarded']:
+                # create the panelized preferences and scenarios
                 resp_pref = self.trigger_panel_preferences(user.id)
                 resp_scen = self.trigger_panel_scenarios(user.id)
+                
                 if resp_pref.status_code == 201 and resp_scen.status_code == 201:
                     return Response(serializer.data, status=200)
                 
-                return Response({"error": "Failed to panel data"}, status=400)
+                return Response({"error": "Failed to get panel data"}, status=400)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
@@ -637,7 +639,6 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-
 class UserEventsViewSet(viewsets.ModelViewSet):
     queryset = UserEvents.objects.all()
     serializer_class = UserEventsSerializer
@@ -984,7 +985,7 @@ class PanelEventViewSet(viewsets.ModelViewSet):
         Inputs:
             value (int): number of participants in the event
 
-       Return: string: String of the value parsed into the necessary format
+        Return: string: String of the value parsed into the necessary format
         """
 
         if value is None:
