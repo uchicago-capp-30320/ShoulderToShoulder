@@ -19,7 +19,7 @@ class PanelEvent(models.Model):
         [num_participant ranges] (bool): max number of event participants 
             range; 0 (incorrect cateogry) or 1 (correct category)
     '''
-    event_id = models.ForeignKey(Event, on_delete=models.CASCADE),
+    event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     hobby_category_travel = models.BooleanField(default=False)
     hobby_category_arts_and_culture = models.BooleanField(default=False)
@@ -32,16 +32,6 @@ class PanelEvent(models.Model):
     hobby_category_history = models.BooleanField(default=False)
     hobby_category_community = models.BooleanField(default=False)
     hobby_category_gaming = models.BooleanField(default=False)
-
-
-    dist_within_1mi = models.BooleanField(default=False)
-    dist_within_5mi = models.BooleanField(default=False)
-    dist_within_10mi = models.BooleanField(default=False)
-    dist_within_15mi = models.BooleanField(default=False)
-    dist_within_20mi = models.BooleanField(default=False)
-    dist_within_30mi = models.BooleanField(default=False)
-    dist_within_40mi = models.BooleanField(default=False)
-    dist_within_50mi = models.BooleanField(default=False)
 
     num_particip_1to5 = models.BooleanField(default=False)
     num_particip_5to10 = models.BooleanField(default=False)
@@ -102,4 +92,4 @@ class PanelEvent(models.Model):
     duration_8hr = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Event {self.event_id} panel data'
+        return f'Event {self.event_id.id} panel data'

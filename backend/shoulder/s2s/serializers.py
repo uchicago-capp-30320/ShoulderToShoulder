@@ -74,11 +74,6 @@ class UserSerializer(ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
-        
-class EventSuggestionsSerializer(ModelSerializer):
-    class Meta:
-        model = EventSuggestion
-        fields = "__all__"
 
 class ApplicationTokenSerializer(ModelSerializer):
     class Meta:
