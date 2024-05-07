@@ -6,7 +6,10 @@
 Directory with our web application's frontend development, which is created to display information and interact with users. Our frontend employs Angular.
 
 #### `backend/shoulder` 
-Directory with our web application's backend development. Our backend employs Django with an AWS posgress database. The database contains account information, user data, and event data. The backend development team manages the database, the API endpoints, and involves a machine learning component. 
+Directory with our web application's backend development. Our backend employs Django with an AWS Posgres(QL) database. The backend development also involves a machine learning and GIS component. 
+
+#### `backend/shoulder/s2s` and `backend/shoulder/ShoulderToShoulder` 
+The two directories which house our Django development. This is where the backend team manages the database, the models, the API endpoints (viewpoints), and the overall backend connection to the web application.  
 
 #### `backend/shoulder/ml`
 Directory which contains our web application's machine learning development. Machine learning is used by our application to provide users with recommendations for events to attend.
@@ -14,13 +17,15 @@ Directory which contains our web application's machine learning development. Mac
 To generate user recommendations, we employ a deep factorization machine (DeepFM). See our repo README.md for more details. 
 
 #### `backend/shoulder/GIS`
-Directory which contains our web application's GIS module. We use spatial analysis to locate events happening in a user's area. 
+Directory which contains our web application's GIS module. We use spatial analysis to locate events happening in a user's area, as well as verify that inputted addresses exist. 
 
 #### Dependency Graph and Model of Our Data Flow
 
 Our data is sourced from user inputs. When users sign up for our application, they go through an onboarding process in order to create their account. The onboarding collects three types of information: demographic information, logistics about their interests and availability, and an event preference survey. User responses get saved as data into our database. This is the data that our machine learning model uses to generate personalized event recommendations for users. 
 
-Once users begin attending events, their experiences will be tracked on their profile. Records of the events that users attend and any feedback they provide about these events (for ex., their rating of the event) become additional data that get saved in our database and used by our model to improve recommendations.  
+Event data gets added to the database by users themselves. Our web application has a submission form (url: ../#/event-creation) where users can upload an event they know about or plan on attending by entering it's information; the created event is posted to the database and will be recommended to matched users until it reaches capacity.
+
+Once users begin attending events, their experiences will be tracked on their profile. Records of the events that users attend and any feedback they provide about these events (for ex., their rating of the event) become additional data that get saved in our database and used by our model to improve recommendations. 
 
 ![Data Flow Diagram](model_data_flow.png)
 
