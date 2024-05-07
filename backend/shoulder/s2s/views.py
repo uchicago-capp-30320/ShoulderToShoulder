@@ -186,21 +186,27 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             if request.data['onboarded']:
-                print("Loading event suggestions...")
-                return self.trigger_panel_preferences(user.id)
+                print("Loading panel data...")
+                # resp_pref = self.trigger_panel_preferences(user.id)
+                resp_scen = self.trigger_panel_scenarios(user.id)
+                # if resp_pref.status_code == 201 and resp_scen.status_code == 201:
+                if resp_scen.status_code == 201:
+                    return Response(serializer.data, status=200)
+                
+                return Response({"error": "Failed to panel data"}, status=400)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
     
-    def trigger_event_suggestions(self, user_id):
+    def trigger_panel_scenarios(self, user_id):
         # to mimic a request object
         factory = RequestFactory()
         request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
 
         # create event suggestions
         request.data = {'user_id': user_id}
-        event_suggestions = EventSuggestionsViewSet()
-        response = event_suggestions.create(request)
+        panel_scenario = PanelScenarioViewSet()
+        response = panel_scenario.create(request)
         return response
     
     def trigger_panel_preferences(self, user_id):
@@ -1415,8 +1421,231 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
         user_id = self.request.query_params.get('user_id')
 
         if user_id:
-            user = User.objects.get(id=user_id)
-            queryset = queryset.filter(user_id=user)
+            user = User.objects.filter(id=user_id)
+            if user:
+                queryset = queryset.filter(user_id=user)
 
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        # Ensure the user_id is provided in the request
+        user_id = request.data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # get user
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        
+        onboarding_data = {"user_id": user}
+
+        # Prepare panel scenario data data based on the user and their onboarding data
+        try:
+            paneled_scenarios_lst = self.prepare_user_scenarios(user_id, onboarding_data)
+            panel_scenarios_objs = [PanelScenario(**panel_scenario) for panel_scenario in paneled_scenarios_lst]
+            PanelScenario.objects.bulk_create(panel_scenarios_objs)
+        except Exception as e:
+            return Response({"error": f"Failed to create event suggestions: {str(e)}"}, status=400)
+
+        # Return a success response
+        return Response({"detail": "Successfully updated"}, status=201)
+
+    def num_participant_mapping(self, value):
+        """
+        Helper function to standardize participant data into necessary format
+        for EventSugestions Row
+
+        Inputs:
+            value (str): string of user's preferred number of event participants, if empty returns Null
+
+       Return: string: String of the value parsed into the necessary format
+        """
+
+        if "1-5" in value:
+            return "1to5"
+        elif "5-10" in value:
+            return "5to10"
+        elif "10-15" in value:
+            return "10to15"
+        elif "15+" in value:
+            return "15p"
+        else:
+            return None
+
+    def prepare_user_scenarios(self, user_id, onboarding_data):
+        """
+        Helper function to prepare user scenarios data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            user_id: User's ID
+            onboarding_data (dict): Dictionary including user ID
+
+        Returns: scenario_lst (lst): List of dictionaries containing all of a
+        user's unique scenarios and answers as well as onboarding information
+        """
+        # parse both scenario 1 and scenario 2 to a list of dictionaries that can be turned into rows in PanelScenario
+        user_scenarios = Scenarios.objects.filter(user_id=user_id)
+
+        scenario_lst = []
+
+        for scenario in user_scenarios:
+            # copy the onboarding data into a new dictionary for the separate scenearios
+            user_onboarding_data_template = onboarding_data.copy()
+            if scenario.prefers_event1 is not None or scenario.prefers_event2 is not None:
+                scenario_1_data, scenario_2_data = self.parse_scenario_data(scenario, user_onboarding_data_template)
+
+                scenario_lst.extend([scenario_1_data, scenario_2_data])
+
+        return scenario_lst
+
+    def parse_scenario_data(self, scenario, data_template):
+        """
+        Helper function to parse user scenarios data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            scenario (Scenario): Rows of the user's scenarios from the Scenario Model
+            data_template (dict): Dictionary of user's event suggestions data
+
+        Returns:
+            user_event_suggestions_scenario_1: User's scenario 1 with preferences and onboarding information
+            user_event_suggestions_scenario_2: User's scenario 1 with preferences and onboarding information
+        """
+        user_event_suggestions_scenario_1 = data_template.copy()
+        user_event_suggestions_scenario_2 = data_template.copy()
+
+        user_event_suggestions_scenario_1.update({"scenario_id": scenario})
+        user_event_suggestions_scenario_2.update({"scenario_id": scenario})
+
+        user_event_suggestions_scenario_1.update(self.parse_hobby_type(scenario.hobby1.type))
+        user_event_suggestions_scenario_2.update(self.parse_hobby_type(scenario.hobby2.type))
+
+        user_event_suggestions_scenario_1.update(self.parse_distance_mapping(scenario.distance1))
+        user_event_suggestions_scenario_2.update(self.parse_distance_mapping(scenario.distance2))
+
+        num_part_1 = f"num_particip_{self.num_participant_mapping(scenario.num_participants1)}"
+        num_part_2 = f"num_particip_{self.num_participant_mapping(scenario.num_participants2)}"
+        user_event_suggestions_scenario_1.update({num_part_1: True})
+        user_event_suggestions_scenario_2.update({num_part_2: True})
+
+        user_event_suggestions_scenario_1.update(self.parse_scenario_datetime(scenario.day_of_week1, scenario.time_of_day1))
+        user_event_suggestions_scenario_2.update(self.parse_scenario_datetime(scenario.day_of_week2, scenario.time_of_day2))
+
+        user_event_suggestions_scenario_1.update(self.parse_duration(scenario.duration_h1))
+        user_event_suggestions_scenario_2.update(self.parse_duration(scenario.duration_h2))
+
+        user_event_suggestions_scenario_1['attended_event'] = scenario.prefers_event1
+        user_event_suggestions_scenario_2['attended_event'] = scenario.prefers_event2
+
+        return user_event_suggestions_scenario_1, user_event_suggestions_scenario_2
+
+    def parse_hobby_type(self, hobby_type):
+        """
+        Helper function to parse user's scenario hobby type data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            hobby_type (Hobby): Hobby Type of user's scenario
+
+        Returns:
+            hobby_data (dict): dictionary of user's scenario hobby type
+        """
+        hobby_data = {}
+
+        category_mapping = {
+            "TRAVEL": "hobby_category_travel",
+            "ARTS AND CULTURE": "hobby_category_arts_and_culture",
+            "LITERATURE": "hobby_category_literature",
+            "FOOD AND DRINK": "hobby_category_food",
+            "COOKING/BAKING": "hobby_category_cooking_and_baking",
+            "SPORT/EXERCISE": "hobby_category_exercise",
+            "OUTDOORS":  "hobby_category_outdoor_activities",
+            "CRAFTING": "hobby_category_crafting",
+            "HISTORY AND LEARNING": "hobby_category_history",
+            "COMMUNITY EVENTS": "hobby_category_community",
+            "GAMING": "hobby_category_gaming",
+        }
+
+        for hobby_key in category_mapping.values():
+            hobby_data[hobby_key] = False
+        
+        hobby_data[category_mapping[hobby_type.type]] = True
+
+        return hobby_data
+
+    def parse_distance_mapping(self, distance):
+        """
+        Helper function to parse user's scenario distance data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            distance (Scenario): Distance of user's scenario
+
+        Returns:
+            distance_data (dict): dictionary of user's scenario distance data
+        """
+        distance_data = {}
+
+        distance_preference_mapping = {
+            'Within 1 mile': 'dist_within_1mi',
+            'Within 5 miles': 'dist_within_5mi',
+            'Within 10 miles': 'dist_within_10mi',
+            'Within 15 miles': 'dist_within_15mi',
+            'Within 20 miles': 'dist_within_20mi',
+            'Within 30 miles': 'dist_within_30mi',
+            'Within 40 miles': 'dist_within_40mi',
+            'Within 50 miles': 'dist_within_50mi'
+        }
+        distance_data.update({value: (distance == key) for key, value in distance_preference_mapping.items()})
+
+        return distance_data
+
+    def parse_scenario_datetime(self, day_of_week, time_of_day):
+        """
+        Helper function to parse user's scenario date and time data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            day_of_week (Scenario): Day of week of user's scenario
+            time_of_day (Scenario): Time of day of user's scenario
+
+        Returns:
+            scenario_datetime_mapping (dict): dictionary of user's scenario day and time data
+        """
+        scenario_datetime_mapping = {}
+        day_of_week = day_of_week.lower()
+        tod_string = time_of_day.split("(")[0].strip()
+        tod_standardized = "_".join(tod_string.lower().split())
+
+        days_of_week = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        time_periods = ["early_morning", "morning", "afternoon", "evening", "night", "late_night"]
+
+        for day in days_of_week:
+            for period in time_periods:
+                field_name = f"{day}_{period}"
+                if field_name == f"{day_of_week}_{tod_standardized}":
+                    scenario_datetime_mapping[field_name] = True
+                else:
+                    scenario_datetime_mapping[field_name] = False
+
+        return scenario_datetime_mapping
+
+    def parse_duration(self, duration):
+        """
+        Helper function to parse user's scenario duration data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            duration (Scenario): duration of user's scenario
+
+        Returns:
+            duration_data (dict): dictionary of user's scenario duration data
+        """
+        duration_data = {
+        f"duration_{i}hr": i == duration for i in range(1, 9)
+    }
+        return duration_data
     
