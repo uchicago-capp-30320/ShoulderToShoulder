@@ -142,9 +142,22 @@ class EventViewSet(viewsets.ModelViewSet):
                 event = Event.objects.get(id=serializer.data['id'])
                 user_event = UserEvents(user_id=user, event_id=event)
                 user_event.save()
+        
+            # trigger event suggestion panel data
 
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+    
+    def trigger_panel_event(self, user_id, event_id):
+        # to mimic a request object
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {'user_id': user_id, 'event_id': event_id}, format='json')
+
+        # create event suggestions
+        request.data = {'event_id': event_id}
+        panel_event = PanelEventViewSet()
+        response = panel_event.create(request)
+        return response
 
 class CalendarViewSet(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
@@ -187,10 +200,9 @@ class OnbordingViewSet(viewsets.ModelViewSet):
             serializer.save()
             if request.data['onboarded']:
                 print("Loading panel data...")
-                # resp_pref = self.trigger_panel_preferences(user.id)
+                resp_pref = self.trigger_panel_preferences(user.id)
                 resp_scen = self.trigger_panel_scenarios(user.id)
-                # if resp_pref.status_code == 201 and resp_scen.status_code == 201:
-                if resp_scen.status_code == 201:
+                if resp_pref.status_code == 201 and resp_scen.status_code == 201:
                     return Response(serializer.data, status=200)
                 
                 return Response({"error": "Failed to panel data"}, status=400)
