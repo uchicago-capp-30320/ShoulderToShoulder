@@ -1,1 +1,0 @@
-from ShoulderToShoulder.s2s.db_models.user import User
