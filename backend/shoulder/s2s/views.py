@@ -218,35 +218,39 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
     serializer_class = AvailabilitySerializer
     permission_classes = [HasAppToken]
 
+    def update_availability_obj(self, item, user):
+        # validate the item
+        if not all([item.get('email'), item.get('day_of_week'), item.get('hour')]):
+            return
+
+        # get the availability object
+        availability = Availability.objects.get(user_id=user, day_of_week=item['day_of_week'], hour=item['hour'])
+
+        # set the availability
+        availability.available = item['available']
+        return availability
+
     @action(methods=['post'], detail=False, url_path='bulk_update')
     def bulk_update(self, request, *args, **kwargs):
+        start_time = time.time()
         self.serializer_class = BulkAvailabilitySerializer
         data = request.data
+
         if not isinstance(data, list):
             return Response({"error": "Expected a list of items"}, status=400)
+        
+        # get user
+        user = User.objects.get(email=data[0]['email'])
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+        
+        # Update availability
+        avail_objs = list(map(lambda item: self.update_availability_obj(item, user), data))
 
-        with transaction.atomic():
-            responses = []
-            for item in data:
-                email = item.get('email')
-                day_of_week = item.get('day_of_week')
-                hour = item.get('hour')
-                available = item.get('available')
+        # bulk update
+        num_updated = Availability.objects.bulk_update(avail_objs, ['available'])
 
-                if not all([email, day_of_week, hour]):
-                    continue  # Skip invalid items
-
-                user_id = User.objects.get(email=email)
-                calendar_id = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
-                instance, created = Availability.objects.update_or_create(
-                    user_id=user_id,
-                    calendar_id=calendar_id,
-                    defaults={'available': available}
-                )
-
-                responses.append(self.get_serializer(instance).data)
-
-            return Response({"Number of updated rows": len(responses)}, status=200)
+        return Response({"Number of updated rows": num_updated}, status=200)
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')
