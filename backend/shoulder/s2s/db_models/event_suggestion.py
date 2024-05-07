@@ -128,7 +128,7 @@ class EventSuggestion(models.Model):
     pref_hobby_category_gaming = models.BooleanField(default=False)
 
     # Event Qualities
-    event_id = models.ForeignKey(Event, on_delete=models.CASCADE),
+    event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     hobby_category_travel = models.BooleanField(default=False)
     hobby_category_arts_and_culture = models.BooleanField(default=False)

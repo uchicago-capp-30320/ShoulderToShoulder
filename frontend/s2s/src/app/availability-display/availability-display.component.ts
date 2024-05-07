@@ -68,6 +68,7 @@ export class AvailabilityDisplayComponent implements OnChanges {
    */
   toggleAvailability(slotIndex: number, dayIndex: number): void {
     if (this.isEditable) {
+      // toggles the availability status for the slot and day
       this.calendarService.userAvailability[slotIndex].days[dayIndex] = 
       !this.calendarService.userAvailability[slotIndex].days[dayIndex];
     }

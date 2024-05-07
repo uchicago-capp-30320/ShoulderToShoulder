@@ -15,7 +15,7 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
-from django.db.models import Q
+import time
 
 from .serializers import *
 from .db_models import *
@@ -219,34 +219,37 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
     serializer_class = AvailabilitySerializer
     permission_classes = [HasAppToken]
 
+    def update_availability_obj(self, item):
+        # validate the item
+        if not all([item.get('email'), item.get('day_of_week'), item.get('hour')]):
+            return
+
+        # get the availability object
+        user = User.objects.get(email=item['email'])
+        calendar = Calendar.objects.get(day_of_week=item['day_of_week'], hour=item['hour'])
+
+        availability = Availability.objects.get(user_id=user, calendar_id=calendar)
+
+        # set the availability
+        availability.available = item['available']
+        return availability
+
     @action(methods=['post'], detail=False, url_path='bulk_update')
     def bulk_update(self, request, *args, **kwargs):
+        start_time = time.time()
         self.serializer_class = BulkAvailabilitySerializer
         data = request.data
 
         if not isinstance(data, list):
             return Response({"error": "Expected a list of items"}, status=400)
+        
+        # Update availability
+        avail_objs = list(map(self.update_availability_obj, data))
 
-        # Validate items
-        valid_items = []
-        for item in data:
-            if all([item.get('email'), item.get('day_of_week'), item.get('hour')]):
-                valid_items.append(item)
-
-        avail_objs = []
-        for item in valid_items:
-            user = User.objects.get(email=item['email'])
-            calendar = Calendar.objects.get(day_of_week=item['day_of_week'], hour=item['hour'])
-            availability = Availability.objects.get(user_id=user, calendar_id=calendar)
-            availability.available = item['available']
-            avail_objs.append(availability)
-            
         # bulk update
         num_updated = Availability.objects.bulk_update(avail_objs, ['available'])
 
-
-        return Response({"Number of updated rows": num_updated}, status=200)
-
+        return Response({"Number of updated rows": num_updated, "Time to run": time.time() - start_time}, status=200)
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')
