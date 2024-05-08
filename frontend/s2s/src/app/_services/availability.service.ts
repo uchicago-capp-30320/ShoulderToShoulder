@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, expand } from 'rxjs/operators';
 import { EMPTY, BehaviorSubject, Observable, throwError, reduce} from 'rxjs';
-import { withCache } from '@ngneat/cashew';
 
 // services
 import { ApiService } from './api.service';
@@ -10,7 +9,6 @@ import { AuthService } from './auth.service';
 
 // models
 import { AvailabilityObj, 
-          CalendarObj, 
           AvailabilityResponse, 
           daysOfTheWeek,
           hours,
@@ -34,9 +32,6 @@ import { AvailabilityObj,
 export class AvailabilityService {
   availabilityEndpoint = this.apiService.BASE_API_URL + '/availability/';
   calendarEndpoint = this.apiService.BASE_API_URL + '/calendar/';
-
-  calendarSubject = new BehaviorSubject<CalendarObj[]>([]);
-  calendar = this.calendarSubject.asObservable();
 
   availabilitySubject = new BehaviorSubject<AvailabilityObj[]>([]);
   availability = this.availabilitySubject.asObservable();
