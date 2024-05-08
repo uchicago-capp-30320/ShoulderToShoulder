@@ -1,6 +1,10 @@
 # Endpoints Documentation
 
-This document provides details about the Django Endpoints available in Shoulder to Shoulder.
+This document provides details about the Django Endpoints available in Shoulder to Shoulder (located in `backend/shoulder/s2s/views.py`).
+
+<!-- 
+Missing:
+HobbyTypeViewSet , ProfilesViewSet, CreateUserViewSet, UserViewSet, LoginViewSet, ApplicationTokenViewSet, UserEventsViewSet, SuggestionResultsViewSet, PanelUserPreferencesViewSet, PanelEventViewSet, PanelScenarioViewSet -->
 
 ## Hobby Endpoint
 
@@ -21,7 +25,7 @@ Response Object is JSON with the following information:
         - type: Type/category of the hobby.
 
 
-## Group Endpoint
+<!-- ## Group Endpoint
 
 #### Description
 Retrieves the list of groups, this model allows GET and POST requests. Returns 10 results per page on default.
@@ -34,7 +38,7 @@ Retrieves the list of groups, this model allows GET and POST requests. Returns 1
         - name: Name of the Group.
         - group_description: Description of the Group.
         - max_participants: Maximum number of participants allowed for the Group.
-        - members: List of members in the specified group.
+        - members: List of members in the specified group. -->
 
 
 ## Event Endpoint
@@ -56,20 +60,6 @@ Retrieves the list of events, this model allows GET and POST requests. Returns 1
         - longitude: Longitude of the Event's location.
         - max_attendees:Maximum number of attendees allowed for the Event.
         - attendees: List of attendees for the Event.
-
-
-## Calendar Endpoint
-
-#### Description
-Retrieves the list of calendar dates, this model allows GET and POST requests. Returns 10 results per page on default.
-
-#### Response Attributes 
-- count: Total count of dates available.
-- next: URL to the next page of hobbies (null if no next page).
-- previous: URL to the previous page of hobbies (null if no previous page).
-- results: List of calendar information, where each entry has the following attributes:
-        - day_of_week_description: day of week in string.
-        - hour: Hour of day from 0 to 24
 
 
 
@@ -107,7 +97,7 @@ Retrieves the list of availability information, this model allows GET and POST r
     - available: True or False flag representing if the user's is available at that time
 
 
-## Choices Endpoint
+## Choice Endpoint
 
 #### Description
 Retrieves the list of choices available for preferences and demographics, this model allows GET and POST requests. Returns 10 results per page on default.
