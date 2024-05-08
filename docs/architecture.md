@@ -25,11 +25,10 @@ Our data is sourced from user inputs. When users sign up for our application, th
 
 Event data gets added to the database by users themselves. Our web application has a submission form (url: ../#/event-creation) where users can upload an event they know about or plan on attending by entering it's information; the created event is posted to the database and will be recommended to matched users until it reaches capacity.
 
-Once users begin attending events, their experiences will be tracked on their profile. Records of the events that users attend and any feedback they provide about these events (for ex., their rating of the event) become additional data that get saved in our database and used by our model to improve recommendations. 
+Finally, the events that users attend and any feedback they provide about these events (for ex., their rating of the event) will be tracked on their profile. This information becomes additional data that will get saved in our database and used by our model to improve recommendations. 
 
+<!-- Fix this  -->
 ![Data Flow Diagram](model_data_flow.png)
-
-![Detailed Data Flow Diagram](architecture.png)
 
 ## New Member Onboarding
 
@@ -49,40 +48,30 @@ npm install
 ```
 </pre>
 
-This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to develop in the frontend. 
+Once the packages have been installed, you can begin developing in `cd frontend`. 
 
 #### `backend`
 
-The backend employs a poetry virtual environment with Python 3.12. To create the environment for the first time, follow these steps:
+The backend employs a poetry virtual environment with Python 3.12. Enter the poetry environment every time you develop in the backend. To open the environment, follow these steps:
  
 <pre>
 ```
 cd backend
 poetry env use 3.12
 poetry shell
-poetry install 
+poetry install  // do this on the first entry or for any changes to the packages
 
 #to exit the environment
 exit
 ```
 </pre>
 
-If you have already created the poetry environment once before, you will need to enter it every time you develop in the backend. Follow these steps to open the environment: 
-
-<pre>
-```
-cd backend
-poetry env use 3.12
-poetry shell
-
-#to exit the environment
-exit 
-```
-</pre>
 
 ### How to use our app
 
-To use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps in the terminal:
+First, make sure you have successfully completed the set up of the virtual environments (see instructions above).
+
+To open and use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working and commmunicating in tandem. Follow these steps in the terminal:
 
 <pre>
 ```
@@ -104,7 +93,7 @@ python shoulder/manage.py runserver
 ```
 </pre>
 
-Navigate to `localhost:1800/` in your web browser and enter the superuser credentials.
+Navigate to `localhost:1800/admin` in your web browser and enter the superuser credentials.
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
