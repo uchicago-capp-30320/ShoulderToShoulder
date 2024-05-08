@@ -143,9 +143,23 @@ class EventViewSet(viewsets.ModelViewSet):
                 event = Event.objects.get(id=serializer.data['id'])
                 user_event = UserEvents(user_id=user, event_id=event)
                 user_event.save()
+        
+            # trigger event suggestion panel data
+            self.trigger_panel_event(serializer.data['id'])
 
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+    
+    def trigger_panel_event(self, event_id):
+        # to mimic a request object
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {'event_id': event_id}, format='json')
+
+        # create event suggestions
+        request.data = {'event_id': event_id}
+        panel_event = PanelEventViewSet()
+        response = panel_event.create(request)
+        return response
 
 class OnbordingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
@@ -169,21 +183,38 @@ class OnbordingViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             if request.data['onboarded']:
-                print("Loading event suggestions...")
-                return self.trigger_event_suggestions(user.id)
+                # create the panelized preferences and scenarios
+                resp_pref = self.trigger_panel_preferences(user.id)
+                resp_scen = self.trigger_panel_scenarios(user.id)
+                
+                if resp_pref.status_code == 201 and resp_scen.status_code == 201:
+                    return Response(serializer.data, status=200)
+                
+                return Response({"error": "Failed to get panel data"}, status=400)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
     
-    def trigger_event_suggestions(self, user_id):
+    def trigger_panel_scenarios(self, user_id):
         # to mimic a request object
         factory = RequestFactory()
         request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
 
         # create event suggestions
         request.data = {'user_id': user_id}
-        event_suggestions = EventSuggestionsViewSet()
-        response = event_suggestions.create(request)
+        panel_scenario = PanelScenarioViewSet()
+        response = panel_scenario.create(request)
+        return response
+    
+    def trigger_panel_preferences(self, user_id):
+        # to mimic a request object
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
+
+        # create panel preferences
+        request.data = {'user_id': user_id}
+        panel_preferences = PanelUserPreferencesViewSet()
+        response = panel_preferences.create(request)
         return response
 
     def get_queryset(self):
@@ -344,7 +375,6 @@ class ProfilesViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['get'], url_path='get-presigned-url')
     def get_presigned_url(self, request, pk=None):
-        print("Getting presigned URL")
         try:
             profile = Profile.objects.get(pk=pk, user_id=request.user.id)  # Ensuring access control
         except Profile.DoesNotExist:
@@ -589,9 +619,39 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-class EventSuggestionsViewSet(viewsets.ModelViewSet):
-    queryset = EventSuggestion.objects.all()
-    serializer_class = EventSuggestionsSerializer
+class UserEventsViewSet(viewsets.ModelViewSet):
+    queryset = UserEvents.objects.all()
+    serializer_class = UserEventsSerializer
+    permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            user = User.objects.get(id=user_id)
+            queryset = queryset.filter(user_id=user)
+
+        return queryset
+
+class SuggestionResultsViewSet(viewsets.ModelViewSet):
+    queryset = SuggestionResults.objects.all()
+    serializer_class = SuggestionResultsSerializer
+    permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            user = User.objects.get(id=user_id)
+            queryset = queryset.filter(user_id=user)
+
+        return queryset
+    
+class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
+    queryset = PanelUserPreferences.objects.all()
+    serializer_class = PanelUserPreferencesSerializer
     permission_classes = [HasAppToken]
 
     def get_queryset(self):
@@ -622,20 +682,25 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=404)
-
-        # Prepare event suggestion data based on the user and their onboarding data
+        
+        # delete existing panel preferences row if it exists
         try:
-            event_suggestions_data = self.prepare_event_suggestions_data(user, onboarding_data)
-            parsed_event_suggestions_lst = self.prepare_user_scenarios(user_id, event_suggestions_data)
-            event_suggestion_objs = [EventSuggestion(**event_suggestion) for event_suggestion in parsed_event_suggestions_lst]
-            EventSuggestion.objects.bulk_create(event_suggestion_objs)
+            existing_panel_preferences = PanelUserPreferences.objects.get(user_id=user)
+            existing_panel_preferences.delete()
+        except PanelUserPreferences.DoesNotExist:
+            pass
+
+        # Prepare panel preferences data based on the user and their onboarding data
+        try:
+            panel_preferences_data = self.prepare_panel_preferences_data(user, onboarding_data)
+            panel_preferences = PanelUserPreferences.objects.create(**panel_preferences_data)
         except Exception as e:
-            return Response({"error": f"Failed to create event suggestions: {str(e)}"}, status=400)
+            return Response({"error": f"Failed to create panel user preferences: {str(e)}"}, status=400)
 
         # Return a success response
         return Response({"detail": "Successfully updated"}, status=201)
 
-    def prepare_event_suggestions_data(self, user, onboarding_data):
+    def prepare_panel_preferences_data(self, user, onboarding_data):
         """
         Creates the a dictionary and parses and fills out the user's
         onboarding data
@@ -645,21 +710,27 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
             onboarding_data (Onboarding): User's rows on Onboarding data from the model
 
         Returns: event_suggestions_data (dict): dictionary containing user's
-        onboarding information as necessary for the EventSuggestions row
+        onboarding information as necessary for the PanelUserPreferences row
         """
         event_suggestions_data = {'user_id': user}
         event_suggestions_data.update(self.parse_num_participants_pref(onboarding_data.num_participants))
+
         event_suggestions_data.update(self.parse_distance_preferences(onboarding_data.distance))
+
         event_suggestions_data.update(self.parse_similarity_preferences(onboarding_data.similarity_to_group))
+
         event_suggestions_data.update(self.parse_similarity_metrics(onboarding_data.similarity_metrics))
+
         event_suggestions_data.update(self.parse_hobby_type_onboarding(onboarding_data.most_interested_hobby_types.all()))
+
         event_suggestions_data.update(self.parse_user_availability(user.id))
+
         return event_suggestions_data
 
     def parse_user_availability(self, user_id):
         """
         Helper function to parse user availability data, formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelUserPreferencess row
 
         Inputs:
             user_id: User's ID
@@ -692,7 +763,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
     def parse_distance_preferences(self, distance):
         """
         Helper function to parse user distance preferences data, formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelUserPreferencess row
 
         Inputs:
             distance (string): The user's distance preferences
@@ -722,7 +793,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
     def parse_similarity_preferences(self, similarity_value):
         """
         Helper function to parse user similarity preference data, formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelUserPreferencess row
 
         Inputs:
             similarity_values (str): a user's similarity preferences data
@@ -749,7 +820,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
     def parse_similarity_metrics(self, metrics):
         """
         Helper function to parse user similarity metrics data, formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelUserPreferencess row
 
         Inputs:
             metrics (lst): List of user's similarity metrics data
@@ -797,75 +868,10 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         else:
             return None
 
-    def prepare_user_scenarios(self, user_id, event_suggestions_data):
-        """
-        Helper function to prepare user scenarios data formatting and standardizing
-        it into the EventSuggestions row
-
-        Inputs:
-            user_id: User's ID
-            event_suggestions_data (dict): Dictionary of user's event suggestions data
-
-        Returns: scenario_lst (lst): List of dictionaries containing all of a
-        user's unique scenarios and answers as well as onboarding information
-        """
-        # parse both scenario 1 and scenario 2 to a list of dictionaries that can be turned into rows in EventSuggestions
-        user_scenarios = Scenarios.objects.filter(user_id=user_id)
-
-        scenario_lst = []
-
-        for scenario in user_scenarios:
-            # copy the onboarding data into a new dictionary for the separate scenearios
-            user_event_suggestions_data_template = event_suggestions_data.copy()
-            if scenario.prefers_event1 is not None or scenario.prefers_event2 is not None:
-                scenario_1_data, scenario_2_data = self.parse_scenario_data(scenario, user_event_suggestions_data_template)
-
-                scenario_lst.extend([scenario_1_data, scenario_2_data])
-
-        return scenario_lst
-
-    def parse_scenario_data(self, scenario, data_template):
-        """
-        Helper function to parse user scenarios data formatting and standardizing
-        it into the EventSuggestions row
-
-        Inputs:
-            scenario (Scenario): Rows of the user's scenarios from the Scenario Model
-            data_template (dict): Dictionary of user's event suggestions data
-
-        Returns:
-            user_event_suggestions_scenario_1: User's scenario 1 with preferences and onboarding information
-            user_event_suggestions_scenario_2: User's scenario 1 with preferences and onboarding information
-        """
-        user_event_suggestions_scenario_1 = data_template.copy()
-        user_event_suggestions_scenario_2 = data_template.copy()
-
-        user_event_suggestions_scenario_1.update(self.parse_hobby_type(scenario.hobby1.type))
-        user_event_suggestions_scenario_2.update(self.parse_hobby_type(scenario.hobby2.type))
-
-        user_event_suggestions_scenario_1.update(self.parse_distance_mapping(scenario.distance1))
-        user_event_suggestions_scenario_2.update(self.parse_distance_mapping(scenario.distance2))
-
-        num_part_1 = f"num_particip_{self.num_participant_mapping(scenario.num_participants1)}"
-        num_part_2 = f"num_particip_{self.num_participant_mapping(scenario.num_participants2)}"
-        user_event_suggestions_scenario_1.update({num_part_1: True})
-        user_event_suggestions_scenario_2.update({num_part_2: True})
-
-        user_event_suggestions_scenario_1.update(self.parse_scenario_datetime(scenario.day_of_week1, scenario.time_of_day1))
-        user_event_suggestions_scenario_2.update(self.parse_scenario_datetime(scenario.day_of_week2, scenario.time_of_day2))
-
-        user_event_suggestions_scenario_1.update(self.parse_duration(scenario.duration_h1))
-        user_event_suggestions_scenario_2.update(self.parse_duration(scenario.duration_h2))
-
-        user_event_suggestions_scenario_1['attended_event'] = scenario.prefers_event1
-        user_event_suggestions_scenario_2['attended_event'] = scenario.prefers_event2
-
-        return user_event_suggestions_scenario_1, user_event_suggestions_scenario_2
-
     def parse_hobby_type_onboarding(self, hobby_types):
         """
         Helper function to parse user's scenario hobby type data formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelUserPreferencess row
 
         Inputs:
             hobby_types (list): list of HobbyType objects
@@ -895,10 +901,370 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
 
         return hobby_data
 
+    def parse_num_participants_pref(self, num_participants):
+        """
+        Helper function to parse user's preferred number of participants data formatting and standardizing
+        it into the PanelUserPreferencess row
+
+        Inputs:
+            num_participants (list): The user's preferred number of participants
+
+        Returns:
+            num_participants_data (dict): dictionary of user's preferred number of participants data
+        """
+        assert type(num_participants) == list, "num_participants must be a list"
+
+        num_participants_map = {
+            "1-5": "pref_num_particip_1to5",
+            "5-10": "pref_num_particip_5to10",
+            "10-15": "pref_num_particip_10to15",
+            "15+": "pref_num_particip_15p"
+        }
+        num_participants_data = {}
+        for num_participant in num_participants_map:
+            num_participants_data[num_participants_map[num_participant]] = num_participant in num_participants
+
+        return(num_participants_data)
+    
+class PanelEventViewSet(viewsets.ModelViewSet):
+    queryset = PanelEvent.objects.all()
+    serializer_class = PanelEventSerializer
+    permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        event_id = self.request.query_params.get('event_id')
+
+        if event_id:
+            event = Event.objects.filter(id=event_id)
+            if event:
+                queryset = queryset.filter(event_id=event)
+
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        # Ensure the event_id is provided in the request
+        event_id = request.data.get('event_id')
+        if not event_id:
+            return Response({"error": "Event ID not provided"}, status=400)
+        
+        # try to get the event
+        try:
+            event = Event.objects.get(id=event_id)
+        except Event.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
+
+        event_data = {"event_id": event}
+        try:
+            paneled_event = self.prepare_panel_events(event_data)
+            panel_event = PanelEvent.objects.create(**paneled_event)
+        except Exception as e:
+            return Response({"error": f"Failed to create event suggestions: {str(e)}"}, status=400)
+
+        # Return a success response
+        return Response({"detail": "Successfully updated"}, status=201)
+
+    def num_participant_mapping(self, value):
+        """
+        Helper function to standardize participant data into necessary format
+        for EventSugestions Row
+
+        Inputs:
+            value (int): number of participants in the event
+
+        Return: string: String of the value parsed into the necessary format
+        """
+
+        if value is None:
+            return None
+        
+        if value <= 5:
+            return "1to5"
+        
+        if value <= 10:
+            return "5to10"
+        
+        if value <= 15:
+            return "10to15"
+        
+        return "15p"
+
+    def prepare_panel_events(self, template_event_data):
+        """
+        Helper function to prepare events data formatting and standardizing
+        it into a PanelEvent object.
+
+        Inputs:
+            template_event_data (dict): Tempalate containing event id
+
+        Returns: event_data (dict): A dictionary containing the panelized event
+                 data.
+        """
+        event = template_event_data['event_id']
+
+        event_data_template = template_event_data.copy()
+        event_data = self.parse_event_data(event, event_data_template)
+
+        return event_data
+
+    def parse_event_data(self, event, data_template):
+        """
+        Helper function to parse user events data formatting and standardizing
+        it into the PanelEvent row
+
+        Inputs:
+            event (event): Rows of the user's events from the event Model
+            data_template (dict): Dictionary of user's event suggestions data
+
+        Returns:
+            event_data: Event 1 with preferences and onboarding information
+        """        
+        event_data = data_template.copy()
+        event_data.update(self.parse_hobby_type(event.hobby_type))
+
+        num_part = f"num_particip_{self.num_participant_mapping(event.max_attendees)}"
+        event_data.update({num_part: True})
+
+        event_data.update(self.parse_event_datetime(event.datetime))
+
+        event_data.update(self.parse_duration(event.duration_h))
+
+        return event_data
+
+    def parse_hobby_type(self, hobby_type):
+        """
+        Helper function to parse user's event hobby type data formatting and standardizing
+        it into the PanelEvent row
+
+        Inputs:
+            hobby_type (Hobby): Hobby Type of user's event
+
+        Returns:
+            hobby_data (dict): dictionary of user's event hobby type
+        """
+        hobby_data = {}
+
+        category_mapping = {
+            "TRAVEL": "hobby_category_travel",
+            "ARTS AND CULTURE": "hobby_category_arts_and_culture",
+            "LITERATURE": "hobby_category_literature",
+            "FOOD AND DRINK": "hobby_category_food",
+            "COOKING/BAKING": "hobby_category_cooking_and_baking",
+            "SPORT/EXERCISE": "hobby_category_exercise",
+            "OUTDOORS":  "hobby_category_outdoor_activities",
+            "CRAFTING": "hobby_category_crafting",
+            "HISTORY AND LEARNING": "hobby_category_history",
+            "COMMUNITY EVENTS": "hobby_category_community",
+            "GAMING": "hobby_category_gaming",
+        }
+
+        for hobby_key in category_mapping.values():
+            hobby_data[hobby_key] = False
+        
+        hobby_data[category_mapping[hobby_type.type]] = True
+
+        return hobby_data
+
+    def parse_event_datetime(self, datetime):
+        """
+        Helper function to parse user's event date and time data formatting and standardizing
+        it into the PanelEvent row
+
+        Inputs:
+            datetime (datetime): datetime of user's event
+
+        Returns:
+            event_datetime_mapping (dict): dictionary of user's event day and time data
+        """
+        event_datetime_mapping = {}
+        days_of_week = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        time_periods = ["early_morning", "morning", "afternoon", "evening", "night", "late_night"]
+        
+        # convert datetime to day of week and time of day
+        day_of_week = datetime.strftime('%A').lower()
+        tod_string = self.get_time_of_day(datetime.hour)
+        if tod_string is None:
+            return event_datetime_mapping
+        tod_standardized = "_".join(tod_string.lower().split())
+
+        # create a dictionary with all the days of the week and time periods
+        for day in days_of_week:
+            for period in time_periods:
+                field_name = f"{day}_{period}"
+                if field_name == f"{day_of_week}_{tod_standardized}":
+                    event_datetime_mapping[field_name] = True
+                else:
+                    event_datetime_mapping[field_name] = False
+
+        return event_datetime_mapping
+
+    def get_time_of_day(self, hour):
+        time_period_mapping = {
+            'early_morning': [5, 6, 7, 8],
+            'morning': [9, 10, 11, 12],
+            'afternoon': [13, 14, 15, 16],
+            'evening': [17, 18, 19, 20],
+            'night': [21, 22, 23, 24],
+            'late_night': [1, 2, 3, 4]
+        }
+
+        for time_period, hours in time_period_mapping.items():
+            if hour in hours:
+                return time_period
+        
+        return None
+
+    def parse_duration(self, duration):
+        """
+        Helper function to parse user's event duration data formatting and standardizing
+        it into the PanelEvent row
+
+        Inputs:
+            duration (event): duration of user's event
+
+        Returns:
+            duration_data (dict): dictionary of user's event duration data
+        """
+        duration_data = {
+            f"duration_{i}hr": i == duration for i in range(1, 9)
+        }
+        return duration_data
+    
+class PanelScenarioViewSet(viewsets.ModelViewSet):
+    queryset = PanelScenario.objects.all()
+    serializer_class = PanelScenarioSerializer
+    permission_classes = [HasAppToken]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+
+        if user_id:
+            user = User.objects.filter(id=user_id)
+            if user:
+                queryset = queryset.filter(user_id=user)
+
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        # Ensure the user_id is provided in the request
+        user_id = request.data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # get user
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        
+        onboarding_data = {"user_id": user}
+
+        # Prepare panel scenario data data based on the user and their onboarding data
+        try:
+            paneled_scenarios_lst = self.prepare_user_scenarios(user_id, onboarding_data)
+            panel_scenarios_objs = [PanelScenario(**panel_scenario) for panel_scenario in paneled_scenarios_lst]
+            PanelScenario.objects.bulk_create(panel_scenarios_objs)
+        except Exception as e:
+            return Response({"error": f"Failed to create event suggestions: {str(e)}"}, status=400)
+
+        # Return a success response
+        return Response({"detail": "Successfully updated"}, status=201)
+
+    def num_participant_mapping(self, value):
+        """
+        Helper function to standardize participant data into necessary format
+        for EventSugestions Row
+
+        Inputs:
+            value (str): string of user's preferred number of event participants, if empty returns Null
+
+       Return: string: String of the value parsed into the necessary format
+        """
+
+        if "1-5" in value:
+            return "1to5"
+        elif "5-10" in value:
+            return "5to10"
+        elif "10-15" in value:
+            return "10to15"
+        elif "15+" in value:
+            return "15p"
+        else:
+            return None
+
+    def prepare_user_scenarios(self, user_id, onboarding_data):
+        """
+        Helper function to prepare user scenarios data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            user_id: User's ID
+            onboarding_data (dict): Dictionary including user ID
+
+        Returns: scenario_lst (lst): List of dictionaries containing all of a
+        user's unique scenarios and answers as well as onboarding information
+        """
+        # parse both scenario 1 and scenario 2 to a list of dictionaries that can be turned into rows in PanelScenario
+        user_scenarios = Scenarios.objects.filter(user_id=user_id)
+
+        scenario_lst = []
+
+        for scenario in user_scenarios:
+            # copy the onboarding data into a new dictionary for the separate scenearios
+            user_onboarding_data_template = onboarding_data.copy()
+            if scenario.prefers_event1 is not None or scenario.prefers_event2 is not None:
+                scenario_1_data, scenario_2_data = self.parse_scenario_data(scenario, user_onboarding_data_template)
+
+                scenario_lst.extend([scenario_1_data, scenario_2_data])
+
+        return scenario_lst
+
+    def parse_scenario_data(self, scenario, data_template):
+        """
+        Helper function to parse user scenarios data formatting and standardizing
+        it into the PanelScenario row
+
+        Inputs:
+            scenario (Scenario): Rows of the user's scenarios from the Scenario Model
+            data_template (dict): Dictionary of user's event suggestions data
+
+        Returns:
+            user_event_suggestions_scenario_1: User's scenario 1 with preferences and onboarding information
+            user_event_suggestions_scenario_2: User's scenario 1 with preferences and onboarding information
+        """
+        user_event_suggestions_scenario_1 = data_template.copy()
+        user_event_suggestions_scenario_2 = data_template.copy()
+
+        user_event_suggestions_scenario_1.update({"scenario_id": scenario})
+        user_event_suggestions_scenario_2.update({"scenario_id": scenario})
+
+        user_event_suggestions_scenario_1.update(self.parse_hobby_type(scenario.hobby1.type))
+        user_event_suggestions_scenario_2.update(self.parse_hobby_type(scenario.hobby2.type))
+
+        user_event_suggestions_scenario_1.update(self.parse_distance_mapping(scenario.distance1))
+        user_event_suggestions_scenario_2.update(self.parse_distance_mapping(scenario.distance2))
+
+        num_part_1 = f"num_particip_{self.num_participant_mapping(scenario.num_participants1)}"
+        num_part_2 = f"num_particip_{self.num_participant_mapping(scenario.num_participants2)}"
+        user_event_suggestions_scenario_1.update({num_part_1: True})
+        user_event_suggestions_scenario_2.update({num_part_2: True})
+
+        user_event_suggestions_scenario_1.update(self.parse_scenario_datetime(scenario.day_of_week1, scenario.time_of_day1))
+        user_event_suggestions_scenario_2.update(self.parse_scenario_datetime(scenario.day_of_week2, scenario.time_of_day2))
+
+        user_event_suggestions_scenario_1.update(self.parse_duration(scenario.duration_h1))
+        user_event_suggestions_scenario_2.update(self.parse_duration(scenario.duration_h2))
+
+        user_event_suggestions_scenario_1['attended_event'] = scenario.prefers_event1
+        user_event_suggestions_scenario_2['attended_event'] = scenario.prefers_event2
+
+        return user_event_suggestions_scenario_1, user_event_suggestions_scenario_2
+
     def parse_hobby_type(self, hobby_type):
         """
         Helper function to parse user's scenario hobby type data formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelScenario row
 
         Inputs:
             hobby_type (Hobby): Hobby Type of user's scenario
@@ -932,7 +1298,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
     def parse_distance_mapping(self, distance):
         """
         Helper function to parse user's scenario distance data formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelScenario row
 
         Inputs:
             distance (Scenario): Distance of user's scenario
@@ -956,58 +1322,10 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
 
         return distance_data
 
-    def parse_num_participants(self, num_participants):
-        """
-        Helper function to parse user's scenario participants data formatting and standardizing
-        it into the EventSuggestions row
-
-        Inputs:
-            num_participants (list): Number of participants in of user's scenario
-
-        Returns:
-            num_participants_data (dict): dictionary of user's scenario participant data
-        """
-        num_participant_data = {}
-        if not num_participants:
-            range_mapping_list = []
-        else:
-            range_mapping_list = [self.num_participant_mapping(participant) for participant in num_participants]
-        num_participant_data["num_particip_1to5"] = '1to5' in range_mapping_list
-        num_participant_data["num_particip_5to10"] = '5to10' in range_mapping_list
-        num_participant_data["num_particip_10to15"] = '10to15' in range_mapping_list
-        num_participant_data["num_particip_15p"] = '15p' in range_mapping_list
-
-        return num_participant_data
-    
-    def parse_num_participants_pref(self, num_participants):
-        """
-        Helper function to parse user's preferred number of participants data formatting and standardizing
-        it into the EventSuggestions row
-
-        Inputs:
-            num_participants (list): The user's preferred number of participants
-
-        Returns:
-            num_participants_data (dict): dictionary of user's preferred number of participants data
-        """
-        assert type(num_participants) == list, "num_participants must be a list"
-
-        num_participants_map = {
-            "1-5": "pref_num_particip_1to5",
-            "5-10": "pref_num_particip_5to10",
-            "10-15": "pref_num_particip_10to15",
-            "15+": "pref_num_particip_15p"
-        }
-        num_participants_data = {}
-        for num_participant in num_participants_map:
-            num_participants_data[num_participants_map[num_participant]] = num_participant in num_participants
-
-        return(num_participants_data)
-
     def parse_scenario_datetime(self, day_of_week, time_of_day):
         """
         Helper function to parse user's scenario date and time data formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelScenario row
 
         Inputs:
             day_of_week (Scenario): Day of week of user's scenario
@@ -1037,7 +1355,7 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
     def parse_duration(self, duration):
         """
         Helper function to parse user's scenario duration data formatting and standardizing
-        it into the EventSuggestions row
+        it into the PanelScenario row
 
         Inputs:
             duration (Scenario): duration of user's scenario
@@ -1049,3 +1367,4 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         f"duration_{i}hr": i == duration for i in range(1, 9)
     }
         return duration_data
+    
