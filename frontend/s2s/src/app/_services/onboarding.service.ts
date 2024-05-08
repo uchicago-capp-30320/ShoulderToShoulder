@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { EMPTY, Observable, switchMap, finalize, of } from 'rxjs';
 
 // services
-import { CalendarService } from './calendar.service';
+import { AvailabilityService } from './availability.service';
 import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 import { HobbyService } from './hobbies.service';
@@ -26,7 +26,7 @@ import { Hobby } from '../_models/hobby';
  * This service interacts with other services and the API service to perform onboarding-related tasks.
  * 
  * @see ApiService
- * @see CalendarService
+ * @see AvailabilityService
  * @see AuthService
  * @see HobbyService
  */
@@ -104,7 +104,7 @@ export class OnboardingService {
 
   constructor(
     private fb: FormBuilder,
-    public calendarService: CalendarService,
+    public availabilityService: AvailabilityService,
     public authService: AuthService,
     private http: HttpClient,
     private apiService: ApiService,
@@ -181,7 +181,7 @@ export class OnboardingService {
         this.onboarded = this.onboarding.onboarded;
         this.setDemographicsForm(this.onboarding);
         this.setPreferencesForm(this.onboarding);
-        this.calendarService.loadAllCalendar();
+        this.availabilityService.loadAllAvailability();
       }
     });
   }
@@ -311,7 +311,7 @@ export class OnboardingService {
    */
   submitOnboardingForms(): void {
     let user = this.authService.userValue;
-    this.calendarService.updateAvailability().pipe(
+    this.availabilityService.updateAvailability().pipe(
       switchMap(() => {
         return this.submitScenarios();
       }),
@@ -445,6 +445,6 @@ export class OnboardingService {
    * Submits the availability form data to the backend.
    */
   submitAvailabilityForm(): Observable<any> {
-    return this.calendarService.updateAvailability();
+    return this.availabilityService.updateAvailability();
   }
 }

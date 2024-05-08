@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 // services
 import { OnboardingService } from '../_services/onboarding.service';
-import { CalendarService } from '../_services/calendar.service';
+import { AvailabilityService } from '../_services/availability.service';
 
 // helpers
 import { availableTimes, timeCategoryMap } from '../_helpers/preferences';
-import { daysOfTheWeek } from '../_models/calendar';
+import { daysOfTheWeek } from '../_models/availability';
 
 /**
  * EventAvailabilitySurveyComponent
@@ -22,7 +22,7 @@ import { daysOfTheWeek } from '../_models/calendar';
  * ```
  * 
  * @see OnboardingService
- * @see CalendarService
+ * @see AvailabilityService
  */
 @Component({
   selector: 'app-event-availability-survey',
@@ -98,7 +98,7 @@ export class EventAvailabilitySurveyComponent {
   constructor(
     public onboardingService: OnboardingService,
     private fb: FormBuilder,
-    public calendarService: CalendarService
+    public availabilityService: AvailabilityService
   ) {}
 
   /**
@@ -158,12 +158,12 @@ export class EventAvailabilitySurveyComponent {
         continue;
       }
       for (let day of days) {
-        let timeSlot = this.calendarService.userAvailability[time - 1];
+        let timeSlot = this.availabilityService.userAvailability[time - 1];
         let currentTimeAvailability = timeSlot.days;
         currentTimeAvailability[daysOfTheWeek.indexOf(day)] = true;
 
         // update the availability
-        this.calendarService.userAvailability[time - 1].days = currentTimeAvailability;
+        this.availabilityService.userAvailability[time - 1].days = currentTimeAvailability;
       }
     }
   }
@@ -182,12 +182,12 @@ export class EventAvailabilitySurveyComponent {
         continue;
       }
       for (let day of days) {
-        let timeSlot = this.calendarService.userAvailability[time - 1];
+        let timeSlot = this.availabilityService.userAvailability[time - 1];
         let currentTimeAvailability = timeSlot.days;
         currentTimeAvailability[daysOfTheWeek.indexOf(day)] = false;
 
         // update the availability
-        this.calendarService.userAvailability[time - 1].days = currentTimeAvailability;
+        this.availabilityService.userAvailability[time - 1].days = currentTimeAvailability;
       }
     }
   }
@@ -232,6 +232,6 @@ export class EventAvailabilitySurveyComponent {
    * Submits the event availability form.
    */
   onSubmit() {
-    console.log(this.calendarService.userAvailability);
+    console.log(this.availabilityService.userAvailability);
   }
 }

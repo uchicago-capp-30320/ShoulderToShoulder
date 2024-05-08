@@ -12,9 +12,9 @@ export interface AvailabilityPut {
 export interface AvailabilityObj {
     id: number;
     available: boolean;
-    calendar_id: number;
     user_id: number;
-
+    day_of_week: string;
+    hour: number;
 }
 
 export interface AvailabilityResponse {
@@ -22,19 +22,6 @@ export interface AvailabilityResponse {
     next: string;
     previous: string;
     results: AvailabilityObj[];
-}
-
-export interface CalendarObj {
-    id?: number;
-    day_of_week: string;
-    hour: number;
-}
-
-export interface CalendarResponse {
-    count: number;
-    next: string;
-    previous: string;
-    results: CalendarObj[];
 }
 
 export interface AvailabilitySlot  {

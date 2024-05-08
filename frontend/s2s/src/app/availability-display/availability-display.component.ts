@@ -1,8 +1,10 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+
 
 // services
-import { CalendarService } from '../_services/calendar.service';
+import { AvailabilityService } from '../_services/availability.service';
 import { OnboardingService } from '../_services/onboarding.service';
 
 // helpers
@@ -20,9 +22,9 @@ import { days } from '../_helpers/preferences';
  * ```
  * 
  * @remarks
- * This component relies on the CalendarService to manage user availability data.
+ * This component relies on the AvailabilityService to manage user availability data.
  * 
- * @see CalendarService
+ * @see AvailabilityService
  * 
  * @export
  * @class AvailabilityDisplayComponent
@@ -37,11 +39,16 @@ export class AvailabilityDisplayComponent implements OnChanges {
   @Input() profileView: boolean = false;
   days = days;
   availabilityBackup: any[] = [];
+  showLoadingDialog: boolean = false;
+  selectedSlots: Set<string> = new Set();
+  lastSelectedIndex: string | null = null;
+
 
   constructor(
-    public calendarService: CalendarService,
+    public availabilityService: AvailabilityService,
     public onboardingService: OnboardingService,
-    private router: Router
+    private router: Router,
+    public messageService: MessageService
   ) {
    }
   
@@ -53,7 +60,7 @@ export class AvailabilityDisplayComponent implements OnChanges {
    * Copies the user's availability data to a backup array.
    */
   copyAvailability(): void {
-    this.calendarService.userAvailability$.subscribe(availability => {
+    this.availabilityService.userAvailability$.subscribe(availability => {
       this.availabilityBackup = availability;
       console.log(this.availabilityBackup)
     });
@@ -68,9 +75,20 @@ export class AvailabilityDisplayComponent implements OnChanges {
    */
   toggleAvailability(slotIndex: number, dayIndex: number): void {
     if (this.isEditable) {
-      this.calendarService.userAvailability[slotIndex].days[dayIndex] = 
-      !this.calendarService.userAvailability[slotIndex].days[dayIndex];
+      this.availabilityService.userAvailability[slotIndex].days[dayIndex] = 
+      !this.availabilityService.userAvailability[slotIndex].days[dayIndex];
     }
+  }
+
+  getSlotKey(slotIndex: number, dayIndex: number): string {
+    return `${slotIndex}-${dayIndex}`;
+  }
+
+  /**
+   * Clears all messages from the message service.
+   */
+  clearMessages() {
+    this.messageService.clear();
   }
 
   /**
@@ -78,9 +96,21 @@ export class AvailabilityDisplayComponent implements OnChanges {
    */
   submitAvailability(): void {
     this.isEditable = false;
-    this.onboardingService.submitAvailabilityForm().subscribe(() => {
-      this.copyAvailability();
-    });
+    this.showLoadingDialog = true;
+    this.onboardingService.submitAvailabilityForm().subscribe(
+      data => {
+        this.showLoadingDialog = false;
+        this.clearMessages();
+        this.messageService.add({severity: 'success', detail: 'Availability updated successfully!'});
+      },
+      error => {
+        this.showLoadingDialog = false;
+        console.log(error);
+        this.clearMessages();
+        this.messageService.add({severity: 'error', 
+          detail: 'There was an error updating the event. Please try again.'});
+        this.showLoadingDialog = false;
+      })
   }
 
   /**
@@ -88,8 +118,8 @@ export class AvailabilityDisplayComponent implements OnChanges {
    */
   cancelAvailability(): void {
     this.isEditable = false;
-    this.calendarService.setAvailability(this.availabilityBackup);
-    this.router.navigate(['/profile', 2]);
+    this.availabilityService.setAvailability(this.availabilityBackup);
     location.reload();
+    this.router.navigate(['/profile/2']);
   }
 }

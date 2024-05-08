@@ -232,7 +232,6 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
 
     @action(methods=['post'], detail=False, url_path='bulk_update')
     def bulk_update(self, request, *args, **kwargs):
-        start_time = time.time()
         self.serializer_class = BulkAvailabilitySerializer
         data = request.data
 
