@@ -702,8 +702,15 @@ class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return Response({"error": "User not found"}, status=404)
+        
+        # delete existing panel preferences row if it exists
+        try:
+            existing_panel_preferences = PanelUserPreferences.objects.get(user_id=user)
+            existing_panel_preferences.delete()
+        except PanelUserPreferences.DoesNotExist:
+            pass
 
-        # Prepare event suggestion data based on the user and their onboarding data
+        # Prepare panel preferences data based on the user and their onboarding data
         try:
             panel_preferences_data = self.prepare_panel_preferences_data(user, onboarding_data)
             panel_preferences = PanelUserPreferences.objects.create(**panel_preferences_data)
