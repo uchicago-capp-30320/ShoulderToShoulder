@@ -63,11 +63,9 @@ npm install
 ```
 </pre>
 
-This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to develop in the frontend. 
-
 #### `backend`
 
-The backend employs a poetry virtual environment with Python 3.12. To create the environment for the first time, follow these steps:
+The backend employs a poetry virtual environment with Python 3.12. To set-up the environment for the first time, follow these steps:  
  
 <pre>
 ```
@@ -80,17 +78,6 @@ exit //to exit the environment
 ```
 </pre>
 
-You will need to be inside the environment to develop in the backend. If you have already created the poetry environment once before, follow these steps to open the environment: 
-
-<pre>
-```
-cd backend
-poetry env use 3.12
-poetry shell
-
-exit //to exit the environment
-```
-</pre>
 
 ## How to use our app
 
@@ -124,22 +111,26 @@ To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the
 
 ## Pre-Commit Checklist
 
-#### `backend`: 
-
-<pre>
-```
-cd backend
-pre-commit run --all
-```
-</pre>
-
 #### `frontend`: 
+
+The frontend uses prettier for formatting and styling. 
 
 <pre>
 ```
 cd frontend
 npm run lint
 npm run format
+```
+</pre>
+
+#### `backend`: 
+
+The backend uses black and flake8 to check formatting.
+
+<pre>
+```
+cd backend
+pre-commit run --all
 ```
 </pre>
 
