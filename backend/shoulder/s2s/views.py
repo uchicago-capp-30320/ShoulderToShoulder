@@ -677,9 +677,10 @@ class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         user_id = self.request.query_params.get('user_id')
+        print(user_id)
 
         if user_id:
-            user = User.objects.filter(id=user_id)
+            user = User.objects.get(id=user_id)
             if user:
                 queryset = queryset.filter(user_id=user)
 
