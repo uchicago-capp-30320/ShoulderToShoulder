@@ -21,11 +21,6 @@ class EventSerializer(ModelSerializer):
     class Meta:
         model = Event
         fields = "__all__"
-             
-class CalendarSerializer(ModelSerializer):
-    class Meta:
-        model = Calendar
-        fields = "__all__"
 
 class OnbordingSerializer(ModelSerializer):
     class Meta:

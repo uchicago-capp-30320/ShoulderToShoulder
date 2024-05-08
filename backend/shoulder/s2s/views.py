@@ -15,6 +15,7 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
+from .utils.calendar import calendar
 
 from .serializers import *
 from .db_models import *
@@ -146,24 +147,6 @@ class EventViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
-class CalendarViewSet(viewsets.ModelViewSet):
-    queryset = Calendar.objects.all()
-    serializer_class = CalendarSerializer
-    permission_classes = [HasAppToken]
-
-    def get_queryset(self):
-        queryset = self.queryset
-        id = self.request.query_params.get('id')
-        day_of_week = self.request.query_params.get('day_of_week')
-        hour = self.request.query_params.get('hour')
-
-        if id:
-            queryset = queryset.filter(id=id)
-        elif day_of_week and hour:
-            queryset = queryset.filter(day_of_week=day_of_week, hour=hour)
-
-        return queryset
-
 class OnbordingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
     serializer_class = OnbordingSerializer
@@ -260,13 +243,8 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
         if not all([user_id, day_of_week, hour]):
             return Response({"error": "Missing required fields"}, status=400)
 
-        # get the existing calendar object or create one
-        calendar, created = Calendar.objects.get_or_create(day_of_week=day_of_week, hour=hour)
-        if not created:
-            calendar = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
-
         # Create the availability record
-        availability = Availability(user_id=user_id, calendar_id=calendar)
+        availability = Availability(user_id=user_id, day_of_week=day_of_week, hour=hour, available=False)
         availability.save()
 
         serializer = self.get_serializer(availability)
@@ -467,9 +445,8 @@ class CreateUserViewSet(viewsets.ModelViewSet):
 
             # for each option in the calendar table, create a row in the
             # availability table and set the default availability to False
-            calendars = Calendar.objects.all()
-            for calendar in calendars:
-                availability = Availability(user_id=user, calendar_id=calendar)
+            for day, hour in calendar:
+                availability = Availability(user_id=user, day_of_week=day, hour=hour, available=False)
                 availability.save()
 
             # Return user information and tokens
@@ -700,8 +677,8 @@ class EventSuggestionsViewSet(viewsets.ModelViewSet):
         }
         availability_data_lst = {}
         for availability in user_availability:
-            day_of_week = availability.calendar_id.day_of_week
-            hour = availability.calendar_id.hour
+            day_of_week = availability.day_of_week
+            hour = availability.hour
             for period, hours in time_period_mapping.items():
                 preference_field = f"pref_{day_of_week.lower()}_{period}"
                 if int(hour) in hours:
