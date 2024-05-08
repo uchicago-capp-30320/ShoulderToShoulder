@@ -31,7 +31,7 @@ import { AvailabilityObj,
 })
 export class AvailabilityService {
   availabilityEndpoint = this.apiService.BASE_API_URL + '/availability/';
-  calendarEndpoint = this.apiService.BASE_API_URL + '/calendar/';
+  bulkAvailabilityEndpoint = this.apiService.BASE_API_URL + '/availability/bulk_update/';
 
   availabilitySubject = new BehaviorSubject<AvailabilityObj[]>([]);
   availability = this.availabilitySubject.asObservable();
@@ -106,7 +106,8 @@ export class AvailabilityService {
   /**
    * Updates user availability in the database.
    */
-  updateAvailability(): Observable<any> {
+  getUpdateAvailabilityData(): { email: string, day_of_week: string, hour: number, available: boolean }[] {
+    console.log("updating availability")
     const user = this.authService.userValue; // assuming authService exposes user details
     const updates = this.userAvailability.map(slot =>
       slot.days.map((available, dayIndex) => ({
@@ -116,13 +117,13 @@ export class AvailabilityService {
         available: available
       }))
     ).flat(); // Flattening the array to pass as a single list
+    
+    return updates;
+  }
 
-    return this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates).pipe(
-      catchError(error => {
-        console.error('Error updating availability:', error);
-        return EMPTY; // Returning EMPTY to avoid breaking the observable chain in case of an error
-      })
-    );
+  submitAvailability(): Observable<any> {
+    const updates = this.getUpdateAvailabilityData();
+    return this.http.post(this.bulkAvailabilityEndpoint, updates);
   }
 
   /**

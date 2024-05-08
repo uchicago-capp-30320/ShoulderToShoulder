@@ -35,13 +35,13 @@ import { Hobby } from '../_models/hobby';
 })
 export class OnboardingService {
   onboardingEndpoint = this.apiService.BASE_API_URL + '/onboarding/';
+  onboardingSubmitEndpoint = this.apiService.BASE_API_URL + '/submit_onboarding/';
   onboardingUpdateEndpoint = this.apiService.BASE_API_URL + '/onboarding/update/';
-  scenariosEndpoint = this.apiService.BASE_API_URL + '/scenarios/';
   maxDescLen: number = 50;
   maxAddrLen: number = 100;
   onboarding: Onboarding;
 
-  // onboarding forms
+  // onboarding form
   public demographicsForm: FormGroup = this.fb.group({
     groupSimilarity: new FormControl('', Validators.required),
     groupSimilarityAttrs: new FormControl([], Validators.required),
@@ -229,7 +229,7 @@ export class OnboardingService {
 
     this.getMostInterestedHobbies(this.onboarding.most_interested_hobbies);
     this.getLeastInterestedHobbies(this.onboarding.least_interested_hobbies);
-    this.getHobbyTypes(this.onboarding.most_interested_hobby_types);
+    this.getMostInterestedHobbyTypes(this.onboarding.most_interested_hobby_types);
   }
 
   /**
@@ -258,17 +258,27 @@ export class OnboardingService {
     });
   }
 
-  /**
+ /**
    * Retrieves the most interested hobby types from the current list of hobby types.
    * 
    * @param ids - IDs of the most interested hobby types.
    */
-  getHobbyTypes(ids: number[]) {
-    this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
+  getMostInterestedHobbyTypes(ids: number[]) {
+    // clear most interested hobby types if no ids
+    if (!ids || ids.length == 0) {
       this.preferencesForm.patchValue({
-        mostInterestedHobbyTypes: hobbyTypes
+        mostInterestedHobbyTypes: []
       });
-    });
+    } 
+    
+    // fetch most interested hobby types
+    else {
+      this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
+        this.preferencesForm.patchValue({
+          mostInterestedHobbyTypes: hobbyTypes
+        });
+      });      
+    }
   }
 
   /**
@@ -279,27 +289,20 @@ export class OnboardingService {
    */
   exitOnboarding(onboarded: boolean = false): void {
     let user = this.authService.userValue;
+    console.log('User:', user);
     console.log('User has been logged out.');
-    this.authService.logout();
-
-    this.submitAvailabilityForm().pipe(
-      catchError(error => {
-        console.error('Error during exit onboarding:', error);
-        return EMPTY; // Handle errors or complete the chain without breaking
-      })
-    ).subscribe(() => {
-      // Handle successful completion of both submissions
-      console.log('All forms submitted successfully!');
-      this.submitOnboarding(user, onboarded);
-    });
+    this.submitOnboardingForms(onboarded).subscribe(() => {
+      this.authService.logout();
+    });;
   }
-
 
   /**
    * Updates onboarding information for the preferences survey
    * and demographics survey.
+   * 
    * This function is primarily used to update onboarding information on the 
-   * user profile settings page.
+   * user profile settings page once the user has already completed the 
+   * initial onboarding process.
    */
   updateOnboarding(): void {
     let user = this.authService.userValue;
@@ -313,34 +316,40 @@ export class OnboardingService {
     this.fetchOnboarding();
   }
 
-
   /**
-   * Submits the onboarding forms to the backend.
+   * Submits the onboarding forms to the backend. These are the forms a user
+   * fills out during the initial onboarding process.
+   * 
+   * @param onboarded - Flag indicating if the user has completed onboarding.
    */
-  submitOnboardingForms(): void {
+  submitOnboardingForms(onboarded: boolean = false): Observable<any> {
     let user = this.authService.userValue;
-    this.availabilityService.updateAvailability().pipe(
-      switchMap(() => {
-        return this.submitScenarios();
-      }),
-      catchError(error => {
-        console.error('Error in form submission process:', error);
-        return EMPTY;
-      })
-    ).subscribe(() => {
-      console.log('Scenarios and availability forms submitted successfully!');
-      return this.submitOnboarding(user, true);
-    });
+
+    // get availability and scenario data to update
+    let availData = this.availabilityService.getUpdateAvailabilityData();
+
+    // get scenario data if user has completed onboarding
+    let scenarioData: ScenarioObj[] = [];
+    if (onboarded) {
+      scenarioData = this.getScenarioData();
+    }
+
+    // get onboarding data
+    let onboardingData = this.getOnboardingData(user, onboarded);
+    let fullOnboardingData = {
+      "user_data": {"user_id": user.id},
+      "onboarding": onboardingData,
+      "availability": availData,
+      "scenarios": scenarioData
+    }
+
+    return this.submitFullOnboarding(fullOnboardingData);
   }
 
   /**
-   * Submits the onboarding data to the backend.
-   * 
-   * @param user - The user object.
-   * @param onboarded - Flag indicating if the user has completed onboarding.
+   * Gets the onboarding data.
    */
-  submitOnboarding(user: User, onboarded: boolean = true) {
-    // collect data
+  getOnboardingData(user: User, onboarded: boolean = true): Onboarding {
     this.onboarding = {
       user_id: user.id,
       onboarded: onboarded,
@@ -354,26 +363,53 @@ export class OnboardingService {
       zip_code: this.preferencesForm.get('zipCode')?.value,
       city: this.preferencesForm.get('city')?.value,
       state: (this.preferencesForm.get('state')?.value as {label: string, value: string}).value,
-      address_line1: this.preferencesForm.get('addressLine1')?.value,
-      event_frequency: this.preferencesForm.get('eventFrequency')?.value,
-      event_notification: this.preferencesForm.get('eventNotifications')?.value,
+      address_line1: this.preferencesForm.get('addressLine1') ? this.preferencesForm.get('addressLine1')?.value : "",
+      event_frequency: this.preferencesForm.get('eventFrequency') ? this.preferencesForm.get('eventFrequency')?.value : "",
+      event_notification: this.preferencesForm.get('eventNotifications') ? this.preferencesForm.get('eventNotifications')?.value : "",
 
       // demographics form
-      similarity_to_group: this.demographicsForm.get('groupSimilarity')?.value,
+      similarity_to_group: this.demographicsForm.get('groupSimilarity') ? this.demographicsForm.get('groupSimilarity')?.value : "",
       similarity_metrics: this.getStringToListChar("groupSimilarityAttrs", this.demographicsForm), 
-      pronouns: this.demographicsForm.get('pronouns')?.value,
+      pronouns: this.demographicsForm.get('pronouns') ? this.demographicsForm.get('pronouns')?.value : "",
       gender: this.getStringToListChar("gender", this.demographicsForm), 
-      gender_description: this.demographicsForm.get('genderDesc')?.value,
+      gender_description: this.demographicsForm.get('genderDesc') ? this.demographicsForm.get('genderDesc')?.value : "",
       race: this.getStringToListChar("race", this.demographicsForm), 
-      race_description: this.demographicsForm.get('raceDesc')?.value,
-      age: this.demographicsForm.get('ageRange')?.value,
-      sexual_orientation: this.demographicsForm.get('sexualOrientation')?.value,
-      sexual_orientation_description: this.demographicsForm.get('sexualOrientationDesc')?.value,
-      religion: this.demographicsForm.get('religiousAffiliation')?.value,
-      religion_description: this.demographicsForm.get('religiousAffiliationDesc')?.value,
-      political_leaning: this.demographicsForm.get('politicalLeaning')?.value,
-      political_description: this.demographicsForm.get('politicalLeaningDesc')?.value,
+      race_description: this.demographicsForm.get('raceDesc') ? this.demographicsForm.get('raceDesc')?.value : "",
+      age: this.demographicsForm.get('ageRange') ? this.demographicsForm.get('ageRange')?.value : "",
+      sexual_orientation: this.demographicsForm.get('sexualOrientation') ? this.demographicsForm.get('sexualOrientation')?.value : "",
+      sexual_orientation_description: this.demographicsForm.get('sexualOrientationDesc') ? this.demographicsForm.get('sexualOrientationDesc')?.value : "",
+      religion: this.demographicsForm.get('religiousAffiliation') ? this.demographicsForm.get('religiousAffiliation')?.value : "",
+      religion_description: this.demographicsForm.get('religiousAffiliationDesc') ? this.demographicsForm.get('religiousAffiliationDesc')?.value : "",
+      political_leaning: this.demographicsForm.get('politicalLeaning') ? this.demographicsForm.get('politicalLeaning')?.value : "",
+      political_description: this.demographicsForm.get('politicalLeaningDesc') ? this.demographicsForm.get('politicalLeaningDesc')?.value : "",
     }
+    return this.onboarding;
+  }
+
+  /**
+   * Submits the full onboarding data to the backend.
+   * @param onboardingData A user's onboarding data, including their user ID,
+   *                       availability, scenarios, and event preferences.
+   */
+  submitFullOnboarding(onboardingData: any): Observable<any> {
+    // send onboarding data to the backend
+    return this.http.post(this.onboardingSubmitEndpoint, onboardingData).pipe(
+      catchError(error => {
+        console.error('Error submitting onboarding:', error);
+        return EMPTY;
+      })
+    )
+  }
+
+  /**
+   * Submits the onboarding/preferences data to the backend.
+   * 
+   * @param user - The user object.
+   * @param onboarded - Flag indicating if the user has completed onboarding.
+   */
+  submitOnboarding(user: User, onboarded: boolean = true) {
+    // collect data
+    this.getOnboardingData(user, onboarded);
 
     // send onboarding data to the backend
     this.http.post(this.onboardingUpdateEndpoint, this.onboarding).pipe(
@@ -420,7 +456,7 @@ export class OnboardingService {
   /**
    * Submits the scenarios data to the backend.
    */
-  submitScenarios(): Observable<any> {
+  getScenarioData(): ScenarioObj[] {
     // collect data
     let scenarioObjs: ScenarioObj[] = [];
 
@@ -434,25 +470,8 @@ export class OnboardingService {
         scenarioObj.prefers_event2 = !scenarioObj.prefers_event1;
 
         scenarioObjs.push(scenarioObj);
-
-        // send scenario data to the backend
-        this.http.post(this.scenariosEndpoint, scenarioObj).pipe(
-          catchError(error => {
-            console.error('Error submitting scenarios:', error);
-            return EMPTY;
-          })
-        ).subscribe(() => {
-          console.log('Scenarios submitted successfully!');
-        });
       }
     }
-    return of(scenarioObjs);
-  }
-
-  /**
-   * Submits the availability form data to the backend.
-   */
-  submitAvailabilityForm(): Observable<any> {
-    return this.availabilityService.updateAvailability();
+    return scenarioObjs;
   }
 }

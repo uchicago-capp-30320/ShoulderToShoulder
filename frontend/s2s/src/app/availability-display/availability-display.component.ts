@@ -46,7 +46,6 @@ export class AvailabilityDisplayComponent implements OnChanges {
 
   constructor(
     public availabilityService: AvailabilityService,
-    public onboardingService: OnboardingService,
     private router: Router,
     public messageService: MessageService
   ) {
@@ -96,7 +95,7 @@ export class AvailabilityDisplayComponent implements OnChanges {
    */
   submitAvailability(): void {
     this.showLoadingDialog = true;
-    this.onboardingService.submitAvailabilityForm().subscribe(
+    this.availabilityService.submitAvailability().subscribe(
       data => {
         this.showLoadingDialog = false;
         this.isEditable = false;

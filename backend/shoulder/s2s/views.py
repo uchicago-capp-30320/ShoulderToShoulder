@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from s2s.permissions import HasAppToken
 from django.test.client import RequestFactory
+from rest_framework.test import APIRequestFactory
 import environ
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -161,7 +162,7 @@ class EventViewSet(viewsets.ModelViewSet):
         response = panel_event.create(request)
         return response
 
-class OnbordingViewSet(viewsets.ModelViewSet):
+class OnboardingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
     serializer_class = OnbordingSerializer
     permission_classes = [HasAppToken]
@@ -185,26 +186,14 @@ class OnbordingViewSet(viewsets.ModelViewSet):
             if request.data['onboarded']:
                 # create the panelized preferences and scenarios
                 resp_pref = self.trigger_panel_preferences(user.id)
-                resp_scen = self.trigger_panel_scenarios(user.id)
                 
-                if resp_pref.status_code == 201 and resp_scen.status_code == 201:
+                if resp_pref.status_code == 201:
                     return Response(serializer.data, status=200)
                 
                 return Response({"error": "Failed to get panel data"}, status=400)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
-    
-    def trigger_panel_scenarios(self, user_id):
-        # to mimic a request object
-        factory = RequestFactory()
-        request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
-
-        # create event suggestions
-        request.data = {'user_id': user_id}
-        panel_scenario = PanelScenarioViewSet()
-        response = panel_scenario.create(request)
-        return response
     
     def trigger_panel_preferences(self, user_id):
         # to mimic a request object
@@ -249,11 +238,19 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
         self.serializer_class = BulkAvailabilitySerializer
         data = request.data
 
+        # validate the data
         if not isinstance(data, list):
-            return Response({"error": "Expected a list of items"}, status=400)
+            return Response({"error": "[Availability Bulk Update] Expected a list of items"}, status=400)
+        
+        # extract user data
+        if not data[0].get("user_id"):
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        user_id = data[0]['user_id']
+        data = data[1:]
         
         # get user
-        user = User.objects.get(email=data[0]['email'])
+        user = User.objects.get(id=user_id)
         if not user:
             return Response({"error": "User not found"}, status=404)
         
@@ -342,6 +339,54 @@ class ScenariosiewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user_id=user)
 
         return queryset
+    
+    def bulk_create(self, request, *args, **kwargs):
+        # validate data type
+        if not isinstance(request.data, list):
+            return Response({"error": "Expected a list of items"}, status=400)
+        
+        # extract user data
+        if not request.data[0].get("user_id"):
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        user_id = request.data[0]['user_id']
+        data = request.data[1:]
+
+        # get user
+        user = User.objects.get(id=user_id)
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+        
+        # add user ID to each item
+        for item in data:
+            item['user_id'] = user
+
+        # add hobby object
+        hobby_cols = ['hobby1', 'hobby2']
+        for item in data:
+            for col in hobby_cols:
+                if item.get(col):
+                    item[col] = Hobby.objects.get(id=item[col])
+
+        # create the scenarios
+        scenario_objs = [Scenarios(**item) for item in data]
+        Scenarios.objects.bulk_create(scenario_objs)
+
+        # create the panelized scenarios
+        self.trigger_panel_scenarios(user_id)
+
+        return Response({"Number of created rows": len(scenario_objs)}, status=201)        
+    
+    def trigger_panel_scenarios(self, user_id):
+        # to mimic a request object
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
+
+        # create event suggestions
+        request.data = {'user_id': user_id}
+        panel_scenario = PanelScenarioViewSet()
+        response = panel_scenario.create(request)
+        return response
 
 class ProfilesViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
@@ -1368,3 +1413,129 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
     }
         return duration_data
     
+class SubmitOnboardingViewSet(viewsets.ModelViewSet):
+    queryset = Onboarding.objects.all()
+    serializer_class = OnbordingSerializer
+    permission_classes = [HasAppToken]
+
+    def create(self, request, *args, **kwargs):
+        """
+        Centralized endpoint for submitting onboarding data.
+        
+        Request data should be a dictionary/JSON object with the following keys:
+            - user_data: user data dictionary
+            - availability: list of availability dictionaries
+            - onboarding: onboarding data dictionary
+            - scenarios: list of scenario dictionaries
+            i.e., {"user_data": {"user_id": number}, 
+                   "availability": [{"day_of_week": string, "hour": number, "available": boolean}, ...], 
+                   "onboarding": {"num_participants": string, "distance": string,...}, 
+                   "scenarios": [{"day_of_week1": string, "time_of_day1": string,...},...]
+                   }
+        
+        This functional handles the sequential requirements of data updates:
+            1. Insert availability data
+            2. Insert and panelize scenario data
+            3. Insert onboarding data
+
+        This function also allows for partial updates to onboarding data.
+        """
+        print(request.data)
+
+        # validate request data
+        keys = ['user_data', 'availability', 'onboarding', 'scenarios']
+        if not all([key in request.data for key in keys]):
+            return Response({"error": f"Missing required fields: {keys}"}, status=400)
+        
+        # get user data
+        user_data = request.data['user_data']
+        user_id = user_data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # get user
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        
+        # trigger availability endpoint if data is available
+        if len(request.data.get('availability')) > 0:
+            availability_response = self.trigger_availability(request, user_id)
+            if availability_response.status_code not in [200, 201, 202]:
+                return availability_response
+        
+        # trigger scenario endpoint if data is available
+        if len(request.data.get('scenarios')) > 0:
+            scenario_response = self.trigger_scenario(request, user_id)
+            if scenario_response.status_code not in [200, 201, 202]:
+                return scenario_response
+        
+        # trigger onboarding endpoint
+        if len(request.data.get('onboarding')) > 0:
+            print("trigger onboarding")
+            onboarding_response = self.trigger_onboarding(request, user_id)
+            if onboarding_response.status_code not in [200, 201, 202]:
+                return onboarding_response
+            
+        return Response({"detail": "Successfully updated"}, status=201)
+        
+    def trigger_availability(self, request, user_id):
+        # get availability data
+        availability = request.data.get('availability')
+
+        # send data as a request to the availability endpoint
+        if not availability[0].get("user_id"):
+            availability= [{"user_id": user_id}] + availability
+
+        # to mimic a request object
+        factory = RequestFactory()
+        mimic_request = factory.post('/fake-url/', {"availability": availability}, format='json')
+
+        # create event suggestions
+        mimic_request.data = availability
+        availability = AvailabilityViewSet()
+        response = availability.bulk_update(mimic_request)
+        return response
+    
+    def trigger_scenario(self, request, user_id):
+        # get scenario data
+        scenarios_data = request.data.get('scenarios')
+
+        # clean data
+        cleaned_scenario_data = [{"user_id": user_id}] + scenarios_data
+        for item in cleaned_scenario_data:
+            item['user_id'] = int(item['user_id'])
+        
+        # to mimic a request object
+        factory = RequestFactory()
+        mimic_request = factory.post('/fake-url/', {"scenarios": scenarios_data}, format='json')
+
+        # create event suggestions
+        mimic_request.data = scenarios_data
+        scenario_view = ScenariosiewSet()
+        response = scenario_view.bulk_create(mimic_request)
+        return response
+    
+    def trigger_onboarding(self, request, user_id):
+        # get onboarding data
+        onboarding_data = request.data.get('onboarding')
+
+        # clean the passed data
+        cleaned_data = {key: (value if value is not None else "") for key, value in onboarding_data.items()}
+        cleaned_data["user_id"] = cleaned_data.get("user_id", user_id)
+
+        # to mimic a request object
+        factory = APIRequestFactory()
+        mimic_request = factory.post('/fake-url/', {'onboarding': cleaned_data}, format='json')
+
+        print("Cleaned Data", cleaned_data)
+
+        # create event suggestions
+        mimic_request.data = cleaned_data
+        onboarding_view = OnboardingViewSet()
+        onboarding_view.request = mimic_request
+        onboarding_view.action_map = {'post': 'update_onboarding'}
+        onboarding_view.format_kwarg = None
+        response = onboarding_view.update_onboarding(mimic_request)
+        return response

@@ -3,13 +3,15 @@
     <p-messages></p-messages>
     
     <!-- Edit and submit buttons for profile view -->
-    <div *ngIf="!isEditable" class="edit-buttons">
-        <button pButton (click)="isEditable = true" class="edit-button">Edit Availability</button>
-    </div>
-    <div *ngIf="isEditable" class="edit-buttons">
-        <button pButton (click)="cancelAvailability()" class="cancel-button">Cancel</button>
-        <button pButton (click)="submitAvailability()" class="confirm-button">Confirm</button>
-    </div>
+    @if (profileView) {
+        <div *ngIf="!isEditable" class="edit-buttons">
+            <button pButton (click)="isEditable = true" class="edit-button">Edit Availability</button>
+        </div>
+        <div *ngIf="isEditable" class="edit-buttons">
+            <button pButton (click)="cancelAvailability()" class="cancel-button">Cancel</button>
+            <button pButton (click)="submitAvailability()" class="confirm-button">Confirm</button>
+        </div>        
+    }
     <div [class.overlay]="!isEditable" class="schedule-availability">
         <!-- Headers -->
         <div class="header-cell">Time</div>
