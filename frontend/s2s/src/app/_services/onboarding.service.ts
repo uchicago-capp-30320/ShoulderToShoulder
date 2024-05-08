@@ -307,6 +307,14 @@ export class OnboardingService {
   }
 
   /**
+   * Cancels the onboarding process by clearing the onboarding data.
+   */
+  cancelOnboarding(): void {
+    this.fetchOnboarding();
+  }
+
+
+  /**
    * Submits the onboarding forms to the backend.
    */
   submitOnboardingForms(): void {

@@ -95,16 +95,17 @@ export class AvailabilityDisplayComponent implements OnChanges {
    * Submits the availability form to the server.
    */
   submitAvailability(): void {
-    this.isEditable = false;
     this.showLoadingDialog = true;
     this.onboardingService.submitAvailabilityForm().subscribe(
       data => {
         this.showLoadingDialog = false;
+        this.isEditable = false;
         this.clearMessages();
         this.messageService.add({severity: 'success', detail: 'Availability updated successfully!'});
       },
       error => {
         this.showLoadingDialog = false;
+        this.isEditable = false;
         console.log(error);
         this.clearMessages();
         this.messageService.add({severity: 'error', 

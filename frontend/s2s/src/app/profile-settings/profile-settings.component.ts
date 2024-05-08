@@ -203,6 +203,15 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   /**
+   * Cancels the onboarding changes.
+   */
+  cancelOnboardingChanges() {
+    console.log('canceling onboarding changes');
+    this.showOnboardingDialog = false;
+    this.onboardingService.cancelOnboarding();
+  }
+
+  /**
    * Deletes the user account.
    */
   deleteAccount() {
