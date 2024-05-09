@@ -15,9 +15,12 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
+from gis.gis_module import distance_bin
 
 from .serializers import *
 from .db_models import *
+
+from ml.ml.recommendation import recommend
 
 # functions
 def index(request):
@@ -654,20 +657,20 @@ class UserEventsViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-class SuggestionResultsViewSet(viewsets.ModelViewSet):
-    queryset = SuggestionResults.objects.all()
-    serializer_class = SuggestionResultsSerializer
-    permission_classes = [HasAppToken]
+# class SuggestionResultsViewSet(viewsets.ModelViewSet):
+#     queryset = SuggestionResults.objects.all()
+#     serializer_class = SuggestionResultsSerializer
+#     permission_classes = [HasAppToken]
 
-    def get_queryset(self):
-        queryset = self.queryset
-        user_id = self.request.query_params.get('user_id')
+#     def get_queryset(self):
+#         queryset = self.queryset
+#         user_id = self.request.query_params.get('user_id')
 
-        if user_id:
-            user = User.objects.get(id=user_id)
-            queryset = queryset.filter(user_id=user)
+#         if user_id:
+#             user = User.objects.get(id=user_id)
+#             queryset = queryset.filter(user_id=user)
 
-        return queryset
+#         return queryset
     
 class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     queryset = PanelUserPreferences.objects.all()
@@ -1388,4 +1391,97 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
         f"duration_{i}hr": i == duration for i in range(1, 9)
     }
         return duration_data
+
+class SuggestionResultsViewSet(viewsets.ModelViewSet):
+    serializer_class = SuggestionResultsSerializer
+    permission_classes = [HasAppToken]
+    app_token = environ.Env.str('APP_TOKEN')
+
+    headers = {"X-APP-TOKEN": app_token}
+
+    @action(detail=True, methods=['post'], url_path='update')
+    def update_suggestions(self, user_id):
+        """
+        Update suggestion results for a given user.
+        """
+        try:
+            user = User.objects.get(pk=user_id)
+
+            # Retrieve and process user and event data
+            user_panel = self.req_to_list(f"http://localhost:8000/api/panel_user_preferences/?user_id={user_id}")
+            event_panel = self.req_to_list("http://localhost:8000/api/panel_events/")
+            
+        except Exception as e:
+            return Response({"error": f"Failed to find user or event panel data: {str(e)}"}, status=400)
+
+        # Note: distance function should be used here to populate a distance
+        # dictionary for each user-event combination.
+        # What is currently here is a placeholder to make the view functional!
+        distance_dict = {
+            'dist_within_1mi': False, 
+            'dist_within_5mi': False, 
+            'dist_within_10mi': False,
+            'dist_within_15mi': False, 
+            'dist_within_20mi': False,
+            'dist_within_30mi': False, 
+            'dist_within_40mi': False, 
+            'dist_within_50mi': False
+        }
+
+        # Combine the three dictionaries to form rows
+        model_list = [
+            {**user_panel[0], **event, **distance_dict} for event in event_panel
+        ]
+
+        # Get recommendations
+        prediction_probs, user_ids, event_ids = recommend(model_list)
+
+        for pred, user, event in zip(prediction_probs, user_ids, event_ids):
+            event = Event.objects.get(id=event)
+            SuggestionResults.objects.update_or_create(
+                user_id = user,
+                event_id = event,
+                defaults = {
+                    'probability_of_attendance': pred,
+                    'event_date': event.event_date
+                }
+            )
+
+    def req_to_list(self, endpoint):
+        """
+        Helper method to get API call to panel tables and return as list of dictionaries.
+        """
+        try:
+            resp = requests.get(endpoint, headers=self.headers)
+            resp.raise_for_status()
+            return resp.json().get("results", [])
+        except requests.RequestException as e:
+            print(f"Error fetching data from {endpoint}: {e}")
+            return []
     
+    def distance_calc(self, event_id, user_id):
+        event = Event.objects.get(id=event_id)
+        user = User.objects.get(id=user_id)
+        distance = distance_bin(
+            (user.latitude, user.longitude),
+            (event.latitude, event.longitude)
+        )
+        
+        distance_dict = {
+            'dist_within_1mi': False, 
+            'dist_within_5mi': False, 
+            'dist_within_10mi': False,
+            'dist_within_15mi': False, 
+            'dist_within_20mi': False,
+            'dist_within_30mi': False, 
+            'dist_within_40mi': False, 
+            'dist_within_50mi': False
+        }
+
+        if distance[0] is not None:
+            for v in [1,5,10,15,20,30,40,50]:
+                if distance[0] < v:
+                    distance_dict[f'dist_within_{v}mi'] = True
+                    return distance_dict
+        else:
+            return distance_dict
