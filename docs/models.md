@@ -26,23 +26,16 @@ Stores calendar availability of every user.
 Stores the events that users upload/post.
 
 | Column | Type | Description |
+|--------|------|-------------|
 | title | Character Field | Title/name of the event |
 | description | TextField | Description of the event |
-|---|---|---|
 | event_type | ForeignKey(HobbyType) | Type of hobby category that the event relates to.  |
-|---|---|---|
 | datetime | DateTimeField | Date and time of event  |
-|---|---|---|
 | duration_h | IntegerField | How long the event lasts (in hours) |
-|---|---|---|
 | address| Character Field | Address location of the event |
-|---|---|---|
 | latitude | DecimalField | Latitude of the event's location |
-|---|---|---|
 | longitude | DecimalField | Longitude of the event's location |
-|---|---|---|
 | max_attendees | IntegerField | Maximum capacity of the event/number of people that can attend |
-|---|---|---|
 
 
 
