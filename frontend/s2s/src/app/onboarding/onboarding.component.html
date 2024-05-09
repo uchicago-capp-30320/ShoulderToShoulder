@@ -1,6 +1,6 @@
 <main style="margin-bottom: 3rem;">
     <!-- Exit Button -->
-    <div *ngIf="this.page >= 0 && this.page < maxPage" class="exitDiv">
+    <div *ngIf="this.page >= 0 && this.page <= maxPage" class="exitDiv">
         <button id="exit-button" pButton (click)="showExitDialog()" class="exitButton">Exit Onboarding</button>
     </div>
 
@@ -122,7 +122,7 @@
     <!-- Outro message -->
     <div *ngIf="this.page > maxPage" class="onboardingOutro">
         <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
-        <p class="subtitle dark-text">You have successfully completed the onboarding process. We are building your profile. <br> If you are not automatically redirected, you can follow this link: [INSERT]</p>
+        <p class="subtitle dark-text">You have successfully completed the onboarding process. Please wait while we build your profile.
         <app-loader></app-loader>
     </div>
 </main>

@@ -61,7 +61,11 @@ export class OnboardingComponent implements OnInit{
     
     // set page
     this.authService.getOnboardingStatus().subscribe(onboarded => {
-      this.page = onboarded ? this.maxPage + 1 : 0;
+      if (onboarded) {
+        this.router.navigate(['/profile/1']);
+      } else {
+        this.page = 0;
+      }
     });
   }
 
@@ -171,12 +175,9 @@ export class OnboardingComponent implements OnInit{
   onSubmit() {
     this.showConfirm = false;
     this.page = this.maxPage + 1;
-    this.onboardingService.submitOnboardingForms()
-    console.log("Onboading forms submitted")
-
-    // wait for redirect
-    setTimeout(() => {
-      this.router.navigate(['/profile']);
-    }, 4000);
+    this.onboardingService.submitOnboardingForms(true).subscribe(() => {
+      console.log("Onboading forms submitted");
+      this.router.navigate(['/profile/1']);
+    });
   }
 }
