@@ -1,111 +1,189 @@
+import os
 import jax
-from tqdm import tqdm
 import optax
+import pickle
 import jaxlib
+import requests
+from tqdm import tqdm
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
-from ml.dataset import Dataset
+from shoulder.ml.ml.dataset import Dataset
 
 from jax import value_and_grad, jit
-from ml.model import foward_deep_fm, foward_fm, foward_mlp
+from shoulder.ml.ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_embedding
 
 
-@jit
-def step(params: list, x: jax.Array, y: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
+def preprocess(raw_data: requests.models.Response) -> jaxlib.xla_extension.ArrayImpl:
     """
-    Update the parameters of a deep factorization machine
+    Prepare data for training or predicting
 
     Parameters:
     -----------
-        params (list): parameters for the model
-        x (Array): a jax numpy array
-        y (Array): a jax numpy array
+        raw_data (requests.models.Response): a response from the event suggestions database
+
+    Returns:
+        a tuple of preprocessed arrays for training or predicting
+    """
+    feature_list, target_list = [], []
+    raw_json = raw_data.json()
+    json_results = raw_json["results"]
+
+    # json_results is a list of dictionaries
+    for d in json_results:
+        del d["id"]
+        user_id = d["user_id"]  # We will add this after everything else
+        del d["user_id"]
+
+        if d["attended_event"] == 1:
+            target_list.append(1)
+        else:
+            target_list.append(0)
+        del d["attended_event"]
+
+        user_event_list = []
+        low, high = 0, 1
+
+        for key in sorted(d.keys()):
+            if d[key] is True:
+                user_event_list.append(high)
+            else:
+                user_event_list.append(low)
+            
+            # Ensures unique integers for every response in very field, basically creating 
+            # a vocabulary for the embedding layer
+            low += 2
+            high += 2
+
+        # Makes sure the user ID doesn't overlap with another "token"
+        user_event_list.append(high + user_id)
+
+        feature_list.append(user_event_list)
+
+    x, y= jnp.array(feature_list, dtype=float), jnp.array(target_list, dtype=float)
+
+    return x, y
+    
+
+def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list) -> None:
+    """
+    Save diagnostic plots and weights from training a DeepFM
+
+    Parameters:
+    -----------
+        epochs (list): a list of training epochs
+        loss_list (list): a list of losses at each epoch
+        acc_list (list): a list of accuracy for each epoch
+        params (list): a list of model parameters
+    """
+    # Make sure we remove old plots
+    if os.path.isfile('ml/ml/figures/training_curves.jpg'):
+        os.remove('ml/ml/figures/training_curves.jpg')
+
+    plt.plot(epochs, loss_list, label='Loss')
+    plt.plot(epochs, acc_list, label='Accuracy')
+    plt.legend()
+    plt.title("Training Loss and Accuracy")
+    plt.savefig('figures/training_curves.jpg')
+    plt.close()
+
+    # Saving the weights
+    with open('weights/parameters.pkl', 'wb') as file:
+        pickle.dump(params, file)
+
+
+@jit
+def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl, 
+         y: jaxlib.xla_extension.ArrayImpl) -> tuple:
+    """
+    Make one update to a DeepFM
+
+    Parameters:
+    -----------
+        params (list): a list of DeepFM parameters
+        x (jaxlib.xla_extension.ArrayImpl): a minibatch of features
+        y (jaxlib.xla_extension.ArrayImpl): a minibatch of targets
 
     Returns:
     --------
-    
+        A tuple of updated parameters, loss, gradients, and accuracy
     """
-    # Binary cross entropy with clipping to avoid rounding issues
+
     def loss_fn(params, x, y):
         ys = foward_deep_fm(params, x)
         ys = jnp.clip(ys, 1e-7, 1 - 1e-7)
 
         return -jnp.mean(y * jnp.log(ys) + (1 - y) * jnp.log(1 - ys))
 
+    loss, grads = value_and_grad(loss_fn)(params, x, y)
     predicted_class = jnp.round(foward_deep_fm(params, x))
     accuracy = jnp.mean(predicted_class == y)
-
-    # grads also returns a pytree
-    loss, grads = value_and_grad(loss_fn)(params, x, y)
-
-    # Return the state and update
     return params, loss, grads, accuracy
 
 
-def train(params: list, data: Dataset, num_epochs: int) -> jaxlib.xla_extension.ArrayImpl:
+def train(params: list, data: Dataset, num_epochs: int):
     """
-    Train a deep factorization machine
+    Train a deep factorization machine, visualize the results, and save the weights
 
     Parameters:
     -----------
-        params (list): parameters for the model
-        X (Array): features to use for predicting user interactions
-        Y (Array): user interactions
+        params (list): a list of DeepFM parameters
+        data (Dataset): a Dataset object
         num_epochs (int): the number of epochs to train for
 
     Returns:
     --------
-        tuple (list): a list of epochs, a list of the loss at each epoch, and a list 
-            of the accuracy at each epoch
+        A tuple containing lists of epochs, loss, accuracy, and parameters
     """
     epochs, loss_list, acc_list = [], [], []
-
     solver = optax.adam(0.0001)
     solver_state = solver.init(params)
 
-    # Main training loop
     for epoch in tqdm(range(num_epochs)):
         for x_batch, y_batch in data:
             params, loss, grads, acc = step(params, x_batch, y_batch)
-
-            # Update the weights
-            updates, solver_state = solver.update(grads, solver_state, params)
+            updates, solver_state = solver.update(grads, solver_state)
             params = optax.apply_updates(params, updates)
 
-        epochs.append(epoch)
+        epochs.append(epoch + 1)
         loss_list.append(loss)
         acc_list.append(acc)
 
         if epoch % 10 == 0:
             print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc}")
 
-    # Useful to diagnose any issues later
-    plt.plot(jnp.array(epochs), jnp.array(acc_list), label='Accuracy')
-    plt.plot(jnp.array(epochs), jnp.array(loss_list), label='Cross Entropy Loss')
-    plt.legend()
-    plt.title("Training loss vs accuracy")
-    plt.savefig('ml/figures/training_curves.jpg')
+    save_outputs(epochs, loss_list, acc_list, params)
 
     return epochs, loss_list, acc_list, params
 
 
-def predict(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
+def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     """
     Predict the probability of a user RSVPing to an event
 
     Parameters:
     -----------
-        params (tuple): the parameters used to initialize the DeepFM being used to 
-            make predictions
-        X (array): ana rray of features to use for prediction
+        X (array): an array of features to use for prediction
 
     Returns:
     --------
         predictions (array): predicted probabilities of users RSVPing for events
     """
-    _, fm_params, mlp_params = params
-    mlp_out = foward_mlp(mlp_params, X[0], train=False)
-    fm_out = foward_fm(fm_params, X[0])
-    y = jax.nn.sigmoid(fm_out + mlp_out.T).T
+    # Check if params is a global variable and if not, read them from a pkl file and add 
+    # the parameters to the gloabl scoe so we don't have to keep reading them in when we 
+    # call predict
+    if "params" in globals():
+        params = globals["params"]
+    else:
+        with open('weights/parameters.pkl', 'rb') as file:
+            params = pickle.load(file)
+
+        globals()["params"] = params
+
+    embedding_params, fm_params, mlp_params = params
+    embeddings = foward_embedding(embedding_params, X)
+    fm_out = foward_fm(fm_params, embeddings)
+    mlp_out = foward_mlp(mlp_params, embeddings)
+    y = jax.nn.sigmoid(fm_out + mlp_out)
 
     return y
+
