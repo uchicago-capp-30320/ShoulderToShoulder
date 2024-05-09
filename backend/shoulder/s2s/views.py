@@ -16,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
 from gis.gis_module import distance_bin
+import os
 
 from .serializers import *
 from .db_models import *
@@ -1395,21 +1396,25 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
 class SuggestionResultsViewSet(viewsets.ModelViewSet):
     serializer_class = SuggestionResultsSerializer
     permission_classes = [HasAppToken]
-    app_token = environ.Env().str('APP_TOKEN')
-
-    headers = {"X-APP-TOKEN": app_token}
+    queryset = SuggestionResults.objects.all()
 
     @action(detail=False, methods=['get'], url_path='update')
-    def update_suggestions(self, user_id):
+    def update_suggestions(self, request, *args, **kwargs):
         """
         Update suggestion results for a given user.
         """
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        print(os.getcwd())
+
         try:
             user = User.objects.get(pk=user_id)
 
             # Retrieve and process user and event data
-            user_panel = self.req_to_list(f"http://localhost:8000/api/panel_user_preferences/?user_id={user_id}")
-            event_panel = self.req_to_list("http://localhost:8000/api/panel_events/")
+            user_panel = PanelUserPreferences.objects.get(user_id=user)
+            event_panel = PanelEvent.objects.all()
             
         except Exception as e:
             return Response({"error": f"Failed to find user or event panel data: {str(e)}"}, status=400)
@@ -1427,25 +1432,42 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             'dist_within_40mi': False, 
             'dist_within_50mi': False
         }
+        user_panel_dict = user_panel.__dict__.copy()
+        user_panel_dict.pop('_state')
+        user_panel_dict['user_id'] = user_panel_dict.pop('user_id_id')
+
+        # convert events to list of dictionaries
+        event_panel_dict_lst = [event.__dict__.copy() for event in event_panel]
+        for event in event_panel_dict_lst:
+            event.pop('_state')
+            event.pop('id')
+            event['event_id'] = event.pop('event_id_id')
 
         # Combine the three dictionaries to form rows
         model_list = [
-            {**user_panel[0], **event, **distance_dict} for event in event_panel
+            {**user_panel_dict, **event, **distance_dict} for event in event_panel_dict_lst
         ]
 
         # Get recommendations
         prediction_probs, user_ids, event_ids = recommend(model_list)
 
-        for pred, user, event in zip(prediction_probs, user_ids, event_ids):
-            event = Event.objects.get(id=event)
-            SuggestionResults.objects.update_or_create(
+        results = []
+        for pred, user_id, event_id in zip(prediction_probs, user_ids, event_ids):
+            event = Event.objects.get(id=event_id)
+            user = User.objects.get(id=user_id)
+            result = SuggestionResults.objects.update_or_create(
                 user_id = user,
                 event_id = event,
                 defaults = {
-                    'probability_of_attendance': pred,
-                    'event_date': event.event_date
+                    'probability_of_attendance': pred[0],
+                    'event_date': event.datetime
                 }
             )
+            results.append(result[0])
+
+        # serialize the results for the response
+        serializer = SuggestionResultsSerializer(results, many=True)
+        return Response(serializer.data, status=200)
 
     def req_to_list(self, endpoint):
         """

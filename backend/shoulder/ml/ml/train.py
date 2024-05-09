@@ -174,7 +174,7 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     if "params" in globals():
         params = globals["params"]
     else:
-        with open('shoulder/ml/ml/weights/parameters.pkl', 'rb') as file:
+        with open('ml/ml/weights/parameters.pkl', 'rb') as file:
             params = pickle.load(file)
 
         globals()["params"] = params
