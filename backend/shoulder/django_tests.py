@@ -1,7 +1,10 @@
 import pytest
 import uuid 
+from django.urls import reverse
+from rest_framework.authtoken.models import Token
 
-from s2s.views import UserViewSet, CreateUserViewSet
+
+from s2s.views import *
 from s2s.db_models import *
 from django.contrib.auth.models import User
 
@@ -13,26 +16,34 @@ def test_password():
   
 @pytest.fixture
 def create_user(db, django_user_model, test_password):
-    def make_user(**kwargs):
-        kwargs['password'] = test_password
-        if 'username' not in kwargs:
-            kwargs['username'] = 'django.test@s2s.com'
-        if 'email' not in kwargs:
-           kwargs['email'] = 'django.test@s2s.com'
-        if 'first_name' not in kwargs:
-           kwargs['first_name'] = 'django'
-        if 'last_name' not in kwargs:
-           kwargs['last_name'] = 'test'
-        return django_user_model.objects.create_user(**kwargs)
-    return make_user
+   def make_user(**kwargs):
+      kwargs['password'] = test_password
+      if 'username' not in kwargs:
+         kwargs['username'] = str(uuid.uuid4()) 
+      return django_user_model.objects.create_user(**kwargs)
+   return make_user
 
 
-# @pytest.mark.django_db
-# def test_user_create():
-#     User.objects.create_user('django.test@s2s.com', 'django.test@s2s.com', 'django', 'test', False)
-#     assert User.objects.count() == 1
+# 1. I don't know how to use this
+# @pytest.fixture
+# def get_or_create_token(db, create_user):
+#    user = create_user()
+#    token, _ = Token.objects.get_or_create(user=user)
+#    return token
 
-# def test_new_user(django_user_model):
-#     django_user_model.objects.create_user(username="someone", password="Something123!")
+
+
+@pytest.mark.django_db
+def test_user(client, create_user):
+   user = create_user(username='django.test@s2s.com')
+   # 2. This gives error: "Reverse for 'user-list' with keyword arguments '{'id': 1}' not found"
+   # url = reverse('user-list', kwargs={'id': user.id})
+   # 3. This gives and error: "FAILED django_tests.py::test_user - assert 401 == 200" ; "Unauthorized: /api/user/"
+   url = reverse('user-list')
+   response = client.get(url)
+   assert response.status_code == 200
+   assert 'django.test@s2s.com' in response.content
+
+
 
 
