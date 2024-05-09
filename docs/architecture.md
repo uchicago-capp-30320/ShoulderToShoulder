@@ -97,6 +97,40 @@ Navigate to `localhost:1800/admin` in your web browser and enter the superuser c
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
+### Unit Testing
+
+Following development in any module, run it's unit testing. 
+
+#### `frontend`
+
+TBD
+
+<pre>
+```
+
+```
+</pre>
+
+#### `backend`
+ 
+<pre>
+```
+cd backend
+poetry env use 3.12
+poetry shell
+poetry install
+cd shoulder
+
+pytest django_tests.py    // Run this command to test the Django application. 
+pytest gis/gis_module_tests.py    // Run this command to test the GIS module. 
+pytest ml/tests    // Run this command to test the ml module. 
+
+#to exit the environment
+exit
+```
+</pre>
+
+
 ### Pre-Commit Checklist
 
 Before merging your code, it needs to be properly formatted. Follow these steps (for each development module) to pass pre-commit.
