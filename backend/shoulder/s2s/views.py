@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from s2s.permissions import HasAppToken
 from django.test.client import RequestFactory
+from rest_framework.test import APIRequestFactory
 import environ
 import requests
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -15,8 +16,12 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
+<<<<<<< HEAD
 from gis.gis_module import distance_bin
 import os
+=======
+from .utils.calendar import calendar
+>>>>>>> e65ace337373d4b1d3635e6221f7c7f350b6ec30
 
 from .serializers import *
 from .db_models import *
@@ -164,25 +169,7 @@ class EventViewSet(viewsets.ModelViewSet):
         response = panel_event.create(request)
         return response
 
-class CalendarViewSet(viewsets.ModelViewSet):
-    queryset = Calendar.objects.all()
-    serializer_class = CalendarSerializer
-    permission_classes = [HasAppToken]
-
-    def get_queryset(self):
-        queryset = self.queryset
-        id = self.request.query_params.get('id')
-        day_of_week = self.request.query_params.get('day_of_week')
-        hour = self.request.query_params.get('hour')
-
-        if id:
-            queryset = queryset.filter(id=id)
-        elif day_of_week and hour:
-            queryset = queryset.filter(day_of_week=day_of_week, hour=hour)
-
-        return queryset
-
-class OnbordingViewSet(viewsets.ModelViewSet):
+class OnboardingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
     serializer_class = OnbordingSerializer
     permission_classes = [HasAppToken]
@@ -206,26 +193,14 @@ class OnbordingViewSet(viewsets.ModelViewSet):
             if request.data['onboarded']:
                 # create the panelized preferences and scenarios
                 resp_pref = self.trigger_panel_preferences(user.id)
-                resp_scen = self.trigger_panel_scenarios(user.id)
                 
-                if resp_pref.status_code == 201 and resp_scen.status_code == 201:
+                if resp_pref.status_code == 201:
                     return Response(serializer.data, status=200)
                 
                 return Response({"error": "Failed to get panel data"}, status=400)
             return Response(serializer.data, status=200 if created else 202)
 
         return Response(serializer.errors, status=400)
-    
-    def trigger_panel_scenarios(self, user_id):
-        # to mimic a request object
-        factory = RequestFactory()
-        request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
-
-        # create event suggestions
-        request.data = {'user_id': user_id}
-        panel_scenario = PanelScenarioViewSet()
-        response = panel_scenario.create(request)
-        return response
     
     def trigger_panel_preferences(self, user_id):
         # to mimic a request object
@@ -253,35 +228,47 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
     serializer_class = AvailabilitySerializer
     permission_classes = [HasAppToken]
 
+    def update_availability_obj(self, item, user):
+        # validate the item
+        if not all([item.get('user_id'), item.get('day_of_week'), item.get('hour')]):
+            return
+
+        # get the availability object
+        availability = Availability.objects.get(user_id=user, day_of_week=item['day_of_week'], hour=item['hour'])
+
+        # set the availability
+        availability.available = item['available']
+        return availability
+
     @action(methods=['post'], detail=False, url_path='bulk_update')
     def bulk_update(self, request, *args, **kwargs):
         self.serializer_class = BulkAvailabilitySerializer
         data = request.data
+
+        # validate the data
         if not isinstance(data, list):
-            return Response({"error": "Expected a list of items"}, status=400)
+            return Response({"error": "[Availability Bulk Update] Expected a list of items"}, status=400)
+        
+        # extract user data
+        if not data[0].get("user_id"):
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        user_id = data[0]['user_id']
+        if list(data[0].keys()) == ['user_id']:
+            data = data[1:]
+                
+        # get user
+        user = User.objects.get(id=user_id)
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+        
+        # Update availability
+        avail_objs = list(map(lambda item: self.update_availability_obj(item, user), data))
 
-        with transaction.atomic():
-            responses = []
-            for item in data:
-                email = item.get('email')
-                day_of_week = item.get('day_of_week')
-                hour = item.get('hour')
-                available = item.get('available')
+        # bulk update
+        num_updated = Availability.objects.bulk_update(avail_objs, ['available'])
 
-                if not all([email, day_of_week, hour]):
-                    continue  # Skip invalid items
-
-                user_id = User.objects.get(email=email)
-                calendar_id = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
-                instance, created = Availability.objects.update_or_create(
-                    user_id=user_id,
-                    calendar_id=calendar_id,
-                    defaults={'available': available}
-                )
-
-                responses.append(self.get_serializer(instance).data)
-
-            return Response({"Number of updated rows": len(responses)}, status=200)
+        return Response({"Number of updated rows": num_updated}, status=200)
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')
@@ -292,13 +279,8 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
         if not all([user_id, day_of_week, hour]):
             return Response({"error": "Missing required fields"}, status=400)
 
-        # get the existing calendar object or create one
-        calendar, created = Calendar.objects.get_or_create(day_of_week=day_of_week, hour=hour)
-        if not created:
-            calendar = Calendar.objects.get(day_of_week=day_of_week, hour=hour)
-
         # Create the availability record
-        availability = Availability(user_id=user_id, calendar_id=calendar)
+        availability = Availability(user_id=user_id, day_of_week=day_of_week, hour=hour, available=False)
         availability.save()
 
         serializer = self.get_serializer(availability)
@@ -365,6 +347,54 @@ class ScenariosiewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user_id=user)
 
         return queryset
+    
+    def bulk_create(self, request, *args, **kwargs):
+        # validate data type
+        if not isinstance(request.data, list):
+            return Response({"error": "Expected a list of items"}, status=400)
+        
+        # extract user data
+        if not request.data[0].get("user_id"):
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        user_id = request.data[0]['user_id']
+        data = request.data[1:]
+
+        # get user
+        user = User.objects.get(id=user_id)
+        if not user:
+            return Response({"error": "User not found"}, status=404)
+        
+        # add user ID to each item
+        for item in data:
+            item['user_id'] = user
+
+        # add hobby object
+        hobby_cols = ['hobby1', 'hobby2']
+        for item in data:
+            for col in hobby_cols:
+                if item.get(col):
+                    item[col] = Hobby.objects.get(id=item[col])
+
+        # create the scenarios
+        scenario_objs = [Scenarios(**item) for item in data]
+        Scenarios.objects.bulk_create(scenario_objs)
+
+        # create the panelized scenarios
+        self.trigger_panel_scenarios(user_id)
+
+        return Response({"Number of created rows": len(scenario_objs)}, status=201)        
+    
+    def trigger_panel_scenarios(self, user_id):
+        # to mimic a request object
+        factory = RequestFactory()
+        request = factory.post('/fake-url/', {'user_id': user_id}, format='json')
+
+        # create event suggestions
+        request.data = {'user_id': user_id}
+        panel_scenario = PanelScenarioViewSet()
+        response = panel_scenario.create(request)
+        return response
 
 class ProfilesViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
@@ -498,9 +528,8 @@ class CreateUserViewSet(viewsets.ModelViewSet):
 
             # for each option in the calendar table, create a row in the
             # availability table and set the default availability to False
-            calendars = Calendar.objects.all()
-            for calendar in calendars:
-                availability = Availability(user_id=user, calendar_id=calendar)
+            for day, hour in calendar:
+                availability = Availability(user_id=user, day_of_week=day, hour=hour, available=False)
                 availability.save()
 
             # Return user information and tokens
@@ -543,14 +572,14 @@ class UserViewSet(viewsets.ModelViewSet):
         # delete the user's profile picture from S3
         try:
             profile = Profile.objects.get(user_id=user.id)
-            if profile.profile_picture != "default_profile.jpeg":
+            if profile.profile_picture != "https://s2s-profile-photos.s3.amazonaws.com/default_profile.jpeg":
                 object_key = str(profile.profile_picture).split("/")[-1]
                 s3 = boto3.client('s3',
                                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                 region_name=settings.AWS_S3_REGION_NAME)
                 s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=object_key)
-            profile.profile_picture = "default_profile.jpeg"
+            profile.profile_picture = "https://s2s-profile-photos.s3.amazonaws.com/default_profile.jpeg"
             profile.save()
             return Response({"detail": "Profile picture deleted"}, status=200)
         except Profile.DoesNotExist:
@@ -640,7 +669,7 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(name=name)
         elif token:
             queryset = queryset.filter(token=token)
-
+ 
         return queryset
 
 class UserEventsViewSet(viewsets.ModelViewSet):
@@ -681,7 +710,6 @@ class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         user_id = self.request.query_params.get('user_id')
-        print(user_id)
 
         if user_id:
             user = User.objects.get(id=user_id)
@@ -773,8 +801,8 @@ class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
         }
         availability_data_lst = {}
         for availability in user_availability:
-            day_of_week = availability.calendar_id.day_of_week
-            hour = availability.calendar_id.hour
+            day_of_week = availability.day_of_week
+            hour = availability.hour
             for period, hours in time_period_mapping.items():
                 preference_field = f"pref_{day_of_week.lower()}_{period}"
                 if int(hour) in hours:
@@ -1507,3 +1535,125 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                     return distance_dict
         else:
             return distance_dict
+    
+class SubmitOnboardingViewSet(viewsets.ModelViewSet):
+    queryset = Onboarding.objects.all()
+    serializer_class = OnbordingSerializer
+    permission_classes = [HasAppToken]
+
+    def create(self, request, *args, **kwargs):
+        """
+        Centralized endpoint for submitting onboarding data.
+        
+        Request data should be a dictionary/JSON object with the following keys:
+            - user_data: user data dictionary
+            - availability: list of availability dictionaries
+            - onboarding: onboarding data dictionary
+            - scenarios: list of scenario dictionaries
+            i.e., {"user_data": {"user_id": number}, 
+                   "availability": [{"day_of_week": string, "hour": number, "available": boolean}, ...], 
+                   "onboarding": {"num_participants": string, "distance": string,...}, 
+                   "scenarios": [{"day_of_week1": string, "time_of_day1": string,...},...]
+                   }
+        
+        This functional handles the sequential requirements of data updates:
+            1. Insert availability data
+            2. Insert and panelize scenario data
+            3. Insert onboarding data
+
+        This function also allows for partial updates to onboarding data.
+        """
+        # validate request data
+        keys = ['user_data', 'availability', 'onboarding', 'scenarios']
+        if not all([key in request.data for key in keys]):
+            return Response({"error": f"Missing required fields: {keys}"}, status=400)
+        
+        # get user data
+        user_data = request.data['user_data']
+        user_id = user_data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # get user
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        
+        # trigger availability endpoint if data is available
+        if len(request.data.get('availability')) > 0:
+            availability_response = self.trigger_availability(request, user_id)
+            if availability_response.status_code not in [200, 201, 202]:
+                return availability_response
+        
+        # trigger scenario endpoint if data is available
+        if len(request.data.get('scenarios')) > 0:
+            scenario_response = self.trigger_scenario(request, user_id)
+            if scenario_response.status_code not in [200, 201, 202]:
+                return scenario_response
+        
+        # trigger onboarding endpoint
+        if len(request.data.get('onboarding')) > 0:
+            onboarding_response = self.trigger_onboarding(request, user_id)
+            if onboarding_response.status_code not in [200, 201, 202]:
+                return onboarding_response
+            
+        return Response({"detail": "Successfully updated"}, status=201)
+        
+    def trigger_availability(self, request, user_id):
+        # get availability data
+        availability = request.data.get('availability')
+
+        # send data as a request to the availability endpoint
+        if not availability[0].get("user_id"):
+            availability= [{"user_id": user_id}] + availability
+
+        # to mimic a request object
+        factory = RequestFactory()
+        mimic_request = factory.post('/fake-url/', {"availability": availability}, format='json')
+
+        # create event suggestions
+        mimic_request.data = availability
+        availability = AvailabilityViewSet()
+        response = availability.bulk_update(mimic_request)
+        return response
+    
+    def trigger_scenario(self, request, user_id):
+        # get scenario data
+        scenarios_data = request.data.get('scenarios')
+
+        # clean data
+        cleaned_scenario_data = [{"user_id": user_id}] + scenarios_data
+        for item in cleaned_scenario_data:
+            item['user_id'] = int(item['user_id'])
+        
+        # to mimic a request object
+        factory = RequestFactory()
+        mimic_request = factory.post('/fake-url/', {"scenarios": scenarios_data}, format='json')
+
+        # create event suggestions
+        mimic_request.data = scenarios_data
+        scenario_view = ScenariosiewSet()
+        response = scenario_view.bulk_create(mimic_request)
+        return response
+    
+    def trigger_onboarding(self, request, user_id):
+        # get onboarding data
+        onboarding_data = request.data.get('onboarding')
+
+        # clean the passed data
+        cleaned_data = {key: (value if value is not None else "") for key, value in onboarding_data.items()}
+        cleaned_data["user_id"] = cleaned_data.get("user_id", user_id)
+
+        # to mimic a request object
+        factory = APIRequestFactory()
+        mimic_request = factory.post('/fake-url/', {'onboarding': cleaned_data}, format='json')
+
+        # create event suggestions
+        mimic_request.data = cleaned_data
+        onboarding_view = OnboardingViewSet()
+        onboarding_view.request = mimic_request
+        onboarding_view.action_map = {'post': 'update_onboarding'}
+        onboarding_view.format_kwarg = None
+        response = onboarding_view.update_onboarding(mimic_request)
+        return response
