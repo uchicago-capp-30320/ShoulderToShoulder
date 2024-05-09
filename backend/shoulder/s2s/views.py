@@ -223,7 +223,7 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
 
     def update_availability_obj(self, item, user):
         # validate the item
-        if not all([item.get('email'), item.get('day_of_week'), item.get('hour')]):
+        if not all([item.get('user_id'), item.get('day_of_week'), item.get('hour')]):
             return
 
         # get the availability object
@@ -247,8 +247,9 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
             return Response({"error": "User ID not provided"}, status=400)
         
         user_id = data[0]['user_id']
-        data = data[1:]
-        
+        if list(data[0].keys()) == ['user_id']:
+            data = data[1:]
+                
         # get user
         user = User.objects.get(id=user_id)
         if not user:

@@ -106,12 +106,12 @@ export class AvailabilityService {
   /**
    * Updates user availability in the database.
    */
-  getUpdateAvailabilityData(): { email: string, day_of_week: string, hour: number, available: boolean }[] {
+  getUpdateAvailabilityData(): { user_id: number, day_of_week: string, hour: number, available: boolean }[] {
     console.log("updating availability")
     const user = this.authService.userValue; // assuming authService exposes user details
     const updates = this.userAvailability.map(slot =>
       slot.days.map((available, dayIndex) => ({
-        email: user.email,
+        user_id: user.id,
         day_of_week: daysOfTheWeek[dayIndex], // Ensure daysOfTheWeek is defined and accessible
         hour: slot.time.value,
         available: available
@@ -123,6 +123,7 @@ export class AvailabilityService {
 
   submitAvailability(): Observable<any> {
     const updates = this.getUpdateAvailabilityData();
+    console.log(updates)
     return this.http.post(this.bulkAvailabilityEndpoint, updates);
   }
 

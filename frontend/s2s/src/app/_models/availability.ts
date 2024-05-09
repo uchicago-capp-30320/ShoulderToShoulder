@@ -2,13 +2,6 @@
 import { range } from "../_helpers/utils";
 import { labelValueInt } from "../_helpers/abstractInterfaces";
 
-export interface AvailabilityPut {
-    email: string | undefined;
-    day_of_week: string;
-    hour: number;
-    available: boolean;
-}
-
 export interface AvailabilityObj {
     id: number;
     available: boolean;
