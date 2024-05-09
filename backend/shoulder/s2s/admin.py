@@ -3,7 +3,6 @@ from .db_models import *
 
 # Register your models here.
 admin.site.register(Hobby)
-admin.site.register(Calendar)
 admin.site.register(Event)
 admin.site.register(Availability)
 admin.site.register(Group)

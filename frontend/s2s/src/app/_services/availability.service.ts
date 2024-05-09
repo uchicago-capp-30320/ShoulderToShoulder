@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, expand } from 'rxjs/operators';
 import { EMPTY, BehaviorSubject, Observable, throwError, reduce} from 'rxjs';
-import { withCache } from '@ngneat/cashew';
 
 // services
 import { ApiService } from './api.service';
@@ -10,13 +9,11 @@ import { AuthService } from './auth.service';
 
 // models
 import { AvailabilityObj, 
-          CalendarObj, 
           AvailabilityResponse, 
-          CalendarResponse,
           daysOfTheWeek,
           hours,
           AvailabilitySlot
-        } from '../_models/calendar';
+        } from '../_models/availability';
 
 /**
  * Service responsible for managing calendar-related functionalities, including 
@@ -32,12 +29,9 @@ import { AvailabilityObj,
 @Injectable({
   providedIn: 'root'
 })
-export class CalendarService {
+export class AvailabilityService {
   availabilityEndpoint = this.apiService.BASE_API_URL + '/availability/';
-  calendarEndpoint = this.apiService.BASE_API_URL + '/calendar/';
-
-  calendarSubject = new BehaviorSubject<CalendarObj[]>([]);
-  calendar = this.calendarSubject.asObservable();
+  bulkAvailabilityEndpoint = this.apiService.BASE_API_URL + '/availability/bulk_update/';
 
   availabilitySubject = new BehaviorSubject<AvailabilityObj[]>([]);
   availability = this.availabilitySubject.asObservable();
@@ -52,44 +46,20 @@ export class CalendarService {
     private authService: AuthService
   ) {
     if (this.authService.loggedIn) {
-      this.loadAllCalendar();
+      this.loadAllAvailability();
     }
    }
 
-  /**
-   * Loads calendar data from the API and initializes availability data.
-   */
-  loadAllCalendar(): void {
-    this.fetchCalendar(this.calendarEndpoint).subscribe(calendar => {
-      this.calendarSubject.next(calendar);
-      this.calendarSubject.subscribe(calendar => this.loadAllAvailability(calendar));
-    });
-  }
-
-  /**
-   * Gets the calendar from the calendar API. Iterates through each
-   * page in the API response to get all the calendar data.
-   * 
-   * @returns The calendar data as a list of Calendar objects.
-   */
-  fetchCalendar(url: string): Observable<CalendarObj[]> {
-    return this.http.get<CalendarResponse>(url, {context: withCache()}).pipe(
-      expand(response => response.next ? this.http.get<CalendarResponse>(response.next) : EMPTY),
-      map(response => response.results),
-      reduce<CalendarObj[], CalendarObj[]>((acc, cur) => [...acc, ...cur], []),
-      catchError(error => throwError(() => new Error(`Error fetching calendar: ${error}`)))
-    );
-  }
 
   /**
    * Loads availability data from the API and converts it for UI display.
    * 
    * @param calendar The calendar data used to map availability slots.
    */
-  loadAllAvailability(calendar: CalendarObj[]): void {
+  loadAllAvailability(): void {
     this.fetchAvailability(this.availabilityEndpoint + "?user_id=" + this.authService.userValue.id).subscribe(availability => {
       this.availabilitySubject.next(availability);
-      this.userAvailability = this.convertAvailability(availability, calendar);
+      this.userAvailability = this.convertAvailability(availability);
       this.userAvailabilityObserver.next(this.userAvailability);
     });
   }
@@ -114,51 +84,47 @@ export class CalendarService {
    * Converts availability data for UI display.
    * 
    * @param availability The availability data fetched from the API.
-   * @param calendar The calendar data used to map availability slots.
    * @returns An array of AvailabilitySlot objects for UI display.
    */
-  convertAvailability(availability: AvailabilityObj[], calendar: CalendarObj[]): AvailabilitySlot[] {
+  convertAvailability(availability: AvailabilityObj[]): AvailabilitySlot[] {
     return hours.map(hour => {
       const timeOfDay = hour >= 12 && hour < 24 ? ' PM' : ' AM';
       const timeLabel = `${hour % 12 === 0 ? 12 : hour % 12}:00` + timeOfDay;
       const time = { label: timeLabel, value: hour };
       const days = daysOfTheWeek.map(day => {
-        const dayAvailability = availability.find(a => {
-          const calendarObj = calendar.find(c => c.id === a.calendar_id && c.day_of_week === day && c.hour == hour);
-          return calendarObj && a.available;
-        });
-
-        // converts undefined values to false and defined values to true
-        // if a user is available at a given time and day, the will convert the 
-        // toggle value to true
-        return !!dayAvailability; 
+        const dayAvailability = availability.find(slot => slot.day_of_week === day && slot.hour === hour);
+        if (dayAvailability === undefined) {
+          return false;
+        }
+        return dayAvailability.available;
       });
   
       return { time, days };
     });
   }
 
-
   /**
    * Updates user availability in the database.
    */
-  updateAvailability(): Observable<any> {
+  getUpdateAvailabilityData(): { user_id: number, day_of_week: string, hour: number, available: boolean }[] {
+    console.log("updating availability")
     const user = this.authService.userValue; // assuming authService exposes user details
     const updates = this.userAvailability.map(slot =>
       slot.days.map((available, dayIndex) => ({
-        email: user.email,
+        user_id: user.id,
         day_of_week: daysOfTheWeek[dayIndex], // Ensure daysOfTheWeek is defined and accessible
         hour: slot.time.value,
         available: available
       }))
     ).flat(); // Flattening the array to pass as a single list
+    
+    return updates;
+  }
 
-    return this.http.post(`${this.availabilityEndpoint}bulk_update/`, updates).pipe(
-      catchError(error => {
-        console.error('Error updating availability:', error);
-        return EMPTY; // Returning EMPTY to avoid breaking the observable chain in case of an error
-      })
-    );
+  submitAvailability(): Observable<any> {
+    const updates = this.getUpdateAvailabilityData();
+    console.log(updates)
+    return this.http.post(this.bulkAvailabilityEndpoint, updates);
   }
 
   /**
