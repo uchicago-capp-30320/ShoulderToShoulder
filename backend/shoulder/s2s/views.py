@@ -702,7 +702,6 @@ class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         user_id = self.request.query_params.get('user_id')
-        print(user_id)
 
         if user_id:
             user = User.objects.get(id=user_id)
@@ -1441,8 +1440,6 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
 
         This function also allows for partial updates to onboarding data.
         """
-        print(request.data)
-
         # validate request data
         keys = ['user_data', 'availability', 'onboarding', 'scenarios']
         if not all([key in request.data for key in keys]):
@@ -1474,7 +1471,6 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
         
         # trigger onboarding endpoint
         if len(request.data.get('onboarding')) > 0:
-            print("trigger onboarding")
             onboarding_response = self.trigger_onboarding(request, user_id)
             if onboarding_response.status_code not in [200, 201, 202]:
                 return onboarding_response
@@ -1529,8 +1525,6 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
         # to mimic a request object
         factory = APIRequestFactory()
         mimic_request = factory.post('/fake-url/', {'onboarding': cleaned_data}, format='json')
-
-        print("Cleaned Data", cleaned_data)
 
         # create event suggestions
         mimic_request.data = cleaned_data
