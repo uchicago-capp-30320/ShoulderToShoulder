@@ -26,9 +26,7 @@ Stores calendar availability of every user.
 Stores the events that users upload/post.
 
 | Column | Type | Description |
-|---|---|---|
 | title | Character Field | Title/name of the event |
-|---|---|---|
 | description | TextField | Description of the event |
 |---|---|---|
 | event_type | ForeignKey(HobbyType) | Type of hobby category that the event relates to.  |
