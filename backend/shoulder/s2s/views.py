@@ -564,14 +564,14 @@ class UserViewSet(viewsets.ModelViewSet):
         # delete the user's profile picture from S3
         try:
             profile = Profile.objects.get(user_id=user.id)
-            if profile.profile_picture != "default_profile.jpeg":
+            if profile.profile_picture != "https://s2s-profile-photos.s3.amazonaws.com/default_profile.jpeg":
                 object_key = str(profile.profile_picture).split("/")[-1]
                 s3 = boto3.client('s3',
                                 aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                 region_name=settings.AWS_S3_REGION_NAME)
                 s3.delete_object(Bucket=settings.AWS_STORAGE_BUCKET_NAME, Key=object_key)
-            profile.profile_picture = "default_profile.jpeg"
+            profile.profile_picture = "https://s2s-profile-photos.s3.amazonaws.com/default_profile.jpeg"
             profile.save()
             return Response({"detail": "Profile picture deleted"}, status=200)
         except Profile.DoesNotExist:
@@ -661,7 +661,7 @@ class ApplicationTokenViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(name=name)
         elif token:
             queryset = queryset.filter(token=token)
-
+ 
         return queryset
 
 class UserEventsViewSet(viewsets.ModelViewSet):
@@ -702,9 +702,10 @@ class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         user_id = self.request.query_params.get('user_id')
+        print(user_id)
 
         if user_id:
-            user = User.objects.filter(id=user_id)
+            user = User.objects.get(id=user_id)
             if user:
                 queryset = queryset.filter(user_id=user)
 
