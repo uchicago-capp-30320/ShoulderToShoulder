@@ -16,12 +16,9 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
-<<<<<<< HEAD
 from gis.gis_module import distance_bin
 import os
-=======
 from .utils.calendar import calendar
->>>>>>> e65ace337373d4b1d3635e6221f7c7f350b6ec30
 
 from .serializers import *
 from .db_models import *
@@ -1495,19 +1492,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
 
         # serialize the results for the response
         serializer = SuggestionResultsSerializer(results, many=True)
-        return Response(serializer.data, status=200)
-
-    def req_to_list(self, endpoint):
-        """
-        Helper method to get API call to panel tables and return as list of dictionaries.
-        """
-        try:
-            resp = requests.get(endpoint, headers=self.headers)
-            resp.raise_for_status()
-            return resp.json().get("results", [])
-        except requests.RequestException as e:
-            print(f"Error fetching data from {endpoint}: {e}")
-            return []
+        return Response({"count": len(results), "next": None, "previous": None, "results": serializer.data}, status=200)
     
     def distance_calc(self, event_id, user_id):
         event = Event.objects.get(id=event_id)
