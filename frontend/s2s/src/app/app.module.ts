@@ -36,6 +36,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { AccordionModule } from 'primeng/accordion';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -124,7 +125,8 @@ import { ContactUsComponent } from './contact-us/contact-us.component';
     FileUploadModule,
     CalendarModule,
     InputTextareaModule,
-    MessagesModule
+    MessagesModule,
+    AccordionModule
   ],
   providers: [
     MessageService,

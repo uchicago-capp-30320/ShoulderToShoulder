@@ -175,19 +175,9 @@ export class OnboardingComponent implements OnInit{
   onSubmit() {
     this.showConfirm = false;
     this.page = this.maxPage + 1;
-<<<<<<< HEAD
-    this.onboardingService.submitOnboardingForms()
-    console.log("Onboading forms submitted")
-
-    // wait for redirect
-    setTimeout(() => {
-      this.router.navigate(['/profile/1']);
-    }, 4000);
-=======
     this.onboardingService.submitOnboardingForms(true).subscribe(() => {
       console.log("Onboading forms submitted");
       this.router.navigate(['/profile/1']);
     });
->>>>>>> e65ace337373d4b1d3635e6221f7c7f350b6ec30
   }
 }
