@@ -1395,11 +1395,11 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
 class SuggestionResultsViewSet(viewsets.ModelViewSet):
     serializer_class = SuggestionResultsSerializer
     permission_classes = [HasAppToken]
-    app_token = environ.Env.str('APP_TOKEN')
+    app_token = environ.Env().str('APP_TOKEN')
 
     headers = {"X-APP-TOKEN": app_token}
 
-    @action(detail=True, methods=['post'], url_path='update')
+    @action(detail=False, methods=['get'], url_path='update')
     def update_suggestions(self, user_id):
         """
         Update suggestion results for a given user.
