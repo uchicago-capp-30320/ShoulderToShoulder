@@ -1584,8 +1584,8 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         top_event_data = [
             {
                 'user_id': user_id,
-                'event_id': SuggestionResults.objects.get(event_id=event_id).event_id.id,
-                'probability_of_attendance': SuggestionResults.objects.get(event_id=event_id).probability_of_attendance
+                'event_id': SuggestionResults.objects.filter(event_id=event_id)[0].event_id.id,
+                'probability_of_attendance': SuggestionResults.objects.filter(event_id=event_id)[0].probability_of_attendance
             }
             for event_id in top_events
         ]
