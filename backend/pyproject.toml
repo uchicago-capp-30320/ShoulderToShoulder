@@ -42,3 +42,7 @@ ipykernel = "^6.29.4"
 requires = ["poetry-core"]
 package-mode = false
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "ShoulderToShoulder.settings"
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]

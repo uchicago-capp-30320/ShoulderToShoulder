@@ -1,13 +1,14 @@
 import pytest
 from django.urls import reverse
 from django.test import RequestFactory, Client
-from rest_framework.test import force_authenticate, status
+from rest_framework import status
 from django.contrib.auth.models import User
-from db_models import *
-from shoulder.s2s.views import *
+from s2s.db_models import *
+from s2s.views import *
+#backend/shoulder/s2s/db_models
 
 # Importing api_client from conftest.py
-from conftest import api_client
+from tests.conftest import api_client
 
 
 # create fixtures to set up test user to be used for authentication
