@@ -2,10 +2,57 @@ import pickle
 import jaxlib
 import requests
 import jax.numpy as jnp
-from dataset import Dataset
-from model import init_deep_fm
-from train import preprocess, train, predict
+from shoulder.ml.ml.dataset import Dataset
+from shoulder.ml.ml.model import init_deep_fm
+from shoulder.ml.ml.train import preprocess, train, predict
 
+def preprocess_predict(json_results) -> jaxlib.xla_extension.ArrayImpl:
+    """
+    Prepare data for training or predicting
+
+    Parameters:
+    -----------
+        raw_data (requests.models.Response): a response from the event suggestions database
+
+    Returns:
+        a tuple of preprocessed arrays for training or predicting
+    """
+    feature_list, target_list, event_id_list, user_id_list =[],[],[],[]
+
+    # json_results is a list of dictionaries
+    for d in json_results:
+        del d["id"]
+        user_id = d["user_id"]  # We will add this after everything else
+        del d["user_id"]
+
+        event_id = d['event_id']
+        del d['event_id']
+
+        user_event_list = []
+        low, high = 0, 1
+
+        for key in sorted(d.keys()):
+            if d[key] is True:
+                user_event_list.append(high)
+            else:
+                user_event_list.append(low)
+            
+            # Ensures unique integers for every response in very field, basically creating 
+            # a vocabulary for the embedding layer
+            low += 2
+            high += 2
+
+        # Makes sure the user ID doesn't overlap with another "token"
+        user_event_list.append(high + user_id)
+
+        feature_list.append(user_event_list)
+
+        user_id_list.append(user_id)
+        event_id_list.append(event_id)
+
+    x, y= jnp.array(feature_list, dtype=float), jnp.array(target_list, dtype=float)
+
+    return x, y, user_id_list, event_id_list
 
 def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=32, 
              num_epochs: int=10, seed=1994, seeds=(8, 6, 7)) -> tuple[list]:
@@ -72,5 +119,5 @@ def recommend(raw_data: requests.models.Response) -> jaxlib.xla_extension.ArrayI
         --------
             A jax NumPy array of predicted probabilities of attending events
      """
-     full_x, _ = preprocess(raw_data)
-     return predict(full_x)
+     full_x, _, user_id_list, event_id_list = preprocess_predict(raw_data)
+     return predict(full_x), user_id_list, event_id_list
