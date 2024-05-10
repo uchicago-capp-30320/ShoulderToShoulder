@@ -19,6 +19,9 @@ from gis.gis_module import geocode
 from gis.gis_module import distance_bin
 import os
 from .utils.calendar import calendar
+from datetime import datetime, timedelta
+from django.utils import timezone
+
 
 from .serializers import *
 from .db_models import *
@@ -1493,8 +1496,51 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         # serialize the results for the response
         serializer = SuggestionResultsSerializer(results, many=True)
         return Response({"count": len(results), "next": None, "previous": None, "results": serializer.data}, status=200)
+
+    @action(detail=False, methods=['get'])
+    def trigger_suggestions(self, request):
+        '''
+        Trigger the model to generate suggestions, and return the top 2 event IDs
+        that occur in the next two weeks by probability of attendance.
+        '''
+
+        user_id = request.query_params.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # Call the endpoint to run the ML inference.
+        update_response = self.update_suggestions(request, user_id=user_id)
+
+        if update_response.status_code != 200:
+            return update_response
+        
+        current_date = timezone.now().date()
+        two_weeks_from_now = current_date + timedelta(days=14)
+        top_events = SuggestionResults.objects.filter(user_id = user_id,
+                                                    event__datetime__date__range=(current_date, two_weeks_from_now)) \
+                                                    .order_by('-probability_of_attendance') \
+                                                    .values('event_id', 'probability_of_attendance', 'user_id')[:2]
+        
+        top_events = [event['event_id'] for event in top_events]
+
+        top_event_data = [
+            {
+                'user_id': user_id,
+                'event_id': event['event_id'],
+                'probability_of_attendance': event['probability_of_attendance']
+            }
+            for event in top_events
+        ]
+        
+        return Response({
+            'top_events': top_event_data
+        })
     
     def distance_calc(self, event_id, user_id):
+        '''
+        Calculates and returns a dictionary with distance binaries for
+        use in the machine learning setup.
+        '''
         event = Event.objects.get(id=event_id)
         user = User.objects.get(id=user_id)
         distance = distance_bin(
