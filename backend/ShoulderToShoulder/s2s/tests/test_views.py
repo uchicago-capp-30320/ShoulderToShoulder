@@ -20,7 +20,6 @@ def test_user():
     user_data = {
         'first_name': 'John',
         'last_name': 'Doe',
-        'username': 'testuser',
         'email': 'test@example.com',
         'password': 'Password1!',
     }
@@ -139,7 +138,7 @@ def test_create_hobby_type(api_client):
     """
     Test creating a new hobby type.
     """
-    url = reverse('hobbytype-list')
+    url = reverse('hobbytype')
     data = {'name': 'Cycling'}
     
     response = api_client.post(url, data)
