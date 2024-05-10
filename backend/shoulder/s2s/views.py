@@ -16,10 +16,17 @@ import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from gis.gis_module import geocode
+from gis.gis_module import distance_bin
+import os
 from .utils.calendar import calendar
+from datetime import datetime, timedelta
+from django.utils import timezone
+
 
 from .serializers import *
 from .db_models import *
+
+from ml.ml.recommendation import recommend
 
 # functions
 def index(request):
@@ -680,20 +687,20 @@ class UserEventsViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-class SuggestionResultsViewSet(viewsets.ModelViewSet):
-    queryset = SuggestionResults.objects.all()
-    serializer_class = SuggestionResultsSerializer
-    permission_classes = [HasAppToken]
+# class SuggestionResultsViewSet(viewsets.ModelViewSet):
+#     queryset = SuggestionResults.objects.all()
+#     serializer_class = SuggestionResultsSerializer
+#     permission_classes = [HasAppToken]
 
-    def get_queryset(self):
-        queryset = self.queryset
-        user_id = self.request.query_params.get('user_id')
+#     def get_queryset(self):
+#         queryset = self.queryset
+#         user_id = self.request.query_params.get('user_id')
 
-        if user_id:
-            user = User.objects.get(id=user_id)
-            queryset = queryset.filter(user_id=user)
+#         if user_id:
+#             user = User.objects.get(id=user_id)
+#             queryset = queryset.filter(user_id=user)
 
-        return queryset
+#         return queryset
     
 class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     queryset = PanelUserPreferences.objects.all()
@@ -1413,6 +1420,152 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
         f"duration_{i}hr": i == duration for i in range(1, 9)
     }
         return duration_data
+
+class SuggestionResultsViewSet(viewsets.ModelViewSet):
+    serializer_class = SuggestionResultsSerializer
+    permission_classes = [HasAppToken]
+    queryset = SuggestionResults.objects.all()
+
+    @action(detail=False, methods=['get'], url_path='update')
+    def update_suggestions(self, request, *args, **kwargs):
+        """
+        Update suggestion results for a given user.
+        """
+        user_id = request.data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        print(os.getcwd())
+
+        try:
+            user = User.objects.get(pk=user_id)
+
+            # Retrieve and process user and event data
+            user_panel = PanelUserPreferences.objects.get(user_id=user)
+            event_panel = PanelEvent.objects.all()
+            
+        except Exception as e:
+            return Response({"error": f"Failed to find user or event panel data: {str(e)}"}, status=400)
+
+        # Note: distance function should be used here to populate a distance
+        # dictionary for each user-event combination.
+        # What is currently here is a placeholder to make the view functional!
+        distance_dict = {
+            'dist_within_1mi': False, 
+            'dist_within_5mi': False, 
+            'dist_within_10mi': False,
+            'dist_within_15mi': False, 
+            'dist_within_20mi': False,
+            'dist_within_30mi': False, 
+            'dist_within_40mi': False, 
+            'dist_within_50mi': False
+        }
+        user_panel_dict = user_panel.__dict__.copy()
+        user_panel_dict.pop('_state')
+        user_panel_dict['user_id'] = user_panel_dict.pop('user_id_id')
+
+        # convert events to list of dictionaries
+        event_panel_dict_lst = [event.__dict__.copy() for event in event_panel]
+        for event in event_panel_dict_lst:
+            event.pop('_state')
+            event.pop('id')
+            event['event_id'] = event.pop('event_id_id')
+
+        # Combine the three dictionaries to form rows
+        model_list = [
+            {**user_panel_dict, **event, **distance_dict} for event in event_panel_dict_lst
+        ]
+
+        # Get recommendations
+        prediction_probs, user_ids, event_ids = recommend(model_list)
+
+        results = []
+        for pred, user_id, event_id in zip(prediction_probs, user_ids, event_ids):
+            event = Event.objects.get(id=event_id)
+            user = User.objects.get(id=user_id)
+            result = SuggestionResults.objects.update_or_create(
+                user_id = user,
+                event_id = event,
+                defaults = {
+                    'probability_of_attendance': pred[0],
+                    'event_date': event.datetime
+                }
+            )
+            results.append(result[0])
+
+        # serialize the results for the response
+        serializer = SuggestionResultsSerializer(results, many=True)
+        return Response({"count": len(results), "next": None, "previous": None, "results": serializer.data}, status=200)
+
+    @action(detail=False, methods=['get'], url_path='get_suggestions')
+    def trigger_suggestions(self, request):
+        '''
+        Trigger the model to generate suggestions, and return the top 2 event IDs
+        that occur in the next two weeks by probability of attendance.
+        '''
+        user_id = request.data.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # Call the endpoint to run the ML inference.
+        update_response = self.update_suggestions(request, user_id=user_id)
+
+        if update_response.status_code != 200:
+            return update_response
+        
+        current_date = timezone.now().date()
+        two_weeks_from_now = current_date + timedelta(days=14)
+        top_events = SuggestionResults.objects.filter(user_id = user_id,
+                                                    event_id__datetime__date__range=(current_date, two_weeks_from_now)) \
+                                                    .order_by('-probability_of_attendance') \
+                                                    .values('event_id', 'probability_of_attendance', 'user_id')[:2]
+        
+        top_events = [event['event_id'] for event in top_events]
+        print(top_events)
+
+        top_event_data = [
+            {
+                'user_id': user_id,
+                'event_id': SuggestionResults.objects.get(event_id=event_id).event_id.id,
+                'probability_of_attendance': SuggestionResults.objects.get(event_id=event_id).probability_of_attendance
+            }
+            for event_id in top_events
+        ]
+        
+        return Response({
+            'top_events': top_event_data
+        })
+    
+    def distance_calc(self, event_id, user_id):
+        '''
+        Calculates and returns a dictionary with distance binaries for
+        use in the machine learning setup.
+        '''
+        event = Event.objects.get(id=event_id)
+        user = User.objects.get(id=user_id)
+        distance = distance_bin(
+            (user.latitude, user.longitude),
+            (event.latitude, event.longitude)
+        )
+        
+        distance_dict = {
+            'dist_within_1mi': False, 
+            'dist_within_5mi': False, 
+            'dist_within_10mi': False,
+            'dist_within_15mi': False, 
+            'dist_within_20mi': False,
+            'dist_within_30mi': False, 
+            'dist_within_40mi': False, 
+            'dist_within_50mi': False
+        }
+
+        if distance[0] is not None:
+            for v in [1,5,10,15,20,30,40,50]:
+                if distance[0] < v:
+                    distance_dict[f'dist_within_{v}mi'] = True
+                    return distance_dict
+        else:
+            return distance_dict
     
 class SubmitOnboardingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
