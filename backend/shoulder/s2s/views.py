@@ -21,6 +21,7 @@ import os
 from .utils.calendar import calendar
 from datetime import datetime, timedelta
 from django.utils import timezone
+import pandas as pd
 
 
 from .serializers import *
@@ -1618,6 +1619,11 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             print("user event", user_event, user_event.exists())
             if not user_event.exists():
                 new_top_event_data.append(event_suggestion)
+        
+        # convert nan probabilities to 0
+        for event_suggestion in new_top_event_data:
+            if pd.isna(event_suggestion['probability_of_attendance']):
+                event_suggestion['probability_of_attendance'] = 0
         
         return Response({
             'top_events': new_top_event_data
