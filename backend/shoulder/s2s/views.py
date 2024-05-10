@@ -1431,7 +1431,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         """
         Update suggestion results for a given user.
         """
-        user_id = request.query_params.get('user_id')
+        user_id = request.data.get('user_id')
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
         
@@ -1497,14 +1497,13 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         serializer = SuggestionResultsSerializer(results, many=True)
         return Response({"count": len(results), "next": None, "previous": None, "results": serializer.data}, status=200)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='get_suggestions')
     def trigger_suggestions(self, request):
         '''
         Trigger the model to generate suggestions, and return the top 2 event IDs
         that occur in the next two weeks by probability of attendance.
         '''
-
-        user_id = request.query_params.get('user_id')
+        user_id = request.data.get('user_id')
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
         
@@ -1517,19 +1516,20 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         current_date = timezone.now().date()
         two_weeks_from_now = current_date + timedelta(days=14)
         top_events = SuggestionResults.objects.filter(user_id = user_id,
-                                                    event__datetime__date__range=(current_date, two_weeks_from_now)) \
+                                                    event_id__datetime__date__range=(current_date, two_weeks_from_now)) \
                                                     .order_by('-probability_of_attendance') \
                                                     .values('event_id', 'probability_of_attendance', 'user_id')[:2]
         
         top_events = [event['event_id'] for event in top_events]
+        print(top_events)
 
         top_event_data = [
             {
                 'user_id': user_id,
-                'event_id': event['event_id'],
-                'probability_of_attendance': event['probability_of_attendance']
+                'event_id': SuggestionResults.objects.get(event_id=event_id).event_id.id,
+                'probability_of_attendance': SuggestionResults.objects.get(event_id=event_id).probability_of_attendance
             }
-            for event in top_events
+            for event_id in top_events
         ]
         
         return Response({
