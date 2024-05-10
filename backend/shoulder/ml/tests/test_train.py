@@ -12,7 +12,6 @@ def test_step():
                              maxval=50).astype(float)
     y_train = random.bernoulli(random.PRNGKey(997), 0.35, shape=(1000,)).astype(float)
     train_params = init_deep_fm(51, 5, 5)
-    train_params = init_deep_fm(51, 5, [5, 64, 64, 32, 32, 1])
     step1 = step(train_params, x_train, y_train)
     assert type(step1) == tuple
     assert len(step1) == 4
