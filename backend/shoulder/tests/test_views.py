@@ -26,7 +26,7 @@ def test_user():
     }
     user = User.objects.create(**user_data)
     return user
-
+# save user token after creation
 
 """
 Overview of tests that should be created for the Django Views
@@ -124,10 +124,11 @@ def test_hobby_type_list(api_client):
     Test retrieving a list of hobby types.
     """
     # Creating some HobbyType objects for testing
-    HobbyType.objects.create(name='Running')
-    HobbyType.objects.create(name='Swimming')
+    HobbyType.objects.create(type='Running')
+    HobbyType.objects.create(type='Swimming')
 
-    url = reverse('hobbytype')
+    # use api/{endpoint}/
+    url = reverse('hobbytypes')
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
@@ -139,7 +140,8 @@ def test_create_hobby_type(api_client):
     """
     Test creating a new hobby type.
     """
-    url = reverse('hobbytype')
+    url = "api/hobbytypes"
+    #url = reverse('hobbytypes')
     data = {'name': 'Cycling'}
     
     response = api_client.post(url, data)
