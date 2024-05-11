@@ -50,7 +50,7 @@ For example, "Swimming" is a Hobby (i.e. a specific activity), but "SPORTS/EXERC
 
 Stores specific activities that people can do in their free time. Users select the activities/hobbies they most enjoy and least enjoy during the onboarding process. 
 
-For example, specific activities like "Swimming", "Watching Basketball", and "Playing Tennis" belong to Hobby, but "SPORTS/EXERCISE" is the HobbyType (i.e. category of the activity).
+For example, specific activities like "Swimming", "Watching Basketball", and "Playing Tennis" belong to Hobby, but "SPORTS/EXERCISE" is the HobbyType (i.e. category of these activities).
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -125,6 +125,39 @@ Each row represents one scenario that a user was presented, so there will be 10 
 | prefers_event1 | Boolean | [0, 1] Indicator if user selected (i.e. preferred) event one from the scenario | 
 | prefers_event2 | Boolean | [0, 1] Indicator if user selected (i.e. preferred) event two from the scenario | 
 
+## `Availability` 
+
+`backend/shoulder/s2s/db_models/availability.py`
+
+Stores calendar availability of every user. Each row represents a single hour in the week, so there will be 168 rows (24 hours a day * 7 days a week) associated with each user, indicated whether the user has availability during that hour or not. 
+
+| Column | Type | Description |
+|--------|------|-------------|
+| user_id | ForeignKey(User) | Identifies user who has this availability. |
+| available | Boolean | True if user has marked themselves available during that hour; False (default) if user is unavailable. |
+| day_of_week | CharacterField | Specified day of week availability; options: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday |
+| hour | IntegerField | The hour of the specified day. (1-24) |
+
+<!-- ## `PanelEvent` 
+
+`backend/shoulder/s2s/db_models/panel_events.py`
+
+| Column | Type | Description |
+|--------|------|-------------| -->
+
+<!-- ## `PanelScenario` 
+
+`backend/shoulder/s2s/db_models/panel_scenarios.py`
+
+| Column | Type | Description |
+|--------|------|-------------| -->
+
+<!-- ## `PanelUserPreferences` 
+
+`backend/shoulder/s2s/db_models/panel_user_preferences.py`
+
+| Column | Type | Description |
+|--------|------|-------------| -->
 
 
 
@@ -160,15 +193,45 @@ Stores the events that users upload/post.
 | max_attendees | IntegerField | Maximum capacity of the event/number of people that can attend (2-50) |
 
 
-## `Availability` 
 
-`backend/shoulder/s2s/db_models/availability.py`
+## `SuggestionResults` 
 
-Stores calendar availability of every user.
+`backend/shoulder/s2s/db_models/suggestion_results.py`
+
+Stores the results of our ML model for predicting which event suggestions to display to which users. There will be a row for every user X every event, with the predicted probability that the user would attend the event.
 
 | Column | Type | Description |
 |--------|------|-------------|
+| user_id | ForeignKey(User) | Identifies user in our database. |
+| event_id | ForeignKey(Event) | Identifies event in our database. |
+| event_date | DateTime | The date and time of the event. |
+| probability_of_attendance | Float | ML predicted likelihood user will attend given event; value between (0.0,1.0)|
 
-## `Choice` 
 
-`backend/shoulder/s2s/db_models/availability.py`
+
+## `UserEvents` 
+
+`backend/shoulder/s2s/db_models/user_events.py`
+
+Stores crosswalk table between users and all events they have attended. Each row represents a user and the event they have attended; there will be a new row for every user every time they attend an event. Includes user's personal ranking of the event.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| user_id | ForeignKey(User) | Identifies user in our database. |
+| event_id | ForeignKey(Event) | Identifies event that the user has attended. |
+| user_rating | Character Filed | User's personal rating of the given event; options: Not Rated (default), 1, 2, 3, 4 |
+
+
+<!-- ## `Choice` 
+
+`backend/shoulder/s2s/db_models/choice.py`
+
+| Column | Type | Description |
+|--------|------|-------------| -->
+
+<!-- ## `Group` 
+
+`backend/shoulder/s2s/db_models/group.py`
+
+| Column | Type | Description |
+|--------|------|-------------| -->
