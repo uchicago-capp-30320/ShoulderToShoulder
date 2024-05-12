@@ -110,17 +110,32 @@ export class ProfileOverviewComponent implements OnInit {
     this.currentEvent = event;
   }
 
+  /**
+   * Displays the additional event information dialog for past events,
+   * which includes the option to review events.
+   *  
+   * @param event The event to display.
+   */
   showPastEventInformationDialog(event: Event): void {
     this.showAddlEventInformation = true;
     this.currentEvent = event;
     this.pastEvent = true;
   }
 
+  /**
+   * Closes the additional event information dialog.
+   */
   closeEventDialog(): void {
     this.showAddlEventInformation = false;
     this.pastEvent = false;  // Resetting this if it's used to determine dialog behavior
   }
 
+  /**
+   * Submits the review of a given event, including if the user attended the
+   * event and their event rating.
+   * 
+   * @param event The event to review.
+   */
   submitReview(event: Event | undefined): void {
     console.log("Submitting review...")
     this.closeEventDialog()
