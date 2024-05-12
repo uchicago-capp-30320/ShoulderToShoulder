@@ -41,6 +41,9 @@ import { Hobby } from '../_models/hobby';
 })
 export class ProfileOverviewComponent implements OnInit {
   showAddlEventInformation: boolean = false;
+  attended: boolean = false;
+  rating: number = 0;
+  pastEvent: boolean = false;
   currentEvent?: Event;
   pastEvents: Event[] = []
   upcomingEvents: Event[] = []
@@ -106,6 +109,32 @@ export class ProfileOverviewComponent implements OnInit {
     this.showAddlEventInformation = true;
     this.currentEvent = event;
   }
+
+  showPastEventInformationDialog(event: Event): void {
+    this.showAddlEventInformation = true;
+    this.currentEvent = event;
+    this.pastEvent = true;
+  }
+
+  closeEventDialog(): void {
+    this.showAddlEventInformation = false;
+    this.pastEvent = false;  // Resetting this if it's used to determine dialog behavior
+  }
+
+  submitReview(): void {
+    if (this.currentEvent) {
+      this.eventService.reviewEvent(this.currentEvent, this.rating, this.attended).subscribe(
+        event => {
+          this.currentEvent = event;
+          this.eventService.loadAllEvents();
+        });
+    }
+    this.pastEvent = false;
+    this.showAddlEventInformation = false;
+    this.rating = 0;
+    this.attended = false;
+  }
+
 
   /**
    * Closes the additional event information dialog.

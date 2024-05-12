@@ -114,16 +114,8 @@ class EventViewSet(viewsets.ModelViewSet):
         
         if event_id:
             queryset = queryset.filter(id__in=event_id)
-
-        response = {"past_events": [], "upcoming_events": []}
-        for event in queryset:
-            serialized_event = self.serializer_class(event).data
-            if event.datetime < timezone.now():
-                response["past_events"].append(serialized_event)
-            else:
-                response["upcoming_events"].append(serialized_event)
         
-        return response
+        return queryset
 
 
     def create(self, request, *args, **kwargs):
@@ -709,7 +701,80 @@ class UserEventsViewSet(viewsets.ModelViewSet):
             user = User.objects.get(id=user_id)
             queryset = queryset.filter(user_id=user)
 
+        response = {"past_events": [], "upcoming_events": []}
+        event_serializer_class = EventSerializer
+        for user_event in queryset:
+            if user_event.rsvp == 'No':
+                continue
+            event = user_event.event_id
+            serialized_event = event_serializer_class(event).data
+            if event.datetime < timezone.now():
+                response["past_events"].append(serialized_event)
+            else:
+                response["upcoming_events"].append(serialized_event)
+
         return queryset
+    
+    @action(detail=False, methods=['get'], url_path='upcoming_past_events')
+    def get_upcoming_past_events(self, request, *args, **kwargs):
+        user_id = self.request.query_params.get('user_id')
+        if not user_id:
+            return Response({"error": "User ID not provided"}, status=400)
+        
+        # get the user
+        user = User.objects.get(id=user_id)
+
+        # get the user events
+        user_events = UserEvents.objects.filter(user_id=user)
+
+        # get the past and upcoming events
+        response = {"past_events": {"count": 0, "events": []}, "upcoming_events": {"count": 0, "events": []}}
+        event_serializer_class = EventSerializer
+        for user_event in user_events:
+            if user_event.rsvp == 'No':
+                continue
+            event = user_event.event_id
+            serialized_event = event_serializer_class(event).data
+            if event.datetime < timezone.now():
+                response["past_events"]['events'].append(serialized_event)
+                response["past_events"]['count'] += 1
+            else:
+                response["upcoming_events"]['events'].append(serialized_event)
+                response["upcoming_events"]['count'] += 1
+            
+        return Response(response, status=200)
+    
+    @action(detail=False, methods=['post'], url_path='review_event')
+    def review_event(self, request, *args, **kwargs):
+        # Ensure the user_id, event_id, and attendance are provided in the request
+        print("data: ", request.data)
+        user_id = request.data.get('user_id')
+        event_id = request.data.get('event_id')
+        attended = request.data.get('attended')
+        rating = request.data.get('rating')
+        if not all([user_id, event_id, attended]):
+            return Response({"error": "User ID, Event ID, and/or Attended not provided"}, status=400)
+
+        # Attempt to fetch the user and event objects
+        try:
+            user = User.objects.get(id=user_id)
+            event = Event.objects.get(id=event_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        except Event.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
+
+        # Update the user event object
+        user_event = UserEvents.objects.get(user_id=user, event_id=event)
+        user_event.attended = attended
+        if attended and rating:
+            user_event.rating = str(rating)
+        else:
+            user_event.rating = "Not Rated"
+        user_event.save()
+
+        serializer = self.get_serializer(user_event)
+        return Response(serializer.data, status=200)
     
     def create(self, request, *args, **kwargs):
         # Ensure the user_id and event_id are provided in the request
@@ -1614,9 +1679,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             user_event = UserEvents.objects.filter(user_id=user_id, event_id=event_id)
 
             # a row is added to user_event if the user has RSVP'd to the event
-            print("event_id", event_id)
-            print("user_id", user_id)
-            print("user event", user_event, user_event.exists())
             if not user_event.exists():
                 new_top_event_data.append(event_suggestion)
         

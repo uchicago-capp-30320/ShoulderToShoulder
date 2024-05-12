@@ -27,6 +27,11 @@ export interface UserEvent {
     event_id: number;
 }
 
+export interface PastUpcomingEventResponse {
+    past_events: {count: number, events: Event[]};
+    upcoming_events: {count: number, events: Event[]};
+}
+
 export interface EventResponse {
     count: number;
     next: string;

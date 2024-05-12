@@ -36,6 +36,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { RatingModule } from 'primeng/rating';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -122,7 +123,8 @@ import { EventSuggestionComponent } from './event-suggestion/event-suggestion.co
     FileUploadModule,
     CalendarModule,
     InputTextareaModule,
-    MessagesModule
+    MessagesModule,
+    RatingModule
   ],
   providers: [
     MessageService,
