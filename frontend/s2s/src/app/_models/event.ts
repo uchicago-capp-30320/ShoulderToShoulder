@@ -16,6 +16,8 @@ export interface Event {
     longitude?: number;
     max_attendees: number;
     add_user?: boolean;
+    rating?: string;
+    attended?: boolean;
 }
 
 export interface UserEvent {

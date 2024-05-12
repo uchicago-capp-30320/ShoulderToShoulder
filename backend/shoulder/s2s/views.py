@@ -735,6 +735,8 @@ class UserEventsViewSet(viewsets.ModelViewSet):
                 continue
             event = user_event.event_id
             serialized_event = event_serializer_class(event).data
+            serialized_event['rating'] = user_event.user_rating
+            serialized_event['attended'] = user_event.attended
             if event.datetime < timezone.now():
                 response["past_events"]['events'].append(serialized_event)
                 response["past_events"]['count'] += 1
@@ -751,9 +753,9 @@ class UserEventsViewSet(viewsets.ModelViewSet):
         user_id = request.data.get('user_id')
         event_id = request.data.get('event_id')
         attended = request.data.get('attended')
-        rating = request.data.get('rating')
-        if not all([user_id, event_id, attended]):
-            return Response({"error": "User ID, Event ID, and/or Attended not provided"}, status=400)
+        rating = request.data.get('user_rating')
+        if not all([user_id, event_id]):
+            return Response({"error": "User ID or Event ID not provided"}, status=400)
 
         # Attempt to fetch the user and event objects
         try:
@@ -768,9 +770,9 @@ class UserEventsViewSet(viewsets.ModelViewSet):
         user_event = UserEvents.objects.get(user_id=user, event_id=event)
         user_event.attended = attended
         if attended and rating:
-            user_event.rating = str(rating)
+            user_event.user_rating = str(rating)
         else:
-            user_event.rating = "Not Rated"
+            user_event.user_rating = "Did not attend"
         user_event.save()
 
         serializer = self.get_serializer(user_event)
@@ -799,35 +801,6 @@ class UserEventsViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(user_event)
         return Response(serializer.data, status=201)
-    
-    @action(detail=False, methods=['post'], url_path='review_event')
-    def review_event(self, request, *args, **kwargs):
-        # Ensure the user_id and event_id are provided in the request
-        user_id = request.data.get('user_id')
-        event_id = request.data.get('event_id')
-        attended = request.data.get('attended')
-        rating = request.data.get('rating')
-        if not all([user_id, event_id, attended]):
-            return Response({"error": "User ID, Event ID, and/or Attended not provided"}, status=400)
-
-        # Attempt to fetch the user and event objects
-        try:
-            user = User.objects.get(id=user_id)
-            event = Event.objects.get(id=event_id)
-        except User.DoesNotExist:
-            return Response({"error": "User not found"}, status=404)
-        except Event.DoesNotExist:
-            return Response({"error": "Event not found"}, status=404)
-
-        # Update the user event object
-        user_event = UserEvents.objects.get(user_id=user, event_id=event)
-        user_event.attended = attended
-        if rating:
-            user_event.rating = rating
-        user_event.save()
-
-        serializer = self.get_serializer(user_event)
-        return Response(serializer.data, status=200)
     
 class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     queryset = PanelUserPreferences.objects.all()

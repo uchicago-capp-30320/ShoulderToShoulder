@@ -57,8 +57,6 @@ export class EventService {
   /**
    * Fetches all events from the API.
    * 
-   * TODO - Implement this function to fetch events from the API.
-   * 
    * @param url The URL to fetch events from.
    * @returns An Observable of the fetched events.
    */
@@ -78,7 +76,8 @@ export class EventService {
   getPastEvents(events: PastUpcomingEventResponse): void {
     const pastEvents = events.past_events.events;
     this.pastEvents.next(pastEvents);
-    this.numEventsAttended.next(events.past_events.count);
+    let eventsAttended = events.past_events.events.filter(event => event.attended )
+    this.numEventsAttended.next(eventsAttended.length);
   }
 
   /**

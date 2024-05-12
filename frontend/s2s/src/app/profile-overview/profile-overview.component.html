@@ -84,7 +84,11 @@
                 <td>{{ event.address1 }}</td>
                 @if(event.rating && event.rating !== "Not Rated") {
                     <td>
-                        <p-rating [(ngModel)]="event.rating" [readonly]="true" [cancel]="false" />
+                        @if(event.rating === "Did not attend") {
+                            <p>Did not attend</p>
+                        } @else {
+                          <p-rating [(ngModel)]="event.rating" [readonly]="true" [cancel]="false" />  
+                        }  
                     </td>
                 } @else {
                     <td><button pButton (click)="showPastEventInformationDialog(event)" style="background-color: #F06E28; border: 1px solid #F06E28; padding: 5px 10px;">Rate Event</button></td>
@@ -120,7 +124,7 @@
                     <p-rating [(ngModel)]="rating" [stars]="5"></p-rating>
                 </div>
             }
-            <button pButton style="background-color: #F06E28; border: 1px solid #F06E28;">Submit Review</button>
+            <button pButton style="background-color: #F06E28; border: 1px solid #F06E28;" (click)="submitReview(currentEvent)">Submit Review</button>
         </div>
     }
 </p-dialog>

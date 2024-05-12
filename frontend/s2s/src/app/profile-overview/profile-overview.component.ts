@@ -121,14 +121,18 @@ export class ProfileOverviewComponent implements OnInit {
     this.pastEvent = false;  // Resetting this if it's used to determine dialog behavior
   }
 
-  submitReview(): void {
-    if (this.currentEvent) {
-      this.eventService.reviewEvent(this.currentEvent, this.rating, this.attended).subscribe(
+  submitReview(event: Event | undefined): void {
+    console.log("Submitting review...")
+    this.closeEventDialog()
+    if (event) {
+      this.eventService.reviewEvent(event, this.rating, this.attended).subscribe(
         event => {
           this.currentEvent = event;
           this.eventService.loadAllEvents();
-        });
+          this.eventService.pastEvents.subscribe(events => this.pastEvents = events);
+        }); 
     }
+
     this.pastEvent = false;
     this.showAddlEventInformation = false;
     this.rating = 0;

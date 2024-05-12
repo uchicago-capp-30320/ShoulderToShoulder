@@ -13,6 +13,7 @@ class UserEvents(models.Model):
             user_rating: rating user gave to attended events
     '''
     ALLOWED_RATINGS = (
+        ("Did not attend", "Did not attend"),
         ("Not Rated", "Not Rated"),
         ("1", "1"),
         ("2", "2"),
@@ -26,6 +27,6 @@ class UserEvents(models.Model):
     )
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
-    user_rating = models.CharField(choices=ALLOWED_RATINGS, max_length=10, default="Not Rated")
+    user_rating = models.CharField(choices=ALLOWED_RATINGS, max_length=15, default="Not Rated")
     rsvp = models.CharField(choices=ALLOWED_RSVP, max_length=3, null=True, blank=True)
     attended = models.BooleanField(default=False)
