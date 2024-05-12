@@ -10,6 +10,15 @@ import { AuthService } from './auth.service';
 // helpers
 import { Suggestion, SuggestionResponse, UserEvent } from '../_models/suggestions';
 
+/**
+ * Service for handling event suggestions.
+ * 
+ * This service is responsible for fetching event suggestions from the API and
+ * sending user's RSVP to the API.
+ * 
+ * @see ApiService
+ * @see AuthService 
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -26,7 +35,10 @@ export class SuggestionService {
   ) { }
 
   /**
-   * Gets the suggestions data from the suggestions API and updates the suggestions subject.
+   * Gets the suggestions data from the suggestions API and updates the 
+   * suggestions subject.
+   * 
+   * @returns An observable of the suggestions data.
    */
   getSuggestions(): Observable<Suggestion[]> {
     let user_id = this.authService.userValue.id;
@@ -44,6 +56,9 @@ export class SuggestionService {
 
   /**
    * Sends user's RSVP to the event suggestion API.
+   * 
+   * @param userEvent - The user's RSVP data.
+   * @returns An observable of the response from the API.
    */
   sendRSVP(userEvent: UserEvent): Observable<any> {
     return this.http.post(this.userEventEndpoint, userEvent).pipe(

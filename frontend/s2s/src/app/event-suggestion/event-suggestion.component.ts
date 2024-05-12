@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 // services
 import { SuggestionService } from '../_services/suggestion.service';
@@ -7,6 +7,20 @@ import { AuthService } from '../_services/auth.service';
 // helpers
 import { Suggestion } from '../_models/suggestions';
 
+/**
+ * Component for displaying event suggestions.
+ * 
+ * This component displays event suggestions to users and allows them to RSVP to 
+ * events.
+ * 
+ * @example
+ * ```
+ * <app-event-suggestion></app-event-suggestion>
+ * ```
+ * 
+ * @see SuggestionService
+ * @see AuthService
+ */
 @Component({
   selector: 'app-event-suggestion',
   templateUrl: './event-suggestion.component.html',
@@ -32,13 +46,30 @@ export class EventSuggestionComponent implements OnInit {
     });
   }
 
+  /**
+   * Closes the event suggestion dialog.
+   */
+  closeEventSuggestionDialog() {
+    this.showEventSuggestionDialog = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
+   * Handles the user's RSVP submission.
+   * 
+   * @param rsvp - The user's RSVP.
+   */
   onSubmitRSVP(rsvp: string) {
+    // send RSVP to the API
     this.suggestionService.sendRSVP({
       user_id: this.authService.userValue.id,
       event_id: this.currentSuggestion.event_id,
       rsvp: rsvp,
     }).subscribe(() => {
+      // remove the current suggestion from the list
       this.eventSuggestions.shift();
+
+      // show the next suggestion, if applicable
       if (this.eventSuggestions.length > 0) {
         this.currentSuggestion = this.eventSuggestions[0];
       } else {

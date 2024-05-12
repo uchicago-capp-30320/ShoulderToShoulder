@@ -1,5 +1,4 @@
 // Purpose: Model for suggestion object.
-
 export interface Suggestion {
     id: number
     user_id: number;
