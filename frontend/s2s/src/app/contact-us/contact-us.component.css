@@ -1,6 +1,6 @@
 .main-content {
     position: relative;
-    margin-top: 10rem;
+    margin-top: 15rem;
     z-index: 10;
     min-height: 70vh;
 }
@@ -11,7 +11,7 @@
     width: 60%;
     height: auto;
     padding: 2rem;
-    border-radius: 0px 0px 20px 20px;
+    border-radius: 20px;
     text-align: center;
     margin-bottom: 2rem;
     margin-left: auto;
@@ -24,48 +24,27 @@
     width: 100%;
 }
 
-.desc-field {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-}
-
 .field {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
-    width: 45%;
 }
 
 .label {
     margin-bottom: 5px;
     text-align: left;
+    color: #FFECD1;
 }
 
 .submit-button {
     background-color: #FF7D00;
     border: none;
     border-radius: 10px;
-    padding: 10px;
     font-size: 1rem;
     cursor: pointer;
     width: 30%;
-    text-align: center;
+    justify-content: center;
     font-weight: normal;
-    margin: 1rem;
-}
-
-.reset-button {
-    background-color: #8d8d8d;
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 30%;
-    text-align: center;
-    font-weight: normal;
-    margin: 1rem;
 }
 
 .p-error {
@@ -74,138 +53,4 @@
 
 .required {
     color: rgb(233, 98, 98);
-}
-
-
-.error-message {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 0;
-    color: rgb(233, 98, 98);    
-}
-
-.row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.row-element {
-    width: 45%;
-}
-
-.adr1, .contact-title {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 55%;
-    text-align: left;
-}
-
-.city {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 35%;
-    text-align: left;
-}
-
-.zipcode {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 15%;
-    text-align: left; 
-}
-
-.adr2, .state, .contact-category {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 40%;
-    text-align: left;
-}
-
-.datetime {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 35%;
-    text-align: left;
-}
-
-.duration {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    text-align: left;
-}
-
-.max-attendees {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    width: 35%;
-    text-align: left;
-}
-
-.confirmButton {
-    background-color: #15616D;
-    border-color: #15616D;
-    padding: 0.5rem 1rem;
-    margin-right: 1rem;
-}
-
-.confirmButton:hover {
-    background-color: #15616db3;
-    border-color: #15616db3;
-}
-
-.cancelButton {
-    background: none;
-    border-color: #15616D;
-    color: #15616D;
-    padding: 0.5rem 1rem;
-    margin-right: 1rem;
-}
-
-.cancelButton:hover {
-    background-color: #15616d21;
-    border-color: #15616db3;
-}
-
-h3 {
-    margin: 0;
-}
-
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* High z-index to cover the whole application */
-  }
-  
-.loading-overlay-content {
-    background-color: #FFECD1;
-    height: 11rem;
-    width: 25rem;
-    padding: 2rem;
-    border-radius: 0.8rem;
-    text-align: center;
-}
-
-.loading-overlay-content p {
-    color: #15616D;
-}
-
-.loading-overlay-content h3 {
-    color: #001524;
 }
