@@ -68,6 +68,7 @@ import { CacheInterceptor } from './_interceptors/cache';
 import { EventCreationComponent } from './event-creation/event-creation.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
+import { EventSuggestionComponent } from './event-suggestion/event-suggestion.component';
 
 
 @NgModule({
@@ -94,6 +95,7 @@ import { ContactUsComponent } from './contact-us/contact-us.component';
     EventCreationComponent,
     AboutUsComponent,
     ContactUsComponent
+    EventSuggestionComponent
   ],
   imports: [
     BrowserModule,
