@@ -132,6 +132,7 @@ export class AuthService {
    * Logs a user out of the application.
    */
   logout(): void {
+    console.log("logging out");
     sessionStorage.removeItem('access_token');
     sessionStorage.removeItem('refresh_token');
     sessionStorage.removeItem('user');

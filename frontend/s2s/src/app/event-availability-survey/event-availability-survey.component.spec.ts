@@ -106,7 +106,7 @@ describe('EventAvailabilitySurveyComponent', () => {
   });
 
   it('should correctly add a time range to the selected day', () => {
-    const form = component.calendarService.userAvailability;
+    const form = component.availabilityService.userAvailability;
     const timeRange = 'Early morning (5-8a)';
     const correctTimes = [5, 6, 7, 8];
     const days = ['Monday'];
@@ -118,7 +118,7 @@ describe('EventAvailabilitySurveyComponent', () => {
   });
 
   it('should correctly remove a time from the selected day', () => {
-    const form = component.calendarService.userAvailability;
+    const form = component.availabilityService.userAvailability;
     const timeRange = 'Early morning (5-8a)';
     const earlyMorningTimes = [5, 6, 7, 8];
     const days = ['Monday'];
