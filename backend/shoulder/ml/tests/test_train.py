@@ -1,6 +1,7 @@
 import os
 import jaxlib
 from jax import random
+import jax.numpy as jnp
 from pathlib import Path
 from ml.dataset import Dataset
 from ml.model import init_deep_fm
@@ -22,55 +23,40 @@ def test_save_outputs():
     loss = [0.25] * 10
     epochs = [i + 1 for i in range(10)]
     train_params = init_deep_fm(51, 5, 5)
-    save_outputs(epochs, loss, accuracy, train_params)
-    assert Path('ml/ml/figures/training_curves.jpg').is_file()
-    assert Path('ml/ml/weights/parameters.pkl').is_file()
+    path = 'shoulder/ml/tests/test_params.pkl'
+    save_outputs(epochs, loss, accuracy, train_params, path)
+    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file()
+    assert Path(path).is_file()
 
 
 def test_train():
-    os.remove('ml/ml/figures/training_curves.jpg')
+    path = 'shoulder/ml/tests/test_params.pkl'
+    os.remove('shoulder/ml/ml/figures/training_curves.jpg')
+    os.remove(path)
     x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0, 
                              maxval=50).astype(float)
     y_train = random.bernoulli(random.PRNGKey(9970), 0.35, shape=(1000,)).astype(float)
     train_data = Dataset(x_train, y_train, 256, 127)
     train_params = init_deep_fm(51, 5, 5)
-    out = train(train_params, train_data, 10)
+    out = train(train_params, train_data, 10, path)
     epochs, loss, accuracy, train_params = out
     assert len(out) == 4
     assert len(epochs) == 10
     assert loss[0] > loss[9]
     assert accuracy[9] > accuracy[0]
-    assert Path('ml/ml/figures/training_curves.jpg').is_file()
-    assert Path('ml/ml/weights/parameters.pkl').is_file()
+    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file()
+    assert Path(path).is_file()
 
 
 def test_predict():
-    x = random.randint(random.PRNGKey(59), shape=(5, 5), minval=0, maxval=50).astype(float)
+    x = random.randint(random.PRNGKey(59), shape=(5, 149), minval=0, maxval=50).astype(float)
     predictions = predict(x)
     assert type(predictions) == jaxlib.xla_extension.ArrayImpl
     assert predictions.shape == (5, 1)
 
 
-def test_train():
-    x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0, 
-                             maxval=50).astype(float)
-    y_train = random.bernoulli(random.PRNGKey(9970), 0.35, shape=(1000,)).astype(float)
-    train_data = Dataset(x_train, y_train, 128, 90)
-    train_params = init_deep_fm(51, 5, [5, 64, 64, 32, 32, 1])
-    out = train(train_params, train_data, 100)
-    epochs, loss, accuracy, train_params = out
-    assert len(out) == 4
-    assert len(epochs) == 100
-    assert loss[0] >= loss[99]
-    assert accuracy[99] >= accuracy[0]
-    assert Path('ml/figures/training_curves.jpg').is_file()
-
-
-def test_predict():
-    x_train = random.randint(random.PRNGKey(59), shape=(1000, 5), minval=0, 
-                             maxval=50).astype(float)
-    train_params = init_deep_fm(51, 5, [5, 64, 64, 32, 32, 1])
-    predictions = predict(train_params, x_train[:5])
-    assert type(predictions) == jaxlib.xla_extension.ArrayImpl
-    assert predictions.shape == (5,)
+def test_predict_new_user():
+    X = jnp.concat([random.randint(random.key(99), (1, 148), minval=0, maxval=50), 
+                    jnp.array([[1000000]])], axis=1)
+    assert not jnp.isnan(predict(X)).any()
 

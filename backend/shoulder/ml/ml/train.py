@@ -64,7 +64,8 @@ def preprocess(raw_data: requests.models.Response) -> jaxlib.xla_extension.Array
     return x, y
     
 
-def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list) -> None:
+def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list, 
+                 path: str='shoulder/ml/mlweights/parameters.pkl') -> None:
     """
     Save diagnostic plots and weights from training a DeepFM
 
@@ -74,20 +75,21 @@ def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list) ->
         loss_list (list): a list of losses at each epoch
         acc_list (list): a list of accuracy for each epoch
         params (list): a list of model parameters
+        path (str): a path for saving the weights
     """
     # Make sure we remove old plots
-    if os.path.isfile('ml/ml/figures/training_curves.jpg'):
-        os.remove('ml/ml/figures/training_curves.jpg')
+    if os.path.isfile('shoulder/ml/ml/figures/training_curves.jpg'):
+        os.remove('shoulder/ml/ml/figures/training_curves.jpg')
 
     plt.plot(epochs, loss_list, label='Loss')
     plt.plot(epochs, acc_list, label='Accuracy')
     plt.legend()
     plt.title("Training Loss and Accuracy")
-    plt.savefig('figures/training_curves.jpg')
+    plt.savefig('shoulder/ml/ml/figures/training_curves.jpg')
     plt.close()
 
     # Saving the weights
-    with open('weights/parameters.pkl', 'wb') as file:
+    with open(path, 'wb') as file:
         pickle.dump(params, file)
 
 
@@ -120,7 +122,8 @@ def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
     return params, loss, grads, accuracy
 
 
-def train(params: list, data: Dataset, num_epochs: int):
+def train(params: list, data: Dataset, num_epochs: int, 
+          path: str="shoulder/ml/ml/weights/parameters.pkl"):
     """
     Train a deep factorization machine, visualize the results, and save the weights
 
@@ -151,7 +154,7 @@ def train(params: list, data: Dataset, num_epochs: int):
         if epoch % 10 == 0:
             print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc}")
 
-    save_outputs(epochs, loss_list, acc_list, params)
+    save_outputs(epochs, loss_list, acc_list, params, path)
 
     return epochs, loss_list, acc_list, params
 
@@ -172,15 +175,19 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     # the parameters to the gloabl scoe so we don't have to keep reading them in when we 
     # call predict
     if "params" in globals():
-        params = globals["params"]
+        params = globals()["params"]
     else:
-        with open('ml/ml/weights/parameters.pkl', 'rb') as file:
+        with open('shoulder/ml/ml/weights/parameters.pkl', 'rb') as file:
             params = pickle.load(file)
 
         globals()["params"] = params
 
     embedding_params, fm_params, mlp_params = params
     embeddings = foward_embedding(embedding_params, X)
+
+    # Makes zero vectors for user IDs not in the training data
+    embeddings = jnp.nan_to_num(embeddings)
+
     fm_out = foward_fm(fm_params, embeddings)
     mlp_out = foward_mlp(mlp_params, embeddings)
     y = jax.nn.sigmoid(fm_out + mlp_out)
