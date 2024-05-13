@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-contact-us',
@@ -9,8 +8,6 @@ import { MessageService } from 'primeng/api';
   styleUrl: './contact-us.component.css'
 })
 export class ContactUsComponent {
-  showConfirmMessage: boolean = true;
-  confirmMessage = "Thank you for contacting us! We will get back to you shortly."
   contactForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -21,7 +18,6 @@ export class ContactUsComponent {
 
   constructor(
     private router: Router,
-    public messageService: MessageService
   ) {}
 
   /**
@@ -32,21 +28,31 @@ export class ContactUsComponent {
   }
 
   /**
-   * Clears all messages from the message service.
-   */
-  clearMessages() {
-    this.messageService.clear();
-  }
-
-  /**
    * Submits the contact form.
    */
   submitForm() {
     if (this.contactForm.valid) {
-      this.clearMessages();
-      this.messageService.add({severity: 'success', detail: this.confirmMessage});
-      this.showConfirmMessage = true;
+      let mailto_link = 'mailto:shouldertoshoulder.contact@gmail.com?subject=' +
+      "[Contact Form] " + encodeURIComponent(this.contactForm.value.subject) +
+      '&body=' +
+      encodeURIComponent(this.contactForm.value.message) +
+      '%0A%0A' +
+      encodeURIComponent(this.contactForm.value.name) +
+      '%0A' +
+      this.formatPhoneNumber(encodeURIComponent(this.contactForm.value.phoneNumber)) +
+      '%0A' +
+      encodeURIComponent(this.contactForm.value.email);
+      window.open(mailto_link, '_blank');
+
       this.resetForm();
     }
+  }
+
+  /**
+   * Formats the phone number.
+   */
+  formatPhoneNumber(phoneNumber: string) {
+    let formattedPhoneNumber = phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    return formattedPhoneNumber;
   }
 }

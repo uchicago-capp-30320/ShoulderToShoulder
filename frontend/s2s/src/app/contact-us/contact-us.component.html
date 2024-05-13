@@ -1,11 +1,8 @@
 <app-header title="Contact Us"></app-header>
 <main>
-    <!-- Message Service -->
-    <p-messages></p-messages>
-
-    <!-- Contact Form -->
     <div class="main-content">
         <div class="contact-form drop-shadow">
+            <!-- Contact Form -->
             <p class="subtitle light-text">All fields are required</p>
             <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="form-container">
                 <!-- Name -->
@@ -19,7 +16,7 @@
                 <div class="field">
                     <label for="phone" class="label">Phone Number</label>
                     <small class="p-error" *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid">Valid phone number is required</small>
-                    <input type="text" pInputText placeholder="(123) 456-7890" formControlName="phone" autocomplete="phone" mask="(000) 000-0000"/>
+                    <input type="text" pInputText placeholder="(123) 456-7890" formControlName="phoneNumber" autocomplete="phone" mask="(000) 000-0000"/>
                 </div>
 
                 <!-- Email -->
