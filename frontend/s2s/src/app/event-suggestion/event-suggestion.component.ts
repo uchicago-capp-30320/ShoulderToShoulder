@@ -78,8 +78,8 @@ export class EventSuggestionComponent implements OnInit {
         this.currentSuggestion = this.eventSuggestions[0];
       } else {
         this.showEventSuggestionDialog = false;
+        document.body.style.overflow = 'auto';
       }
     });
   }
-
 }

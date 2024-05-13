@@ -112,9 +112,31 @@
     @if(pastEvent) {
         <div class="event-review">
             <h3>Rate this event</h3>
+
+            <!-- Report attendance -->
             <div class="attendence">
                 <p style="padding-right: .5rem">Did you attend this event?</p>
-                <p-toggleButton [(ngModel)]="attended" onLabel="Yes" offLabel="No" [style]="{'padding': '5px 10px'}"></p-toggleButton>
+                <div style="padding: 5px">
+                    <p-radioButton 
+                        name="attendence" 
+                        [value]="false" 
+                        [(ngModel)]="attended" 
+                        inputId="attended2" />
+                    <label for="attended2" class="ml-2">
+                        No
+                    </label>
+                </div>
+                
+                <div style="padding: 5px">
+                    <p-radioButton 
+                        name="attendence" 
+                        [value]="true" 
+                        [(ngModel)]="attended" 
+                        inputId="attended1" />
+                    <label for="attended1" class="ml-2">
+                        Yes
+                    </label>
+                </div>
             </div>
 
 
