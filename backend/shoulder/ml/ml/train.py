@@ -189,7 +189,7 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     embeddings = jnp.nan_to_num(embeddings)
 
     fm_out = foward_fm(fm_params, embeddings)
-    mlp_out = foward_mlp(mlp_params, embeddings)
+    mlp_out = foward_mlp(mlp_params, embeddings, train=False)
     y = jax.nn.sigmoid(fm_out + mlp_out)
 
     return y

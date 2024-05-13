@@ -217,6 +217,7 @@ def foward_deep_fm(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl
     Parameters:
         params (list): a list of parameters for computing a foward pass
         X (jax.Array): features to use in the foward pass
+        predict (bool): whether prediction or training is being done
 
     Returns:
     --------
