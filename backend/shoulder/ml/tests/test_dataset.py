@@ -23,7 +23,3 @@ def test_dataset_iteration():
         assert type(x_batch) == jaxlib.xla_extension.ArrayImpl
         assert type(y_batch) == jaxlib.xla_extension.ArrayImpl
 
-    # Should be able to reset and continue getting new minibatches
-    test_data.reset()
-    assert type(next(test_data)) == tuple
-

@@ -12,56 +12,7 @@ from shoulder.ml.ml.dataset import Dataset
 from jax import value_and_grad, jit
 from shoulder.ml.ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_embedding
 
-
-def preprocess(raw_data: requests.models.Response) -> jaxlib.xla_extension.ArrayImpl:
-    """
-    Prepare data for training or predicting
-
-    Parameters:
-    -----------
-        raw_data (requests.models.Response): a response from the event suggestions database
-
-    Returns:
-        a tuple of preprocessed arrays for training or predicting
-    """
-    feature_list, target_list = [], []
-    raw_json = raw_data.json()
-    json_results = raw_json["results"]
-
-    # json_results is a list of dictionaries
-    for d in json_results:
-        del d["id"]
-        user_id = d["user_id"]  # We will add this after everything else
-        del d["user_id"]
-
-        if d["attended_event"] == 1:
-            target_list.append(1)
-        else:
-            target_list.append(0)
-        del d["attended_event"]
-
-        user_event_list = []
-        low, high = 0, 1
-
-        for key in sorted(d.keys()):
-            if d[key] is True:
-                user_event_list.append(high)
-            else:
-                user_event_list.append(low)
-            
-            # Ensures unique integers for every response in very field, basically creating 
-            # a vocabulary for the embedding layer
-            low += 2
-            high += 2
-
-        # Makes sure the user ID doesn't overlap with another "token"
-        user_event_list.append(high + user_id)
-
-        feature_list.append(user_event_list)
-
-    x, y= jnp.array(feature_list, dtype=float), jnp.array(target_list, dtype=float)
-
-    return x, y
+LR = 0.0001
     
 
 def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list, 
@@ -138,7 +89,7 @@ def train(params: list, data: Dataset, num_epochs: int,
         A tuple containing lists of epochs, loss, accuracy, and parameters
     """
     epochs, loss_list, acc_list = [], [], []
-    solver = optax.adam(0.0001)
+    solver = optax.adam(LR)
     solver_state = solver.init(params)
 
     for epoch in tqdm(range(num_epochs)):

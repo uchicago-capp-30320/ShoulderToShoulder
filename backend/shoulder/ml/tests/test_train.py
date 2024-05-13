@@ -56,6 +56,7 @@ def test_predict():
 
 
 def test_predict_new_user():
+    # Testing embedding unseen users
     X = jnp.concat([random.randint(random.key(99), (1, 148), minval=0, maxval=50), 
                     jnp.array([[1000000]])], axis=1)
     assert not jnp.isnan(predict(X)).any()
