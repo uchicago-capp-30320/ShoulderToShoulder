@@ -37,6 +37,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
 import { AccordionModule } from 'primeng/accordion';
+import { RatingModule } from 'primeng/rating';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -94,7 +95,7 @@ import { EventSuggestionComponent } from './event-suggestion/event-suggestion.co
     ProfileAvailabilityComponent,
     EventCreationComponent,
     AboutUsComponent,
-    ContactUsComponent
+    ContactUsComponent,
     EventSuggestionComponent
   ],
   imports: [
@@ -128,7 +129,8 @@ import { EventSuggestionComponent } from './event-suggestion/event-suggestion.co
     CalendarModule,
     InputTextareaModule,
     MessagesModule,
-    AccordionModule
+    AccordionModule,
+    RatingModule
   ],
   providers: [
     MessageService,

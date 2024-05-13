@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 // services
 import { SuggestionService } from '../_services/suggestion.service';
 import { AuthService } from '../_services/auth.service';
+import { EventService } from '../_services/event.service';
 
 // helpers
 import { Suggestion } from '../_models/suggestions';
@@ -20,6 +21,7 @@ import { Suggestion } from '../_models/suggestions';
  * 
  * @see SuggestionService
  * @see AuthService
+ * @see EventService
  */
 @Component({
   selector: 'app-event-suggestion',
@@ -34,6 +36,7 @@ export class EventSuggestionComponent implements OnInit {
   constructor (
     private suggestionService: SuggestionService,
     private authService: AuthService,
+    private eventService: EventService
   ) { }
 
   ngOnInit(): void {
@@ -68,14 +71,15 @@ export class EventSuggestionComponent implements OnInit {
     }).subscribe(() => {
       // remove the current suggestion from the list
       this.eventSuggestions.shift();
+      this.eventService.loadAllEvents();
 
       // show the next suggestion, if applicable
       if (this.eventSuggestions.length > 0) {
         this.currentSuggestion = this.eventSuggestions[0];
       } else {
         this.showEventSuggestionDialog = false;
+        document.body.style.overflow = 'auto';
       }
     });
   }
-
 }

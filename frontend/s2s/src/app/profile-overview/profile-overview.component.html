@@ -49,8 +49,8 @@
         <ng-template pTemplate="body" let-event>
             <tr>
                 <td>{{ event.title }}</td>
-                <td>{{ event.datetime }}</td>
-                <td>{{ event.address }}</td>
+                <td>{{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</td>
+                <td>{{ event.address1 }}</td>
                 <td><button (click)="showAddlEventInformationDialog(event)" class="additional-info link-dark-text"> Additional Information</button></td>
             </tr>
         </ng-template>
@@ -80,24 +80,73 @@
         <ng-template pTemplate="body" let-event>
             <tr>
                 <td>{{ event.title }}</td>
-                <td>{{ formatDate(event.datetime) }}</td>
-                <td>{{ event.address }}</td>
-                <td>
-                    <ng-container *ngFor="let i of arrayOfRating(event.rating)">
-                        <i class="pi pi-star-fill" style="color: #FF7D00"></i>
-                    </ng-container>
-                </td>
+                <td>{{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</td>
+                <td>{{ event.address1 }}</td>
+                @if(event.rating && event.rating !== "Not Rated") {
+                    <td>
+                        @if(event.rating === "Did not attend") {
+                            <p>Did not attend</p>
+                        } @else {
+                          <p-rating [(ngModel)]="event.rating" [readonly]="true" [cancel]="false" />  
+                        }  
+                    </td>
+                } @else {
+                    <td><button pButton (click)="showPastEventInformationDialog(event)" style="background-color: #F06E28; border: 1px solid #F06E28; padding: 5px 10px;">Rate Event</button></td>
+                }
             </tr>
         </ng-template>
     </p-table>
 </div>
 
 <!-- Additional Event Information Dialog -->
-<p-dialog [header]="currentEvent?.title" [(visible)]="showAddlEventInformation" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+<p-dialog header="Event Details" [(visible)]="showAddlEventInformation" (onHide)="closeEventDialog()" [modal]="true" [breakpoints]="{ '960px': '75vw' }" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
     <div class="event-details">
-        <div><strong>Date:</strong> {{ currentEvent?.datetime }}</div>
-        <div><strong>Duration:</strong> {{ currentEvent?.duration_h }} hour(s)</div>
-        <div><strong>Location:</strong> {{ currentEvent?.address1 }}</div>
-        <div><strong>Group Size:</strong> {{ currentEvent?.max_attendees }}</div>
+        <h3>{{ currentEvent?.title }}</h3>
+        <p>{{ currentEvent?.description }}</p>
+        <p><b>Location</b>: {{ currentEvent?.address1 }}{{ currentEvent?.address2 ? " " + currentEvent?.address2 : "" }}, {{ currentEvent?.city }}, {{ currentEvent?.state }} {{ currentEvent?.zipcode }}</p>
+        <p><b>Date and Time</b>: {{ currentEvent?.datetime | date:"MMM d, y 'at' h:mm a" }}</p>
+        <p><b>Duration</b>: {{ currentEvent?.duration_h }} hours</p>
+        <p><b>Maximum number of attendees</b>: {{ currentEvent?.max_attendees }}</p>
     </div>
+    
+    @if(pastEvent) {
+        <div class="event-review">
+            <h3>Rate this event</h3>
+
+            <!-- Report attendance -->
+            <div class="attendence">
+                <p style="padding-right: .5rem">Did you attend this event?</p>
+                <div style="padding: 5px">
+                    <p-radioButton 
+                        name="attendence" 
+                        [value]="false" 
+                        [(ngModel)]="attended" 
+                        inputId="attended2" />
+                    <label for="attended2" class="ml-2">
+                        No
+                    </label>
+                </div>
+                
+                <div style="padding: 5px">
+                    <p-radioButton 
+                        name="attendence" 
+                        [value]="true" 
+                        [(ngModel)]="attended" 
+                        inputId="attended1" />
+                    <label for="attended1" class="ml-2">
+                        Yes
+                    </label>
+                </div>
+            </div>
+
+
+            @if(attended) {
+                <div class="attendence">
+                    <p style="padding-right: .5rem">How would you rate this event?</p>
+                    <p-rating [(ngModel)]="rating" [stars]="5"></p-rating>
+                </div>
+            }
+            <button pButton style="background-color: #F06E28; border: 1px solid #F06E28;" (click)="submitReview(currentEvent)">Submit Review</button>
+        </div>
+    }
 </p-dialog>
