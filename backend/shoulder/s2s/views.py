@@ -1488,6 +1488,29 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAppToken]
     queryset = SuggestionResults.objects.all()
 
+    @action(detail=False, methods=['get'], url_path='get_training_data')
+    def get_training_data(self, request):
+        """
+        Returns the training data for the ML model.
+        """
+        scenario_panel_data = PanelScenario.objects.all()
+        scenario_panel_serializer = PanelScenarioSerializer(scenario_panel_data, many=True)
+
+        # grab the associated user panel data
+        for scenario_panel_dict in scenario_panel_serializer.data:
+            user_id = scenario_panel_dict['user_id']
+            user_panel = PanelUserPreferences.objects.filter(user_id=user_id)
+            if user_panel.exists():
+                user_panel = user_panel[0]
+                user_panel_serialized = PanelUserPreferencesSerializer(user_panel)
+                scenario_panel_dict.update(user_panel_serialized.data)
+            else:
+                # remove the scenario panel data from the dictionary
+                scenario_panel_dict = None
+
+        print(scenario_panel_serializer.data)
+        return Response(scenario_panel_serializer.data, status=200)
+
     @action(detail=False, methods=['get'], url_path='update')
     def update_suggestions(self, request, *args, **kwargs):
         """
