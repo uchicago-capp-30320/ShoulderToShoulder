@@ -2,11 +2,14 @@ import pytest
 import os 
 from django.urls import reverse
 from django.test import RequestFactory, Client
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from django.contrib.auth.models import User
 from s2s.db_models import *
 from s2s.views import *
+import environ
+import ShoulderToShoulder.settings as s2s_settings
+from django.core.management import call_command
+from io import StringIO
 
 # Importing api_client from conftest.py
 #from tests.conftest import api_client
@@ -161,6 +164,19 @@ Overview of tests that should be created for the Django Views
 #     assert len(response.data) == 2  
 
 
+def generate_app_token():
+    # Prepare an output buffer to capture command outputs
+    out = StringIO()
+
+    # Call the management command
+    call_command('app_token_m', stdout=out)
+
+    # Retrieve output
+    output = out.getvalue()
+    token = output.strip().split()[-1]
+
+    return token
+
 @pytest.mark.django_db
 def test_create_hobby_type(api_client):
     """
@@ -168,20 +184,28 @@ def test_create_hobby_type(api_client):
     """
     url = "/api/hobbytypes/"
     data = {'type': 'TEST/HOBBY'}
-    app_token = os.environ.get('APP_TOKEN')
+
+    # Create the app token
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
 
     # Set X-APP-TOKEN header
-    #api_client.credentials(HTTP_AUTHORIZATION='X-APP-TOKEN ' + app_token)
-
-    response = api_client.post(url, data, headers={"X-APP-TOKEN": app_token}, format='json')
-
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    
+    # Send and test response
+    response = api_client.post(url, data=data, format='json')
     assert response.status_code == status.HTTP_201_CREATED
-    assert HobbyType.objects.filter(name='TEST/HOBBY').exists()
+    assert HobbyType.objects.filter(type='TEST/HOBBY').exists()
 
 
 @pytest.mark.django_db
 def test_hobby_list(api_client):
-    app_token = os.environ.get('APP_TOKEN')
+    # Create the app token
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
+
+    # Set X-APP-TOKEN header
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
     
     hobby_type = HobbyType.objects.create(type='Outdoor')
 
@@ -190,11 +214,10 @@ def test_hobby_list(api_client):
     Hobby.objects.create(name='Swimming', type=hobby_type)
 
     url = "/api/hobbies/"
-    response = api_client.get(url, headers={"X-APP-TOKEN": app_token})
+    response = api_client.get(url)
     print(response.headers)
     print(response.content)
 
-
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 2
+    assert len(response.data['results']) == 2
 
