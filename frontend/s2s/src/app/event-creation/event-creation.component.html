@@ -148,7 +148,7 @@
     <h3>{{ errorHeader }}</h3>
     <p class="m-0">{{ invalidDialogMessage }}</p>
     <div class="p-d-flex p-jc-end">
-        <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
+        <button pButton type="button" class="p-button-text" (click)="closeInvalidDialog()" class="confirmButton">OK</button>
     </div>
 </p-dialog>
 
@@ -165,7 +165,7 @@
         <p class="m-0"><b>You {{ event.add_user ? "will" : "will NOT" }} be automatically added to this event</b></p>
 
         <div class="p-d-flex p-jc-end">
-            <button pButton type="button" class="p-button-text" (click)="showConfirmDialog = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="closeConfirmationDialog()" class="cancelButton">Cancel</button>
             <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
         </div>
     }

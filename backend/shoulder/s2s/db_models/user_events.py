@@ -19,6 +19,12 @@ class UserEvents(models.Model):
         ("3", "3"),
         ("4", "4")
     )
+    ALLOWED_RSVP = (
+        ("Yes", "Yes"),
+        ("No", "No"),
+    )
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
     user_rating = models.CharField(choices=ALLOWED_RATINGS, max_length=10, default="Not Rated")
+    rsvp = models.CharField(choices=ALLOWED_RSVP, max_length=3, null=True, blank=True)
+    attended = models.BooleanField(default=False)
