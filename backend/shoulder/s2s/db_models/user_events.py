@@ -11,6 +11,8 @@ class UserEvents(models.Model):
             user_id: fk to user model
             event_id: fk to event model
             user_rating: rating user gave to attended events
+            rsvp: user's response to event invitation
+            attended: boolean indicating if user attended event
     '''
     ALLOWED_RATINGS = (
         ("Did not attend", "Did not attend"),

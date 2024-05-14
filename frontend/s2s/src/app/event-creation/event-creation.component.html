@@ -163,7 +163,7 @@
         <p class="m-0"><b>Title:</b> {{ event.title }}</p>
         <p class="m-0"><b>Category:</b> {{ event.hobby_type }}</p>
         <p class="m-0"><b>Description</b>: {{ event.description ? event.description : 'Not Provided' }}</p>
-        <p class="m-0"><b>Date:</b> {{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</p>
+        <p class="m-0"><b>Date:</b> {{ event.datetime | date:"EE MMM d, y 'at' h:mm a" }}</p>
         <p class="m-0"><b>Duration:</b> {{ event.duration_h }} hours</p>
         <p class="m-0"><b>Max Attendees:</b> {{ event.max_attendees }} {{ event.max_attendees === 1 ? "person" : "people" }}</p>
         <p class="m-0"><b>Address:</b> {{ event.address1 + "," }} {{ event.address2 ? event.address2 + "," : "" }} {{ event.city + "," }} {{ event.state }}</p>
