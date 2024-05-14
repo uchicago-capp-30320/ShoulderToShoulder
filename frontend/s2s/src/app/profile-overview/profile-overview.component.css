@@ -114,3 +114,7 @@
     pointer-events: visible;
     cursor: pointer;
 }
+
+::ng-deep .p-disabled {
+    opacity: 100%;
+}

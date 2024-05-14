@@ -49,7 +49,7 @@
         <ng-template pTemplate="body" let-event>
             <tr>
                 <td>{{ event.title }}</td>
-                <td>{{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</td>
+                <td>{{ event.datetime | date:"EE MMM d, y 'at' h:mm a" }}</td>
                 <td>{{ event.address1 }}</td>
                 <td><button (click)="showAddlEventInformationDialog(event)" class="additional-info link-dark-text"> Additional Information</button></td>
             </tr>
@@ -80,14 +80,14 @@
         <ng-template pTemplate="body" let-event>
             <tr>
                 <td>{{ event.title }}</td>
-                <td>{{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</td>
+                <td>{{ event.datetime | date:"EE MMM d, y 'at' h:mm a" }}</td>
                 <td>{{ event.address1 }}</td>
                 @if(event.rating && event.rating !== "Not Rated") {
                     <td>
                         @if(event.rating === "Did not attend") {
                             <p>Did not attend</p>
                         } @else {
-                          <p-rating [(ngModel)]="event.rating" [readonly]="true" [cancel]="false" />  
+                          <p-rating [(ngModel)]="event.rating" [readonly]="true" [cancel]="false" [disabled]="true" />  
                         }  
                     </td>
                 } @else {
@@ -104,7 +104,7 @@
         <h3>{{ currentEvent?.title }}</h3>
         <p>{{ currentEvent?.description }}</p>
         <p><b>Location</b>: {{ currentEvent?.address1 }}{{ currentEvent?.address2 ? " " + currentEvent?.address2 : "" }}, {{ currentEvent?.city }}, {{ currentEvent?.state }} {{ currentEvent?.zipcode }}</p>
-        <p><b>Date and Time</b>: {{ currentEvent?.datetime | date:"MMM d, y 'at' h:mm a" }}</p>
+        <p><b>Date and Time</b>: {{ currentEvent?.datetime | date:"EE MMM d, y 'at' h:mm a" }}</p>
         <p><b>Duration</b>: {{ currentEvent?.duration_h }} hours</p>
         <p><b>Maximum number of attendees</b>: {{ currentEvent?.max_attendees }}</p>
     </div>
