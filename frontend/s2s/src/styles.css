@@ -114,6 +114,7 @@ color: #FFECD1;
 .p-datatable .p-datatable-thead > tr > th {
     background: #15616D;
     color: #FFECD1;
+    text-align: center;
 }
 
 .p-datatable>.p-datatable-wrapper {
@@ -125,4 +126,12 @@ color: #FFECD1;
     width: 90%;
     border: solid;
     border-color: #15616D;
+}
+
+.p-rating .p-rating-item.p-rating-item-active .p-rating-icon {
+    color: #F06E28;
+}
+
+.p-rating .p-rating-item .p-rating-icon:hover {
+    color: #F06E28;
 }
