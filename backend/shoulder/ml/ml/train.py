@@ -144,4 +144,3 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     y = jax.nn.sigmoid(fm_out + mlp_out)
 
     return y
-

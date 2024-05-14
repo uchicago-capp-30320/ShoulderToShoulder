@@ -65,6 +65,7 @@ import { ProfileAvailabilityComponent } from './profile-availability/profile-ava
 import { AuthInterceptor } from './_interceptors/interceptor';
 import { CacheInterceptor } from './_interceptors/cache';
 import { EventCreationComponent } from './event-creation/event-creation.component';
+import { EventSuggestionComponent } from './event-suggestion/event-suggestion.component';
 
 
 @NgModule({
@@ -88,7 +89,8 @@ import { EventCreationComponent } from './event-creation/event-creation.componen
     ProfileOverviewComponent,
     ProfileSettingsComponent,
     ProfileAvailabilityComponent,
-    EventCreationComponent
+    EventCreationComponent,
+    EventSuggestionComponent
   ],
   imports: [
     BrowserModule,

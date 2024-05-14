@@ -18,9 +18,25 @@ export interface Event {
     add_user?: boolean;
 }
 
+export interface UserEvent {
+    id: number;
+    user_rating: string;
+    rsvp: string;
+    attended: boolean;
+    user_id: number;
+    event_id: number;
+}
+
 export interface EventResponse {
     count: number;
     next: string;
     previous: string;
     results: Event[];
+}
+
+export interface UserEventResponse {
+    count: number;
+    next: string;
+    previous: string;
+    results: UserEvent[];
 }

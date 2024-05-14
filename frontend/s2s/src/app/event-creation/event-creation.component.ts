@@ -201,6 +201,22 @@ export class EventCreationComponent implements OnInit {
   }
 
   /**
+   * Closes the confirmation dialog.
+   */
+  closeConfirmationDialog(): void {
+    this.showConfirmDialog = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
+   * Closes the invalid dialog.
+   */
+  closeInvalidDialog(): void {
+    this.showInvalidDialog = false;
+    document.body.style.overflow = 'auto';  
+  }
+
+  /**
    * Submits the event creation form.
    */
   onSubmit(): void {
