@@ -3,9 +3,9 @@ import jaxlib
 from jax import random
 import jax.numpy as jnp
 from pathlib import Path
-from ml.dataset import Dataset
-from ml.model import init_deep_fm
-from ml.train import step, train, predict, save_outputs
+from shoulder.ml.ml.dataset import Dataset
+from shoulder.ml.ml.model import init_deep_fm
+from shoulder.ml.ml.train import step, train, predict, save_outputs
 
 
 def test_step():
@@ -23,14 +23,14 @@ def test_save_outputs():
     loss = [0.25] * 10
     epochs = [i + 1 for i in range(10)]
     train_params = init_deep_fm(51, 5, 5)
-    path = 'shoulder/ml/tests/test_params.pkl'
+    path = 'tests/test_params.pkl'
     save_outputs(epochs, loss, accuracy, train_params, path)
     assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file()
     assert Path(path).is_file()
 
 
 def test_train():
-    path = 'shoulder/ml/tests/test_params.pkl'
+    path = 'tests/test_params.pkl'
     os.remove('shoulder/ml/ml/figures/training_curves.jpg')
     os.remove(path)
     x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0, 

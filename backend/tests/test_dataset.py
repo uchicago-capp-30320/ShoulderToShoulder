@@ -1,6 +1,6 @@
 import jaxlib
 import jax.numpy as jnp
-from ml.dataset import Dataset
+from shoulder.ml.ml.dataset import Dataset
 
 
 def test_dataset_init():
