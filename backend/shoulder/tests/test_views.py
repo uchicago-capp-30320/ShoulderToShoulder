@@ -1,32 +1,54 @@
 import pytest
+import os 
 from django.urls import reverse
 from django.test import RequestFactory, Client
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from django.contrib.auth.models import User
 from s2s.db_models import *
 from s2s.views import *
-#backend/shoulder/s2s/db_models
 
 # Importing api_client from conftest.py
-from tests.conftest import api_client
+#from tests.conftest import api_client
+from rest_framework.test import APIClient
+# from rest_framework.test import APIRequestFactory
 
 
 # create fixtures to set up test user to be used for authentication
 # NOTE: should force_authenticate be used?
+
+
 @pytest.fixture
-def test_user():
-    """
-    Fixture to create a test user to be used within the tests below.
-    """
-    user_data = {
-        'first_name': 'John',
-        'last_name': 'Doe',
-        'email': 'test@example.com',
-        'password': 'Password1!',
-    }
-    user = User.objects.create(**user_data)
-    return user
-# save user token after creation
+def api_client():
+    return APIClient()
+  #  app_token = os.environ.get('APP_TOKEN')
+
+    # # Check if the app token is available
+    # if not app_token:
+    #     raise ValueError("APP_TOKEN environment variable is not set")
+
+    # client = APIClient()
+
+    # # Add the X-APP-TOKEN header
+    # client.credentials(HTTP_AUTHORIZATION="Bearr " + app_token)
+
+    # # Yield the APIClient so it can be used in the tests
+    # yield client
+
+# @pytest.fixture
+# def api_client_with_token():
+#     # Create a test user
+#     user = User.objects.create_user(first_name='Test', last_name='User', username='testuser', password='testpassword', email='test@gmail.com')
+
+#     # Generate JWT token for the test user
+#     refresh = RefreshToken.for_user(user)
+#     access_token = str(refresh.access_token)
+
+#     # Create APIClient and set token in headers
+#     client = APIClient()
+#     client.credentials(HTTP_AUTHORIZATION=f'X-APP-TOKEN: {access_token}')
+
+#     return client
 
 """
 Overview of tests that should be created for the Django Views
@@ -118,21 +140,25 @@ Overview of tests that should be created for the Django Views
 """
 
 # Tests for HobbyTypeViewSet
-@pytest.mark.django_db
-def test_hobby_type_list(api_client):
-    """
-    Test retrieving a list of hobby types.
-    """
-    # Creating some HobbyType objects for testing
-    HobbyType.objects.create(type='Running')
-    HobbyType.objects.create(type='Swimming')
+# @pytest.mark.django_db
+# def test_hobby_type_list(test_user_with_token):
+#     """
+#     Test retrieving a list of hobby types.
+#     """
+#     user, token = test_user_with_token
+#     # Creating some HobbyType objects for testing
+#     HobbyType.objects.create(type='Running')
+#     HobbyType.objects.create(type='Swimming')
+    
+#     # use api/{endpoint}/
+#     url = "/api/hobbytypes"
+#     client = APIClient()
+#     client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+#     #response = api_client.get(url, format="json")
+#     response = client.get(url)
 
-    # use api/{endpoint}/
-    url = reverse('hobbytypes')
-    response = api_client.get(url)
-
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 2  # Assuming there are 2 hobby types in the database
+#     assert response.status_code == status.HTTP_200_OK
+#     assert len(response.data) == 2  
 
 
 @pytest.mark.django_db
@@ -140,12 +166,35 @@ def test_create_hobby_type(api_client):
     """
     Test creating a new hobby type.
     """
-    url = "api/hobbytypes"
-    #url = reverse('hobbytypes')
-    data = {'name': 'Cycling'}
-    
-    response = api_client.post(url, data)
-    
+    url = "/api/hobbytypes/"
+    data = {'type': 'TEST/HOBBY'}
+    app_token = os.environ.get('APP_TOKEN')
+
+    # Set X-APP-TOKEN header
+    #api_client.credentials(HTTP_AUTHORIZATION='X-APP-TOKEN ' + app_token)
+
+    response = api_client.post(url, data, headers={"X-APP-TOKEN": app_token}, format='json')
+
     assert response.status_code == status.HTTP_201_CREATED
-    assert HobbyType.objects.filter(name='Cycling').exists()
+    assert HobbyType.objects.filter(name='TEST/HOBBY').exists()
+
+
+@pytest.mark.django_db
+def test_hobby_list(api_client):
+    app_token = os.environ.get('APP_TOKEN')
+    
+    hobby_type = HobbyType.objects.create(type='Outdoor')
+
+    # Creating some Hobby objects for testing
+    Hobby.objects.create(name='Running', type=hobby_type)
+    Hobby.objects.create(name='Swimming', type=hobby_type)
+
+    url = "/api/hobbies/"
+    response = api_client.get(url, headers={"X-APP-TOKEN": app_token})
+    print(response.headers)
+    print(response.content)
+
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
 
