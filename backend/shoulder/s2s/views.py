@@ -21,6 +21,7 @@ import os
 from .utils.calendar import calendar
 from datetime import datetime, timedelta
 from django.utils import timezone
+import pandas as pd
 
 
 from .serializers import *
@@ -102,6 +103,29 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        queryset = self.queryset
+        user_id = self.request.query_params.get('user_id')
+        event_id = self.request.GET.getlist('event_id')
+
+        if user_id:
+            user = User.objects.get(id=user_id)
+            queryset = queryset.filter(created_by=user)
+        
+        if event_id:
+            queryset = queryset.filter(id__in=event_id)
+
+        response = {"past_events": [], "upcoming_events": []}
+        for event in queryset:
+            serialized_event = self.serializer_class(event).data
+            if event.datetime < timezone.now():
+                response["past_events"].append(serialized_event)
+            else:
+                response["upcoming_events"].append(serialized_event)
+        
+        return response
+
+
     def create(self, request, *args, **kwargs):
         required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode']
         if not all([field in request.data for field in required_fields]):
@@ -149,7 +173,7 @@ class EventViewSet(viewsets.ModelViewSet):
             # add user to event if applicable
             if request.data.get('add_user', None):
                 event = Event.objects.get(id=serializer.data['id'])
-                user_event = UserEvents(user_id=user, event_id=event)
+                user_event = UserEvents(user_id=user, event_id=event, rsvp='Yes', attended=False)
                 user_event.save()
         
             # trigger event suggestion panel data
@@ -686,21 +710,59 @@ class UserEventsViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(user_id=user)
 
         return queryset
+    
+    def create(self, request, *args, **kwargs):
+        # Ensure the user_id and event_id are provided in the request
+        user_id = request.data.get('user_id')
+        event_id = request.data.get('event_id')
+        rsvp = request.data.get('rsvp', 'No')
+        if not all([user_id, event_id]):
+            return Response({"error": "User ID and/or Event ID not provided"}, status=400)
 
-# class SuggestionResultsViewSet(viewsets.ModelViewSet):
-#     queryset = SuggestionResults.objects.all()
-#     serializer_class = SuggestionResultsSerializer
-#     permission_classes = [HasAppToken]
+        # Attempt to fetch the user and event objects
+        try:
+            user = User.objects.get(id=user_id)
+            event = Event.objects.get(id=event_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        except Event.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
 
-#     def get_queryset(self):
-#         queryset = self.queryset
-#         user_id = self.request.query_params.get('user_id')
+        # Create the user event object
+        user_event = UserEvents(user_id=user, event_id=event, rsvp=rsvp, attended=False)
+        user_event.save()
 
-#         if user_id:
-#             user = User.objects.get(id=user_id)
-#             queryset = queryset.filter(user_id=user)
+        serializer = self.get_serializer(user_event)
+        return Response(serializer.data, status=201)
+    
+    @action(detail=False, methods=['post'], url_path='review_event')
+    def review_event(self, request, *args, **kwargs):
+        # Ensure the user_id and event_id are provided in the request
+        user_id = request.data.get('user_id')
+        event_id = request.data.get('event_id')
+        attended = request.data.get('attended')
+        rating = request.data.get('rating')
+        if not all([user_id, event_id, attended]):
+            return Response({"error": "User ID, Event ID, and/or Attended not provided"}, status=400)
 
-#         return queryset
+        # Attempt to fetch the user and event objects
+        try:
+            user = User.objects.get(id=user_id)
+            event = Event.objects.get(id=event_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        except Event.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
+
+        # Update the user event object
+        user_event = UserEvents.objects.get(user_id=user, event_id=event)
+        user_event.attended = attended
+        if rating:
+            user_event.rating = rating
+        user_event.save()
+
+        serializer = self.get_serializer(user_event)
+        return Response(serializer.data, status=200)
     
 class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     queryset = PanelUserPreferences.objects.all()
@@ -1417,8 +1479,8 @@ class PanelScenarioViewSet(viewsets.ModelViewSet):
             duration_data (dict): dictionary of user's scenario duration data
         """
         duration_data = {
-        f"duration_{i}hr": i == duration for i in range(1, 9)
-    }
+            f"duration_{i}hr": i == duration for i in range(1, 9)
+        }
         return duration_data
 
 class SuggestionResultsViewSet(viewsets.ModelViewSet):
@@ -1431,12 +1493,10 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         """
         Update suggestion results for a given user.
         """
-        user_id = request.data.get('user_id')
+        user_id = request.query_params.get('user_id')
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
         
-        print(os.getcwd())
-
         try:
             user = User.objects.get(pk=user_id)
 
@@ -1492,7 +1552,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 }
             )
             results.append(result[0])
-
+        
         # serialize the results for the response
         serializer = SuggestionResultsSerializer(results, many=True)
         return Response({"count": len(results), "next": None, "previous": None, "results": serializer.data}, status=200)
@@ -1503,7 +1563,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         Trigger the model to generate suggestions, and return the top 2 event IDs
         that occur in the next two weeks by probability of attendance.
         '''
-        user_id = request.data.get('user_id')
+        user_id = request.query_params.get('user_id')
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
         
@@ -1521,19 +1581,52 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                                                     .values('event_id', 'probability_of_attendance', 'user_id')[:2]
         
         top_events = [event['event_id'] for event in top_events]
-        print(top_events)
 
         top_event_data = [
             {
                 'user_id': user_id,
-                'event_id': SuggestionResults.objects.get(event_id=event_id).event_id.id,
-                'probability_of_attendance': SuggestionResults.objects.get(event_id=event_id).probability_of_attendance
+                'event_id': SuggestionResults.objects.filter(event_id=event_id)[0].event_id.id,
+                'probability_of_attendance': SuggestionResults.objects.filter(event_id=event_id)[0].probability_of_attendance
             }
             for event_id in top_events
         ]
+
+        # add event data
+        for event_suggestion in top_event_data:
+            event_id = event_suggestion['event_id']
+            event = Event.objects.get(id=event_id)
+            event_suggestion['event_name'] = event.title
+            event_suggestion['event_description'] = event.description
+            event_suggestion['event_date'] = event.datetime
+            event_suggestion['event_duration'] = event.duration_h
+            event_suggestion['event_max_attendees'] = event.max_attendees
+            event_suggestion['address1'] = event.address1
+            event_suggestion['address2'] = event.address2
+            event_suggestion['city'] = event.city
+            event_suggestion['state'] = event.state
+            event_suggestion['zipcode'] = event.zipcode
+
+        # check if the user has already RSVP'd to the event
+        new_top_event_data = []
+        for event_suggestion in top_event_data:
+            event_id = event_suggestion['event_id']
+            user_id = event_suggestion['user_id']
+            user_event = UserEvents.objects.filter(user_id=user_id, event_id=event_id)
+
+            # a row is added to user_event if the user has RSVP'd to the event
+            print("event_id", event_id)
+            print("user_id", user_id)
+            print("user event", user_event, user_event.exists())
+            if not user_event.exists():
+                new_top_event_data.append(event_suggestion)
+        
+        # convert nan probabilities to 0
+        for event_suggestion in new_top_event_data:
+            if pd.isna(event_suggestion['probability_of_attendance']):
+                event_suggestion['probability_of_attendance'] = 0
         
         return Response({
-            'top_events': top_event_data
+            'top_events': new_top_event_data
         })
     
     def distance_calc(self, event_id, user_id):
