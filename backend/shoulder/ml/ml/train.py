@@ -172,7 +172,7 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     # the parameters to the gloabl scoe so we don't have to keep reading them in when we 
     # call predict
     if "params" in globals():
-        params = globals()["params"]
+        params = globals["params"]
     else:
         with open('ml/ml/weights/parameters.pkl', 'rb') as file:
             params = pickle.load(file)
@@ -186,3 +186,4 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     y = jax.nn.sigmoid(fm_out + mlp_out)
 
     return y
+

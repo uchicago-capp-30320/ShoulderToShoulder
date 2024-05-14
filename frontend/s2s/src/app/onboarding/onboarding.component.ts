@@ -154,26 +154,10 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Hides the confirmation dialog.
-   */
-  hideConfirmDialog() {
-    this.showConfirm = false;
-    document.body.style.overflow = 'auto';
-  }
-
-  /**
    * Shows the exit dialog.
    */
   showExitDialog() {
     this.showExit = true;
-  }
-
-  /**
-   * Hides the invalid dialog.
-   */
-  hideInvalidDialog() {
-    this.showInvalidDialog = false;
-    document.body.style.overflow = 'auto';
   }
 
   /**

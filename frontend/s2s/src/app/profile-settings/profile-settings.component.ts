@@ -224,14 +224,6 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   /**
-   * Hides the delete account dialog.
-   */
-  hideDeleteDialog() {
-    this.showDeleteDialog = false;
-    document.body.style.overflow = 'auto';
-  }
-
-  /**
    * Handles the file upload event.
    * 
    * @param event The file upload event.
