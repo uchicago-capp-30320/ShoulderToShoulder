@@ -1,6 +1,5 @@
-import pytest
-from gis_module import *
 import numpy as np
+from shoulder.gis.gis_module import geocode, distance_bin
 
 def test_geocode_address():
     washington_monument = geocode("Washington Monument")

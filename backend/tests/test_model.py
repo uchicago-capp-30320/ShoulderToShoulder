@@ -2,8 +2,10 @@ import jax
 import jaxlib
 from jax import random
 import jax.numpy as jnp
-from ml.model import init_mlp_params, foward_mlp, init_deep_fm, foward_deep_fm
-from ml.model import xavier, init_embedding_params, init_fm, foward_embedding, foward_fm
+from shoulder.ml.ml.model import init_mlp_params, foward_mlp 
+from shoulder.ml.ml.model import init_deep_fm, foward_deep_fm
+from shoulder.ml.ml.model import xavier, init_embedding_params
+from shoulder.ml.ml.model import init_fm, foward_embedding, foward_fm
 
 
 def test_xavier_initialization():

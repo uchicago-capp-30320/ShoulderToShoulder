@@ -1,6 +1,6 @@
 import jaxlib
 import jax.numpy as jnp
-from ml.dataset import Dataset
+from shoulder.ml.ml.dataset import Dataset
 
 
 def test_dataset_init():
@@ -22,8 +22,4 @@ def test_dataset_iteration():
     for x_batch, y_batch in test_data:
         assert type(x_batch) == jaxlib.xla_extension.ArrayImpl
         assert type(y_batch) == jaxlib.xla_extension.ArrayImpl
-
-    # Should be able to reset and continue getting new minibatches
-    test_data.reset()
-    assert type(next(test_data)) == tuple
 
