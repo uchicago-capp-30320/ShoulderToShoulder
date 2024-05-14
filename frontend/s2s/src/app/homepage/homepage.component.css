@@ -1,19 +1,3 @@
-h1 {
-    color: #FFECD1
-}
-
-h2 {
-    margin-top: 1rem;
-}
-
-.description {
-    width: 50%;
-}
-
-img {
-    border-radius: 10px;
-}
-
 .main-content {
     position: relative;
     margin-top: 15rem;
@@ -27,25 +11,16 @@ img {
     flex-wrap: wrap;
 }
 
-.how-it-works {
-    background-color: #FFECD1;
-    border: 2px solid #FF7D00;
-    border-radius: 20px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    width: 65%;
+.description {
+    width: 50%;
+}
+
+img {
+    border-radius: 10px;
+    height: 30rem;
 }
 
 .overview {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -63,66 +38,7 @@ h3 {
     margin: 0;
 }
 
-.signup, .onboard, .setup {
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 1rem;
-    width: 25%;
-    height: 8rem;
-    text-align: center;
-    font-weight: normal;
-    margin: 1rem;
-}
-
-.signup {
-    background-color: #104C56;
-
-}
-
-.onboard {
-    background-color: #166A79;
-}
-
-.setup {
-    background-color: #1C889B;
-}
-
-.create {
-    background-color: #23A6BE;
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 1rem;
-    width: 40%;
-    height: 8rem;
-    text-align: center;
-    font-weight: normal;
-    margin: 1rem;
-}
-
-.arrow {
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 1rem;
-    width: 10%;
-    text-align: center;
-    font-weight: normal;
-    align-items: center;
-    margin: 1rem;
-    color: #78290F;
-}
-
-.pi.pi-arrow-right {
-    font-size: 3rem;
-}
-
-img {
-    height: 30rem;
-}
-
-.get-started{
+.get-started {
     margin: 1rem;
     background-color: #FF7D00;
     color: #FFECD1;
@@ -137,8 +53,8 @@ img {
 }
 
 button {
-    width: 30%;
-    height: 4rem;
+    width: 25%;
+    height: 3.5rem;
     font-size: 1.2rem;
     justify-content: center;
 }
