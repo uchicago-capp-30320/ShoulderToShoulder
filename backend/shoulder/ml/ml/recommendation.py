@@ -19,7 +19,6 @@ def preprocess(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
         a tuple of preprocessed arrays for training or predicting
     """
     feature_list, target_list = [], []
-    raw_json = raw_data
 
     # json_results is a list of dictionaries
     for d in raw_data:
@@ -108,14 +107,13 @@ def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int
     return epochs, loss_list, acc_list
 
 
-def recommend(raw_data: requests.models.Response) -> jaxlib.xla_extension.ArrayImpl:
+def recommend(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
      """
      Get recommendations for users and events.
 
      Parameters:
      -----------
-        raw_data (requests.models.Response): user and event data from the event suggestions 
-            table.
+        raw_data (list): user and event data from the event suggestions table.
 
         Returns:
         --------
