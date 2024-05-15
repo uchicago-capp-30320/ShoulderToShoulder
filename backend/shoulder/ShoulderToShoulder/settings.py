@@ -63,6 +63,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "https://shouldertoshoulder.me"
 ]
 
 CORS_ALLOW_METHODS = (
