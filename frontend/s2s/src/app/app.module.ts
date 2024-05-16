@@ -36,6 +36,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { AccordionModule } from 'primeng/accordion';
 import { RatingModule } from 'primeng/rating';
 
 // Routing
@@ -66,6 +67,8 @@ import { ProfileAvailabilityComponent } from './profile-availability/profile-ava
 import { AuthInterceptor } from './_interceptors/interceptor';
 import { CacheInterceptor } from './_interceptors/cache';
 import { EventCreationComponent } from './event-creation/event-creation.component';
+import { AboutUsComponent } from './about-us/about-us.component';
+import { ContactUsComponent } from './contact-us/contact-us.component';
 import { EventSuggestionComponent } from './event-suggestion/event-suggestion.component';
 
 
@@ -91,6 +94,8 @@ import { EventSuggestionComponent } from './event-suggestion/event-suggestion.co
     ProfileSettingsComponent,
     ProfileAvailabilityComponent,
     EventCreationComponent,
+    AboutUsComponent,
+    ContactUsComponent,
     EventSuggestionComponent
   ],
   imports: [
@@ -124,6 +129,7 @@ import { EventSuggestionComponent } from './event-suggestion/event-suggestion.co
     CalendarModule,
     InputTextareaModule,
     MessagesModule,
+    AccordionModule,
     RatingModule
   ],
   providers: [
