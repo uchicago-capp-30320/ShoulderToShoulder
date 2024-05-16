@@ -30,7 +30,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "admin.shouldertoshoulder.me"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "admin.shouldertoshoulder.me", "shouldertoshoulder.me"]
 
 
 # Application definition
@@ -63,9 +63,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "https://shouldertoshoulder.me"
     "http://localhost:4100",
-    "https://shouldertoshoulder.me"
+    "https://shouldertoshoulder.me",
+    "https://admin.shouldertoshoulder.me",
 ]
 
 CORS_ALLOW_METHODS = (
