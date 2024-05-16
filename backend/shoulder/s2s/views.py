@@ -202,6 +202,15 @@ class OnboardingViewSet(viewsets.ModelViewSet):
         # Attempt to get the onboarding record for the user
         onboarding, created = Onboarding.objects.get_or_create(user_id=user)
 
+        # Conduct the geocoding for the user
+        address_fields = ['address_line1', 'city', 'state', 'zip_code']
+        if all(field in request.data for field in address_fields):
+            full_address = f"{request.data['address_line1']} {request.data['city']}, {request.data['state']} {request.data['zip_code']}"
+            geo_response = geocode(full_address)
+            if geo_response:
+                request.data['latitude'] = geo_response['coords'][0]
+                request.data['longitude'] = geo_response['coords'][1]
+
         # Update onboarding data
         serializer = self.get_serializer(onboarding, data=request.data, partial=True)
         if serializer.is_valid():
@@ -1564,10 +1573,13 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
 
         # convert events to list of dictionaries
         event_panel_dict_lst = [event.__dict__.copy() for event in event_panel]
+
+        event_ids = []
         for event in event_panel_dict_lst:
             event.pop('_state')
             event.pop('id')
             event['event_id'] = event.pop('event_id_id')
+            event_ids.append(event['event_id'])
 
         # Combine the three dictionaries to form rows
         model_list = [
@@ -1575,10 +1587,10 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         ]
 
         # Get recommendations
-        prediction_probs, user_ids, event_ids = recommend(model_list)
+        prediction_probs = recommend(model_list, inference = True)
 
         results = []
-        for pred, user_id, event_id in zip(prediction_probs, user_ids, event_ids):
+        for pred, event_id in zip(prediction_probs, event_ids):
             event = Event.objects.get(id=event_id)
             user = User.objects.get(id=user_id)
             result = SuggestionResults.objects.update_or_create(
