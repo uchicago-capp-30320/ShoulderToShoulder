@@ -3,6 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 // services
 import { SuggestionService } from '../_services/suggestion.service';
 import { AuthService } from '../_services/auth.service';
+import { EventService } from '../_services/event.service';
 
 // helpers
 import { Suggestion } from '../_models/suggestions';
@@ -20,6 +21,7 @@ import { Suggestion } from '../_models/suggestions';
  * 
  * @see SuggestionService
  * @see AuthService
+ * @see EventService
  */
 @Component({
   selector: 'app-event-suggestion',
@@ -34,7 +36,10 @@ export class EventSuggestionComponent implements OnInit {
   constructor (
     private suggestionService: SuggestionService,
     private authService: AuthService,
-  ) { }
+    private eventService: EventService
+  ) {
+    this.setDefaultEventSuggestion();
+   }
 
   ngOnInit(): void {
     this.suggestionService.getSuggestions().subscribe(suggestions => {
@@ -44,6 +49,28 @@ export class EventSuggestionComponent implements OnInit {
         this.showEventSuggestionDialog = true;
       }
     });
+  }
+
+  /**
+   * Sets a default event suggestions.
+   */
+  setDefaultEventSuggestion() {
+    this.currentSuggestion = {
+      id: 0,
+      user_id: 0,
+      event_id: 0,
+      probability_of_attendance: 0,
+      event_name: '',
+      event_description: '',
+      event_date: '',
+      event_duration: 0,
+      event_max_attendees: 0,
+      address1: '',
+      address2: '',
+      city: '',
+      state: '',
+      zipcode: '',
+    };
   }
 
   /**
@@ -68,14 +95,15 @@ export class EventSuggestionComponent implements OnInit {
     }).subscribe(() => {
       // remove the current suggestion from the list
       this.eventSuggestions.shift();
+      this.eventService.loadAllEvents();
 
       // show the next suggestion, if applicable
       if (this.eventSuggestions.length > 0) {
         this.currentSuggestion = this.eventSuggestions[0];
       } else {
         this.showEventSuggestionDialog = false;
+        document.body.style.overflow = 'auto';
       }
     });
   }
-
 }
