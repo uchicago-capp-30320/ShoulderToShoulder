@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 
+// services
+import { AuthService } from '../_services/auth.service';
+
 /**
  * Defines the homepage component.
  * 
@@ -8,6 +11,7 @@ import { Component } from '@angular/core';
  * 
  * @see NavbarComponent
  * @see EventGenerationComponent
+ * @see AuthService
  */
 @Component({
   selector: 'app-homepage',
@@ -15,5 +19,8 @@ import { Component } from '@angular/core';
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
-  constructor() {}
+  
+  constructor(
+    public authService: AuthService
+  ) {}
 }
