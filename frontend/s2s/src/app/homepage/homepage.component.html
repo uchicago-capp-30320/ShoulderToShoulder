@@ -5,22 +5,24 @@
         <div class="main-picture">
             <img src="assets/dhs_loneliness.png" alt="group" class="group" />
         </div>
-        <div class="description">
-            <p class="subtitle">
-                In response to the loneliness epidemic identified by the United 
-                States Department of Health and Human Services in 2023, Shoulder to 
-                Shoulder was created to combat social isolation by fostering
-                 meaningful connections.
+        <div class="get-started">
+            <p class="description">
+                In 2023, the United States Department of Health and Human Services 
+                declared loniliness as an epidemic. In response, Shoulder to Shoulder 
+                was created to combat social isolation by fostering meaningful connections.
             </p>
 
-            <h4>
-                Getting started is simple
-            </h4>
+            @if (!authService.loggedIn) {
+                <h4>
+                    Getting started is simple
+                </h4>
 
-            <div class="centered-row">
-                <button pButton type="button" class="get-started" routerLink="/sign-up">Sign Up</button>
-                <button pButton type="button" class="log-in" routerLink="/log-in">Log In</button>
-            </div>            
+                <div class="centered-row">
+                    <button pButton type="button" class="sign-up" routerLink="/sign-up">Sign Up</button>
+                    <button pButton type="button" class="log-in" routerLink="/log-in">Log In</button>
+                </div>
+            }
+            
         </div>
 
     </div>

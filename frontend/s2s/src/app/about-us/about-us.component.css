@@ -1,6 +1,6 @@
 .main-content {
     position: relative;
-    margin-top: 12.5rem;
+    margin-top: 13rem;
     z-index: 10;
     min-height: 70vh;
     display: flex;
@@ -18,12 +18,42 @@
     border: 1px solid #8e3875;
 }
 
+.job-title {
+    font-size: 1rem;
+    margin-top: .5rem;
+    text-align: center;
+}
+
 .description {
     width: 40rem;
     text-align: justify;
 }
 
 a {
-   color: blue;
+   color: #ea7101;
    text-decoration: none;
+}
+
+.meet-the-team {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 2rem;
+    width: 90%;
+    margin-bottom: 2rem;
+}
+
+.team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 15%;
+}
+
+.team-member img {
+    width: 9rem;
+    height: 9rem;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    object-fit: cover;
 }

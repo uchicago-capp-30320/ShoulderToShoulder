@@ -1,6 +1,6 @@
 <main>
     <h1 class="dark-text">Sign Up for <br>Shoulder to Shoulder!</h1>
-    <p class="subtitle dark-text"> By signing up, you will gain access to features such as personalized event creation, group formation, and more. </p>
+    <p class="subtitle dark-text"> Signing up gives you access to our curated event recommendations. </p>
 
     <div class="signup-form drop-shadow">
         <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="form-container">
@@ -11,14 +11,14 @@
             <div class="field">
                 <label for="firstName" class="label">First Name<span class="required">*</span></label>
                 <small class="p-error light-error" *ngIf="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.dirty">First name is required</small>
-                <input type="text" pInputText placeholder="Daenerys" formControlName="firstName" />
+                <input type="text" pInputText placeholder="Shrek" formControlName="firstName" />
             </div>
           
             <!-- last name -->
             <div class="field">
                 <label for="lastName" class="label">Last Name<span class="required">*</span></label>
                 <small class="p-error light-error" *ngIf="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.dirty">Last name is required</small>
-                <input type="text" pInputText placeholder="Targaryen" formControlName="lastName" />
+                <input type="text" pInputText placeholder="the Ogre" formControlName="lastName" />
             </div>
             
             <!-- phone number -->
@@ -31,7 +31,7 @@
             <div class="field">
                 <label for="email" class="label">Email<span class="required">*</span></label>
                 <small class="p-error light-error" *ngIf="signupForm.get('email')?.dirty && signupForm.get('email')?.invalid">Valid email is required</small>
-                <input type="text" pInputText placeholder="t.daenerys@ironchair.net" formControlName="email" />
+                <input type="text" pInputText placeholder="shrek@swamp.net" formControlName="email" />
             </div>
 
             <!-- password -->

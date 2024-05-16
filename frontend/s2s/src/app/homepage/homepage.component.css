@@ -1,6 +1,6 @@
 .main-content {
     position: relative;
-    margin-top: 15rem;
+    margin-top: 15.5rem;
     z-index: 10;
     min-height: 70vh;
     display: flex;
@@ -11,13 +11,20 @@
     flex-wrap: wrap;
 }
 
-.description {
+.get-started {
     width: 50%;
+}
+
+.description {
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.13rem;
 }
 
 img {
     border-radius: 10px;
     height: 30rem;
+    border: 1px solid #8e3875;
 }
 
 .overview {
@@ -38,7 +45,7 @@ h3 {
     margin: 0;
 }
 
-.get-started {
+.sign-up {
     margin: 1rem;
     background-color: #FF7D00;
     color: #FFECD1;

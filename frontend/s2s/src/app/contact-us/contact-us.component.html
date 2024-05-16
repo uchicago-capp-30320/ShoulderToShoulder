@@ -9,7 +9,7 @@
                 <div class="field">
                     <label for="name" class="label">Name</label>
                     <small class="p-error" *ngIf="contactForm.get('name')?.touched && contactForm.get('name')?.invalid">Name is required</small>
-                    <input type="text" pInputText placeholder="Daenerys Targaryen" formControlName="name" autocomplete="name"/>
+                    <input type="text" pInputText placeholder="Shrek" formControlName="name" autocomplete="name"/>
                 </div>
 
                 <!-- Phone number -->
@@ -23,21 +23,21 @@
                 <div class="field">
                     <label for="email" class="label">Email</label>
                     <small class="p-error" *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid">Valid email is required</small>
-                    <input type="text" pInputText placeholder="t.daenerys@ironchair.net" formControlName="email" autocomplete="email"/>
+                    <input type="text" pInputText placeholder="shrek@swamp.net" formControlName="email" autocomplete="email"/>
                 </div>
 
                 <!-- Subject -->
                 <div class="field">
                     <label for="subject" class="label">Subject</label>
                     <small class="p-error" *ngIf="contactForm.get('subject')?.touched && contactForm.get('subject')?.invalid">Subject is required</small>
-                    <input type="text" pInputText placeholder="I'm curious about dragons" formControlName="subject" autocomplete="subject"/>
+                    <input type="text" pInputText placeholder="I'm curious about donkeys" formControlName="subject" autocomplete="subject"/>
                 </div>
 
                 <!-- Message -->
                 <div class="field">
                     <label for="message" class="label">Message</label>
                     <small class="p-error" *ngIf="contactForm.get('message')?.touched && contactForm.get('message')?.invalid">Message is required</small>
-                    <textarea pInputTextarea placeholder="I want to know more about dragons." formControlName="message" autocomplete="message" rows="8"></textarea>
+                    <textarea pInputTextarea placeholder="I want to know more about donkeys." formControlName="message" autocomplete="message" rows="8"></textarea>
                 </div>
 
                 <!-- Submit Button -->
