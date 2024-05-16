@@ -10,7 +10,7 @@ import environ
 import ShoulderToShoulder.settings as s2s_settings
 from django.core.management import call_command
 from io import StringIO
-
+from unittest.mock import patch
 from rest_framework.test import APIClient
 
 
@@ -63,7 +63,7 @@ Overview of tests that should be created for the Django Views
     GET: Test retrieving a list of groups (requires authentication).
     POST: Test creating a new group (requires authentication).
 
-6. EventViewSet:
+6. EventViewSet: (Sarah)
     GET: Test retrieving a list of events (requires authentication).
     POST: Test creating a new event (requires authentication).
 
@@ -75,7 +75,7 @@ Overview of tests that should be created for the Django Views
     GET: Test retrieving availability data for a user.
     POST: Test updating availability data for a user.
 
-9. ProfilesViewSet: 
+9. ProfilesViewSet: (Sarah)
     GET:
     POST:
     
@@ -146,7 +146,7 @@ def generate_app_token():
     return token
 
 @pytest.mark.django_db
-def test_create_hobby_type(api_client):
+def test_create_hobby_type_authenticated(api_client):
     """
     Test creating a new hobby type.
     """
@@ -183,7 +183,7 @@ def test_create_hobby_type_unauthenticated(api_client):
 
 
 @pytest.mark.django_db
-def test_hobby_list(api_client):
+def test_hobby_list_authenticated(api_client):
     """
     Test creating HobbyType and Hobby objects 
     """
@@ -202,11 +202,11 @@ def test_hobby_list(api_client):
 
     url = "/api/hobbies/"
     response = api_client.get(url)
-    print(response.headers)
-    print(response.content)
+
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data['results']) == 2
+
     
 @pytest.mark.django_db
 def test_hobby_list_unauthenticated(api_client):
@@ -221,10 +221,115 @@ def test_hobby_list_unauthenticated(api_client):
 
     url = "/api/hobbies/"
     response = api_client.get(url)
-    print(response.data)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    assert response.data['detail'] == ErrorDetail(string='Authentication credentials were not provided.', code='not_authenticated')
+    assert response.data['detail'] == 'Authentication credentials were not provided.'
+
+
+@pytest.mark.django_db
+def test_update_onboarding_authenticated(api_client):
+    # Create the app token
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
+
+    # Set X-APP-TOKEN header
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    user = User.objects.create(username='testuser')
+    
+    view = OnboardingViewSet.as_view({'post': 'update_onboarding'})
+    
+    url = "/api/onboarding/"
+    response = api_client.post(url, data={'user_id': user.id, 'onboarded': True}, format='json')
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data['onboarded'] is True
+
+
+@pytest.mark.django_db
+def test_update_onboarding_unauthenticated(api_client):
+    view = OnboardingViewSet.as_view({'post': 'update_onboarding'})
+    
+    url = "/api/onboarding/"
+    response = api_client.post(url, data={'user_id': 1, 'onboarded': True}, format='json')
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_create_availability_authenticated(api_client):
+
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
+
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    
+    user = User.objects.create(username='testuser')
+    view = AvailabilityViewSet.as_view({'post': 'post'})
+    url = "/api/availability/"
+    response = api_client.post(url, data={'user_id': user.id, 'day_of_week': 'Monday', 'hour': 1, 'available': True}, format='json')
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_create_availability_unauthenticated(api_client):
+    view = AvailabilityViewSet.as_view({'post': 'post'})
+    url = "/api/availability/"
+    
+    response = api_client.post(url, data={'user_id': 1, 'day_of_week': 'Monday', 'hour': 1, 'available': True}, format='json')
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+# @pytest.mark.django_db
+# def test_get_availability_authenticated(api_client):
+#     # NOTE: not posting hte user information
+#     app_token = generate_app_token()
+#     assert ApplicationToken.objects.filter(name='s2s').exists()
+
+#     api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+
+#     user = User.objects.create(id=3, username='testuser')
+
+#     availability = Availability.objects.create(user_id=user, day_of_week='Monday', hour=1, available=True)
+#     view = AvailabilityViewSet.as_view({'get': 'list'})
+#     url = "/api/onboarding/"
+#     response = api_client.get(url, data={'user_id': user.id})
+#     print(response.data)
+
+#     assert response.status_code == status.HTTP_200_OK
+#     assert len(response.data["results"]) == 1
+
+
+@pytest.mark.django_db
+def test_get_availability_unauthenticated(api_client):
+    view = AvailabilityViewSet.as_view({'get': 'list'})
+    url = "/api/onboarding/"
+    response = api_client.get(url, data={'user_id': 1})
+
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.data['detail'] == 'Authentication credentials were not provided.'
+
+@pytest.mark.django_db
+def test_zip_code_valid(api_client):
+
+    
+    view = ZipCodeViewSet.as_view({'get': 'list'})
+    url = "/api/zipcodes/"
+    response = api_client.get(url, {'zip_code': '90210'})
+    
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['query']['codes'] == ['90210']
+
+
+@pytest.mark.django_db
+def test_zip_code_missing(api_client):
+    view = ZipCodeViewSet.as_view({'get': 'list'})
+    url = "/api/zipcodes/"
+    response = api_client.get(url, {'zip_code': '90210'})
+    
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data['query']['codes'] == ['90210']
 
 
 
