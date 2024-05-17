@@ -16,16 +16,16 @@ import { HobbyType } from '../_models/hobby';
 
 /**
  * Component for creating an event.
- * 
+ *
  * This component allows users to create an event by filling out a form with
  * event details. The form includes fields for the event title, description,
  * hobby type, date and time, duration, address, city, state, and maximum number
  * of attendees. Users can also choose to add themselves to the event as an
  * attendee.
- * 
+ *
  * @example
  * <app-event-creation></app-event-creation>
- * 
+ *
  * @see EventService
  * @see AuthService
  * @see HobbyService
@@ -119,7 +119,7 @@ export class EventCreationComponent implements OnInit {
 
   /**
    * Displays an error message if the form is invalid.
-   * 
+   *
    * @param event The event that triggered the form submission.
    */
   highlightInvalidFields(event: any): void {
@@ -129,7 +129,7 @@ export class EventCreationComponent implements OnInit {
       this.messageService.add({severity: 'error', detail: 'Please fill out all required fields.'})
       this.invalidDialogMessage = '';
       this.errorHeader = "Required Fields Missing"
-      
+
       // mark all invalid fields as dirty
       for (let control in form.controls) {
         let formControl = form.controls[control];
@@ -201,22 +201,6 @@ export class EventCreationComponent implements OnInit {
   }
 
   /**
-   * Closes the confirmation dialog.
-   */
-  closeConfirmationDialog(): void {
-    this.showConfirmDialog = false;
-    document.body.style.overflow = 'auto';
-  }
-
-  /**
-   * Closes the invalid dialog.
-   */
-  closeInvalidDialog(): void {
-    this.showInvalidDialog = false;
-    document.body.style.overflow = 'auto';  
-  }
-
-  /**
    * Submits the event creation form.
    */
   onSubmit(): void {
@@ -235,7 +219,7 @@ export class EventCreationComponent implements OnInit {
       error => {
         // if there was an error, display an error message
         this.clearMessages();
-        this.messageService.add({severity: 'error', 
+        this.messageService.add({severity: 'error',
           detail: 'There was an error creating the event. Please try again.'});
         this.showLoadingDialog = false;
         this.invalidDialogMessage = "There was an error creating an event. The following error occurred: " + error.error.error;

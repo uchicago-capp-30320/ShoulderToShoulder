@@ -77,7 +77,7 @@ export var formControlFieldMap: { [index: string]: string } = {
     'eventFrequency': 'Event Frequency',
     'eventNotifications': 'Event Notifications',
     'distances': 'Distances',
-    
+
     // event information
     'duration_h': 'Duration (hours)',
     'datetime': 'Date and Time',

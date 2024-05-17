@@ -16,12 +16,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         file_path = kwargs['file_path']
-        
+
         try:
             with open(file_path, 'r') as csvfile:
                 csv_reader = reader(csvfile, delimiter=',')
                 next(csv_reader)  # skip header row
-                
+
                 # extract hobbies and types from csv
                 hobbies_raw = []
                 hobbies = []
@@ -47,14 +47,14 @@ class Command(BaseCommand):
                     if not typeObj:
                         self.stdout.write(self.style.ERROR('Error importing data: Type {} not found'.format(_type)))
                         return
-                    
+
                     # create hobby
                     hobby = Hobby(name=name, scenario_format=scenario_format, type=typeObj)
                     hobbies.append(hobby)
-                
+
                 # bulk create hobbies
                 Hobby.objects.bulk_create(hobbies)
                 self.stdout.write(self.style.SUCCESS('Data imported successfully'))
-        
+
         except Exception as e:
             self.stdout.write(self.style.ERROR('Error importing data: {}'.format(str(e))))

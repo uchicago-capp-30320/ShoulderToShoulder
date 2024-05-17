@@ -14,12 +14,12 @@ import { PasswordChange } from '../_models/password-change';
 
 /**
  * Service responsible for user authentication and authorization.
- * Handles user sign-up, login, logout, and provides information about the 
+ * Handles user sign-up, login, logout, and provides information about the
  * user's authentication status.
- * 
- * This service interacts with the API service to perform authentication-related 
+ *
+ * This service interacts with the API service to perform authentication-related
  * HTTP requests.
- * 
+ *
  * @see ApiService
  */
 @Injectable({
@@ -32,7 +32,7 @@ export class AuthService {
   changePasswordEndpoint = `${this.apiService.BASE_API_URL}/user/change_password/`;
   userUpdateEndpoint = `${this.apiService.BASE_API_URL}/user/${this.userValue.id}/`;
   endpoint = `${this.apiService.BASE_API_URL}/user/`;
-  
+
   signingUp = new BehaviorSubject<boolean>(false);
   user = new BehaviorSubject<User>(this.userValue);
   userSubject = this.user.asObservable();
@@ -45,7 +45,7 @@ export class AuthService {
 
   /**
    * Signs a user up for the application.
-   * 
+   *
    * @param user A UserSignUp object containing the user's information.
    * @returns An Observable of the signed-up user.
    */
@@ -65,7 +65,7 @@ export class AuthService {
 
   /**
    * Logs a user into the application.
-   * 
+   *
    * @param user A UserLogIn object containing the user's login information.
    * @returns An Observable of the logged in user.
    */
@@ -90,11 +90,11 @@ export class AuthService {
 
   /**
    * Determines the user's onboarding status.
-   * 
-   * If a user is not onboarded, then when they log in, they are 
+   *
+   * If a user is not onboarded, then when they log in, they are
    * automatically redirected to the onboarding page. If a user is onboarded,
    * they are taken to their profile page.
-   * 
+   *
    * @returns An Observable<boolean> representing the user's onboarding status.
    */
   getOnboardingStatus(): Observable<boolean> {
@@ -117,7 +117,7 @@ export class AuthService {
 
   /**
    * Extracts the user's information.
-   * 
+   *
    * @returns The user object containing user information.
    */
   get userValue(): User {
@@ -142,7 +142,7 @@ export class AuthService {
   /**
    * Changes a user's password.
    * Implement this method once the password change endpoint is available.
-   * 
+   *
    * @param passwordChange A PasswordChange object containing the user's current
    *                       password, new password, and confirmation of the new
    *                       password.
@@ -155,7 +155,7 @@ export class AuthService {
   /**
    * Updates a user's information.
    * Implement this method once the user update endpoint is available.
-   * 
+   *
    * @param userUpdate A UserUpdate object containing the user's updated information.
    * @returns An Observable of the updated user.
    */
@@ -168,9 +168,9 @@ export class AuthService {
    * This function should trigger an endpoint in the backend that deletes the
    * user's account and erases all instances of that user from the database,
    * including their availability, events attended, upcoming events, etc.
-   * 
+   *
    * Implement this method once the user delete endpoint is available.
-   * 
+   *
    * @param user The user to delete.
    * @returns An Observable of the delete response.
    */

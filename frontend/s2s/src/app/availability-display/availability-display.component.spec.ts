@@ -11,7 +11,7 @@ describe('AvailabilityDisplayComponent', () => {
       declarations: [AvailabilityDisplayComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(AvailabilityDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

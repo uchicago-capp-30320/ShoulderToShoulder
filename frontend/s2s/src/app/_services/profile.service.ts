@@ -9,12 +9,12 @@ import { ApiService } from './api.service';
 import { NumberFormatStyle } from '@angular/common';
 
 /**
- * Service responsible for managing profile-related functionalities, including 
+ * Service responsible for managing profile-related functionalities, including
  * fetching profile data from the API and updating the user's profile.
- * 
- * This service interacts with the API service to perform profile-related HTTP 
+ *
+ * This service interacts with the API service to perform profile-related HTTP
  * requests.
- * 
+ *
  * @see ApiService
  */
 @Injectable({
@@ -35,7 +35,7 @@ export class ProfileService {
 
   /**
    * Fetches the profile data for the current user.
-   * 
+   *
    * @returns An Observable of the user's profile data.
    */
   getProfile() {
@@ -59,7 +59,7 @@ export class ProfileService {
 
   /**
    * Fetches the presigned URL for the profile picture of a user.
-   * 
+   *
    * @param profileId The ID of the profile to fetch the profile picture for.
    */
   getProfilePictureUrl(profileId: NumberFormatStyle) {
@@ -77,9 +77,9 @@ export class ProfileService {
 
   /**
    * Uploads a new profile picture for the current user.
-   * 
+   *
    * Implement this method once the profile picture upload endpoint is available.
-   * 
+   *
    * @param file The file to upload.
    * @returns An Observable with the upload response.
    */

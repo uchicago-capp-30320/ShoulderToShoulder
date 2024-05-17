@@ -7,8 +7,8 @@ A web application to foster community engagement and fight the loneliness pandem
 #### `frontend`
 Directory with our web application's frontend development, which is created to display information and interact with users. Our frontend employs Angular.
 
-#### `backend/shoulder` 
-Directory with our web application's backend development. Our backend employs Django with an AWS posgress database. The database contains account information, user data, and event data. The backend development team manages the database, the API endpoints, and involves a machine learning component. 
+#### `backend/shoulder`
+Directory with our web application's backend development. Our backend employs Django with an AWS posgress database. The database contains account information, user data, and event data. The backend development team manages the database, the API endpoints, and involves a machine learning component.
 
 #### `backend/shoulder/ml`
 Directory which contains our web application's machine learning development. Machine learning is used by our application to provide users with recommendations for events to attend.
@@ -63,24 +63,24 @@ npm install
 ```
 </pre>
 
-This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to develop in the frontend. 
+This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to develop in the frontend.
 
 #### `backend`
 
 The backend employs a poetry virtual environment with Python 3.12. To create the environment for the first time, follow these steps:
- 
+
 <pre>
 ```
 cd backend
 poetry env use 3.12
 poetry shell
-poetry install 
+poetry install
 
 exit //to exit the environment
 ```
 </pre>
 
-You will need to be inside the environment to develop in the backend. If you have already created the poetry environment once before, follow these steps to open the environment: 
+You will need to be inside the environment to develop in the backend. If you have already created the poetry environment once before, follow these steps to open the environment:
 
 <pre>
 ```
@@ -94,7 +94,7 @@ exit //to exit the environment
 
 ## How to use our app
 
-First, make sure you have successfully completed the set up of the virtual environments (see instructions above). 
+First, make sure you have successfully completed the set up of the virtual environments (see instructions above).
 
 To open and use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps:
 
@@ -105,7 +105,7 @@ ng serve
 ```
 </pre>
 
-Navigate to `localhost:4200/` in your web browser. 
+Navigate to `localhost:4200/` in your web browser.
 
 Now, open a new terminal and run:
 
@@ -124,7 +124,7 @@ To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the
 
 ## Pre-Commit Checklist
 
-#### `backend`: 
+#### `backend`:
 
 <pre>
 ```
@@ -133,7 +133,7 @@ pre-commit run --all
 ```
 </pre>
 
-#### `frontend`: 
+#### `frontend`:
 
 <pre>
 ```
@@ -157,4 +157,3 @@ npm run format
 - Sarah Walker
     - Sarah is a second year Master's student at the University of Chicago. As a student it can be difficult for her to find time to invest in her social life; she also finds it difficult to meet new people and try new things on such a tight schedule. She is glad to be working on a project aimed at connecting others who may feel lonely or stuck in their daily routines.
 - Kate Habich
-

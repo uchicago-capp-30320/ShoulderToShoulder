@@ -18,7 +18,7 @@ export interface Onboarding {
     sexual_orientation: string | '',
     sexual_orientation_description: string | '',
     religion: string | '',
-    religion_description: string | '', 
+    religion_description: string | '',
     political_leaning: string | '',
     political_description: string | '',
     zip_code: string | '',
