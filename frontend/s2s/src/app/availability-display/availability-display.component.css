@@ -37,7 +37,7 @@
     border: .2rem solid white;
 }
 
-.header-cell {  
+.header-cell {
     font-weight: 600;
     background: none;
     color: #15616D;
@@ -101,9 +101,9 @@ h3 {
 
 .edit-button:hover {
     background-color: #78290f21;
-    border-color: #78290fb3;  
+    border-color: #78290fb3;
 }
-  
+
 
 .loading-overlay {
     position: fixed;
@@ -118,7 +118,7 @@ h3 {
     align-items: center;
     z-index: 1000; /* High z-index to cover the whole application */
   }
-  
+
 .loading-overlay-content {
     background-color: #FFECD1;
     height: 12rem;

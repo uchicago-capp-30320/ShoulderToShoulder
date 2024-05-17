@@ -4,7 +4,7 @@ import { labelValueString } from "./abstractInterfaces";
 
 /**
  * Get random integer between min and max.
- * 
+ *
  * @param min The minimum value.
  * @param max The maximum value.
  * @returns The random integer.
@@ -15,7 +15,7 @@ export function getRandomInt(min: number, max: number) {
 
 /**
  * Get a random subset of an array.
- * 
+ *
  * @param arr The array to get a subset of.
  * @param size The size of the subset.
  */
@@ -29,7 +29,7 @@ export function getRandomSubset(arr: any[], size: number) {
 
 /**
  * Shuffle an array.
- * 
+ *
  * @param arr The array to shuffle.
  * @returns The shuffled array.
  */
@@ -50,7 +50,7 @@ export function shuffleArray(arr: any[]) {
 
 /**
  * Split a string at the first digit and capitalize the first letter of the prefix.
- * 
+ *
  * @param input The input string.
  * @returns The formatted string.
  */
@@ -72,7 +72,7 @@ export function splitString(input: string): string {
 
 /**
  * Create an array range of numbers.
- * 
+ *
  * @param start The start of the range (inclusive).
  * @param end The end of the range (exclusive).
  * @returns The array range.

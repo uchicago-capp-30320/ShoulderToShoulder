@@ -10,22 +10,22 @@ class PanelUserPreferences(models.Model):
         user_id (fk): user id
         [preferred dow times] (bool): every day of week and time range marked
             0 (not preferred) or 1 (preferred)
-        [preferred num_participants ranges] (bool): prefered number of event 
+        [preferred num_participants ranges] (bool): prefered number of event
             participants 0 (not preferred) or 1 (preferred)
-        [prefered distance ranges] (bool): prefered event max distance from 
+        [prefered distance ranges] (bool): prefered event max distance from
             user 0 (not preferred) or 1 (preferred)
-        [pref_similarity_to_group nums] (bool): degree of similarity user 
-            preferes to event group [1,4] where lower is less similar; 
+        [pref_similarity_to_group nums] (bool): degree of similarity user
+            preferes to event group [1,4] where lower is less similar;
             0 (not preferred) or 1 (preferred)
         [preference similarity categories] (bool): what characteristics user
-            would like to be more similar to group on; 0 (not preferred) or 
+            would like to be more similar to group on; 0 (not preferred) or
             1 (preferred)
         [preferred hobby categories] (bool): hobby categories user prefers;
             0 (not preferred) or 1 (preferred)
     '''
     # User Preferences
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+
     # availability
     pref_monday_early_morning = models.BooleanField(default=False)
     pref_monday_morning = models.BooleanField(default=False)
@@ -91,11 +91,11 @@ class PanelUserPreferences(models.Model):
     pref_similarity_to_group_2 = models.BooleanField(default=False)
     pref_similarity_to_group_3 = models.BooleanField(default=False)
     pref_similarity_to_group_4 = models.BooleanField(default=False)
-    
+
     pref_gender_similar = models.BooleanField(default=False)
     pref_race_similar = models.BooleanField(default=False)
     pref_age_similar = models.BooleanField(default=False)
-    pref_sexual_orientation_similar = models.BooleanField(default=False) 
+    pref_sexual_orientation_similar = models.BooleanField(default=False)
     pref_religion_similar = models.BooleanField(default=False)
     pref_political_leaning_similar = models.BooleanField(default=False)
 

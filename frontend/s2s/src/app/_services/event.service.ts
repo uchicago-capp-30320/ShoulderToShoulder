@@ -12,12 +12,12 @@ import { Event, PastUpcomingEventResponse } from '../_models/event';
 import { User } from '../_models/user';
 
 /**
- * Service responsible for managing event-related functionalities, including 
+ * Service responsible for managing event-related functionalities, including
  * fetching event data from the API and organizing events for display.
- * 
- * This service interacts with the API service and authentication service to 
+ *
+ * This service interacts with the API service and authentication service to
  * perform event-related HTTP requests.
- * 
+ *
  * @see ApiService
  * @see AuthService
  */
@@ -70,7 +70,7 @@ export class EventService {
 
   /**
    * Gets the past events attended by the user.
-   * 
+   *
    * @param events The list of all events.
    */
   getPastEvents(events: PastUpcomingEventResponse): void {
@@ -82,7 +82,7 @@ export class EventService {
 
   /**
    * Gets the upcoming events for the user.
-   * 
+   *
    * @param events The list of all events.
    */
   getUpcomingEvents(events: PastUpcomingEventResponse): void {
@@ -92,7 +92,7 @@ export class EventService {
 
   /**
    * Allows a user to add a new event.
-   * 
+   *
    * @param event The event to add.
    * @returns An Observable of the added event.
   */

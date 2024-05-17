@@ -18,7 +18,7 @@
     <!-- Intro message -->
     <div *ngIf="this.page === 0" class="onboardingIntro">
         <h1 class="dark-text">Welcome to Shoulder to Shoulder!</h1>
-        <p class="subtitle dark-text"> 
+        <p class="subtitle dark-text">
             To make sure we provide the most accurate event recommendations for you, we are going to start you off with a few surveys. None of the information you report in these surveys will be shared without your explicit permission.
         </p>
         <p class="subtitle dark-text">
@@ -66,20 +66,20 @@
                 <span class="ui-button-text ui-clickable"><i class="pi pi-arrow-left"></i> Previous Page</span>
             </button>
         </div>
-        
+
         <!-- next button -->
-        <div 
-            *ngIf="this.page >= 0 && this.page < this.maxPage" 
-            class="nextButtonDiv" 
-            (click)="highlightInvalidFields($event)" 
+        <div
+            *ngIf="this.page >= 0 && this.page < this.maxPage"
+            class="nextButtonDiv"
+            (click)="highlightInvalidFields($event)"
             (keypress)="highlightInvalidFields($event)"
             [attr.aria-disabled]="true"
             >
-            <button 
-                id="next-button" 
-                pButton 
-                (click)="nextPage()" 
-                class="nextButton" 
+            <button
+                id="next-button"
+                pButton
+                (click)="nextPage()"
+                class="nextButton"
                 (focus)="highlightInvalidFields($event)"
                 [disabled]="nextButtonDisabled()">
                 <span class="ui-button-text ui-clickable">Next Page <i class="pi pi-arrow-right"></i></span>
@@ -87,10 +87,10 @@
         </div>
 
         <!-- submit button -->
-        <div 
-            *ngIf="this.page === this.maxPage" 
+        <div
+            *ngIf="this.page === this.maxPage"
             class="nextButtonDiv"
-            (click)="highlightInvalidFields($event)" 
+            (click)="highlightInvalidFields($event)"
             (keypress)="highlightInvalidFields($event)"
             [attr.aria-disabled]="true"
         >
@@ -104,7 +104,7 @@
     <p-dialog header="Required Fields Missing" [(visible)]="showInvalidDialog" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
         <p class="m-0">{{ invalidDialogMessage }}</p>
         <div class="p-d-flex p-jc-end">
-            <button pButton type="button" class="p-button-text" (click)="hideInvalidDialog()" class="confirmButton">OK</button>
+            <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
         </div>
     </p-dialog>
 
@@ -114,7 +114,7 @@
         <p class="m-0">If you are satisfied with your responses, press confirm to continue.</p>
 
         <div class="p-d-flex p-jc-end">
-            <button pButton type="button" class="p-button-text" (click)="hideConfirmDialog()" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="showConfirm = false" class="cancelButton">Cancel</button>
             <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
         </div>
     </p-dialog>
@@ -126,4 +126,3 @@
         <app-loader></app-loader>
     </div>
 </main>
-

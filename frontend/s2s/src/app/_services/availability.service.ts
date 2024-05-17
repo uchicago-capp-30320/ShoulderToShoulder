@@ -8,21 +8,21 @@ import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 
 // models
-import { AvailabilityObj, 
-          AvailabilityResponse, 
+import { AvailabilityObj,
+          AvailabilityResponse,
           daysOfTheWeek,
           hours,
           AvailabilitySlot
         } from '../_models/availability';
 
 /**
- * Service responsible for managing calendar-related functionalities, including 
- * fetching calendar data and user availability from the API, updating user 
+ * Service responsible for managing calendar-related functionalities, including
+ * fetching calendar data and user availability from the API, updating user
  * availability, and converting availability data for UI display.
- * 
- * This service interacts with the API service and authentication service to 
+ *
+ * This service interacts with the API service and authentication service to
  * perform calendar-related HTTP requests.
- * 
+ *
  * @see ApiService
  * @see AuthService
  */
@@ -53,7 +53,7 @@ export class AvailabilityService {
 
   /**
    * Loads availability data from the API and converts it for UI display.
-   * 
+   *
    * @param calendar The calendar data used to map availability slots.
    */
   loadAllAvailability(): void {
@@ -66,7 +66,7 @@ export class AvailabilityService {
 
   /**
    * Fetches availability data from the calendar API.
-   * 
+   *
    * @param url The URL of the API endpoint to fetch availability data from.
    * @returns An Observable of availability data as an array of Availability objects.
    */
@@ -82,7 +82,7 @@ export class AvailabilityService {
 
   /**
    * Converts availability data for UI display.
-   * 
+   *
    * @param availability The availability data fetched from the API.
    * @returns An array of AvailabilitySlot objects for UI display.
    */
@@ -98,7 +98,7 @@ export class AvailabilityService {
         }
         return dayAvailability.available;
       });
-  
+
       return { time, days };
     });
   }
@@ -117,7 +117,7 @@ export class AvailabilityService {
         available: available
       }))
     ).flat(); // Flattening the array to pass as a single list
-    
+
     return updates;
   }
 
@@ -129,9 +129,9 @@ export class AvailabilityService {
 
   /**
    * Sets user's availability to the backup availability data.
-   * 
+   *
    * This method is used to reset the user's availability data to the last saved state.
-   * 
+   *
    * @param availability The availability data to set as the user's availability.
    */
   setAvailability(availability: AvailabilitySlot[]): void {

@@ -40,10 +40,3 @@ export interface EventResponse {
     previous: string;
     results: Event[];
 }
-
-export interface UserEventResponse {
-    count: number;
-    next: string;
-    previous: string;
-    results: UserEvent[];
-}

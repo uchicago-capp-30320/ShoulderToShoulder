@@ -48,8 +48,8 @@ def preprocess(raw_data: requests.models.Response) -> jaxlib.xla_extension.Array
                 user_event_list.append(high)
             else:
                 user_event_list.append(low)
-            
-            # Ensures unique integers for every response in very field, basically creating 
+
+            # Ensures unique integers for every response in very field, basically creating
             # a vocabulary for the embedding layer
             low += 2
             high += 2
@@ -62,7 +62,7 @@ def preprocess(raw_data: requests.models.Response) -> jaxlib.xla_extension.Array
     x, y= jnp.array(feature_list, dtype=float), jnp.array(target_list, dtype=float)
 
     return x, y
-    
+
 
 def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list) -> None:
     """
@@ -92,7 +92,7 @@ def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list) ->
 
 
 @jit
-def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl, 
+def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
          y: jaxlib.xla_extension.ArrayImpl) -> tuple:
     """
     Make one update to a DeepFM
@@ -168,11 +168,11 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     --------
         predictions (array): predicted probabilities of users RSVPing for events
     """
-    # Check if params is a global variable and if not, read them from a pkl file and add 
-    # the parameters to the gloabl scoe so we don't have to keep reading them in when we 
+    # Check if params is a global variable and if not, read them from a pkl file and add
+    # the parameters to the gloabl scoe so we don't have to keep reading them in when we
     # call predict
     if "params" in globals():
-        params = globals()["params"]
+        params = globals["params"]
     else:
         with open('ml/ml/weights/parameters.pkl', 'rb') as file:
             params = pickle.load(file)

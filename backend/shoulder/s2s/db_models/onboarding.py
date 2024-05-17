@@ -7,7 +7,7 @@ from .hobby_type import HobbyType
 class Onboarding(models.Model):
     """
     Creates a Django Model representing a user's Onboarding information in the Shoulder to Shoulder Database
-    
+
     Table Columns:
         user_id (str): user ID fk from user table
         onboarded (bool): has user done onboarding
@@ -20,12 +20,12 @@ class Onboarding(models.Model):
         num_participants (str): prefered number of participants
         distance (str): prefered maximum distance to travel for event
         similarity_to_group (int): prefered level of similarity to group
-        simialrity_metrics (str): string of list including characteristics user 
+        simialrity_metrics (str): string of list including characteristics user
             would like to be similar on
         most_interested_hobby_types: fk to hobby types model
         most_interested_hobbies: fk to hobby model
         least_interested_hobbies: fk to hobby model
-        [Multiple demographic columns including dropdown answers and 
+        [Multiple demographic columns including dropdown answers and
         user-entered short answer (*_description)]
 
 
@@ -52,10 +52,10 @@ class Onboarding(models.Model):
     )
 
     EVENT_FREQUENCIES = (
-        ("Twice a week", "Twice a week"), 
-        ("Once a week", "Once a week"), 
-        ("Once every two weeks", "Once every two weeks"), 
-        ("Once a month", "Once a month"), 
+        ("Twice a week", "Twice a week"),
+        ("Once a week", "Once a week"),
+        ("Once every two weeks", "Once every two weeks"),
+        ("Once a month", "Once a month"),
         ("Once every three months", "Once every three months")
     )
 
@@ -68,7 +68,7 @@ class Onboarding(models.Model):
 
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     onboarded = models.BooleanField(default=False)
-    
+
     # location
     zip_code = models.CharField(max_length=10, null=True, blank=True)
     city = models.CharField(max_length=50, null=True, blank=True)
@@ -85,16 +85,16 @@ class Onboarding(models.Model):
     least_interested_hobbies = models.ManyToManyField(Hobby, blank=True, related_name='least_interested_hobbies')
 
     # preferences
-    num_participants = models.JSONField(null=True, blank=True)  
+    num_participants = models.JSONField(null=True, blank=True)
     distance = models.CharField(max_length=100, choices=ALLOWED_DISTANCES, null=True, blank=True)
     similarity_to_group = models.CharField(max_length=100, choices=ALLOWED_SIMILARITY_VALUES, null=True, blank=True)
-    similarity_metrics = JSONField(null=True, blank=True)  
+    similarity_metrics = JSONField(null=True, blank=True)
 
     # demographics
-    gender = JSONField(null=True, blank=True) 
+    gender = JSONField(null=True, blank=True)
     gender_description = models.CharField(max_length=50, null=True, blank=True)
     pronouns = models.CharField(max_length=50, null=True, blank=True)
-    race = JSONField(null=True, blank=True) 
+    race = JSONField(null=True, blank=True)
     race_description = models.CharField(max_length=50, null=True, blank=True)
     age = models.CharField(max_length=50, null=True, blank=True)
     sexual_orientation = models.CharField(max_length=50, null=True, blank=True)
