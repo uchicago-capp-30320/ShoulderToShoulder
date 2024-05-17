@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db import transaction
+from django.db.models import Exists, OuterRef, Count, Subquery, Q, F
 import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -1554,36 +1555,28 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": f"Failed to find user or event panel data: {str(e)}"}, status=400)
 
-        # Note: distance function should be used here to populate a distance
-        # dictionary for each user-event combination.
-        # What is currently here is a placeholder to make the view functional!
-        distance_dict = {
-            'dist_within_1mi': False, 
-            'dist_within_5mi': False, 
-            'dist_within_10mi': False,
-            'dist_within_15mi': False, 
-            'dist_within_20mi': False,
-            'dist_within_30mi': False, 
-            'dist_within_40mi': False, 
-            'dist_within_50mi': False
-        }
         user_panel_dict = user_panel.__dict__.copy()
         user_panel_dict.pop('_state')
         user_panel_dict['user_id'] = user_panel_dict.pop('user_id_id')
 
-        # convert events to list of dictionaries
+        # convert events to list of dictionaries and constructs the distance portion of the dictionary
         event_panel_dict_lst = [event.__dict__.copy() for event in event_panel]
-
-        event_ids = []
+        distance_panel_list = [] # Set up list to hold panel distance data
+        event_ids = [] # Set up list to hold event IDs
         for event in event_panel_dict_lst:
             event.pop('_state')
             event.pop('id')
             event['event_id'] = event.pop('event_id_id')
-            event_ids.append(event['event_id'])
 
+            # Construct a distance dictionary for each event-user pair
+            distance_panel_list.append(
+                self.distance_calc(event['event_id'], user_id)
+            )
+            
         # Combine the three dictionaries to form rows
         model_list = [
-            {**user_panel_dict, **event, **distance_dict} for event in event_panel_dict_lst
+            {**user_panel_dict, **event, **distance_panel} 
+            for event, distance_panel in zip(event_panel_dict_lst, distance_panel_list)
         ]
 
         # Get recommendations
@@ -1623,12 +1616,37 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         if update_response.status_code != 200:
             return update_response
         
+        # Implementing several filters here: event timing, whether the event is 
+        # already full, whether the user is already RSVPed for the event,
+        # and whether the user is available for the event.
+
         current_date = timezone.now().date()
         two_weeks_from_now = current_date + timedelta(days=14)
-        top_events = SuggestionResults.objects.filter(user_id = user_id,
-                                                    event_id__datetime__date__range=(current_date, two_weeks_from_now)) \
-                                                    .order_by('-probability_of_attendance') \
-                                                    .values('event_id', 'probability_of_attendance', 'user_id')[:2]
+        
+        already_rsvp_subquery = UserEvents.objects.filter(
+            user_id_id=OuterRef('user_id'), 
+            event_id_id=OuterRef('event_id')
+        )   
+
+        attendees_count_subquery = UserEvents.objects.filter(
+            event_id_id=OuterRef('event_id')
+            ).values('event_id_id').annotate(
+                attendees_count=Count('user_id_id')
+            ).values('attendees_count')
+
+        top_events = SuggestionResults.objects.filter(
+            user_id = user_id,
+            event_id__datetime__date__range=(current_date, two_weeks_from_now) # Only events in the next two weeks
+            ) \
+            .exclude(
+                Exists(already_rsvp_subquery) # exclude if RSVPed already
+            ).annotate(
+                current_attendees=Subquery(attendees_count_subquery)
+            ).filter(
+                ~Q(current_attendees__gte=F('event_id__max_attendees'))
+            ) \
+            .order_by('-probability_of_attendance') \
+            .values('event_id', 'probability_of_attendance', 'user_id')[:2]
         
         top_events = [event['event_id'] for event in top_events]
 
@@ -1655,25 +1673,14 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             event_suggestion['city'] = event.city
             event_suggestion['state'] = event.state
             event_suggestion['zipcode'] = event.zipcode
-
-        # check if the user has already RSVP'd to the event
-        new_top_event_data = []
-        for event_suggestion in top_event_data:
-            event_id = event_suggestion['event_id']
-            user_id = event_suggestion['user_id']
-            user_event = UserEvents.objects.filter(user_id=user_id, event_id=event_id)
-
-            # a row is added to user_event if the user has RSVP'd to the event
-            if not user_event.exists():
-                new_top_event_data.append(event_suggestion)
         
         # convert nan probabilities to 0
-        for event_suggestion in new_top_event_data:
+        for event_suggestion in top_event_data:
             if pd.isna(event_suggestion['probability_of_attendance']):
                 event_suggestion['probability_of_attendance'] = 0
         
         return Response({
-            'top_events': new_top_event_data
+            'top_events': top_event_data
         })
     
     def distance_calc(self, event_id, user_id):
@@ -1682,9 +1689,9 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         use in the machine learning setup.
         '''
         event = Event.objects.get(id=event_id)
-        user = User.objects.get(id=user_id)
+        onboarding = Onboarding.objects.get(user_id=user_id)
         distance = distance_bin(
-            (user.latitude, user.longitude),
+            (onboarding.latitude, onboarding.longitude),
             (event.latitude, event.longitude)
         )
         

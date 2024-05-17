@@ -20,9 +20,7 @@ def preprocess(raw_data: list,
         a tuple of preprocessed arrays for training or predicting
     """
     feature_list, target_list = [], []
-    raw_json = raw_data
 
-    # json_results is a list of dictionaries
     for d in raw_data:
         del d["id"]
         user_id = d["user_id"]  # We will add this after everything else
