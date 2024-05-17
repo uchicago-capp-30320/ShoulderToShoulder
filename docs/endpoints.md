@@ -25,22 +25,6 @@ Response Object is JSON with the following information:
         - type: Type/category of the hobby.
 
 
-<!-- ## Group Endpoint
-
-#### Description
-Retrieves the list of groups, this model allows GET and POST requests. Returns 10 results per page on default.
-
-#### Response Attributes 
-- count: Total count of groups.
-- next: URL to the next page of hobbies (null if no next page).
-- previous: URL to the previous page of hobbies (null if no previous page).
-- results: List of Groups, where each Group has the following attributes:
-        - name: Name of the Group.
-        - group_description: Description of the Group.
-        - max_participants: Maximum number of participants allowed for the Group.
-        - members: List of members in the specified group. -->
-
-
 ## Event Endpoint
 
 #### Description
@@ -153,3 +137,20 @@ Retrieves the list of machine learning suggestions information, this model allow
 #### Response Attributes 
 To be determined
 
+
+## Group Endpoint
+
+__NOTE: Currently not implemented in the app's functionality. This can become an update for the second version of ShoulderToShoulder.__
+
+#### Description
+Retrieves the list of groups, this model allows GET and POST requests. Returns 10 results per page on default.
+
+#### Response Attributes 
+- count: Total count of groups.
+- next: URL to the next page of hobbies (null if no next page).
+- previous: URL to the previous page of hobbies (null if no previous page).
+- results: List of Groups, where each Group has the following attributes:
+        - name: Name of the Group.
+        - group_description: Description of the Group.
+        - max_participants: Maximum number of participants allowed for the Group.
+        - members: List of members in the specified group.
