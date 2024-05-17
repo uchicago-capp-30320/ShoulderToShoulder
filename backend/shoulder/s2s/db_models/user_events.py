@@ -23,6 +23,10 @@ class UserEvents(models.Model):
         ("4", "4"),
         ("5", "5"),
     )
+    ALLOWED_RSVP = (
+        ("Yes", "Yes"),
+        ("No", "No"),
+    )
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     event_id = models.ForeignKey(Event, on_delete=models.CASCADE)
     user_rating = models.CharField(choices=ALLOWED_RATINGS, max_length=15, default="Not Rated")
