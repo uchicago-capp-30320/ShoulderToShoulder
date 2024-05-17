@@ -94,7 +94,8 @@ Stores users' onboarding information, such as location, preference for event fre
 | religion_description | Character Field | Further description of user's religious identification. Optional field, so null values possible. |
 | political_leaning | Character Field | User's self-identified political orientation. Optional field, so null values possible. |
 | political_description | Character Field | Further description of user's political identification. Optional field, so null values possible. |
-
+| latitude | Float Field | Latitude coordinate of user's home/residence location. |
+| longitude | Float Field | Latitude coordinate of user's home/residence location. |
 
 
 ## `Scenarios` 
@@ -138,14 +139,86 @@ Stores calendar availability of every user. Each row represents a single hour in
 | day_of_week | CharacterField | Specified day of week availability; options: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday |
 | hour | IntegerField | The hour of the specified day. (1-24) |
 
-<!-- ## `PanelEvent` 
+## `PanelEvent` 
+
+The ML algorithm requires one-hot encoding of information about events. The PanelEvent model is the expanded version of our Event model; the columns provide every possible attribute that can identify an event, each row represents a single event in the databse, and the values indicate 0 or 1 (i.e. binary coding) about whether the event has the attribute or not.
 
 `backend/shoulder/s2s/db_models/panel_events.py`
 
 | Column | Type | Description |
-|--------|------|-------------| -->
+|--------|------|-------------|
+|event_id|ForeignKey(Event)|Identfies single event saved in our Event table.|
+|hobby_category_travel|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_arts_and_culture|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_literature|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_food|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_cooking_and_baking|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_exercise|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_outdoor_activities|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_crafting|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_history|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_community|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|hobby_category_gaming|Boolean|0 or 1 if the event falls under this hobby_category or not. (Default False)|
+|num_particip_1to5|Boolean|0 or 1 if the max number of participants allowed to join the event is 1-5 or not. (Default False)|
+|num_particip_5to10|Boolean|0 or 1 if the max number of participants allowed to join the event is 5-10 or not. (Default False)|
+|num_particip_10to15|Boolean|0 or 1 if the max number of participants allowed to join the event is 10-15 or not. (Default False)|
+|num_particip_15p|Boolean|0 or 1 if the max number of participants allowed to join the event is more then 15 or not. (Default False)|
+|monday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|monday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|monday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|monday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|monday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|monday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|tuesday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|tuesday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|tuesday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|tuesday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|tuesday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|tuesday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|wednesday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|wednesday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|wednesday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|wednesday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|wednesday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|wednesday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|thursday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|thursday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|thursday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|thursday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|thursday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|thursday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|friday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|friday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|friday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|friday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|friday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|friday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|saturday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|saturday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|saturday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|saturday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|saturday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|saturday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|sunday_early_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|sunday_morning|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|sunday_afternoon|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|sunday_evening|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|sunday_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|sunday_late_night|Boolean|0 or 1 if the time of the event is during this time period or not. (Default False)|
+|duration_1hr|Boolean|0 or 1 if the event lasts 1 hour. (Default False)|
+|duration_2hr|Boolean|0 or 1 if the event lasts 2 hours. (Default False)|
+|duration_3hr|Boolean|0 or 1 if the event lasts 3 hours. (Default False)|
+|duration_4hr|Boolean|0 or 1 if the event lasts 4 hours. (Default False)|
+|duration_5hr|Boolean|0 or 1 if the event lasts 5 hours. (Default False)|
+|duration_6hr|Boolean|0 or 1 if the event lasts 6 hours. (Default False)|
+|duration_7hr|Boolean|0 or 1 if the event lasts 7 hours. (Default False)|
+|duration_8hr|Boolean|0 or 1 if the event lasts 8 hours. (Default False)|
+
+
 
 <!-- ## `PanelScenario` 
+
+Following the onboarding process, the user's responses to every preference input need to get one-hot encoded in order to be used by the ML algorithm. The Panel* models are the tables which contain the user's onboarding responses, expanded 
 
 `backend/shoulder/s2s/db_models/panel_scenarios.py`
 
@@ -229,9 +302,17 @@ Stores crosswalk table between users and all events they have attended. Each row
 | Column | Type | Description |
 |--------|------|-------------| -->
 
-<!-- ## `Group` 
+## `Group` 
 
 `backend/shoulder/s2s/db_models/group.py`
 
+__NOTE: Currently not implemented in the app's functionality. This can become an update for the second version of ShoulderToShoulder.__
+
+Stores information about groups formed on the app and the users who belong to the groups. 
+
 | Column | Type | Description |
-|--------|------|-------------| -->
+|--------|------|-------------|
+| name | Character Field | Name of the group |
+| group_description | TextField | Short description about the group. |
+| max_participants | Integer Field | Max number of people who can belong to the group. |
+| members | ManyToManyField(User) | Identifies users who belong to the group. |
