@@ -12,20 +12,20 @@ import { days } from '../_helpers/preferences';
 
 /**
  * Component to display and toggle user availability.
- * 
- * This component displays the user's availability schedule and allows toggling 
+ *
+ * This component displays the user's availability schedule and allows toggling
  * the availability status for specific slots and days.
- * 
+ *
  * @example
  * ```
  * <app-availability-display></app-availability-display>
  * ```
- * 
+ *
  * @remarks
  * This component relies on the AvailabilityService to manage user availability data.
- * 
+ *
  * @see AvailabilityService
- * 
+ *
  * @export
  * @class AvailabilityDisplayComponent
  */
@@ -50,7 +50,7 @@ export class AvailabilityDisplayComponent implements OnChanges {
     public messageService: MessageService
   ) {
    }
-  
+
   ngOnChanges(changes: SimpleChanges): void {
     this.copyAvailability();
   }
@@ -67,14 +67,14 @@ export class AvailabilityDisplayComponent implements OnChanges {
 
   /**
    * Toggles the availability status for a specific slot and day.
-   * 
+   *
    * @param {number} slotIndex The index of the availability slot.
    * @param {number} dayIndex The index of the day.
    * @memberof AvailabilityDisplayComponent
    */
   toggleAvailability(slotIndex: number, dayIndex: number): void {
     if (this.isEditable) {
-      this.availabilityService.userAvailability[slotIndex].days[dayIndex] = 
+      this.availabilityService.userAvailability[slotIndex].days[dayIndex] =
       !this.availabilityService.userAvailability[slotIndex].days[dayIndex];
     }
   }
@@ -107,7 +107,7 @@ export class AvailabilityDisplayComponent implements OnChanges {
         this.isEditable = false;
         console.log(error);
         this.clearMessages();
-        this.messageService.add({severity: 'error', 
+        this.messageService.add({severity: 'error',
           detail: 'There was an error updating the event. Please try again.'});
         this.showLoadingDialog = false;
       })

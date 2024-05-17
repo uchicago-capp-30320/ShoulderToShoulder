@@ -11,7 +11,7 @@ describe('EventCreationComponent', () => {
       declarations: [EventCreationComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(EventCreationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

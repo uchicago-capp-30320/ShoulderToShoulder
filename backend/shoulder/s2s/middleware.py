@@ -12,6 +12,6 @@ class ApplicationTokenMiddleware:
             token = token.split('Bearer ')[1] if 'Bearer ' in token else token
             if not ApplicationToken.objects.filter(token=token).exists():
                 return JsonResponse({'detail': 'Invalid token'}, status=401)
-        
+
         response = self.get_response(request)
         return response

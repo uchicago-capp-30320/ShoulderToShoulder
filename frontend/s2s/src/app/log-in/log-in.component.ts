@@ -14,16 +14,16 @@ import { UserLogIn } from '../_models/user';
 
 /**
  * Implements the application's Log In page.
- * 
+ *
  * This component manages the log in form, including form validation, submission,
  * and error handling. It uses the AuthService to log in users and saves their
  * authentication tokens.
- * 
+ *
  * @example
  * ```
  * <app-login-page></app-login-page>
  * ```
- * 
+ *
  * @see AuthService
  * @see OnboardingService
  */
@@ -53,7 +53,7 @@ export class LogInComponent {
 
   /**
    * Gets the form control for the specified field.
-   * 
+   *
    * @param fieldName The name of the field.
    * @returns The form control for the specified field.
    */
@@ -63,7 +63,7 @@ export class LogInComponent {
 
   /**
    * Toggles the visibility of the password field.
-   * 
+   *
    * @param inputField The password field.
    */
   togglePasswordField(inputField: HTMLInputElement): void {

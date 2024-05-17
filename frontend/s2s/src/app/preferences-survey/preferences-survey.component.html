@@ -6,13 +6,13 @@
         <!-- address -->
         <div class="field">
             <label for="addressLine1" class="label">Address Line 1</label>
-            <input 
-                pInputText 
-                formControlName="addressLine1" 
+            <input
+                pInputText
+                formControlName="addressLine1"
                 placeholder="Address Line 1"
-                tooltipStyleClass="customtooltip" 
-                tooltipEvent="hover" 
-                pTooltip="This field is optional" 
+                tooltipStyleClass="customtooltip"
+                tooltipEvent="hover"
+                pTooltip="This field is optional"
                 maxlength="100"
             >
         </div>
@@ -20,19 +20,19 @@
         <!-- zipcode -->
         <div class="field">
             <label for="zipCode" class="label">Zip Code<span class="required">*</span></label>
-            
+
             <!-- error messages -->
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('zipCode')?.dirty && this.onboardingService.preferencesForm.get('zipCode')?.invalid">Zipcode is invalid</small>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('zipCode')?.dirty && this.zipcodeInvalid">Zipcode does not exist. Please enter a different value.</small>
-            
+
             <!-- zipcode input -->
-            <input 
-                pInputText 
-                formControlName="zipCode" 
-                required 
-                maxlength="5" 
-                placeholder="Zip Code" 
-                style="width: 100%" 
+            <input
+                pInputText
+                formControlName="zipCode"
+                required
+                maxlength="5"
+                placeholder="Zip Code"
+                style="width: 100%"
                 (blur)="getZipCodeData()"
                 maxLength="5"
             >
@@ -45,26 +45,26 @@
                 <label for="state" class="label" style="margin-left: 50%">State</label>
             </span>
             <span>
-                <input 
-                    pInputText 
-                    placeholder="City" 
-                    formControlName="city" 
+                <input
+                    pInputText
+                    placeholder="City"
+                    formControlName="city"
                     style="width: 45%"
-                    tooltipStyleClass="customtooltip" 
-                    tooltipEvent="hover" 
-                    pTooltip="This field is optional" 
+                    tooltipStyleClass="customtooltip"
+                    tooltipEvent="hover"
+                    pTooltip="This field is optional"
                     maxlength="50"
                 >
-                <p-dropdown 
-                    [options]="states" 
-                    optionLabel="label" 
-                    placeholder="State" 
-                    formControlName="state" 
-                    autoWidth="false" 
+                <p-dropdown
+                    [options]="states"
+                    optionLabel="label"
+                    placeholder="State"
+                    formControlName="state"
+                    autoWidth="false"
                     [style]="{'width': '45%', 'margin-left': '10%'}"
-                    tooltipStyleClass="customtooltip" 
-                    tooltipEvent="hover" 
-                    pTooltip="This field is optional" 
+                    tooltipStyleClass="customtooltip"
+                    tooltipEvent="hover"
+                    pTooltip="This field is optional"
                 ></p-dropdown>
             </span>
         </div>
@@ -79,47 +79,47 @@
         <!-- hobby types - most interested -->
         <div class="field">
             <label for="mostInterestedHobbyTypes" class="label">
-                Which types of hobbies are you <b>most</b> interested in?<span class="required">* </span> 
+                Which types of hobbies are you <b>most</b> interested in?<span class="required">* </span>
             </label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('mostInterestedHobbyTypes')?.dirty && this.onboardingService.preferencesForm.get('mostInterestedHobbyTypes')?.invalid">This field is required</small>
-            <p-multiSelect 
-                [virtualScroll]="true" 
+            <p-multiSelect
+                [virtualScroll]="true"
                 [virtualScrollItemSize]="48"
-                [options]="mostInterestedHobbyTypes" 
-                formControlName="mostInterestedHobbyTypes" 
-                placeholder="Choose a hobby type" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
-                [maxSelectedLabels]="3" 
-                required 
+                [options]="mostInterestedHobbyTypes"
+                formControlName="mostInterestedHobbyTypes"
+                placeholder="Choose a hobby type"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
+                [maxSelectedLabels]="3"
+                required
                 optionLabel="type">
             </p-multiSelect>
         </div>
-        
+
         <!-- hobbies - most interested -->
         <div class="field">
             <label for="mostInterestedHobbies" class="label">
-                Which hobbies are you <b>most</b> interested in?<span class="required">* </span> 
+                Which hobbies are you <b>most</b> interested in?<span class="required">* </span>
                 <span>
-                    <i 
-                        class="pi pi-question-circle" 
-                        tooltipStyleClass="customtooltip" 
-                        tooltipEvent="hover" 
+                    <i
+                        class="pi pi-question-circle"
+                        tooltipStyleClass="customtooltip"
+                        tooltipEvent="hover"
                         [pTooltip]="tooltipContent"
                     ></i>
                 </span>
             </label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.dirty && this.onboardingService.preferencesForm.get('mostInterestedHobbies')?.invalid">This field is required</small>
-            <p-multiSelect 
-                [virtualScroll]="true" 
+            <p-multiSelect
+                [virtualScroll]="true"
                 [virtualScrollItemSize]="48"
-                [options]="mostInterestedHobbies" 
-                formControlName="mostInterestedHobbies" 
-                placeholder="Choose a hobby" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
-                [maxSelectedLabels]="3" 
-                required 
+                [options]="mostInterestedHobbies"
+                formControlName="mostInterestedHobbies"
+                placeholder="Choose a hobby"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
+                [maxSelectedLabels]="3"
+                required
                 optionLabel="name"
                 (onChange)="getLeastInterestedHobbiesArray()">
             </p-multiSelect>
@@ -136,19 +136,19 @@
         <div class="field">
             <label for="leastInterestedHobbies" class="label">Which hobbies are you <b>least</b> interested in?</label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.dirty && this.onboardingService.preferencesForm.get('leastInterestedHobbies')?.invalid">This field is required</small>
-            <p-multiSelect 
-                [virtualScroll]="true" 
+            <p-multiSelect
+                [virtualScroll]="true"
                 [virtualScrollItemSize]="48"
-                [options]="leastInterestedHobbies" 
-                formControlName="leastInterestedHobbies" 
-                placeholder="Choose a hobby" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
-                [maxSelectedLabels]="3" 
+                [options]="leastInterestedHobbies"
+                formControlName="leastInterestedHobbies"
+                placeholder="Choose a hobby"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
+                [maxSelectedLabels]="3"
                 (onChange)="getMostInterestedHobbiesArray()"
-                tooltipStyleClass="customtooltip" 
+                tooltipStyleClass="customtooltip"
                 optionLabel="name"
-                tooltipEvent="hover" 
+                tooltipEvent="hover"
                 pTooltip="This field is optional" >
             </p-multiSelect>
         </div>
@@ -157,12 +157,12 @@
         <div class="field">
             <label for="distances" class="label">What is the maximum distance you would want your events to be from you?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('distances')?.dirty && this.onboardingService.preferencesForm.get('distances')?.invalid">This field is required</small>
-            <p-dropdown 
-                [options]="choices['distance']" 
-                formControlName="distances" 
-                placeholder="Choose a distance" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
+            <p-dropdown
+                [options]="choices['distance']"
+                formControlName="distances"
+                placeholder="Choose a distance"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
                 [required]="true">
             </p-dropdown>
         </div>
@@ -171,13 +171,13 @@
         <div class="field">
             <label for="groupSizes" class="label">How many people would you prefer to be grouped with for events?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('groupSizes')?.dirty && this.onboardingService.preferencesForm.get('groupSizes')?.invalid">This field is required</small>
-            <p-multiSelect 
-                [options]="choices['group_size']" 
-                formControlName="groupSizes" 
-                placeholder="Choose a group size" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
-                [maxSelectedLabels]="3" 
+            <p-multiSelect
+                [options]="choices['group_size']"
+                formControlName="groupSizes"
+                placeholder="Choose a group size"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
+                [maxSelectedLabels]="3"
                 required>
             </p-multiSelect>
         </div>
@@ -186,12 +186,12 @@
         <div class="field">
             <label for="eventFrequency" class="label">How often do you want to attend Shoulder to Shoulder events?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('eventFrequency')?.dirty && this.onboardingService.preferencesForm.get('eventFrequency')?.invalid">This field is required</small>
-            <p-dropdown 
-                [options]="choices['event_frequency']" 
-                formControlName="eventFrequency" 
-                placeholder="Choose an event frequency" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
+            <p-dropdown
+                [options]="choices['event_frequency']"
+                formControlName="eventFrequency"
+                placeholder="Choose an event frequency"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
                 [required]="true">
             </p-dropdown>
         </div>
@@ -200,12 +200,12 @@
         <div class="field">
             <label for="eventNotifications" class="label">How do you want to be notified of new Shoulder To Shoulder events?<span class="required">*</span></label>
             <small class="p-error" *ngIf="this.onboardingService.preferencesForm.get('eventNotifications')?.dirty && this.onboardingService.preferencesForm.get('eventNotifications')?.invalid">This field is required</small>
-            <p-dropdown 
-                [options]="choices['notification_method']" 
-                formControlName="eventNotifications" 
-                placeholder="Choose a notification method" 
-                autoWidth="false" 
-                [style]="{'width':'100%'}" 
+            <p-dropdown
+                [options]="choices['notification_method']"
+                formControlName="eventNotifications"
+                placeholder="Choose a notification method"
+                autoWidth="false"
+                [style]="{'width':'100%'}"
                 [required]="true">
             </p-dropdown>
         </div>

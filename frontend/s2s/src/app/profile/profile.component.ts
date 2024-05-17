@@ -12,23 +12,23 @@ import { User } from '../_models/user';
 
 /**
  * Component to display user profile information.
- * 
- * This component displays the user's profile information, including their name, 
+ *
+ * This component displays the user's profile information, including their name,
  * email, and profile picture.
- * 
+ *
  * @example
  * ```
  * <app-profile></app-profile>
  * ```
- * 
+ *
  * @remarks
- * This component relies on the AuthService, ProfileService, and OnboardingService 
+ * This component relies on the AuthService, ProfileService, and OnboardingService
  * to manage user profile data.
- * 
+ *
  * @see AuthService
  * @see ProfileService
  * @see OnboardingService
- * 
+ *
  * @export
  * @class ProfileComponent
  */
@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
 
   /**
    * Sets the current page number.
-   * 
+   *
    * @param page The page number to set.
    */
   setPage(page: number) {

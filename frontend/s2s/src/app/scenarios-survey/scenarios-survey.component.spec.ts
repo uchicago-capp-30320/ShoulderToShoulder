@@ -32,7 +32,7 @@ describe('ScenariosSurveyComponent', () => {
       ],
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ScenariosSurveyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -90,7 +90,7 @@ describe('ScenariosSurveyComponent', () => {
       description: 'Test scenario'
     }
     component.onboardingService.scenariosForm.controls["scenario1"].setValue(1);
-    
+
     let value = 1;
     let className = component.getClass(scenario, value);
     expect(className).toEqual('selected-button');

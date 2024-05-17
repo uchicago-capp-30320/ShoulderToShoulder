@@ -15,9 +15,9 @@ export var userTokenEndpoints: string[] = [
 
 /**
  * Interceptor for adding the application token to HTTP requests.
- * 
+ *
  * This interceptor adds the application token to the headers of all HTTP requests.
- * 
+ *
  * @see ApiService
  */
 @Injectable()
@@ -51,7 +51,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 headers: request.headers.set(header, authToken),
             });
         }
-        
+
         return next.handle(authReq);
     }
 }

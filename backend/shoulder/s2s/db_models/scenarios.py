@@ -5,9 +5,9 @@ from .hobby import Hobby
 
 class Scenarios(models.Model):
     """
-    Creates a Django Model representing Scenario Selection by users in the 
+    Creates a Django Model representing Scenario Selection by users in the
     Shoulder to Shoulder Database.
-    
+
     Table Columns:
         user_id (str): user ID fk from user table
         hobby1: hobby of event 1
@@ -65,7 +65,7 @@ class Scenarios(models.Model):
     )
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
- 
+
     hobby1 = models.ForeignKey(Hobby, on_delete=models.CASCADE, related_name='hobby1')
     hobby2 = models.ForeignKey(Hobby, on_delete=models.CASCADE, related_name='hobby2')
 
