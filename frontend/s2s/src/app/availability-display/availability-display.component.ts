@@ -2,10 +2,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
-
 // services
 import { AvailabilityService } from '../_services/availability.service';
-import { OnboardingService } from '../_services/onboarding.service';
 
 // helpers
 import { days } from '../_helpers/preferences';

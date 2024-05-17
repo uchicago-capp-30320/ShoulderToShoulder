@@ -85,6 +85,14 @@ export class NavbarComponent implements OnInit {
       {
         label: 'Event Creator',
         routerLink: '/event-creator'
+      },
+      {
+        label: 'About Us',
+        routerLink: '/about-us'
+      },
+      {
+        label: 'Contact Us',
+        routerLink: '/contact-us'
       }
     ];
     this.defaultRoute = '/profile/1';

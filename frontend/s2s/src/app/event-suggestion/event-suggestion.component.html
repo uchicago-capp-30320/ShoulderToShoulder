@@ -1,0 +1,12 @@
+<p-dialog header="You have new event suggestions!" [(visible)]="showEventSuggestionDialog" [modal]="true" [dismissableMask]="false" [style]="{ width: '45rem' }" [draggable]="false" [resizable]="false">
+    <h3>{{ currentSuggestion.event_name }}</h3>
+    <p>{{ currentSuggestion.event_description }}</p>
+    <p><b>Location</b>: {{ currentSuggestion.address1 }}{{ currentSuggestion.address2 ? " " + currentSuggestion.address2 : "" }}, {{ currentSuggestion.city }}, {{ currentSuggestion.state }} {{ currentSuggestion.zipcode }}</p>
+    <p><b>Date</b>: {{ currentSuggestion.event_date | date:"EE MMM d, y 'at' h:mm a" }}</p>
+
+    <div class="p-d-flex p-jc-end buttons">
+        <button pButton type="button" class="p-button-text" (click)="onSubmitRSVP('Yes')" class="yesButton">Sign me up!</button>
+        <button pButton type="button" class="p-button-text" (click)="onSubmitRSVP('No')" class="noButton">I'm not interested</button>
+        <button pButton type="button" class="p-button-text" (click)="closeEventSuggestionDialog()" class="remindButton">Remind me later</button>
+    </div>
+</p-dialog>    
