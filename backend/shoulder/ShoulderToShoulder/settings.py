@@ -66,6 +66,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "http://localhost:4100",
 ]
 
 CORS_ALLOW_METHODS = (
@@ -182,6 +183,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
 }
+
+APP_TOKEN = env("APP_TOKEN")
 
 # Configure AWS S3 settings
 AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")

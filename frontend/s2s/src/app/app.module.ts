@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMaskDirective, IConfig, provideEnvironmentNgxMask } from 'ngx-mask';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button'; 
+import { MatButtonModule } from '@angular/material/button';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -36,6 +36,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { AccordionModule } from 'primeng/accordion';
+import { RatingModule } from 'primeng/rating';
 
 // Routing
 import { AppRoutingModule } from './app-routing.module';
@@ -65,6 +67,9 @@ import { ProfileAvailabilityComponent } from './profile-availability/profile-ava
 import { AuthInterceptor } from './_interceptors/interceptor';
 import { CacheInterceptor } from './_interceptors/cache';
 import { EventCreationComponent } from './event-creation/event-creation.component';
+import { AboutUsComponent } from './about-us/about-us.component';
+import { ContactUsComponent } from './contact-us/contact-us.component';
+import { EventSuggestionComponent } from './event-suggestion/event-suggestion.component';
 
 
 @NgModule({
@@ -88,7 +93,10 @@ import { EventCreationComponent } from './event-creation/event-creation.componen
     ProfileOverviewComponent,
     ProfileSettingsComponent,
     ProfileAvailabilityComponent,
-    EventCreationComponent
+    EventCreationComponent,
+    AboutUsComponent,
+    ContactUsComponent,
+    EventSuggestionComponent
   ],
   imports: [
     BrowserModule,
@@ -120,7 +128,9 @@ import { EventCreationComponent } from './event-creation/event-creation.componen
     FileUploadModule,
     CalendarModule,
     InputTextareaModule,
-    MessagesModule
+    MessagesModule,
+    AccordionModule,
+    RatingModule
   ],
   providers: [
     MessageService,

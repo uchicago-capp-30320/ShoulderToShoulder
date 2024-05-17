@@ -16,6 +16,22 @@ export interface Event {
     longitude?: number;
     max_attendees: number;
     add_user?: boolean;
+    rating?: string;
+    attended?: boolean;
+}
+
+export interface UserEvent {
+    id: number;
+    user_rating: string;
+    rsvp: string;
+    attended: boolean;
+    user_id: number;
+    event_id: number;
+}
+
+export interface PastUpcomingEventResponse {
+    past_events: {count: number, events: Event[]};
+    upcoming_events: {count: number, events: Event[]};
 }
 
 export interface EventResponse {

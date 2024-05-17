@@ -10,12 +10,12 @@
             <div *ngIf="showInvalidPassword" class="p-error">
                 <p>Invalid password. Please try again.</p>
             </div>
-            
+
             <!-- Hidden Username Field -->
-            <input 
-                type="hidden" 
-                formControlName="username" 
-                autocomplete="username" 
+            <input
+                type="hidden"
+                formControlName="username"
+                autocomplete="username"
                 id="username"
                 value="{{ this.user.username }}">
 
@@ -24,36 +24,36 @@
                 <label for="currentPassword" >Current Password</label>
                 <input #currentPasswordInput
                     pInputText
-                    type="password" 
-                    formControlName="currentPassword" 
-                    class="form-control input-field" 
-                    id="currentPassword" 
+                    type="password"
+                    formControlName="currentPassword"
+                    class="form-control input-field"
+                    id="currentPassword"
                     autocomplete="current-password"
                     placeholder="Enter current password"
-                    (focus)="togglePasswordField(currentPasswordInput)" 
+                    (focus)="togglePasswordField(currentPasswordInput)"
                     (blur)="togglePasswordField(currentPasswordInput)"
                 >
             </div>
 
             <!-- New Password -->
             <div class="form-group">
-                <label 
+                <label
                     for="password">New Password</label>
                 <small class="p-error" *ngIf="changePasswordForm.get('password')?.dirty && changePasswordForm.get('password')?.invalid">Password is required</small>
                 <small class="p-error" *ngIf="changePasswordForm.get('password')?.dirty && changePasswordForm.errors?.['PasswordMatch']">New password should be different from old password</small>
                 <input #passwordInput
                     pInputText
-                    type="password" 
-                    formControlName="password" 
-                    class="form-control" 
-                    id="password" 
+                    type="password"
+                    formControlName="password"
+                    class="form-control"
+                    id="password"
                     placeholder="Enter new password"
-                    autocomplete="new-password" 
-                    (focus)="togglePasswordField(passwordInput)" 
+                    autocomplete="new-password"
+                    (focus)="togglePasswordField(passwordInput)"
                     (blur)="togglePasswordField(passwordInput)"
-                    tooltipStyleClass="customtooltip" 
-                    tooltipEvent="focus" 
-                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." 
+                    tooltipStyleClass="customtooltip"
+                    tooltipEvent="focus"
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character."
                 >
             </div>
 
@@ -63,17 +63,17 @@
                 <small class="p-error" *ngIf="changePasswordForm.get('confirmPassword')?.dirty && changePasswordForm.errors?.['PasswordNoMatch']">Passwords do not match</small>
                 <input #confirmPasswordInput
                     pInputText
-                    type="password" 
-                    formControlName="confirmPassword" 
-                    class="form-control" 
-                    id="confirmPassword" 
+                    type="password"
+                    formControlName="confirmPassword"
+                    class="form-control"
+                    id="confirmPassword"
                     placeholder="Confirm new password"
                     autocomplete="new-password"
-                    (focus)="togglePasswordField(confirmPasswordInput)" 
+                    (focus)="togglePasswordField(confirmPasswordInput)"
                     (blur)="togglePasswordField(confirmPasswordInput)"
-                    tooltipStyleClass="customtooltip" 
-                    tooltipEvent="focus" 
-                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." 
+                    tooltipStyleClass="customtooltip"
+                    tooltipEvent="focus"
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character."
                 >
             </div>
 
@@ -92,9 +92,9 @@
                 <label for="firstName" >First Name</label>
                 <input
                     pInputText
-                    formControlName="firstName" 
-                    class="form-control input-field" 
-                    id="firstName" 
+                    formControlName="firstName"
+                    class="form-control input-field"
+                    id="firstName"
                 >
             </div>
 
@@ -103,9 +103,9 @@
                 <label for="lastName" >Last Name</label>
                 <input
                     pInputText
-                    formControlName="lastName" 
-                    class="form-control input-field" 
-                    id="lastName" 
+                    formControlName="lastName"
+                    class="form-control input-field"
+                    id="lastName"
                 >
             </div>
 
@@ -115,9 +115,9 @@
                 <small class="p-error light-error" *ngIf="updateUserInformationForm.get('email')?.dirty && updateUserInformationForm.get('email')?.invalid">Please enter a valid email</small>
                 <input
                     pInputText
-                    formControlName="email" 
-                    class="form-control input-field" 
-                    id="email" 
+                    formControlName="email"
+                    class="form-control input-field"
+                    id="email"
                     type="email"
                 >
             </div>
@@ -132,11 +132,11 @@
     <div class="settings-form drop-shadow">
         <h4>Update Profile Picture</h4>
         <p-fileUpload #fileUpload
-            name="profilePicture" 
-            url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user.id }}" 
+            name="profilePicture"
+            url="{{ profileService.uploadPhotoEndpoint }}?user_id={{ this.user.id }}"
             [customUpload]="true"
-            (uploadHandler)="onUpload($event)" 
-            accept="image/*" 
+            (uploadHandler)="onUpload($event)"
+            accept="image/*"
             [maxFileSize]="1000000"
             >
         </p-fileUpload>
@@ -165,7 +165,7 @@
         <p>
             <b>This action cannot be undone.</b>
         </p>
-        
+
         <p>
             Given our committment to data privacy, by deleting your account, you will be removing all instances of your user's interactions
             in our databases. This includes all events you have attended, all preferences you have set, and all demographic information you have provided.
@@ -174,7 +174,7 @@
             If you ever wish to return to Shoulder to Shoulder, you will need to create a new account.
         </p>
         <p>
-            We appreciate your time with us and hope you have found our platform useful. 
+            We appreciate your time with us and hope you have found our platform useful.
         </p>
         <p>
             <b>If you would like to continue, please click "Delete Account" below.</b>

@@ -28,8 +28,8 @@ describe('OnboardingComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
-        OnboardingComponent, 
-        FooterComponent, 
+        OnboardingComponent,
+        FooterComponent,
         DemographicsSurveyComponent,
         PreferencesSurveyComponent,
         EventAvailabilitySurveyComponent,
@@ -53,7 +53,7 @@ describe('OnboardingComponent', () => {
       ]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(OnboardingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

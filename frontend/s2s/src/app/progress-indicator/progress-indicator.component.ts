@@ -2,13 +2,13 @@ import { Component, Input, OnChanges } from '@angular/core';
 
 /**
  * Defines the progress indicator component.
- * 
+ *
  * This component is used to display a progress indicator bar that fills up
  * as the user progresses through a form.
- * 
+ *
  * @example
  * ```
- * <app-progress-indicator [current]="current" [max]="max" [color]="color" 
+ * <app-progress-indicator [current]="current" [max]="max" [color]="color"
  *  [display]="display" [textColor]="textColor">
  * </app-progress-indicator>
  * ```
@@ -38,7 +38,7 @@ export class ProgressIndicatorComponent implements OnChanges {
     this.setWidth();
     this.setColor();
   }
-  
+
   /**
    * Changes progress bar display to either hide or show it.
    */

@@ -26,4 +26,3 @@ def test_dataset_iteration():
     # Should be able to reset and continue getting new minibatches
     test_data.reset()
     assert type(next(test_data)) == tuple
-

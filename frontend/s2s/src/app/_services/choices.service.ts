@@ -8,9 +8,9 @@ import { ApiService } from './api.service';
 
 /**
  * Service responsible for managing choices data, including fetching choices from the API.
- * 
+ *
  * This service interacts with the API service to perform choices-related HTTP requests.
- * 
+ *
  * @see ApiService
  */
 @Injectable({
@@ -19,7 +19,7 @@ import { ApiService } from './api.service';
 export class ChoicesService {
   endpoint = this.apiService.BASE_API_URL + '/choices';
 
-  private choicesSubject: BehaviorSubject<{ [index: string]: any[]; }> = 
+  private choicesSubject: BehaviorSubject<{ [index: string]: any[]; }> =
     new BehaviorSubject<{ [index: string]: any[]; }>({});
   choices = this.choicesSubject.asObservable();
 
@@ -70,7 +70,7 @@ export class ChoicesService {
 
   /**
    * Fetches choices for a specific column from the API.
-   * 
+   *
    * @param url The URL of the API endpoint to fetch choices from.
    * @param column The column for which choices are to be fetched.
    * @returns An Observable of choices data as an array.

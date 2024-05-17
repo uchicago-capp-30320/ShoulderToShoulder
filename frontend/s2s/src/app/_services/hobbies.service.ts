@@ -13,12 +13,12 @@ import { Hobby, HobbyResponse, HobbyType, HobbyTypeResponse} from '../_models/ho
 import { getRandomSubset } from '../_helpers/utils';
 
 /**
- * Service responsible for managing hobbies and hobby types, including fetching 
+ * Service responsible for managing hobbies and hobby types, including fetching
  * hobby data from the API.
- * 
- * This service interacts with the API service to perform hobby-related HTTP 
+ *
+ * This service interacts with the API service to perform hobby-related HTTP
  * requests.
- * 
+ *
  * @see ApiService
  */
 @Injectable({
@@ -55,7 +55,7 @@ export class HobbyService {
 
   /**
    * Fetches hobbies data from the API.
-   * 
+   *
    * @param url The URL of the API endpoint to fetch hobbies data from.
    * @returns An Observable of hobbies data as an array.
    */
@@ -77,7 +77,7 @@ export class HobbyService {
 
   /**
    * Fetches hobby types data from the API.
-   * 
+   *
    * @param url The URL of the API endpoint to fetch hobby types data from.
    * @returns An Observable of hobby types data as an array.
    */
@@ -99,7 +99,7 @@ export class HobbyService {
 
   /**
    * Generates random subsets of hobbies for preferences and scenarios.
-   * 
+   *
    * @param hobbies The array of hobbies from which to generate subsets.
    */
   generateHobbies(hobbies: Hobby[]) {
@@ -109,7 +109,7 @@ export class HobbyService {
 
   /**
    * Fetches filtered hobbies data from the API based on provided parameters.
-   * 
+   *
    * @param names An array of hobby names to filter by.
    * @param ids An array of hobby IDs to filter by.
    * @returns An Observable of filtered hobbies data as an array.
@@ -136,7 +136,7 @@ export class HobbyService {
 
   /**
    * Fetches filtered hobby types data from the API based on provided parameters.
-   * 
+   *
    * @param names An array of hobby type names to filter by.
    * @param ids An array of hobby type IDs to filter by.
    * @returns An Observable of filtered hobby types data as an array.

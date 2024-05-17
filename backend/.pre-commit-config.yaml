@@ -27,5 +27,3 @@ repos:
         args:
           - --ignore=E203, E266, E501, W503
           - --line-length=88
-
-

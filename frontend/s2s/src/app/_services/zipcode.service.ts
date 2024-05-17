@@ -5,15 +5,15 @@ import { HttpClient } from '@angular/common/http';
 import { ApiService } from './api.service';
 
 /**
- * Service for the zipcode API. It calls the zipcodes api endpoint to query 
+ * Service for the zipcode API. It calls the zipcodes api endpoint to query
  * zipcode data.
- * 
+ *
  * @example
  * ```
  * constructor(
  *  private zipcodeService: ZipcodeService,
  * ) { }
- * 
+ *
  * @see ApiService
  */
 @Injectable({
@@ -29,7 +29,7 @@ export class ZipcodeService {
 
   /**
    * Gets the zipcode data from the zipcodes API.
-   * 
+   *
    * @param zipcode The zipcode to query.
    * @returns The zipcode data.
    */

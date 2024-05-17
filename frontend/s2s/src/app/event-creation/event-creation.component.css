@@ -6,24 +6,16 @@
 }
 
 .event-form-header {
-    background-color: #78290F;
-    width: 60%;
-    height: auto;
-    padding: 2rem;
-    border-radius: 20px 20px 0px 0px;
-    text-align: center;
-    margin-top: 2rem;
-    margin-left: auto;
-    margin-right: auto;
+    padding-bottom: 1rem;
 }
 
 .event-form {
-    background-color: #f7e0bf;
-    border: 2px solid #78290F;
+    background-color: #78290F;
+    /* border: 2px solid #78290F; */
     width: 60%;
     height: auto;
     padding: 2rem;
-    border-radius: 0px 0px 20px 20px;
+    border-radius: 20px;
     text-align: center;
     margin-bottom: 2rem;
     margin-left: auto;
@@ -93,7 +85,7 @@
     text-align: center;
     margin-top: 0;
     margin-bottom: 0;
-    color: rgb(233, 98, 98);    
+    color: rgb(233, 98, 98);
 }
 
 .row {
@@ -127,7 +119,7 @@
     display: flex;
     flex-direction: column;
     width: 15%;
-    text-align: left; 
+    text-align: left;
 }
 
 .adr2, .state, .event-category {
@@ -204,7 +196,7 @@ h3 {
     align-items: center;
     z-index: 1000; /* High z-index to cover the whole application */
   }
-  
+
 .loading-overlay-content {
     background-color: #FFECD1;
     height: 11rem;

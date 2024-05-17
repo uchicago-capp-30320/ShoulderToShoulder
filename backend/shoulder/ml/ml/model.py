@@ -63,7 +63,7 @@ def foward_embedding(params: list[dict], X: jax.Array) -> jaxlib.xla_extension.A
     """
     embedding_weights = params[0]["embedding_weights"]
     embeddings = jnp.take(embedding_weights, jnp.astype(X, int), axis=0)
-    
+
     embeddings = embeddings.reshape(embeddings.shape[0],  # Concatenate embeddings into rows
                                     embeddings.shape[1] * embeddings.shape[2])
 
@@ -82,7 +82,7 @@ def init_fm(seed: int, num_features: int, num_factors: int) -> list:
 
     Returns:
     --------
-        params (list): a list that contains dictionaries of the w, V, and bias terms for a 
+        params (list): a list that contains dictionaries of the w, V, and bias terms for a
             factorization machine
     """
     params = []
@@ -92,7 +92,7 @@ def init_fm(seed: int, num_features: int, num_factors: int) -> list:
     new_seed = int(random.randint(new_key, (1,), -jnp.inf, jnp.inf)[0])
     V = xavier(new_seed, num_features, num_factors)
     bias = 0.0
-    
+
     params.extend([dict(w=w), dict(V=V), dict(bias=bias)])
 
     return params
@@ -149,7 +149,7 @@ def init_mlp_params(seed: int, layer_widths: list[int]) -> list:
     return params
 
 
-def foward_mlp(params: list, X: jax.Array, dropout: int=0.01, 
+def foward_mlp(params: list, X: jax.Array, dropout: int=0.01,
                train: bool=True) -> jaxlib.xla_extension.ArrayImpl:
     """
     Execute one foward pass for a multilayer perceptron
@@ -184,7 +184,7 @@ def foward_mlp(params: list, X: jax.Array, dropout: int=0.01,
     return x
 
 
-def init_deep_fm(vocab_length: int, num_features: int, num_factors: int, 
+def init_deep_fm(vocab_length: int, num_features: int, num_factors: int,
                  seeds: tuple[int]=(1, 42, 99)) -> tuple:
     """
     Initialize parameters for a deep factorization machine
@@ -229,4 +229,3 @@ def foward_deep_fm(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl
     y = jax.nn.sigmoid(fm_out + mlp_out.T).T
 
     return y
-

@@ -8,16 +8,16 @@ import { ApiService } from './api.service';
 import { AuthService } from './auth.service';
 
 // helpers
-import { Event } from '../_models/event';
+import { Event, PastUpcomingEventResponse } from '../_models/event';
 import { User } from '../_models/user';
 
 /**
- * Service responsible for managing event-related functionalities, including 
+ * Service responsible for managing event-related functionalities, including
  * fetching event data from the API and organizing events for display.
- * 
- * This service interacts with the API service and authentication service to 
+ *
+ * This service interacts with the API service and authentication service to
  * perform event-related HTTP requests.
- * 
+ *
  * @see ApiService
  * @see AuthService
  */
@@ -26,6 +26,8 @@ import { User } from '../_models/user';
 })
 export class EventService {
   endpoint = this.apiService.BASE_API_URL + '/events/';
+  userEventsEndpoint = this.apiService.BASE_API_URL + '/userevents/upcoming_past_events/';
+  userEventsReviewEndpoint = this.apiService.BASE_API_URL + '/userevents/review_event/';
   numEventsAttended = new BehaviorSubject<number>(0);
   pastEvents = new BehaviorSubject<Event[]>([]);
   upcomingEvents = new BehaviorSubject<Event[]>([]);
@@ -43,7 +45,9 @@ export class EventService {
   loadAllEvents() {
     this.authService.userSubject.subscribe(user => {
       this.user = user as User;
-      this.fetchEvents(this.endpoint).subscribe(events => {
+      let url = `${this.userEventsEndpoint}?user_id=${this.user.id}`
+      console.log('Fetching events from: ', url)
+      this.fetchEvents(url).subscribe(events => {
         this.getPastEvents(events);
         this.getUpcomingEvents(events);
       });
@@ -53,109 +57,42 @@ export class EventService {
   /**
    * Fetches all events from the API.
    * 
-   * TODO - Implement this function to fetch events from the API.
-   * 
    * @param url The URL to fetch events from.
    * @returns An Observable of the fetched events.
    */
-  fetchEvents(url: string): Observable<Event[]> {
-    return of(this.getTestEvents());
-  }
-
-  /**
-   * Returns a list of test events for development purposes.
-   * 
-   * @returns A list of test events.
-   */
-  getTestEvents(): Event[] {
-    let futureDate = moment().add(10, 'days').format('LLLL');
-    return [
-      // upcoming dates
-      {
-        id: 3,
-        title: 'Test Event 3',
-        description: 'This is a test event.',
-        datetime: futureDate.toString(),
-        duration_h: 1,
-        address1: '1234 Michcigan Ave',
-        city: 'Chicago',
-        state: 'IL',
-        zipcode: '60601',
-        latitude: 41.8781,
-        longitude: -87.6298,
-        max_attendees: 10,
-      },
-      {
-        id: 4,
-        title: 'Test Event 4',
-        description: 'This is a test event.',
-        datetime: futureDate.toString(),
-        duration_h: 1,
-        address1: '1234 Michcigan Ave',
-        city: 'Chicago',
-        state: 'IL',
-        zipcode: '60601',
-        latitude: 41.8781,
-        longitude: -87.6298,
-        max_attendees: 10,
-      },
-
-      // past dates
-      {
-        id: 1,
-        title: 'Test Event 1',
-        description: 'This is a test event.',
-        datetime: '2021-08-01T12:00:00Z',
-        duration_h: 2,
-        address1: '1234 Michcigan Ave',
-        city: 'Chicago',
-        state: 'IL',
-        zipcode: '60601',
-        latitude: 41.8781,
-        longitude: -87.6298,
-        max_attendees: 5,
-      },
-      {
-        id: 2,
-        title: 'Test Event 2',
-        description: 'This is a test event.',
-        datetime: '2021-08-02T12:00:00Z',
-        duration_h: 3,
-        address1: '1234 Michcigan Ave',
-        city: 'Chicago',
-        state: 'IL',
-        zipcode: '60601',
-        latitude: 41.8781,
-        longitude: -87.6298,
-        max_attendees: 10,
-      }
-    ];
+  fetchEvents(url: string): Observable<PastUpcomingEventResponse> {
+    return this.http.get<PastUpcomingEventResponse>(url).pipe(
+      catchError(error => {
+        console.error('Error fetching events: ', error);
+        return throwError(() => error);
+      }));
   }
 
   /**
    * Gets the past events attended by the user.
-   * 
+   *
    * @param events The list of all events.
    */
-  getPastEvents(events: Event[]): void {
-    const pastEvents = events.filter(event => new Date(event.datetime) < new Date());
+  getPastEvents(events: PastUpcomingEventResponse): void {
+    const pastEvents = events.past_events.events;
     this.pastEvents.next(pastEvents);
-    this.numEventsAttended.next(pastEvents.length);
+    let eventsAttended = events.past_events.events.filter(event => event.attended )
+    this.numEventsAttended.next(eventsAttended.length);
   }
 
   /**
    * Gets the upcoming events for the user.
-   * 
+   *
    * @param events The list of all events.
    */
-  getUpcomingEvents(events: Event[]): void {
-    const upcomingEvents = events.filter(event => new Date(event.datetime) >= new Date());
+  getUpcomingEvents(events: PastUpcomingEventResponse): void {
+    const upcomingEvents = events.upcoming_events.events;
     this.upcomingEvents.next(upcomingEvents);
   }
 
   /**
    * Allows a user to add a new event.
-   * 
+   *
    * @param event The event to add.
    * @returns An Observable of the added event.
   */
@@ -166,4 +103,22 @@ export class EventService {
         return throwError(() => error);
       }));
   }
+
+  /**
+   * Allows a user to review an event.
+   * 
+   * @param event The event to review.
+   * @param rating The rating to give the event.
+   * @param attended Whether the user attended the event.
+   * 
+   * @returns An Observable of the reviewed event.
+   */
+  reviewEvent(event: Event, rating: number, attended: boolean): Observable<Event> {
+    let data = {"user_id": this.user?.id, "event_id": event.id, "attended": attended, "user_rating": rating}
+    return this.http.post<any>(this.userEventsReviewEndpoint, data).pipe(
+      catchError(error => {
+        console.error('Error reviewing event: ', error);
+        return throwError(() => error);
+      }));
+    }
 }

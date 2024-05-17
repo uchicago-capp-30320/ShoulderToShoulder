@@ -11,7 +11,7 @@ describe('ProfileAvailabilityComponent', () => {
       declarations: [ProfileAvailabilityComponent]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ProfileAvailabilityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -13,24 +13,24 @@ import { Hobby } from '../_models/hobby';
 
 /**
  * Component to display user profile information.
- * 
- * This component displays the user's profile information, including their name, 
+ *
+ * This component displays the user's profile information, including their name,
  * email, and profile picture.
- * 
+ *
  * @example
  * ```
  * <app-profile></app-profile>
  * ```
- * 
+ *
  * @remarks
- * This component relies on the AuthService, OnboardingService, EventService, and 
+ * This component relies on the AuthService, OnboardingService, EventService, and
  * HobbyService to manage user profile data.
- * 
+ *
  * @see AuthService
  * @see OnboardingService
  * @see EventService
  * @see HobbyService
- * 
+ *
  * @export
  * @class ProfileOverviewComponent
  */
@@ -41,6 +41,9 @@ import { Hobby } from '../_models/hobby';
 })
 export class ProfileOverviewComponent implements OnInit {
   showAddlEventInformation: boolean = false;
+  attended: boolean = false;
+  rating: number = 0;
+  pastEvent: boolean = false;
   currentEvent?: Event;
   pastEvents: Event[] = []
   upcomingEvents: Event[] = []
@@ -72,7 +75,7 @@ export class ProfileOverviewComponent implements OnInit {
         let hobby = hobbies.find(hobby => hobby.id == id);
         if (hobby) {
           mostInterestedHobbies.push(hobby);
-        
+
         }
       }));
 
@@ -106,6 +109,51 @@ export class ProfileOverviewComponent implements OnInit {
     this.showAddlEventInformation = true;
     this.currentEvent = event;
   }
+
+  /**
+   * Displays the additional event information dialog for past events,
+   * which includes the option to review events.
+   *  
+   * @param event The event to display.
+   */
+  showPastEventInformationDialog(event: Event): void {
+    this.showAddlEventInformation = true;
+    this.currentEvent = event;
+    this.pastEvent = true;
+  }
+
+  /**
+   * Closes the additional event information dialog.
+   */
+  closeEventDialog(): void {
+    this.showAddlEventInformation = false;
+    this.pastEvent = false;  // Resetting this if it's used to determine dialog behavior
+  }
+
+  /**
+   * Submits the review of a given event, including if the user attended the
+   * event and their event rating.
+   * 
+   * @param event The event to review.
+   */
+  submitReview(event: Event | undefined): void {
+    console.log("Submitting review...")
+    this.closeEventDialog()
+    if (event) {
+      this.eventService.reviewEvent(event, this.rating, this.attended).subscribe(
+        event => {
+          this.currentEvent = event;
+          this.eventService.loadAllEvents();
+          this.eventService.pastEvents.subscribe(events => this.pastEvents = events);
+        }); 
+    }
+
+    this.pastEvent = false;
+    this.showAddlEventInformation = false;
+    this.rating = 0;
+    this.attended = false;
+  }
+
 
   /**
    * Closes the additional event information dialog.
