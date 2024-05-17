@@ -82,7 +82,7 @@ def test_create_user_authenticated(api_client):
    assert len(response.data["refresh_token"]) >0 
    # assert a row for the user has been made in the Profile and Onboarding tables
    assert len(Onboarding.objects.all()) == 1
-   assert len(Profile.objects.all()) == 1
+   assert len(Profile.objects.all()) ==  1
    # assert that rows have been made in the Availability table for the user
    assert len(Availability.objects.all()) == 168
 
@@ -174,14 +174,7 @@ def test_login_wrong_password(api_client, create_test_user):
 @pytest.mark.django_db
 def test_login_unauthenticated(api_client):
    #create a test user
-   create_url = f'/api/create/'
-   data ={"email": 'django.test@s2s.com', 
-          "password": "DjangoTest1!",
-          "first_name": "Test",
-          "last_name": "User"}
-
-   app_token = generate_app_token()
-   response = api_client.post(create_url, data=data, format='json', HTTP_X_APP_TOKEN=app_token)
+   _, _ = create_test_user
 
    #try to run a login without the app_token
    login_url = f'/api/login/'
@@ -193,5 +186,67 @@ def test_login_unauthenticated(api_client):
    # assert unauthenticated
    assert response.status_code == 401
 
+@pytest.mark.django_db
+def test_get_users_unauthenticated(api_client, create_test_user):
+   #create a test user
+   user, app_token = create_test_user
+   assert ApplicationToken.objects.filter(name='s2s').exists()
+
+   #call user endpoint and query all users
+   user_url = f'/api/user/'
+   response = api_client.get(user_url)
+   
+   # assert unauthenticated
+   assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_get_users(api_client, create_test_user):
+   #create a test user
+   user, app_token = create_test_user
+   assert ApplicationToken.objects.filter(name='s2s').exists()
+
+   #create a second test user
+   url = f'/api/create/'
+   data ={"email": 'django.test2@s2s.com', 
+          "password": "DjangoTest2!",
+          "first_name": "Test2",
+          "last_name": "User2"}
+   r = api_client.post(url, data=data, format='json', HTTP_X_APP_TOKEN=app_token)
+   assert r.status_code == 201
+
+   #call user endpoint and query all users
+   user_url = f'/api/user/'
+   api_client.credentials(HTTP_AUTHORIZATION='Bearer ' + r.data["access_token"])
+   response = api_client.get(user_url)
+   
+   # assert 2 users returned
+   assert response.status_code == 200
+   assert len(response.data["results"]) == 2
+
+
+@pytest.mark.django_db
+def test_get_specific_user(api_client, create_test_user):
+   #create a test user
+   user, app_token = create_test_user
+   assert ApplicationToken.objects.filter(name='s2s').exists()
+
+   #create a second test user
+   url = f'/api/create/'
+   data ={"email": 'django.test2@s2s.com', 
+          "password": "DjangoTest2!",
+          "first_name": "Test2",
+          "last_name": "User2"}
+   r = api_client.post(url, data=data, format='json', HTTP_X_APP_TOKEN=app_token)
+
+   #call user endpoint and query all users
+   user_url = f'/api/user/'
+   api_client.credentials(HTTP_AUTHORIZATION='Bearer ' + r.data["access_token"])
+   response = api_client.get(user_url, {'email': 'django.test2@s2s.com'})
+   
+   # assert 2 users returned
+   assert response.status_code == 200
+   assert len(response.data["results"]) == 1
+   assert response.data["results"][0]["username"] == 'django.test2@s2s.com'
 
 
