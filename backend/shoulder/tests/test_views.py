@@ -306,15 +306,15 @@ def test_submit_onboarding_authenticated(api_client):
     api_client.credentials(HTTP_X_APP_TOKEN=app_token)
 
     user = User.objects.create(id=3, username='testuser')
-    
+
     hobby_type1 = HobbyType.objects.create(id="1", type="OUTDOOR")
     hobby_type2 = HobbyType.objects.create(id="2", type="EVENTS")
-    
+
     Hobby.objects.create(id=9, name='Running', type=hobby_type1)
     Hobby.objects.create(id=10, name='Concert', type=hobby_type2)
     Hobby.objects.create(id=5, name='Swimming', type=hobby_type1)
     Hobby.objects.create(id=8, name='Party', type=hobby_type2)
-    
+
     availability = Availability.objects.create(user_id=user, day_of_week='Monday', hour=1, available=True)
 
     data = {
