@@ -1,46 +1,17 @@
 import pytest
-import os 
-from django.urls import reverse
-from django.test import RequestFactory, Client
 from rest_framework import status
 from django.contrib.auth.models import User
 from s2s.db_models import *
 from s2s.views import *
-import environ
 import ShoulderToShoulder.settings as s2s_settings
 from django.core.management import call_command
 from io import StringIO
-from unittest.mock import patch
 from rest_framework.test import APIClient
-
 
 
 @pytest.fixture
 def api_client():
     return APIClient()
-
-@pytest.fixture
-def authenticated_user():
-    # Create a user
-    user = User.objects.create_user(username='testuser', email='test@example.com', password='password123')
-    
-    # Generate JWT token
-    refresh = RefreshToken.for_user(user)
-    token = str(refresh.access_token)
-    
-    return user, token
-
-# @pytest.fixture
-# def api_client_with_token(authenticated_user):
-#     user, token = authenticated_user
-    
-#     # Create an API client
-#     client = APIClient()
-
-#     # Set JWT token in Authorization header
-#     client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-
-#     return client
 
 """
 Overview of tests that should be created for the Django Views
@@ -148,19 +119,17 @@ def generate_app_token():
 @pytest.mark.django_db
 def test_create_hobby_type_authenticated(api_client):
     """
-    Test creating a new hobby type.
+    Test creating a new hobby type with authentication.
     """
     url = "/api/hobbytypes/"
     data = {'type': 'TEST/HOBBY'}
 
-    # Create the app token
+    
     app_token = generate_app_token()
     assert ApplicationToken.objects.filter(name='s2s').exists()
 
-    # Set X-APP-TOKEN header
     api_client.credentials(HTTP_X_APP_TOKEN=app_token)
     
-    # Send and test response
     response = api_client.post(url, data=data, format='json')
     
     assert response.status_code == status.HTTP_201_CREATED
@@ -170,12 +139,11 @@ def test_create_hobby_type_authenticated(api_client):
 @pytest.mark.django_db
 def test_create_hobby_type_unauthenticated(api_client):
     """
-    Test creating a new hobby type by an unauthenticated user.
+    Test creating a new hobby type without authentication.
     """
     url = "/api/hobbytypes/"
     data = {'type': 'TEST/HOBBY'}
 
-    # Send and test response
     response = api_client.post(url, data=data, format='json')
     
     assert response.status_code == status.HTTP_401_UNAUTHORIZED 
@@ -185,9 +153,10 @@ def test_create_hobby_type_unauthenticated(api_client):
 @pytest.mark.django_db
 def test_hobby_list_authenticated(api_client):
     """
-    Test creating HobbyType and Hobby objects 
+    Test retrieving a list of Hobbies with authentication. 
     """
-    # Create the app token
+    url = "/api/hobbies/"
+
     app_token = generate_app_token()
     assert ApplicationToken.objects.filter(name='s2s').exists()
 
@@ -196,13 +165,10 @@ def test_hobby_list_authenticated(api_client):
     
     hobby_type = HobbyType.objects.create(type='Outdoor')
 
-    # Creating some Hobby objects for testing
     Hobby.objects.create(name='Running', type=hobby_type)
     Hobby.objects.create(name='Swimming', type=hobby_type)
 
-    url = "/api/hobbies/"
     response = api_client.get(url)
-
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data['results']) == 2
@@ -211,15 +177,16 @@ def test_hobby_list_authenticated(api_client):
 @pytest.mark.django_db
 def test_hobby_list_unauthenticated(api_client):
     """
-    Test retrieving a list of hobbies by an unauthenticated user.
+    Test retrieving a list of Hobbies without authentication. 
     """
+    url = "/api/hobbies/"
+    
     hobby_type = HobbyType.objects.create(type='Outdoor')
 
     # Creating some Hobby objects for testing
     Hobby.objects.create(name='Running', type=hobby_type)
     Hobby.objects.create(name='Swimming', type=hobby_type)
 
-    url = "/api/hobbies/"
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -228,17 +195,19 @@ def test_hobby_list_unauthenticated(api_client):
 
 @pytest.mark.django_db
 def test_update_onboarding_authenticated(api_client):
-    # Create the app token
-    app_token = generate_app_token()
-    assert ApplicationToken.objects.filter(name='s2s').exists()
-
-    # Set X-APP-TOKEN header
-    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
-    user = User.objects.create(username='testuser')
+    """
+    Test updates the Onboarding with authentication.
+    """
+    url = "/api/onboarding/"
     
     view = OnboardingViewSet.as_view({'post': 'update_onboarding'})
     
-    url = "/api/onboarding/"
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
+
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    user = User.objects.create(username='testuser')
+    
     response = api_client.post(url, data={'user_id': user.id, 'onboarded': True}, format='json')
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -247,9 +216,13 @@ def test_update_onboarding_authenticated(api_client):
 
 @pytest.mark.django_db
 def test_update_onboarding_unauthenticated(api_client):
+    """
+    Test updates the Onboarding without authentication.
+    """
+    url = "/api/onboarding/"
+    
     view = OnboardingViewSet.as_view({'post': 'update_onboarding'})
     
-    url = "/api/onboarding/"
     response = api_client.post(url, data={'user_id': 1, 'onboarded': True}, format='json')
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -257,7 +230,11 @@ def test_update_onboarding_unauthenticated(api_client):
 
 @pytest.mark.django_db
 def test_create_availability_authenticated(api_client):
-
+    """
+    Test creates User Availability with authentication. 
+    """
+    url = "/api/availability/"
+    
     app_token = generate_app_token()
     assert ApplicationToken.objects.filter(name='s2s').exists()
 
@@ -265,7 +242,7 @@ def test_create_availability_authenticated(api_client):
     
     user = User.objects.create(username='testuser')
     view = AvailabilityViewSet.as_view({'post': 'post'})
-    url = "/api/availability/"
+
     response = api_client.post(url, data={'user_id': user.id, 'day_of_week': 'Monday', 'hour': 1, 'available': True}, format='json')
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -273,36 +250,44 @@ def test_create_availability_authenticated(api_client):
 
 @pytest.mark.django_db
 def test_create_availability_unauthenticated(api_client):
+    """
+    Test creates User Availability without authentication. 
+    """
     view = AvailabilityViewSet.as_view({'post': 'post'})
     url = "/api/availability/"
+    data={'user_id': 1, 'day_of_week': 'Monday', 'hour': 1, 'available': True}
     
-    response = api_client.post(url, data={'user_id': 1, 'day_of_week': 'Monday', 'hour': 1, 'available': True}, format='json')
+    response = api_client.post(url, data=data, format='json')
 
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-# @pytest.mark.django_db
-# def test_get_availability_authenticated(api_client):
-#     # NOTE: not posting hte user information
-#     app_token = generate_app_token()
-#     assert ApplicationToken.objects.filter(name='s2s').exists()
+@pytest.mark.django_db
+def test_get_availability_authenticated(api_client):
+    """
+    Test retrieves User Availability data with authentication.
+    """
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
 
-#     api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
 
-#     user = User.objects.create(id=3, username='testuser')
+    user = User.objects.create(id=3, username='testuser')
 
-#     availability = Availability.objects.create(user_id=user, day_of_week='Monday', hour=1, available=True)
-#     view = AvailabilityViewSet.as_view({'get': 'list'})
-#     url = "/api/onboarding/"
-#     response = api_client.get(url, data={'user_id': user.id})
-#     print(response.data)
+    availability = Availability.objects.create(user_id=user, day_of_week='Monday', hour=1, available=True)
+    view = AvailabilityViewSet.as_view({'get': 'list'})
+    url = "/api/onboarding/"
+    response = api_client.get(url, data={'user_id': user.id})
 
-#     assert response.status_code == status.HTTP_200_OK
-#     assert len(response.data["results"]) == 1
+    assert response.status_code == status.HTTP_200_OK
+
 
 
 @pytest.mark.django_db
 def test_get_availability_unauthenticated(api_client):
+    """
+    Test retrieves User Availability data without authentication.
+    """
     view = AvailabilityViewSet.as_view({'get': 'list'})
     url = "/api/onboarding/"
     response = api_client.get(url, data={'user_id': 1})
@@ -310,60 +295,73 @@ def test_get_availability_unauthenticated(api_client):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.data['detail'] == 'Authentication credentials were not provided.'
 
+
+@pytest.mark.django_db
+def test_submit_onboarding_authenticated(api_client):
+    """
+    Test to submit a User's onboarding information with authentication.
+    """
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
+
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    
+    user = User.objects.create(id=3, username='testuser')
+    hobby_type = HobbyType.objects.create(type='Outdoor')
+    
+    data = {
+        "user_data": {"user_id": user.id}, 
+        "availability": [{"day_of_week": "Monday", "hour": 1, "available": True}],
+        "onboarding": {"num_participants": ["10-15"], "distance": "Within 10 miles", "similarity_to_group":"Neutral", "similarity_metrics":["Gender"]},
+        "scenarios": [
+            {
+                "hobby1": 18,
+                "hobby2": 18,
+                "distance1": "Within 20 miles",
+                "distance2": "Within 20 miles",
+                "num_participants1": "15+",
+                "num_participants2": "15+",
+                "day_of_week1": "Monday",
+                "day_of_week2": "Tuesday",
+                "time_of_day1": "Morning (9a-12p)",
+                "time_of_day2": "Afternoon (1-4p)",
+                "duration_h1": 2,
+                "duration_h2": 3,
+                "prefers_event1": True,
+                "prefers_event2": False
+            }
+        ]
+    }
+    url = "/api/submit_onboarding/"
+    response = api_client.post(url, data=data, format='json')
+    
+    print(response.data)
+
+    # Check response status code
+    assert response.status_code == status.HTTP_201_CREATED
+
 @pytest.mark.django_db
 def test_zip_code_valid(api_client):
-
-    
+    """
+    Test that ensures that location is retrieved given a valid zipcode.
+    """
     view = ZipCodeViewSet.as_view({'get': 'list'})
     url = "/api/zipcodes/"
     response = api_client.get(url, {'zip_code': '90210'})
     
     assert response.status_code == status.HTTP_200_OK
-    assert response.data['query']['codes'] == ['90210']
+    assert response.data['results']['90210'][0]['city'] == 'Beverly Hills'
+    assert response.data['results']['90210'][0]['state'] == 'California'
 
 
 @pytest.mark.django_db
 def test_zip_code_missing(api_client):
+    """
+    Test that ensures that a location is not retrieved given the zipcode is missing.
+    """
     view = ZipCodeViewSet.as_view({'get': 'list'})
     url = "/api/zipcodes/"
     response = api_client.get(url, {'zip_code': '90210'})
     
     assert response.status_code == status.HTTP_200_OK
     assert response.data['query']['codes'] == ['90210']
-
-
-
-# @pytest.mark.django_db
-# def test_create_event(api_client, authenticated_user):
-#     """
-#     Test creating event 
-#     """
-#     hobby_type = HobbyType.objects.create(type='Outdoor')
-#     Hobby.objects.create(name='Running', type=hobby_type)
-    
-#     data = {
-#         'title': 'Test Event',
-#         'description': 'This is a test event',
-#         'hobby_type': 'Outdoor',
-#         'datetime': '2024-05-20T15:30:00',
-#         'duration_h': 2,
-#         'address1': '123 Main St',
-#         'city': 'Chicago',
-#         'state': 'IL',
-#         'zipcode': '60607',
-#         'latitude': 41.8781,
-#         'longitude': -87.6298,
-#         'max_attendees': 10
-#     }
-    
-#     user, token = authenticated_user
-
-#     # Set JWT token in Authorization header
-#     api_client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-    
-#     url = "/api/events/"
-#     response = api_client.post(url, data=data, format='json')
-    
-#     assert response.status_code == status.HTTP_201_CREATED
-#     assert Event.objects.filter(name='Test Event').exists()
-    
