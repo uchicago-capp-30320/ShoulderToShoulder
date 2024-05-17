@@ -1611,7 +1611,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             return Response({"error": "User ID not provided"}, status=400)
         
         # Call the endpoint to run the ML inference.
-        update_response = self.update_suggestions(request, user_id=user_id)
+        update_response = SuggestionResults.objects.get(user_id=user_id)
 
         if update_response.status_code != 200:
             return update_response
@@ -1673,6 +1673,11 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             event_suggestion['city'] = event.city
             event_suggestion['state'] = event.state
             event_suggestion['zipcode'] = event.zipcode
+
+            # Adding distance bin to event data
+            distance_from_user = next(key for key, value in self.distance_calc(event_id, user_id).items() if value) 
+            distance_from_user = "within " + distance_from_user.split("_")[-1].split("mi")[0] + " miles"
+            event_suggestion['distance_from_user'] = distance_from_user
         
         # convert nan probabilities to 0
         for event_suggestion in top_event_data:
