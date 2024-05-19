@@ -3,7 +3,6 @@ import jax
 import optax
 import pickle
 import jaxlib
-import requests
 from tqdm import tqdm
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
@@ -13,7 +12,15 @@ from jax import value_and_grad, jit
 from shoulder.ml.ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_embedding
 
 LR = 0.0001
-    
+WEIGHTS = None
+
+
+def _ensure_weights():
+    """Add the pretrained weights to the global scope"""
+    global WEIGHTS
+    if WEIGHTS is None:
+        with open('shoulder/ml/ml/weights/parameters.pkl', 'rb') as file:
+            WEIGHTS = pickle.load(file)
 
 def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list, 
                  path: str='shoulder/ml/mlweights/parameters.pkl') -> None:
@@ -83,6 +90,7 @@ def train(params: list, data: Dataset, num_epochs: int,
         params (list): a list of DeepFM parameters
         data (Dataset): a Dataset object
         num_epochs (int): the number of epochs to train for
+        path (str): a location to write the weights to
 
     Returns:
     --------
@@ -123,15 +131,10 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
         predictions (array): predicted probabilities of users RSVPing for events
     """
     # Check if params is a global variable and if not, read them from a pkl file and add 
-    # the parameters to the gloabl scoe so we don't have to keep reading them in when we 
+    # the parameters to the gloabl scope so we don't have to keep reading them in when we 
     # call predict
-    if "params" in globals():
-        params = globals()["params"]
-    else:
-        with open('shoulder/ml/ml/weights/parameters.pkl', 'rb') as file:
-            params = pickle.load(file)
-
-        globals()["params"] = params
+    _ensure_weights()
+    params = WEIGHTS
 
     embedding_params, fm_params, mlp_params = params
     embeddings = foward_embedding(embedding_params, X)

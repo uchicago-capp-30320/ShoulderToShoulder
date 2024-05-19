@@ -49,7 +49,7 @@ def test_train():
 
 
 def test_predict():
-    x = random.randint(random.PRNGKey(59), shape=(5, 149), minval=0, maxval=50).astype(float)
+    x = random.randint(random.PRNGKey(59), shape=(5, 150), minval=0, maxval=50).astype(float)
     predictions = predict(x)
     assert type(predictions) == jaxlib.xla_extension.ArrayImpl
     assert predictions.shape == (5, 1)
@@ -57,7 +57,7 @@ def test_predict():
 
 def test_predict_new_user():
     # Testing embedding unseen users
-    X = jnp.concat([random.randint(random.key(99), (1, 148), minval=0, maxval=50), 
+    X = jnp.concat([random.randint(random.key(99), (1, 149), minval=0, maxval=50), 
                     jnp.array([[1000000]])], axis=1)
     assert not jnp.isnan(predict(X)).any()
 

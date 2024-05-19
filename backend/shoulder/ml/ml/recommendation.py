@@ -6,31 +6,37 @@ from shoulder.ml.ml.dataset import Dataset
 from shoulder.ml.ml.model import init_deep_fm
 from shoulder.ml.ml.train import train, predict
 
+WEIGHTS_PATH = "shoulder/ml/ml/weights/parameters.pkl"
 
-def preprocess(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
+
+def preprocess(raw_data: list, predict=False) -> jaxlib.xla_extension.ArrayImpl:
     """
     Prepare data for training or predicting
 
     Parameters:
     -----------
         raw_data (list[Dict]): a list of dictionaries from the event suggestions database
+        predict (bool): whether including targets for training or only features to predict
 
     Returns:
-        a tuple of preprocessed arrays for training or predicting
+        A tuple of preprocessed arrays for training or predicting
     """
-    feature_list, target_list = [], []
+    data = [{k: v for k, v in d.items() if k not in ("user_id", "id")} for d in raw_data]
+    feature_list = []
+    target_list = [] if not predict else None
 
-    # json_results is a list of dictionaries
+    # Getting the user ID to update later
     for d in raw_data:
-        del d["id"]
-        user_id = d["user_id"]  # We will add this after everything else
+        user_id = d["user_id"]
         del d["user_id"]
 
-        if d["attended_event"] == 1:
-            target_list.append(1)
-        else:
-            target_list.append(0)
-        del d["attended_event"]
+    for d in data:
+        if not predict:
+            if d["attended_event"] == 1:
+                target_list.append(1)
+            else:
+                target_list.append(0)
+            del d["attended_event"]
 
         user_event_list, low, high = [], 0, 1
 
@@ -49,24 +55,30 @@ def preprocess(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
         user_event_list.append(high + user_id)
         feature_list.append(user_event_list)
 
-    x, y= jnp.array(feature_list, dtype=float), jnp.array(target_list, dtype=float)
+    x = jnp.array(feature_list, dtype=float)
 
-    return x, y
+    if not predict:
+        y = jnp.array(target_list, dtype=float)
+        return x, y
+    else:
+        return x
 
 
 def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=32, 
-             num_epochs: int=10, seed=1994, seeds=(8, 6, 7)) -> tuple[list]:
+             num_epochs: int=10, seed=1994, seeds=(8, 6, 7), 
+             path: str="shoulder/ml/ml/weights/parameters.pkl") -> tuple[list]:
     """
     Pretrain a DeepFM
 
     Parameters:
     -----------
-        raw_data (requests.models.Response): a response from the event suggestions table.
-        num_factors (int): the number of latent factors to consider for the FM.
-        batch_size (int): the number of training examples in each batch.
-        num_epochs (int): the number of passes to perform on the dataset durind training.
+        raw_data (requests.models.Response): a response from the event suggestions table
+        num_factors (int): the number of latent factors to consider for the FM
+        batch_size (int): the number of training examples in each batch
+        num_epochs (int): the number of passes to perform on the dataset durind training
         seed (int): a seed for shuffling the data
-        seeds (tuple): a tuple of three seeds for model initialization.
+        seeds (tuple): a tuple of three seeds for model initialization
+        path (str): a location to write thew eights to
 
     Returns:
     --------
@@ -75,13 +87,13 @@ def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=
     full_x, full_y = preprocess(raw_data)
     data = Dataset(full_x, full_y, batch_size, seed)
     params = init_deep_fm(int(jnp.max(full_x)), full_x.shape[1], num_factors, seeds)
-    epochs, loss_list, acc_list, params = train(params, data, num_epochs)
+    epochs, loss_list, acc_list, params = train(params, data, num_epochs, path)
     
     return epochs, loss_list, acc_list
 
 
 def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=5, 
-             seed=1999) -> tuple[list]:
+             seed=1999, path: str="shoulder/ml/ml/weights/parameters.pkl") -> tuple[list]:
     """
     Finetune a DeepFM
 
@@ -91,6 +103,7 @@ def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int
         batch_size (int): the number of training examples in each batch.
         num_epochs (int): the number of passes to perform on the dataset durind training.
         seed (int): a seed for shuffling the data
+        path (str): a location to write the updated weights to
 
     Returns:
     --------
@@ -99,10 +112,10 @@ def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int
     full_x, full_y = preprocess(raw_data)
     data = Dataset(full_x, full_y, batch_size, seed)
 
-    with open('weights/parameters.pkl', 'rb') as file:
+    with open(WEIGHTS_PATH, 'rb') as file:
             params = pickle.load(file)
 
-    epochs, loss_list, acc_list, params = train(params, data, num_epochs)
+    epochs, loss_list, acc_list, params = train(params, data, num_epochs, path=path)
 
     return epochs, loss_list, acc_list
 
@@ -119,5 +132,5 @@ def recommend(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
         --------
             A jax NumPy array of predicted probabilities of attending events
      """
-     full_x = preprocess(raw_data)
+     full_x = preprocess(raw_data, predict=True)
      return predict(full_x)
