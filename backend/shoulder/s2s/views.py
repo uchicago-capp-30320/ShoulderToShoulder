@@ -118,7 +118,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
     def create(self, request, *args, **kwargs):
-        required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode']
+        required_fields = ['title', 'description', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode']
         if not all([field in request.data for field in required_fields]):
             return Response({"error": f"Missing required fields: {required_fields}"}, status=400)
 
@@ -143,7 +143,7 @@ class EventViewSet(viewsets.ModelViewSet):
         # create the event
         data = {
             'title': request.data['title'],
-            'description': request.data.get('description', None),
+            'description': request.data.get('description'),
             'hobby_type': hobby_type.id,
             'created_by': user.id,
             'datetime': request.data['datetime'],
@@ -162,9 +162,9 @@ class EventViewSet(viewsets.ModelViewSet):
             serializer.save()
 
             # add user to event if applicable
-            if request.data.get('add_user', None):
+            if request.data.get('add_user'):
                 event = Event.objects.get(id=serializer.data['id'])
-                user_event = UserEvents(user_id=user, event_id=event)
+                user_event = UserEvents(user_id=user, event_id=event, rsvp="Yes")
                 user_event.save()
 
             # trigger event suggestion panel data
@@ -783,27 +783,51 @@ class UserEventsViewSet(viewsets.ModelViewSet):
         if not all([user_id, event_id]):
             return Response({"error": "User ID and/or Event ID not provided"}, status=400)
 
-        # get the user events
-        user_events = UserEvents.objects.filter(user_id=user)
+        # Attempt to fetch the user and event objects
+        try:
+            user = User.objects.get(id=user_id)
+            event = Event.objects.get(id=event_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+        except Event.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)
 
-        # get the past and upcoming events
-        response = {"past_events": {"count": 0, "events": []}, "upcoming_events": {"count": 0, "events": []}}
-        event_serializer_class = EventSerializer
-        for user_event in user_events:
-            if user_event.rsvp == 'No':
-                continue
-            event = user_event.event_id
-            serialized_event = event_serializer_class(event).data
-            serialized_event['rating'] = user_event.user_rating
-            serialized_event['attended'] = user_event.attended
-            if event.datetime < timezone.now():
-                response["past_events"]['events'].append(serialized_event)
-                response["past_events"]['count'] += 1
-            else:
-                response["upcoming_events"]['events'].append(serialized_event)
-                response["upcoming_events"]['count'] += 1
+        # Create the user event object
+        user_event = UserEvents(user_id=user, event_id=event, rsvp=rsvp, attended=False)
+        user_event.save()
+
+        serializer = self.get_serializer(user_event)
+        return Response(serializer.data, status=201)
+    
+    # def create(self, request, *args, **kwargs):
+    #     # Ensure the user_id and event_id are provided in the request
+    #     user_id = request.data.get('user_id')
+    #     event_id = request.data.get('event_id')
+    #     rsvp = request.data.get('rsvp', 'No')
+    #     if not all([user_id, event_id]):
+    #         return Response({"error": "User ID and/or Event ID not provided"}, status=400)
+
+    #     # get the user events
+    #     user_events = UserEvents.objects.filter(user_id=user_id)
+
+    #     # get the past and upcoming events
+    #     response = {"past_events": {"count": 0, "events": []}, "upcoming_events": {"count": 0, "events": []}}
+    #     event_serializer_class = EventSerializer
+    #     for user_event in user_events:
+    #         if user_event.rsvp == 'No':
+    #             continue
+    #         event = user_event.event_id
+    #         serialized_event = event_serializer_class(event).data
+    #         serialized_event['rating'] = user_event.user_rating
+    #         serialized_event['attended'] = user_event.attended
+    #         if event.datetime < timezone.now():
+    #             response["past_events"]['events'].append(serialized_event)
+    #             response["past_events"]['count'] += 1
+    #         else:
+    #             response["upcoming_events"]['events'].append(serialized_event)
+    #             response["upcoming_events"]['count'] += 1
             
-        return Response(response, status=200)
+    #     return Response(response, status=200)
     
 class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     queryset = PanelUserPreferences.objects.all()
