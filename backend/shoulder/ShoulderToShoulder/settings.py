@@ -200,5 +200,6 @@ MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 DEFAULT_PROFILE_IMAGE_PATH = MEDIA_URL + 'default_profile.jpeg'
 
 EMAIL_BACKEND = 'django_ses.SESBackend'
-AWS_REGION_NAME = env(AWS_S3_REGION_NAME) 
+AWS_REGION_NAME = env("AWS_S3_REGION_NAME") 
 S2S_FROM_EMAIL = 'shouldertoshoulder.contact@gmail.com'
+
