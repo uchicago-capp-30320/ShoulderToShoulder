@@ -147,6 +147,7 @@ class EventViewSet(viewsets.ModelViewSet):
             'hobby_type': hobby_type.id,
             'created_by': user.id,
             'datetime': request.data['datetime'],
+            'price': request.data.get('price', None),
             'duration_h': request.data['duration_h'],
             'address1': request.data['address1'],
             'address2': request.data.get('address2', None),
@@ -798,36 +799,7 @@ class UserEventsViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(user_event)
         return Response(serializer.data, status=201)
-    
-    # def create(self, request, *args, **kwargs):
-    #     # Ensure the user_id and event_id are provided in the request
-    #     user_id = request.data.get('user_id')
-    #     event_id = request.data.get('event_id')
-    #     rsvp = request.data.get('rsvp', 'No')
-    #     if not all([user_id, event_id]):
-    #         return Response({"error": "User ID and/or Event ID not provided"}, status=400)
 
-    #     # get the user events
-    #     user_events = UserEvents.objects.filter(user_id=user_id)
-
-    #     # get the past and upcoming events
-    #     response = {"past_events": {"count": 0, "events": []}, "upcoming_events": {"count": 0, "events": []}}
-    #     event_serializer_class = EventSerializer
-    #     for user_event in user_events:
-    #         if user_event.rsvp == 'No':
-    #             continue
-    #         event = user_event.event_id
-    #         serialized_event = event_serializer_class(event).data
-    #         serialized_event['rating'] = user_event.user_rating
-    #         serialized_event['attended'] = user_event.attended
-    #         if event.datetime < timezone.now():
-    #             response["past_events"]['events'].append(serialized_event)
-    #             response["past_events"]['count'] += 1
-    #         else:
-    #             response["upcoming_events"]['events'].append(serialized_event)
-    #             response["upcoming_events"]['count'] += 1
-            
-    #     return Response(response, status=200)
     
 class PanelUserPreferencesViewSet(viewsets.ModelViewSet):
     queryset = PanelUserPreferences.objects.all()
@@ -1815,13 +1787,13 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
         cleaned_scenario_data = [{"user_id": user_id}] + scenarios_data
         for item in cleaned_scenario_data:
             item['user_id'] = int(item['user_id'])
-
+        
         # to mimic a request object
         factory = RequestFactory()
-        mimic_request = factory.post('/fake-url/', {"scenarios": scenarios_data}, format='json')
+        mimic_request = factory.post('/fake-url/', {"scenarios": cleaned_scenario_data}, format='json')
 
         # create event suggestions
-        mimic_request.data = scenarios_data
+        mimic_request.data = cleaned_scenario_data
         scenario_view = ScenariosiewSet()
         response = scenario_view.bulk_create(mimic_request)
         return response
