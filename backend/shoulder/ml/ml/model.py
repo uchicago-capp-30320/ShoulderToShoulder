@@ -72,7 +72,7 @@ def foward_embedding(params: list[dict], X: jax.Array) -> jaxlib.xla_extension.A
 
 def init_fm(seed: int, num_features: int, num_factors: int) -> list:
     """
-    Initilaize weights to a factorization machine
+    Initialize weights to a factorization machine
 
     Parameters:
     -----------
@@ -217,6 +217,7 @@ def foward_deep_fm(params: list, X: jax.Array) -> jaxlib.xla_extension.ArrayImpl
     Parameters:
         params (list): a list of parameters for computing a foward pass
         X (jax.Array): features to use in the foward pass
+        predict (bool): whether prediction or training is being done
 
     Returns:
     --------

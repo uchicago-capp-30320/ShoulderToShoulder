@@ -749,7 +749,6 @@ class UserEventsViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='review_event')
     def review_event(self, request, *args, **kwargs):
         # Ensure the user_id, event_id, and attendance are provided in the request
-        print("data: ", request.data)
         user_id = request.data.get('user_id')
         event_id = request.data.get('event_id')
         attended = request.data.get('attended')
@@ -1526,6 +1525,28 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
     permission_classes = [HasAppToken]
     queryset = SuggestionResults.objects.all()
 
+    @action(detail=False, methods=['get'], url_path='get_training_data')
+    def get_training_data(self, request):
+        """
+        Returns the training data for the ML model.
+        """
+        scenario_panel_data = PanelScenario.objects.all()
+        scenario_panel_serializer = PanelScenarioSerializer(scenario_panel_data, many=True)
+
+        # grab the associated user panel data
+        for scenario_panel_dict in scenario_panel_serializer.data:
+            user_id = scenario_panel_dict['user_id']
+            user_panel = PanelUserPreferences.objects.filter(user_id=user_id)
+            if user_panel.exists():
+                user_panel = user_panel[0]
+                user_panel_serialized = PanelUserPreferencesSerializer(user_panel)
+                scenario_panel_dict.update(user_panel_serialized.data)
+            else:
+                # remove the scenario panel data from the dictionary
+                scenario_panel_dict = None
+
+        return Response(scenario_panel_serializer.data, status=200)
+
     @action(detail=False, methods=['get'], url_path='update')
     def update_suggestions(self, request, *args, **kwargs):
         """
@@ -1575,12 +1596,12 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         ]
 
         # Get recommendations
-        prediction_probs, user_ids, event_ids = recommend(model_list)
+        prediction_probs = recommend(model_list)
+        event_ids = [event['event_id'] for event in event_panel_dict_lst]
 
         results = []
-        for pred, user_id, event_id in zip(prediction_probs, user_ids, event_ids):
+        for pred, event_id in zip(prediction_probs, event_ids):
             event = Event.objects.get(id=event_id)
-            user = User.objects.get(id=user_id)
             result = SuggestionResults.objects.update_or_create(
                 user_id = user,
                 event_id = event,

@@ -108,4 +108,4 @@ class PanelScenario(models.Model):
     attended_event = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'Scenario {self.scenario_id} (user={self.user_id}) panel data'
+        return f'Scenario {self.scenario_id} (user={self.user_id.id, self.user_id.email}) panel data'
