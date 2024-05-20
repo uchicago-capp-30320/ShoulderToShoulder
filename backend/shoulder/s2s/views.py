@@ -1,4 +1,3 @@
-# TESTING
 from django.shortcuts import render
 from django.contrib.auth.models import Group
 from rest_framework.response import Response
