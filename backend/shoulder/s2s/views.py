@@ -1631,13 +1631,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         user_id = request.query_params.get('user_id')
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
-        
-        # Call the endpoint to run the ML inference.
-        update_response = SuggestionResults.objects.get(user_id=user_id)
-
-        if update_response.status_code != 200:
-            return update_response
-        
+            
         # Implementing several filters here: event timing, whether the event is 
         # already full, whether the user is already RSVPed for the event,
         # and whether the user is available for the event.
