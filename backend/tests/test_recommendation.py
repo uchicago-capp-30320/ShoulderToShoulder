@@ -16,8 +16,8 @@ def test_preprocess():
 
     preprocessed_data_train = preprocess(raw_data)
     preprocessed_data_prediction = preprocess(prediction_data, predict=True)
-    assert isinstance(preprocessed_data_train, tuple)
-    assert isinstance(preprocessed_data_prediction, jaxlib.xla_extension.ArrayImpl)
+    assert isinstance(preprocessed_data_train, tuple), "Ensure output is a tuple"
+    assert isinstance(preprocessed_data_prediction, jaxlib.xla_extension.ArrayImpl), "Ensure output is a jax array"
 
 
 def test_pretrain():
@@ -26,10 +26,10 @@ def test_pretrain():
         raw_data = pickle.load(f)
     out = pretrain(raw_data, path="tests/test_pretrain.pkl")
     epochs, _, _ = out
-    assert len(out) == 3
-    assert len(epochs) == 10
-    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file()
-    assert Path(path).is_file()
+    assert len(out) == 3, "Ensure output is a tuple"
+    assert len(epochs) == 10, "Ensure correct number of epochs"
+    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file(), "Ensure training curve is saved"
+    assert Path(path).is_file(), "Ensure model is saved"
 
 
 def test_finetune():
@@ -37,7 +37,7 @@ def test_finetune():
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
     out = finetune(raw_data)
-    assert len(out) == 3
+    assert len(out) == 3, "Ensure output is a tuple"
 
 
 def test_recommend():
@@ -49,5 +49,5 @@ def test_recommend():
                        for d in raw_data]
 
     predictions = recommend(prediction_data)
-    assert isinstance(predictions, jaxlib.xla_extension.ArrayImpl)
-    assert len(predictions) == len(prediction_data)
+    assert isinstance(predictions, jaxlib.xla_extension.ArrayImpl), "Ensure output is a jax array"
+    assert len(predictions) == len(prediction_data), "Ensure correct number of predictions"
