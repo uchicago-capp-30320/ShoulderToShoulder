@@ -18,6 +18,7 @@ export interface Event {
     add_user?: boolean;
     rating?: string;
     attended?: boolean;
+    price: string;
 }
 
 export interface UserEvent {

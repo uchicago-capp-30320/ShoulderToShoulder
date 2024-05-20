@@ -70,6 +70,7 @@ export class EventSuggestionComponent implements OnInit {
       city: '',
       state: '',
       zipcode: '',
+      price: '',
     };
   }
 
