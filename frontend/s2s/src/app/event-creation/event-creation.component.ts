@@ -48,13 +48,14 @@ export class EventCreationComponent implements OnInit {
   event!: Event;
   eventForm = new FormGroup({
     title: new FormControl('', Validators.required),
-    description: new FormControl(''),
+    description: new FormControl('', Validators.required),
     hobby_type: new FormControl('', Validators.required),
     datetime: new FormControl('', Validators.required),
     duration_h: new FormControl('', [
       Validators.required,
       Validators.min(1),
       Validators.max(8)]),
+    price: new FormControl('', Validators.required),
     address1: new FormControl('', Validators.required),
     address2: new FormControl(''),
     city: new FormControl('', Validators.required),
@@ -64,7 +65,7 @@ export class EventCreationComponent implements OnInit {
       Validators.required,
       Validators.min(1),
       Validators.max(20)]),
-    add_user: new FormControl(true)
+    add_user: new FormControl(false)
   });
 
   // sample event
@@ -74,6 +75,7 @@ export class EventCreationComponent implements OnInit {
     description: "Join us for a cozy knitting circle at the Bourgeois Pig Cafe! Whether you're a beginner or an experienced knitter, bring your yarn and needles and enjoy a relaxing afternoon of knitting, coffee, and conversation. All skill levels are welcome!",
     datetime: 'May 14, 2024 at 05:30 PM',
     duration_h: 2,
+    price: "$10.00",
     address1: '738 W Fullerton Ave',
     city: 'Chicago',
     state: 'Illinois',
@@ -169,9 +171,10 @@ export class EventCreationComponent implements OnInit {
     let max_attendees = this.eventForm.get('max_attendees')?.value;
     let add_user = this.eventForm.get('add_user')?.value;
     let zipcode = this.eventForm.get('zipcode')?.value;
+    let price = this.eventForm.get('price')?.value;
 
     // check if all required fields are filled out
-    if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type && zipcode) {
+    if (title && datetime && duration_h && address1 && max_attendees && city && state && event_type && zipcode && price) {
       datetime = new Date(datetime).toISOString();
       let newEvent: Event = {
         title: title,
@@ -186,7 +189,8 @@ export class EventCreationComponent implements OnInit {
         state: state,
         zipcode: zipcode,
         max_attendees: parseInt(max_attendees),
-        add_user: add_user ? add_user : false
+        add_user: add_user ? add_user : false,
+        price: price ? price : 'Free'
       };
       this.event = newEvent;
     }

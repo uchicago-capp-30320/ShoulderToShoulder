@@ -119,9 +119,9 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
     def create(self, request, *args, **kwargs):
-        required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode']
+        required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode', 'price', 'description']
         if not all([field in request.data for field in required_fields]):
-            return Response({"error": f"Missing required fields: {required_fields}"}, status=400)
+            return Response({"error": f"Missing required fields: one of {", ".join(required_fields[:-1])}"}, status=400)
         
         # get the hobby type object
         hobby_type = HobbyType.objects.get(type=request.data['hobby_type'])
@@ -156,7 +156,8 @@ class EventViewSet(viewsets.ModelViewSet):
             'latitude': latitude,
             'longitude': longitude,
             'max_attendees': request.data['max_attendees'],
-            'zipcode': request.data['zipcode']
+            'zipcode': request.data['zipcode'],
+            'price': request.data['price']
         }
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
@@ -1664,6 +1665,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             event_suggestion['city'] = event.city
             event_suggestion['state'] = event.state
             event_suggestion['zipcode'] = event.zipcode
+            event_suggestion['price'] = event.price
 
         # check if the user has already RSVP'd to the event
         new_top_event_data = []
