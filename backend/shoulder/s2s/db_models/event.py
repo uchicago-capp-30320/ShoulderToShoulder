@@ -15,6 +15,7 @@ class Event(models.Model):
         event_type: ForeignKey to the EventType table
         datetime: datetime of event
         duration_h: duration of event in hours
+        price: estimated price and/or price range of event
         address: Character Field containing the event address
         latitude: latitude of event
         longitude: longitude of event
@@ -28,6 +29,7 @@ class Event(models.Model):
     duration_h = models.IntegerField(validators=[
             MaxValueValidator(8),
             MinValueValidator(1)])
+    price = models.CharField(max_length=100, null=True, blank=True)
     address1 = models.CharField(max_length=200)
     address2 = models.CharField(max_length=200, blank=True, null=True)
     city = models.CharField(max_length=100, default='Chicago')

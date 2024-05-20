@@ -14,16 +14,16 @@ import { Hobby, HobbyType } from '../_models/hobby';
 
 /**
  * Defines the preferences survey component.
- *
- * This component handles the survey for users to input their preferences for
- * hobbies, location, and other information. It allows users to select their
+ * 
+ * This component handles the survey for users to input their preferences for 
+ * hobbies, location, and other information. It allows users to select their 
  * most and least interested hobbies, as well as their location information.
- *
+ * 
  * @example
  * ```
  * <app-preferences-survey></app-preferences-survey>
  * ```
- *
+ * 
  * @see OnboardingService
  * @see HobbyService
  * @see ZipcodeService
@@ -47,8 +47,8 @@ export class PreferencesSurveyComponent implements OnInit {
   private subscription = new Subscription();
 
   constructor(
-    public onboardingService: OnboardingService,
-    private hobbyService: HobbyService,
+    public onboardingService: OnboardingService, 
+    private hobbyService: HobbyService, 
     private zipCodeService: ZipcodeService,
     private choicesService: ChoicesService,
   ) {}
@@ -100,9 +100,9 @@ export class PreferencesSurveyComponent implements OnInit {
   }
 
   /**
-   * Extracts the zip code data from the preferences form and sends a request to
+   * Extracts the zip code data from the preferences form and sends a request to 
    * the zipcode API endpoint to get the city and state data.
-   *
+   * 
    * @returns null if the zip code is null.
    */
   getZipCodeData() {

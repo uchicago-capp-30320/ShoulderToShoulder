@@ -11,8 +11,8 @@
 }
 
 #progressBar{
-    border-radius: 20px;
-    background-color: #001524;
+    border-radius: 20px; 
+    background-color: #001524; 
     text-align: center;
     color: #FFECD1;
 }

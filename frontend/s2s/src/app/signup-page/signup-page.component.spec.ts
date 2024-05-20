@@ -22,7 +22,7 @@ describe('SignupPageComponent', () => {
       ]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(SignupPageComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
@@ -271,7 +271,7 @@ describe('SignupPageComponent', () => {
 
   it('should navigate to /onboarding route on successful form submission', () => {
     const navigateSpy = spyOn(router, 'navigate');
-
+    
     // Set sample input values
     component.signupForm.setValue({
       firstName: 'John',

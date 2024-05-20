@@ -20,7 +20,7 @@
         <div class="light-text" >
             <p class="light-text" style="text-align: center; font-size: 18px; margin-bottom: 0;"><b>Weekends</b></p>
             <div style="margin-left: 0%" *ngFor="let controlLabel of weekendFormControlLabelMapList">
-                <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekendTimes()" [disabled]="getWeekendDisabledState(controlLabel.control)"></p-checkbox><br>
+                <p-checkbox [name]="controlLabel.label" [formControlName]="controlLabel.control" [binary]="true" [label]="controlLabel.label" (onChange)="updateWeekendTimes()" [disabled]="getWeekendDisabledState(controlLabel.control)"></p-checkbox><br>            
             </div>
         </div>
     </form>

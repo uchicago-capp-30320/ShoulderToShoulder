@@ -35,7 +35,7 @@ describe('PreferencesSurveyComponent', () => {
       ]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(PreferencesSurveyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

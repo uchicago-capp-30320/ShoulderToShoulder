@@ -85,7 +85,7 @@
     text-align: center;
     margin-top: 0;
     margin-bottom: 0;
-    color: rgb(233, 98, 98);
+    color: rgb(233, 98, 98);    
 }
 
 .row {
@@ -98,12 +98,37 @@
     width: 45%;
 }
 
-.adr1, .event-title {
+.adr1 {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
     width: 55%;
     text-align: left;
+}
+
+.event-title {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    text-align: left;
+}
+
+.price {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    text-align: left;
+}
+
+.event-category {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    text-align: left;
+
 }
 
 .city {
@@ -119,10 +144,10 @@
     display: flex;
     flex-direction: column;
     width: 15%;
-    text-align: left;
+    text-align: left; 
 }
 
-.adr2, .state, .event-category {
+.adr2, .state {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -196,7 +221,7 @@ h3 {
     align-items: center;
     z-index: 1000; /* High z-index to cover the whole application */
   }
-
+  
 .loading-overlay-content {
     background-color: #FFECD1;
     height: 11rem;

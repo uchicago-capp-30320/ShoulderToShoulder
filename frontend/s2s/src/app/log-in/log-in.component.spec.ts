@@ -11,7 +11,7 @@ describe('LogInComponent', () => {
       declarations: [LogInComponent]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(LogInComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

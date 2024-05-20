@@ -13,24 +13,24 @@ import { Hobby } from '../_models/hobby';
 
 /**
  * Component to display user profile information.
- *
- * This component displays the user's profile information, including their name,
+ * 
+ * This component displays the user's profile information, including their name, 
  * email, and profile picture.
- *
+ * 
  * @example
  * ```
  * <app-profile></app-profile>
  * ```
- *
+ * 
  * @remarks
- * This component relies on the AuthService, OnboardingService, EventService, and
+ * This component relies on the AuthService, OnboardingService, EventService, and 
  * HobbyService to manage user profile data.
- *
+ * 
  * @see AuthService
  * @see OnboardingService
  * @see EventService
  * @see HobbyService
- *
+ * 
  * @export
  * @class ProfileOverviewComponent
  */
@@ -75,7 +75,7 @@ export class ProfileOverviewComponent implements OnInit {
         let hobby = hobbies.find(hobby => hobby.id == id);
         if (hobby) {
           mostInterestedHobbies.push(hobby);
-
+        
         }
       }));
 

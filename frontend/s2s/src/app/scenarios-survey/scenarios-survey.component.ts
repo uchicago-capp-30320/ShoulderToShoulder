@@ -15,17 +15,17 @@ import { maxScenarios } from '../_models/scenarios';
 
 /**
  * ScenariosSurveyComponent
- *
- * This component handles the survey for users to compare different scenarios
- * and make choices. It presents users with multiple scenarios comparing two
- * types of events, each with various attributes. Users are asked which event
+ * 
+ * This component handles the survey for users to compare different scenarios 
+ * and make choices. It presents users with multiple scenarios comparing two 
+ * types of events, each with various attributes. Users are asked which event 
  * they would rather attend based on the provided information.
- *
+ * 
  * @example
  * ```
  * <app-scenarios-survey></app-scenarios-survey>
  * ```
- *
+ * 
  * @see OnboardingService
  * @see HobbyService
  */
@@ -89,7 +89,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
   /**
    * Updates the scenario the page is displaying.
-   *
+   * 
    * @param event The keyboard event to draw scenario information from.
    */
   updatePageNumber(event: any) {
@@ -98,9 +98,9 @@ export class ScenariosSurveyComponent implements OnInit{
 
   /**
    * Gets maxScenarios scenarios for the form.
-   *
-   * In the scenarios form, the user is presented with maxScenarios scenarios comparing
-   * two types of events. Each scenario includes a hobby, a time, a day, the
+   * 
+   * In the scenarios form, the user is presented with maxScenarios scenarios comparing 
+   * two types of events. Each scenario includes a hobby, a time, a day, the 
    * maximum number of people, and a mileage. In each scenario, one of the
    * variables is altered to create a comparison between the two events.
    * The user is then asked which event they would rather attend.
@@ -111,7 +111,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
     // Generate scenarios using the remaining items
     for (let i = 0; i < maxScenarios; i++) {
-
+      
       // get the variable to alter
       const typeIndex = i % numVariables;
       let alteredVariable = alteredVariables[typeIndex];
@@ -136,14 +136,14 @@ export class ScenariosSurveyComponent implements OnInit{
       };
 
       // create the scenario
-      const scenario =
+      const scenario = 
         new Scenario(
-          hobby1,
-          hobby2,
-          time,
-          day,
-          numPeople,
-          mileage,
+          hobby1, 
+          hobby2, 
+          time, 
+          day, 
+          numPeople, 
+          mileage, 
           duration as unknown as number,
           alteredVariable
         );
@@ -151,7 +151,7 @@ export class ScenariosSurveyComponent implements OnInit{
       // Use the reserved alternative for the current type
       let alteredIndex = getRandomInt(0, this.alteredVariableMap[alteredVariable].length - 1);
       let alternative = this.alteredVariableMap[alteredVariable][alteredIndex];
-
+      
       // make sure to get a different altered variable
       alternative = this.getAlternative(alteredVariable, alternative, altVariableMap[alteredVariable]);
 
@@ -160,7 +160,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
       // add the scenario to the list
       this.scenarios.push(
-        {id: i + 1,
+        {id: i + 1, 
           description: this.sanitizer.bypassSecurityTrustHtml(scenario.getScenarioTemplate(alternative))
         }
       );
@@ -173,7 +173,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
   /**
    * Gets a random, available hobby.
-   *
+   * 
    * @returns A random hobby from the available hobbies.
    */
   getHobby(): Hobby {
@@ -194,7 +194,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
   /**
    * Gets an alternative for the altered variable.
-   *
+   * 
    * @param alteredVariable The altered variable.
    * @param alternative The current alternative.
    * @param variableValue The current variable value.
@@ -231,7 +231,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
   /**
    * Selects an event for the scenario.
-   *
+   * 
    * @param value The value of the event.
    * @param scenario The scenario to select the event for.
    */
@@ -240,7 +240,7 @@ export class ScenariosSurveyComponent implements OnInit{
     const unselected = value == 1? 2 : 1;
     const button = document.getElementById(`event${value}`);
     const unselectedButton = document.getElementById(`event${unselected}`);
-
+    
     if (unselectedButton) {
       unselectedButton.classList.remove('selected-button');
       unselectedButton.classList.add('event-button');
@@ -260,7 +260,7 @@ export class ScenariosSurveyComponent implements OnInit{
 
   /**
    * Gets the class for the scenario button.
-   *
+   * 
    * @param scenario The scenario to get the class for.
    * @returns The class for the scenario button.
    */

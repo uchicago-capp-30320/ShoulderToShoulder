@@ -88,7 +88,7 @@ a {
 .p-tooltip-text {
     font: 12px;
   }
-
+  
 .p-tooltip .p-tooltip-text {
 color: green ;
 }
@@ -134,4 +134,12 @@ color: #FFECD1;
 
 .p-rating .p-rating-item .p-rating-icon:hover {
     color: #F06E28;
+}
+
+::placeholder {
+    color: #15616d55;
+}
+
+.p-placeholder {
+    color: #15616d55;
 }

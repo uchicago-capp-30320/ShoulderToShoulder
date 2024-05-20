@@ -20,7 +20,7 @@ class Availability(models.Model):
         ('Friday', 'Friday'),
         ('Saturday', 'Saturday'),
         ('Sunday', 'Sunday'),
-    )
+    )    
 
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     available = models.BooleanField(default = False)
@@ -34,3 +34,4 @@ class Availability(models.Model):
 
     def __str__(self) -> str:
         return 'User {}, Day {}, Hour {} Available {}'.format(self.user_id, self.day_of_week, self.hour, self.available)
+ 

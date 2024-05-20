@@ -104,6 +104,7 @@
         <h3>{{ currentEvent?.title }}</h3>
         <p>{{ currentEvent?.description }}</p>
         <p><b>Location</b>: {{ currentEvent?.address1 }}{{ currentEvent?.address2 ? " " + currentEvent?.address2 : "" }}, {{ currentEvent?.city }}, {{ currentEvent?.state }} {{ currentEvent?.zipcode }}</p>
+        <p><b>Price</b>: {{ currentEvent?.price ? currentEvent?.price : "Unavailable" }}</p>
         <p><b>Date and Time</b>: {{ currentEvent?.datetime | date:"EE MMM d, y 'at' h:mm a" }}</p>
         <p><b>Duration</b>: {{ currentEvent?.duration_h }} hours</p>
         <p><b>Maximum number of attendees</b>: {{ currentEvent?.max_attendees }}</p>
