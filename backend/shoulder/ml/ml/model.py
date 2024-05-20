@@ -72,7 +72,7 @@ def foward_embedding(params: list[dict], X: jax.Array) -> jaxlib.xla_extension.A
 
 def init_fm(seed: int, num_features: int, num_factors: int) -> list:
     """
-    Initilaize weights to a factorization machine
+    Initialize weights to a factorization machine
 
     Parameters:
     -----------

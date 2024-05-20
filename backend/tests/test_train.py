@@ -14,8 +14,8 @@ def test_step():
     y_train = random.bernoulli(random.PRNGKey(997), 0.35, shape=(1000,)).astype(float)
     train_params = init_deep_fm(51, 5, 5)
     step1 = step(train_params, x_train, y_train)
-    assert type(step1) == tuple
-    assert len(step1) == 4
+    assert type(step1) == tuple, "Ensure output is a tuple"
+    assert len(step1) == 4, "Ensure correct number of outputs"
 
 
 def test_save_outputs():
@@ -25,8 +25,8 @@ def test_save_outputs():
     train_params = init_deep_fm(51, 5, 5)
     path = 'tests/test_params.pkl'
     save_outputs(epochs, loss, accuracy, train_params, path)
-    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file()
-    assert Path(path).is_file()
+    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file(), "Ensure training curve is saved"
+    assert Path(path).is_file(), "Ensure model is saved"
 
 
 def test_train():
@@ -40,24 +40,24 @@ def test_train():
     train_params = init_deep_fm(51, 5, 5)
     out = train(train_params, train_data, 10, path)
     epochs, loss, accuracy, train_params = out
-    assert len(out) == 4
-    assert len(epochs) == 10
-    assert loss[0] > loss[9]
-    assert accuracy[9] > accuracy[0]
-    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file()
-    assert Path(path).is_file()
+    assert len(out) == 4, "Ensure output is a tuple"
+    assert len(epochs) == 10, "Ensure correct number of epochs"
+    assert loss[0] > loss[9], "Ensure loss is decreasing"
+    assert accuracy[9] > accuracy[0], "Ensure accuracy is increasing"
+    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file(), "Ensure training curve is saved"
+    assert Path(path).is_file(), "Ensure model is saved"
 
 
 def test_predict():
-    x = random.randint(random.PRNGKey(59), shape=(5, 149), minval=0, maxval=50).astype(float)
+    x = random.randint(random.PRNGKey(59), shape=(5, 150), minval=0, maxval=50).astype(float)
     predictions = predict(x)
-    assert type(predictions) == jaxlib.xla_extension.ArrayImpl
-    assert predictions.shape == (5, 1)
+    assert type(predictions) == jaxlib.xla_extension.ArrayImpl, "Ensure output is a jax array"
+    assert predictions.shape == (5, 1), "Ensure output shape is correct"
 
 
 def test_predict_new_user():
     # Testing embedding unseen users
-    X = jnp.concat([random.randint(random.key(99), (1, 148), minval=0, maxval=50), 
+    X = jnp.concat([random.randint(random.key(99), (1, 149), minval=0, maxval=50), 
                     jnp.array([[1000000]])], axis=1)
-    assert not jnp.isnan(predict(X)).any()
+    assert not jnp.isnan(predict(X)).any(), "Ensure output is not nan"
 
