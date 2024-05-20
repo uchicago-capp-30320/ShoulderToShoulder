@@ -1,7 +1,7 @@
 // Purpose: This file contains interfaces for the User object.
 export interface UserLocation {
     city: string,
-    state: string,
+    state: string, 
     zipCode: string,
     address1: string
 }

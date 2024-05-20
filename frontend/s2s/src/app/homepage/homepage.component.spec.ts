@@ -18,7 +18,7 @@ describe('HomepageComponent', () => {
         { provide: ActivatedRoute, useValue: {} } // Mock ActivatedRoute without any specific data
       ]
     }).compileComponents();
-
+    
     fixture = TestBed.createComponent(HomepageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

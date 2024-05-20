@@ -11,16 +11,16 @@ import { daysOfTheWeek } from '../_models/availability';
 
 /**
  * EventAvailabilitySurveyComponent
- *
- * This component handles the survey for users to input their availability for
- * events. It allows users to select their availability for different time
+ * 
+ * This component handles the survey for users to input their availability for 
+ * events. It allows users to select their availability for different time 
  * categories on weekdays and weekends.
- *
+ * 
  * @example
  * ```
  * <app-event-availability-survey></app-event-availability-survey>
  * ```
- *
+ * 
  * @see OnboardingService
  * @see AvailabilityService
  */
@@ -103,7 +103,7 @@ export class EventAvailabilitySurveyComponent {
 
   /**
    * Get the disabled state for the weekday controls.
-   *
+   * 
    * @param control The control to get the disabled state of.
    * @returns If the control should be disabled.
    */
@@ -115,8 +115,8 @@ export class EventAvailabilitySurveyComponent {
           return true;
         }
       }
-    }
-
+    } 
+    
     // determine the state of all other controls
     else {
       return this.generalAvailabilityForm.get('weekdayUnavailable')?.value
@@ -125,7 +125,7 @@ export class EventAvailabilitySurveyComponent {
 
   /**
    * Get the disabled state for the weekend controls.
-   *
+   * 
    * @param control The control to get the disabled state of.
    * @returns If the control should be disabled.
    */
@@ -137,8 +137,8 @@ export class EventAvailabilitySurveyComponent {
           return true;
         }
       }
-    }
-
+    } 
+    
     // determine the state of all other controls
     else {
       return this.generalAvailabilityForm.get('weekendUnavailable')?.value
@@ -147,7 +147,7 @@ export class EventAvailabilitySurveyComponent {
 
   /**
    * Adds the time range to the availability.
-   *
+   * 
    * @param timeRange the time range to add
    * @param days the days to add the time range to
    */
@@ -170,7 +170,7 @@ export class EventAvailabilitySurveyComponent {
 
   /**
    * Removes the time range from the availability.
-   *
+   * 
    * @param timeRange the time range to remove
    * @param days the days to remove the time range from
    * @returns the updated availability
@@ -210,7 +210,7 @@ export class EventAvailabilitySurveyComponent {
 
   /**
    * Updates times.
-   *
+   * 
    * @param days the days to update the times for
    * @param formControlMapList the form control map list for the given days
    */
@@ -219,8 +219,8 @@ export class EventAvailabilitySurveyComponent {
       // available
       if (this.generalAvailabilityForm.value[controlLabel.control]) {
         this.addTimeRange(controlLabel.label, days);
-      }
-
+      } 
+      
       // unavailable
       else {
         this.removeTimeRange(controlLabel.label, days);

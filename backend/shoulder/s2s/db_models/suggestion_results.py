@@ -11,7 +11,7 @@ class SuggestionResults(models.Model):
         user_id: fk to user table
         event_id: fk to event table
         event_date: datetime of event from Event model
-        probability_of_attendance: (0-1) ML predicted likelihood user will
+        probability_of_attendance: (0-1) ML predicted likelihood user will 
             attend given event
     '''
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

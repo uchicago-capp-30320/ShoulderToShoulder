@@ -11,7 +11,7 @@ describe('ProgressIndicatorComponent', () => {
       declarations: [ProgressIndicatorComponent]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(ProgressIndicatorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

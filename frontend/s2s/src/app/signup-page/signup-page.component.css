@@ -65,7 +65,7 @@
     align-items: center;
     z-index: 1000; /* High z-index to cover the whole application */
   }
-
+  
 .loading-overlay-content {
     background-color: #FFECD1;
     height: 11rem;
@@ -86,5 +86,5 @@
     text-align: center;
     margin-top: 0;
     margin-bottom: 0;
-    color: rgb(233, 98, 98);
+    color: rgb(233, 98, 98);    
 }

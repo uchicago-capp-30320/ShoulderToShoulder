@@ -7,7 +7,7 @@ This document provides details about the Django Endpoints available in Shoulder 
 #### Description
 Retrieves a list of hobbies, this model allows GET requests. Returns 10 results per page on default.
 
-#### Response Content
+#### Response Content 
 Response Object is JSON with the following information:
 
 - count: Total count of hobbies available.
@@ -26,7 +26,7 @@ Response Object is JSON with the following information:
 #### Description
 Retrieves the list of groups, this model allows GET and POST requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 - count: Total count of groups.
 - next: URL to the next page of hobbies (null if no next page).
 - previous: URL to the previous page of hobbies (null if no previous page).
@@ -42,7 +42,7 @@ Retrieves the list of groups, this model allows GET and POST requests. Returns 1
 #### Description
 Retrieves the list of events, this model allows GET and POST requests. Returns 10 results per page on default.
 
-#### Response Content
+#### Response Content 
 - count: Total count of events.
 - next: URL to the next page of hobbies (null if no next page).
 - previous: URL to the previous page of hobbies (null if no previous page).
@@ -63,7 +63,7 @@ Retrieves the list of events, this model allows GET and POST requests. Returns 1
 #### Description
 Retrieves the list of calendar dates, this model allows GET and POST requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 - count: Total count of dates available.
 - next: URL to the next page of hobbies (null if no next page).
 - previous: URL to the previous page of hobbies (null if no previous page).
@@ -78,7 +78,7 @@ Retrieves the list of calendar dates, this model allows GET and POST requests. R
 #### Description
 Retrieves the list of onboarding information, this model allows GET requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 - count: Total count of available categories.
 - next: URL to the next page of onboarding information (null if no next page).
 - previous: URL to the previous page of onboarding information (null if no previous page).
@@ -87,7 +87,7 @@ Retrieves the list of onboarding information, this model allows GET requests. Re
         num_participants: preferred number of participants
         distance : preferred maximum distance to travel for an event
         similarity_to_group (int): preferred level of similarity to group
-        similarity_metrics: string of list including characteristics user would like to be similar on
+        similarity_metrics: string of list including characteristics user would like to be similar on 
 
 
 ## Availability Endpoint
@@ -96,14 +96,14 @@ Retrieves the list of onboarding information, this model allows GET requests. Re
 #### Description
 Retrieves the list of availability information, this model allows GET and POST requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 
 - count: Total count of available categories.
 - next: URL to the next page of availability (null if no next page).
 - previous: URL to the previous page of availability (null if no previous page).
 - results: List of Availability elements, where each entry has the following attributes:
     - user_id: Link to the User's user id
-    - calendar_id: Links to the calendar table to represent a specific date and time
+    - calendar_id: Links to the calendar table to represent a specific date and time 
     - available: True or False flag representing if the user's is available at that time
 
 
@@ -112,7 +112,7 @@ Retrieves the list of availability information, this model allows GET and POST r
 #### Description
 Retrieves the list of choices available for preferences and demographics, this model allows GET and POST requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 - count: Total count of available categories.
 - next: URL to the next page of availability (null if no next page).
 - previous: URL to the previous page of availability (null if no previous page).
@@ -125,7 +125,7 @@ Retrieves the list of choices available for preferences and demographics, this m
 #### Description
 Retrieves the list of scenario information, this model allows GET requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 - count: Total count of available categories.
 - next: URL to the next page of scenarios (null if no next page).
 - previous: URL to the previous page of scenarios (null if no previous page).
@@ -150,7 +150,7 @@ Retrieves the list of scenario information, this model allows GET requests. Retu
 #### Description
 Retrieves zip code information to fill the onboarding survey.
 
-#### Response Attributes
+#### Response Attributes 
 - zipcode: The zipcode inputted
 - city: The city populated from the zipcode
 
@@ -160,5 +160,6 @@ Retrieves zip code information to fill the onboarding survey.
 #### Description
 Retrieves the list of machine learning suggestions information, this model allows GET and POST requests. Returns 10 results per page on default.
 
-#### Response Attributes
+#### Response Attributes 
 To be determined
+

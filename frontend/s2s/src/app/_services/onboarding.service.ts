@@ -22,9 +22,9 @@ import { Hobby } from '../_models/hobby';
 /**
  * Service responsible for managing the onboarding process for users, including handling onboarding data,
  * submitting forms, and fetching existing onboarding data.
- *
+ * 
  * This service interacts with other services and the API service to perform onboarding-related tasks.
- *
+ * 
  * @see ApiService
  * @see AvailabilityService
  * @see AuthService
@@ -110,7 +110,7 @@ export class OnboardingService {
     private apiService: ApiService,
     private hobbyService: HobbyService,
 
-  ) {
+  ) { 
     this.onboarding = this.getDefaultOnboarding();
     this.authService.user.subscribe(user => {
       if (user && user.id > -1) {
@@ -121,7 +121,7 @@ export class OnboardingService {
 
   /**
    * Retrieves the default onboarding data structure.
-   *
+   * 
    * @returns Default onboarding data structure.
    */
   getDefaultOnboarding(): Onboarding {
@@ -158,11 +158,11 @@ export class OnboardingService {
   }
 
   /**
-   * Fetches any existing onboarding data for the user.
-   *
-   * This function allows a user to start the onboarding process, exit it,
+   * Fetches any existing onboarding data for the user. 
+   * 
+   * This function allows a user to start the onboarding process, exit it, 
    * and return later without losing their progress.
-   *
+   * 
    */
   fetchOnboarding(): void {
     let user = this.authService.userValue;
@@ -188,8 +188,8 @@ export class OnboardingService {
 
   /**
    * Sets the demographics form with the user's existing onboarding data.
-   *
-   * @param onboarding
+   * 
+   * @param onboarding 
    */
   setDemographicsForm(onboarding: Onboarding): void {
     this.demographicsForm.setValue({
@@ -212,8 +212,8 @@ export class OnboardingService {
 
   /**
    * Sets the preferences form with the user's existing onboarding data.
-   *
-   * @param onboarding
+   * 
+   * @param onboarding 
    */
   setPreferencesForm(onboarding: Onboarding): void {
     this.preferencesForm.patchValue({
@@ -234,7 +234,7 @@ export class OnboardingService {
 
   /**
    * Retrieves the most interested hobbies from the current list of hobbies.
-   *
+   * 
    * @param ids - IDs of the most interested hobbies.
    */
   getMostInterestedHobbies(ids: number[]) {
@@ -247,7 +247,7 @@ export class OnboardingService {
 
   /**
    * Retrieves the least interested hobbies from the current list of hobbies.
-   *
+   * 
    * @param ids - IDs of the least interested hobbies.
    */
   getLeastInterestedHobbies(ids: number[]) {
@@ -260,7 +260,7 @@ export class OnboardingService {
 
  /**
    * Retrieves the most interested hobby types from the current list of hobby types.
-   *
+   * 
    * @param ids - IDs of the most interested hobby types.
    */
   getMostInterestedHobbyTypes(ids: number[]) {
@@ -269,22 +269,22 @@ export class OnboardingService {
       this.preferencesForm.patchValue({
         mostInterestedHobbyTypes: []
       });
-    }
-
+    } 
+    
     // fetch most interested hobby types
     else {
       this.hobbyService.getFilteredHobbyTypes(undefined, ids).subscribe(hobbyTypes => {
         this.preferencesForm.patchValue({
           mostInterestedHobbyTypes: hobbyTypes
         });
-      });
+      });      
     }
   }
 
   /**
-   * Exits the onboarding process by submitting current data to the backend and
+   * Exits the onboarding process by submitting current data to the backend and 
    * signing the user out.
-   *
+   * 
    * @param onboarded - Flag indicating if the user has completed onboarding.
    */
   exitOnboarding(onboarded: boolean = false): void {
@@ -299,9 +299,9 @@ export class OnboardingService {
   /**
    * Updates onboarding information for the preferences survey
    * and demographics survey.
-   *
-   * This function is primarily used to update onboarding information on the
-   * user profile settings page once the user has already completed the
+   * 
+   * This function is primarily used to update onboarding information on the 
+   * user profile settings page once the user has already completed the 
    * initial onboarding process.
    */
   updateOnboarding(): void {
@@ -319,7 +319,7 @@ export class OnboardingService {
   /**
    * Submits the onboarding forms to the backend. These are the forms a user
    * fills out during the initial onboarding process.
-   *
+   * 
    * @param onboarded - Flag indicating if the user has completed onboarding.
    */
   submitOnboardingForms(onboarded: boolean = false): Observable<any> {
@@ -358,7 +358,7 @@ export class OnboardingService {
       most_interested_hobby_types: this.getHobbyList("mostInterestedHobbyTypes", this.preferencesForm),
       most_interested_hobbies: this.getHobbyList("mostInterestedHobbies", this.preferencesForm),
       least_interested_hobbies: this.getHobbyList("leastInterestedHobbies", this.preferencesForm),
-      num_participants: this.getStringToListChar("groupSizes", this.preferencesForm),
+      num_participants: this.getStringToListChar("groupSizes", this.preferencesForm), 
       distance: this.preferencesForm.get('distances')?.value,
       zip_code: this.preferencesForm.get('zipCode')?.value,
       city: this.preferencesForm.get('city')?.value,
@@ -369,11 +369,11 @@ export class OnboardingService {
 
       // demographics form
       similarity_to_group: this.demographicsForm.get('groupSimilarity') ? this.demographicsForm.get('groupSimilarity')?.value : "",
-      similarity_metrics: this.getStringToListChar("groupSimilarityAttrs", this.demographicsForm),
+      similarity_metrics: this.getStringToListChar("groupSimilarityAttrs", this.demographicsForm), 
       pronouns: this.demographicsForm.get('pronouns') ? this.demographicsForm.get('pronouns')?.value : "",
-      gender: this.getStringToListChar("gender", this.demographicsForm),
+      gender: this.getStringToListChar("gender", this.demographicsForm), 
       gender_description: this.demographicsForm.get('genderDesc') ? this.demographicsForm.get('genderDesc')?.value : "",
-      race: this.getStringToListChar("race", this.demographicsForm),
+      race: this.getStringToListChar("race", this.demographicsForm), 
       race_description: this.demographicsForm.get('raceDesc') ? this.demographicsForm.get('raceDesc')?.value : "",
       age: this.demographicsForm.get('ageRange') ? this.demographicsForm.get('ageRange')?.value : "",
       sexual_orientation: this.demographicsForm.get('sexualOrientation') ? this.demographicsForm.get('sexualOrientation')?.value : "",
@@ -403,7 +403,7 @@ export class OnboardingService {
 
   /**
    * Submits the onboarding/preferences data to the backend.
-   *
+   * 
    * @param user - The user object.
    * @param onboarded - Flag indicating if the user has completed onboarding.
    */
@@ -425,7 +425,7 @@ export class OnboardingService {
 
   /**
    * Retrieves the list of hobbies from the form control.
-   *
+   * 
    * @param controlName - The name of the form control.
    * @param form - The form group.
    * @returns List of hobby IDs.
@@ -437,10 +437,10 @@ export class OnboardingService {
     }
     return hobbies.map((hobby: Hobby) => hobby.id);
   }
-
+  
   /**
    * Retrieves the string or string array from the form control.
-   *
+   * 
    * @param controlName - The name of the form control.
    * @param form - The form group.
    * @returns String or string array.
@@ -450,7 +450,7 @@ export class OnboardingService {
     if (!char || char.length == 0) {
       return "";
     }
-    return char;
+    return char; 
   }
 
   /**

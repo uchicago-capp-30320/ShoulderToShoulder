@@ -18,7 +18,7 @@ describe('AppHeaderComponent', () => {
       ]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(AppHeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

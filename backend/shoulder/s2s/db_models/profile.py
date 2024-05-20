@@ -14,7 +14,7 @@ class Profile(models.Model):
 
     user_id = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.URLField(
-        default=s2s_settings.DEFAULT_PROFILE_IMAGE_PATH)
+        default=s2s_settings.DEFAULT_PROFILE_IMAGE_PATH) 
 
 def __str__(self):
         return self.user.username
