@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 
 // guards
 import { canActivateProfile } from './_guards/auth.guard';
-// import { AdminGuard } from './guards/admin.guard';
 
 // Components
 import { HomepageComponent } from './homepage/homepage.component';
