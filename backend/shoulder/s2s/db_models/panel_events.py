@@ -44,6 +44,7 @@ class PanelEvent(models.Model):
     monday_evening = models.BooleanField(default=False)
     monday_night = models.BooleanField(default=False)
     monday_late_night = models.BooleanField(default=False)
+    monday_early_morning = models.BooleanField(default=False)
     tuesday_early_morning = models.BooleanField(default=False)
     tuesday_morning = models.BooleanField(default=False)
     tuesday_afternoon = models.BooleanField(default=False)
