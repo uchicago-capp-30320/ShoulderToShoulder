@@ -28,7 +28,7 @@ describe('DemographicsSurveyComponent', () => {
       ]
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(DemographicsSurveyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -18,16 +18,16 @@ class Dataset:
         self.X = X
         self.Y = Y
         self.batch_size = batch_size
+        self.batch_index = jnp.inf
         self.key = key(seed)
 
         self.num_samples = X.shape[0]
         self.num_batches = math.ceil(self.num_samples / batch_size)
-        self.reset()
+        self._shuffle()
 
-    def reset(self) -> None:
-        """Shuffle the data and split into minibatches"""
-        self.key, subkey = split(self.key)
-        perm = permutation(subkey, jnp.arange(self.num_samples))
+    def _shuffle(self):
+        """Reshuffle the dataset"""
+        perm = permutation(self.key, jnp.arange(self.num_samples))
         self.shuffled_X = self.X[perm]
         self.shuffled_Y = self.Y[perm]
 
@@ -36,13 +36,17 @@ class Dataset:
 
         self.batch_index = 0
 
+        self.key, subkey = split(self.key)
+
     def __iter__(self):
         return self
 
     def __next__(self) -> tuple:
         """Generate next minibatch"""
+
+        # Reshuffles the dataset once the end has been reached
         if self.batch_index >= self.num_batches:
-            self.reset()
+            self._shuffle()
             raise StopIteration
 
         x_batch = self.x_batches[self.batch_index]

@@ -3,9 +3,9 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
  * Custom validator to check if two controls have the same value.
- *
+ * 
  * @param control Control to validate
- * @returns If the control is valid, returns null. If the control is invalid,
+ * @returns If the control is valid, returns null. If the control is invalid, 
  *          returns an error object.
  */
 export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -22,9 +22,9 @@ export const confirmPasswordValidator: ValidatorFn = (control: AbstractControl):
 
 /**
  * Custom validator to ensure that two controls have different values.
- * The primary use case is to ensure that the new password is different from the
+ * The primary use case is to ensure that the new password is different from the 
  * current password.
- *
+ * 
  * @param control Control to validate
  * @returns If the control is valid, returns null. If the control is invalid,
  *         returns an error object.

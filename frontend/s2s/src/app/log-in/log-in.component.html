@@ -22,15 +22,15 @@
                 <label for="password" class="label">Password<span class="required">*</span></label>
                 <small class="p-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">Password is required</small>
                 <input #passwordInput
-                    type="password"
-                    pInputText
-                    placeholder="••••••••••"
-                    formControlName="password"
-                    autocomplete="current-password"
-                    (focus)="togglePasswordField(passwordInput)"
+                    type="password" 
+                    pInputText 
+                    placeholder="••••••••••" 
+                    formControlName="password" 
+                    autocomplete="current-password" 
+                    (focus)="togglePasswordField(passwordInput)" 
                     (blur)="togglePasswordField(passwordInput)"
-                    tooltipStyleClass="customtooltip"
-                    tooltipEvent="focus"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="focus" 
                     pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." />
             </div>
 
@@ -38,7 +38,7 @@
             <div>
                 <p class="light-text">Don't have an account? <a routerLink="/sign-up" class="link">Sign up for one here.</a></p>
             </div>
-
+            
             <!-- submit buttom -->
             <div>
                 <!-- eslint-disable @angular-eslint/template/elements-content-->

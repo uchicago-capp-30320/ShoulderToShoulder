@@ -18,6 +18,7 @@ export interface Event {
     add_user?: boolean;
     rating?: string;
     attended?: boolean;
+    price: string;
 }
 
 export interface UserEvent {
@@ -39,4 +40,11 @@ export interface EventResponse {
     next: string;
     previous: string;
     results: Event[];
+}
+
+export interface UserEventResponse {
+    count: number;
+    next: string;
+    previous: string;
+    results: UserEvent[];
 }

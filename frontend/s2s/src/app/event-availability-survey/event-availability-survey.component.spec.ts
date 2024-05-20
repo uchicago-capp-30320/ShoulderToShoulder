@@ -28,7 +28,7 @@ describe('EventAvailabilitySurveyComponent', () => {
       ],
     })
     .compileComponents();
-
+    
     fixture = TestBed.createComponent(EventAvailabilitySurveyComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -67,7 +67,7 @@ describe('EventAvailabilitySurveyComponent', () => {
         expect(component.getWeekdayDisabledState(control)).toBeTrue();
       }
     });
-
+      
   });
 
   it('should correctly disable unavailable control for weekdays when any other control is chosen', () => {

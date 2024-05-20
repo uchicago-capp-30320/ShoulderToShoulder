@@ -1,6 +1,6 @@
 .buttonsDiv {
     position: relative;
-    bottom: 0;
+    bottom: 0; 
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -80,8 +80,8 @@
 }
 
 #progressBar{
-    border-radius: 20px;
-    background-color: #001524;
+    border-radius: 20px; 
+    background-color: #001524; 
     text-align: center;
     color: #FFECD1;
 }

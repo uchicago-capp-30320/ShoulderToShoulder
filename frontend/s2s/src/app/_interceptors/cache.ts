@@ -5,9 +5,9 @@ import { withCache } from '@ngneat/cashew';
 
 /**
  * Interceptor for caching certain HTTP requests.
- *
+ * 
  * This interceptor caches HTTP requests that are marked with the `withCache` operator.
- *
+ * 
  * @see ApiService
  */
 @Injectable()
@@ -22,7 +22,7 @@ export class CacheInterceptor implements HttpInterceptor {
             const cacheReq = request.clone({
                 context: withCache({ ttl: cacheTime }) // Cache for 5 minutes,
             });
-
+            
             return next.handle(cacheReq);
         }
         return next.handle(request);

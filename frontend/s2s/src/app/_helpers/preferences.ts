@@ -77,7 +77,7 @@ export var formControlFieldMap: { [index: string]: string } = {
     'eventFrequency': 'Event Frequency',
     'eventNotifications': 'Event Notifications',
     'distances': 'Distances',
-
+    
     // event information
     'duration_h': 'Duration (hours)',
     'datetime': 'Date and Time',
@@ -86,6 +86,8 @@ export var formControlFieldMap: { [index: string]: string } = {
     'address1': 'Address Line 1',
     'address2': 'Address Line 2',
     'hobby_type': 'Event Category',
+    'description': 'Description',
+    'zipcode': 'Zip Code',
 
     // Demographics
     'groupSimilarity': 'Group Similarity',
