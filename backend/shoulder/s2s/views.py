@@ -563,11 +563,13 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        qs = self.queryset
+        queryset = self.queryset
         email = self.request.query_params.get('email')
+
         if email:
-            qs = qs.filter(email=email)
-        return qs
+            queryset = queryset.filter(email=email)
+
+        return queryset
 
     def update(self, request, *args, **kwargs):
         user = self.get_object()
