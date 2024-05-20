@@ -1811,10 +1811,10 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
         
         # to mimic a request object
         factory = RequestFactory()
-        mimic_request = factory.post('/fake-url/', {"scenarios": scenarios_data}, format='json')
+        mimic_request = factory.post('/fake-url/', {"scenarios": cleaned_scenario_data}, format='json')
 
         # create event suggestions
-        mimic_request.data = scenarios_data
+        mimic_request.data = cleaned_scenario_data
         scenario_view = ScenariosiewSet()
         response = scenario_view.bulk_create(mimic_request)
         return response
