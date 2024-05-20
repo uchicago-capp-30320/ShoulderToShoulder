@@ -29,21 +29,21 @@ import smtplib
 class Command(SendEmail):
     help = 'sends weekly email to check in on new events'
 
-    def _get_data(self, user=None):
+    def _get_data(self):
         # Potentially fetch 2 user event titles, but nothing for now
         return None
     
-    def _create_message_body(self, data):
-        s = "There are new curated events available for you on your Shoulder to Shoulder profile." + \
-            "Check them out and let us know if you'll be joining." + \
-            "We're excited to see you out and about with us."
+    def _create_message_body(self):
+        s = "There are new curated events available for you on your Shoulder \
+            to Shoulder profile. Check them out and let us know if you'll be \
+            joining. We're excited to see you out and about with us."
         return s
 
     def _get_subject(self):
-        s = "Your New S2S Events"
+        s = "New S2S Events for You"
         return s 
 
-    def _get_recipient_list(self, user=None):
+    def _get_recipient_list(self):
         '''
         Retrieves all user emails from the database
         '''
@@ -52,29 +52,3 @@ class Command(SendEmail):
         print(f"RECIPIENT LIST: {recipient_list}")
         return ['ehabich@uchicago.edu', 'kate.habich@gmail.com'] #TESTING
         # return recipient_list
-
-
-class SendEventEmail(SendEmail):
-    help = "sends email when user RSVPs yes to event and contains all \
-        event details"
-    
-    def _get_data(self, user=None):
-        # TODO: retrieve data on specific event that a user has accepted
-        return ["Event Detail 1", "Event Detail 2"]
-
-    def _create_message_body(self, data):
-        # Implement the message body creation for event email
-        return "This is the event email body."
-
-    def _get_subject(self):
-        return "Event RSVP Confirmation"
-
-    def _get_recipient_list(self, user=None):
-        # Example: Fetch recipients from your RSVP model
-        # return [rsvp.user.email for rsvp in RSVP.objects.filter(...)]
-        if user and user.email:
-            recipient = user.email
-            return ['ehabich@uchicago.edu'] # TESTING
-            return [recipient]
-        return []
-    

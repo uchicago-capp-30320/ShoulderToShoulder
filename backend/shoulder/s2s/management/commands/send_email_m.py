@@ -30,13 +30,13 @@ class SendEmail(BaseCommand):
         print("potential NotImplementedError('Subclasses must implement _get_data() method')")
         return []
 
-    def _create_message_body(self, data):
+    def _create_message_body(self, data=None):
         '''
         Creates the message body with necessary information from database.
         '''
         raise NotImplementedError("Subclasses must implement _create_message_body()")
     
-    def _get_subject(self):
+    def _get_subject(self, data=None):
         raise NotImplementedError("Subclasses must implement _get_subject() method")
     
     def _get_recipient_list(self, user=None):
@@ -46,18 +46,6 @@ class SendEmail(BaseCommand):
         '''
         Sends specified email to recipient list.
         '''
-        # try:
-        #     send_mail(
-        #         subject = subject,
-        #         message = message,
-        #         from_email = settings.S2S_FROM_EMAIL,
-        #         recipient_list = recipient_list
-        #     )
-        #     print("Email(s) successfully sent.")
-        # except ClientError as e:
-        #     print(f"SES error occurred: {e}")
-        # except Exception as e:
-        #     print(f"An unidentified error occured sending mail: {e}")
 
         try:
             response = ses_client.send_email(
