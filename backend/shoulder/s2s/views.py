@@ -1601,9 +1601,10 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             for event, distance_panel in zip(event_panel_dict_lst, distance_panel_list)
         ]
 
+        print(model_list[0]['user_id'])
+
         # Get recommendations
-        prediction_probs = recommend(model_list, inference = True)
-        prediction_probs = recommend(model_list)
+        prediction_probs = recommend(model_list, inference=True)
         event_ids = [event['event_id'] for event in event_panel_dict_lst]
 
         results = []
@@ -1633,11 +1634,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
         
-        # Get the user's event suggestions from the database.
-        update_response = SuggestionResults.objects.get(user_id=user_id)
-
-        if update_response.status_code != 200:
-            return update_response
         
         # Implementing several filters here: event timing, whether the event is 
         # already full, whether the user is already RSVPed for the event,
@@ -1672,7 +1668,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             .values('event_id', 'probability_of_attendance', 'user_id')[:2]
         
         top_events = [event['event_id'] for event in top_events
-                      if self.distance_calc(user_id, event)[1] <= 50 #remove events more than 50 miles away
+                      if self.distance_calc(event['event_id'], user_id)[1] <= 50 #remove events more than 50 miles away
                       ]
 
         top_event_data = [
@@ -1719,7 +1715,9 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             event_suggestion['state'] = event.state
             event_suggestion['zipcode'] = event.zipcode
 
-            distance_from_user = next(key for key, value in self.distance_calc(event_id, user_id).items() if value) 
+            distance_result, _ = self.distance_calc(event_id, user_id)
+            distance_from_user = next((key for key, value in distance_result.items() if value))
+            
             distance_from_user = "within " + distance_from_user.split("_")[-1].split("mi")[0] + " miles"
             event_suggestion['distance_from_user'] = distance_from_user
         
@@ -1736,6 +1734,8 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         '''
         Calculates and returns a dictionary with distance binaries for
         use in the machine learning setup.
+
+        Returns that dictionary and the raw distance value in a tuple.
         '''
         event = Event.objects.get(id=event_id)
         onboarding = Onboarding.objects.get(user_id=user_id)
@@ -1759,9 +1759,9 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             for v in [1,5,10,15,20,30,40,50]:
                 if distance[0] < v:
                     distance_dict[f'dist_within_{v}mi'] = True
-                    return distance_dict
+                    return (distance_dict, distance[0])
         else:
-            return (distance_dict, distance)
+            return (distance_dict, None)
     
 class SubmitOnboardingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
@@ -1830,7 +1830,7 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
         if len(request.data.get('availability')) > 0 \
         and len(request.data.get('scenarios')) > 0 \
         and len(request.data.get('onboarding')) > 0:
-            inference_response = self.trigger_first_inference(request, user_id)
+            inference_response = self.trigger_first_inference(user_id)
             if inference_response.status_code not in [200, 201, 202]:
                 return inference_response
             

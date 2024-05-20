@@ -58,7 +58,7 @@ def preprocess(raw_data: list,
 
     x = jnp.array(feature_list, dtype=float)
 
-    if not predict:
+    if not inference:
         y = jnp.array(target_list, dtype=float)
         return x, y
     else:
@@ -134,5 +134,5 @@ def recommend(raw_data: requests.models.Response,
         --------
             A jax NumPy array of predicted probabilities of attending events
      """
-     full_x, _ = preprocess(raw_data, inference=inference)
+     full_x = preprocess(raw_data, inference=inference)
      return predict(full_x)
