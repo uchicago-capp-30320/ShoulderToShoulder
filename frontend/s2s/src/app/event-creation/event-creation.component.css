@@ -6,24 +6,16 @@
 }
 
 .event-form-header {
-    background-color: #78290F;
-    width: 60%;
-    height: auto;
-    padding: 2rem;
-    border-radius: 20px 20px 0px 0px;
-    text-align: center;
-    margin-top: 2rem;
-    margin-left: auto;
-    margin-right: auto;
+    padding-bottom: 1rem;
 }
 
 .event-form {
-    background-color: #f7e0bf;
-    border: 2px solid #78290F;
+    background-color: #78290F;
+    /* border: 2px solid #78290F; */
     width: 60%;
     height: auto;
     padding: 2rem;
-    border-radius: 0px 0px 20px 20px;
+    border-radius: 20px;
     text-align: center;
     margin-bottom: 2rem;
     margin-left: auto;
@@ -106,12 +98,37 @@
     width: 45%;
 }
 
-.adr1, .event-title {
+.adr1 {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
     width: 55%;
     text-align: left;
+}
+
+.event-title {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    text-align: left;
+}
+
+.price {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    text-align: left;
+}
+
+.event-category {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    text-align: left;
+
 }
 
 .city {
@@ -130,7 +147,7 @@
     text-align: left; 
 }
 
-.adr2, .state, .event-category {
+.adr2, .state {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;

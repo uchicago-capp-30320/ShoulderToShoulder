@@ -1,0 +1,52 @@
+<app-header title="Contact Us"></app-header>
+<main>
+    <div class="main-content">
+        <div class="contact-form drop-shadow">
+            <!-- Contact Form -->
+            <p class="subtitle light-text">All fields are required</p>
+            <form [formGroup]="contactForm" (ngSubmit)="submitForm()" class="form-container">
+                <!-- Name -->
+                <div class="field">
+                    <label for="name" class="label">Name</label>
+                    <small class="p-error" *ngIf="contactForm.get('name')?.touched && contactForm.get('name')?.invalid">Name is required</small>
+                    <input type="text" pInputText placeholder="Shrek" formControlName="name" autocomplete="name"/>
+                </div>
+
+                <!-- Phone number -->
+                <div class="field">
+                    <label for="phone" class="label">Phone Number</label>
+                    <small class="p-error" *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid">Valid phone number is required</small>
+                    <input type="text" pInputText placeholder="(123) 456-7890" formControlName="phoneNumber" autocomplete="phone" mask="(000) 000-0000"/>
+                </div>
+
+                <!-- Email -->
+                <div class="field">
+                    <label for="email" class="label">Email</label>
+                    <small class="p-error" *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid">Valid email is required</small>
+                    <input type="text" pInputText placeholder="shrek@swamp.net" formControlName="email" autocomplete="email"/>
+                </div>
+
+                <!-- Subject -->
+                <div class="field">
+                    <label for="subject" class="label">Subject</label>
+                    <small class="p-error" *ngIf="contactForm.get('subject')?.touched && contactForm.get('subject')?.invalid">Subject is required</small>
+                    <input type="text" pInputText placeholder="I'm curious about donkeys" formControlName="subject" autocomplete="subject"/>
+                </div>
+
+                <!-- Message -->
+                <div class="field">
+                    <label for="message" class="label">Message</label>
+                    <small class="p-error" *ngIf="contactForm.get('message')?.touched && contactForm.get('message')?.invalid">Message is required</small>
+                    <textarea pInputTextarea placeholder="I want to know more about donkeys." formControlName="message" autocomplete="message" rows="8"></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="buttons">
+                    <button pButton type="submit" [disabled]="!contactForm.valid" class="submit-button">Send Email</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<app-footer></app-footer>

@@ -1,12 +1,17 @@
 <app-header></app-header>
 <div class="main-content">
 
-    <div class="event-form-header">
+    <!-- <div class="event-form-header">
         <h2 class="light-text">Event Creation Form</h2>
         <p class="subtitle light-text">Please fill out the form below to create an event.</p>
-    </div>
+    </div> -->
 
-    <div class="event-form drop-shadow">
+    <div class="event-form drop-shadow light-text">
+        <div class="event-form-header">
+            <h2 class="light-text">Event Creation Form</h2>
+            <p class="subtitle light-text">Please fill out the form below to create an event.</p>
+        </div>
+
         <!-- Message Service -->
         <p-messages></p-messages>
 
@@ -34,14 +39,21 @@
                         [options]="hobbyTypes" 
                         optionLabel="type"
                         formControlName="hobby_type" 
-                        placeholder="CRAFTING"></p-dropdown>
+                        placeholder="Select a type"></p-dropdown>
                 </div>
+
+                <!-- price -->
+                <div class="price">
+                    <label for="price" class="label">Price Range<span class="required">*</span></label>
+                    <small class="p-error light-error" *ngIf="eventForm.get('price')?.invalid && eventForm.get('price')?.dirty">Price is required</small>
+                    <input type="text" pInputText placeholder="{{ sampleEvent.price }}" formControlName="price" />
+                </div> 
             </div>
 
 
             <!-- description -->
             <div class="desc-field">
-                <label for="description" class="label">Description</label>
+                <label for="description" class="label">Description<span class="required">*</span></label>
                 <textarea 
                     pInputTextarea 
                     rows="3"
@@ -110,10 +122,10 @@
                     <p-dropdown 
                         [virtualScroll]="true" 
                         [virtualScrollItemSize]="48"
-                        [style]="{'width':'100%', 'text-align':'left'}"
+                        [style]="{'width':'100%', 'text-align':'left', 'color': '#00000'}"
                         [options]="states" 
                         formControlName="state" 
-                        placeholder="{{ sampleEvent.state }}"></p-dropdown>
+                        placeholder="Select a state"></p-dropdown>
                 </div>
                 
                 <!-- zipcode -->
@@ -148,7 +160,7 @@
     <h3>{{ errorHeader }}</h3>
     <p class="m-0">{{ invalidDialogMessage }}</p>
     <div class="p-d-flex p-jc-end">
-        <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
+        <button pButton type="button" class="p-button-text" (click)="closeInvalidDialog()" class="confirmButton">OK</button>
     </div>
 </p-dialog>
 
@@ -157,15 +169,16 @@
     @if (event) {
         <p class="m-0"><b>Title:</b> {{ event.title }}</p>
         <p class="m-0"><b>Category:</b> {{ event.hobby_type }}</p>
+        <p class="m-0"><b>Price</b>: {{ event.price ? event.price : 'Not Provided' }}</p>
         <p class="m-0"><b>Description</b>: {{ event.description ? event.description : 'Not Provided' }}</p>
-        <p class="m-0"><b>Date:</b> {{ event.datetime | date:"MMM d, y 'at' h:mm a" }}</p>
+        <p class="m-0"><b>Date:</b> {{ event.datetime | date:"EE MMM d, y 'at' h:mm a" }}</p>
         <p class="m-0"><b>Duration:</b> {{ event.duration_h }} hours</p>
         <p class="m-0"><b>Max Attendees:</b> {{ event.max_attendees }} {{ event.max_attendees === 1 ? "person" : "people" }}</p>
         <p class="m-0"><b>Address:</b> {{ event.address1 + "," }} {{ event.address2 ? event.address2 + "," : "" }} {{ event.city + "," }} {{ event.state }}</p>
         <p class="m-0"><b>You {{ event.add_user ? "will" : "will NOT" }} be automatically added to this event</b></p>
 
         <div class="p-d-flex p-jc-end">
-            <button pButton type="button" class="p-button-text" (click)="showConfirmDialog = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="closeConfirmationDialog()" class="cancelButton">Cancel</button>
             <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
         </div>
     }

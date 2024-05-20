@@ -113,4 +113,4 @@ class PanelUserPreferences(models.Model):
     pref_hobby_category_gaming = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user_id} Preferences'
+        return f'User {self.user_id.id} ({self.user_id.email}) Preferences'
