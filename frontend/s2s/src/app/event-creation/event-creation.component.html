@@ -19,26 +19,26 @@
         <form [formGroup]="eventForm" (ngSubmit)="openConfirmationDialog()" class="form-container">
             <!-- Event Error -->
             <p class="error-message" *ngIf="showError">{{ errorMessage }}</p>
-
+            
             <div class="row">
                 <!-- title -->
                 <div class="event-title">
                     <label for="title" class="label">Event Title<span class="required">*</span></label>
                     <small class="p-error light-error" *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.dirty">Event title is required</small>
                     <input type="text" pInputText placeholder="{{ sampleEvent.title }}" formControlName="title" />
-                </div>
-
+                </div>   
+                
                 <!-- category -->
                 <div class="event-category">
                     <label for="hobby_type" class="label">Event Category<span class="required">*</span></label>
                     <small class="p-error light-error" *ngIf="eventForm.get('hobby_type')?.invalid && eventForm.get('hobby_type')?.dirty">Category is required</small>
-                    <p-dropdown
-                        [virtualScroll]="true"
+                    <p-dropdown 
+                        [virtualScroll]="true" 
                         [virtualScrollItemSize]="48"
                         [style]="{'width':'100%', 'text-align':'left'}"
-                        [options]="hobbyTypes"
+                        [options]="hobbyTypes" 
                         optionLabel="type"
-                        formControlName="hobby_type"
+                        formControlName="hobby_type" 
                         placeholder="CRAFTING"></p-dropdown>
                 </div>
             </div>
@@ -47,28 +47,28 @@
             <!-- description -->
             <div class="desc-field">
                 <label for="description" class="label">Description</label>
-                <textarea
-                    pInputTextarea
+                <textarea 
+                    pInputTextarea 
                     rows="3"
-                    placeholder="{{ sampleEvent.description }}"
+                    placeholder="{{ sampleEvent.description }}" 
                     formControlName="description"></textarea>
             </div>
-
+            
             <div class="row">
                 <!-- date -->
                 <div class="datetime">
                     <label for="title" class="label">Event Date<span class="required">*</span></label>
                     <small class="p-error light-error" *ngIf="eventForm.get('datetime')?.invalid && eventForm.get('datetime')?.dirty">Date is required</small>
-                    <p-calendar
+                    <p-calendar 
                         [style]="{'width':'100%', 'text-align':'left'}"
                         placeholder = "{{ sampleEvent.datetime }}"
-                        inputId="calendar-12h"
-                        formControlName="datetime"
-                        [showTime]="true"
+                        inputId="calendar-12h" 
+                        formControlName="datetime" 
+                        [showTime]="true" 
                         dateFormat="M d, yy at"
                         hourFormat="12" />
-                </div>
-
+                </div>   
+                
                 <!-- duration (hours) -->
                 <div class="duration">
                     <label for="duration_h" class="label">Duration (hours)<span class="required">*</span></label>
@@ -97,7 +97,7 @@
                     <label for="address2" class="label">Address Line 2</label>
                     <small class="p-error" style="color: #78290F" *ngIf="eventForm.get('address1')?.invalid && eventForm.get('address1')?.dirty">Address is required</small>
                     <input type="text" pInputText formControlName="address2" />
-                </div>
+                </div>    
             </div>
 
             <div class="row">
@@ -112,15 +112,15 @@
                 <div class="state">
                     <label for="state" class="label">State<span class="required">*</span></label>
                     <small class="p-error light-error" *ngIf="eventForm.get('state')?.invalid && eventForm.get('state')?.dirty">State is required</small>
-                    <p-dropdown
-                        [virtualScroll]="true"
+                    <p-dropdown 
+                        [virtualScroll]="true" 
                         [virtualScrollItemSize]="48"
                         [style]="{'width':'100%', 'text-align':'left'}"
-                        [options]="states"
-                        formControlName="state"
+                        [options]="states" 
+                        formControlName="state" 
                         placeholder="{{ sampleEvent.state }}"></p-dropdown>
                 </div>
-
+                
                 <!-- zipcode -->
                 <div class="zipcode">
                     <label for="zipcode" class="label">Zip Code<span class="required">*</span></label>
@@ -134,10 +134,10 @@
                 <p-checkbox formControlName="add_user" [binary]="true"></p-checkbox>
                 <label for="creator" class="label" style="margin: 1rem;">Add yourself to the event</label>
             </div>
-
+            
             <!-- submit buttom -->
-            <div
-                (click)="highlightInvalidFields($event)"
+            <div 
+                (click)="highlightInvalidFields($event)" 
                 (keypress)="highlightInvalidFields($event)"
                 [attr.aria-disabled]="true">
                 <!-- eslint-disable @angular-eslint/template/elements-content-->
@@ -153,7 +153,7 @@
     <h3>{{ errorHeader }}</h3>
     <p class="m-0">{{ invalidDialogMessage }}</p>
     <div class="p-d-flex p-jc-end">
-        <button pButton type="button" class="p-button-text" (click)="showInvalidDialog = false" class="confirmButton">OK</button>
+        <button pButton type="button" class="p-button-text" (click)="closeInvalidDialog()" class="confirmButton">OK</button>
     </div>
 </p-dialog>
 
@@ -170,7 +170,7 @@
         <p class="m-0"><b>You {{ event.add_user ? "will" : "will NOT" }} be automatically added to this event</b></p>
 
         <div class="p-d-flex p-jc-end">
-            <button pButton type="button" class="p-button-text" (click)="showConfirmDialog = false" class="cancelButton">Cancel</button>
+            <button pButton type="button" class="p-button-text" (click)="closeConfirmationDialog()" class="cancelButton">Cancel</button>
             <button pButton type="button" class="p-button-text" (click)="onSubmit()" class="confirmButton">Confirm</button>
         </div>
     }

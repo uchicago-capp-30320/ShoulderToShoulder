@@ -36,8 +36,8 @@ def preprocess_predict(json_results) -> jaxlib.xla_extension.ArrayImpl:
                 user_event_list.append(high)
             else:
                 user_event_list.append(low)
-
-            # Ensures unique integers for every response in very field, basically creating
+            
+            # Ensures unique integers for every response in very field, basically creating 
             # a vocabulary for the embedding layer
             low += 2
             high += 2
@@ -54,7 +54,7 @@ def preprocess_predict(json_results) -> jaxlib.xla_extension.ArrayImpl:
 
     return x, y, user_id_list, event_id_list
 
-def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=32,
+def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=32, 
              num_epochs: int=10, seed=1994, seeds=(8, 6, 7)) -> tuple[list]:
     """
     Pretrain a DeepFM
@@ -79,7 +79,7 @@ def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=
     return epochs, loss_list, acc_list
 
 
-def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=101,
+def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=101, 
              seed=1999) -> tuple[list]:
     """
     Finetune a DeepFM
@@ -112,7 +112,7 @@ def recommend(raw_data: requests.models.Response) -> jaxlib.xla_extension.ArrayI
 
      Parameters:
      -----------
-        raw_data (requests.models.Response): user and event data from the event suggestions
+        raw_data (requests.models.Response): user and event data from the event suggestions 
             table.
 
         Returns:

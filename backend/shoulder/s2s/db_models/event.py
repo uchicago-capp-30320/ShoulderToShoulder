@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class Event(models.Model):
     """
     Creates a Django Model representing the Events table in the Shoulder to Shoulder Database
-
+    
      Table Columns:
         title: Character Field containing the title of the event
         description: Text Field containing the description of the event
@@ -38,7 +38,7 @@ class Event(models.Model):
     max_attendees = models.IntegerField(validators=[
             MinValueValidator(2),
             MaxValueValidator(50)])
-
+    
     def __str__(self) -> str:
         return 'Event name {} (DateTime {}) - Created By {}'.format(
             self.title, self.datetime, self.created_by)

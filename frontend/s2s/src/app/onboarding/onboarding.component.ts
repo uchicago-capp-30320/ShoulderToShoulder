@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { PrimeNGConfig } from "primeng/api";
+import { PrimeNGConfig } from "primeng/api"; 
 import { Router } from '@angular/router';
 
 // services
@@ -12,17 +12,17 @@ import { formControlFieldMap } from '../_helpers/preferences';
 
 /**
  * OnboardingComponent
- *
+ * 
  * This component manages the onboarding process for new users.
- * It guides users through multiple pages to collect demographic information,
- * preferences, event availability, and scenarios. Users can navigate between
+ * It guides users through multiple pages to collect demographic information, 
+ * preferences, event availability, and scenarios. Users can navigate between 
  * pages, submit the collected data, and view a confirmation dialog.
- *
+ * 
  * @example
  * ```
  * <app-onboarding></app-onboarding>
  * ```
- *
+ * 
  * @see OnboardingService
  * @see AuthService
  */
@@ -58,7 +58,7 @@ export class OnboardingComponent implements OnInit{
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
-
+    
     // set page
     this.authService.getOnboardingStatus().subscribe(onboarded => {
       if (onboarded) {
@@ -79,7 +79,7 @@ export class OnboardingComponent implements OnInit{
 
   /**
    * Determines if the next button should be disabled.
-   *
+   * 
    * @returns True if the next button should be disabled, false otherwise.
    */
   nextButtonDisabled(){
@@ -99,21 +99,21 @@ export class OnboardingComponent implements OnInit{
    * Scrolls to the top of the page.
    */
   goToTop() {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
+    window.scrollTo({ 
+      top: 0, 
+      left: 0, 
+      behavior: 'smooth' 
     });
   }
 
   /**
    * Highlights invalid fields on the current page.
-   *
+   * 
    * @param event The click event.
    */
   highlightInvalidFields(event: any) {
     this.invalidDialogMessage = '';
-
+    
     // map the page number to the form
     let pageFormMap: { [index: number]: FormGroup} = {
       1: this.onboardingService.preferencesForm,
@@ -154,6 +154,14 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
+   * Hides the confirmation dialog.
+   */
+  hideConfirmDialog() {
+    this.showConfirm = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
    * Shows the exit dialog.
    */
   showExitDialog() {
@@ -161,7 +169,15 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Exits onboarding by sending current data to the backend and signing
+   * Hides the invalid dialog.
+   */
+  hideInvalidDialog() {
+    this.showInvalidDialog = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
+   * Exits onboarding by sending current data to the backend and signing 
    * user out.
    */
   exitOnboarding() {

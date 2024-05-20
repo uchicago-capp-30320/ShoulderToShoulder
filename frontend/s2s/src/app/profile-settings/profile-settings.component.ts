@@ -17,24 +17,24 @@ import { User } from '../_models/user';
 
 /**
  * Component to display user profile settings.
- *
- * This component displays the user's profile settings, including the ability to
- * change their password, update their user information, upload a profile picture,
+ * 
+ * This component displays the user's profile settings, including the ability to 
+ * change their password, update their user information, upload a profile picture, 
  * and delete their account.
- *
+ * 
  * @example
  * ```
  * <app-profile-settings></app-profile-settings>
  * ```
- *
+ * 
  * @remarks
- * This component relies on the AuthService, OnboardingService, and ProfileService
+ * This component relies on the AuthService, OnboardingService, and ProfileService 
  * to manage user profile settings.
- *
+ * 
  * @see AuthService
  * @see OnboardingService
  * @see ProfileService
- *
+ * 
  * @export
  * @class ProfileSettingsComponent
  */
@@ -48,7 +48,7 @@ export class ProfileSettingsComponent implements OnInit {
   showDeleteDialog = false;
   user = this.authService.userValue;
   profilePictureUrl: string = '';
-  reader = new FileReader();
+  reader = new FileReader(); 
   uploadedFiles: any[] = [];
   showInvalidPassword = false;
   @ViewChild('fileUpload') fileUpload: any;
@@ -58,8 +58,8 @@ export class ProfileSettingsComponent implements OnInit {
     username: new FormControl(this.user.username, Validators.required),
     currentPassword: new FormControl('', Validators.required),
     password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
+      Validators.required, 
+      Validators.minLength(8), 
       Validators.pattern(StrongPasswordRegx),
       differentPasswordValidator]),
     confirmPassword: new FormControl('', [Validators.required, confirmPasswordValidator])
@@ -105,7 +105,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   /**
    * Toggles the visibility of the password field.
-   *
+   * 
    * @param inputField The password field.
    */
   togglePasswordField(inputField: HTMLInputElement): void {
@@ -224,17 +224,25 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   /**
+   * Hides the delete account dialog.
+   */
+  hideDeleteDialog() {
+    this.showDeleteDialog = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
    * Handles the file upload event.
-   *
+   * 
    * @param event The file upload event.
    */
   onUpload(event: any) {
     if (event.files && event.files[0]) {
       const file = event.files[0];
       var reader = new FileReader();
-
+  
       reader.readAsDataURL(file); // Read file as data URL for preview purposes
-
+  
       reader.onload = (e) => { // Called once readAsDataURL is completed
         this.profilePictureUrl = e.target?.result as string;  // Update image preview
         this.uploadFileToServer(file);  // Call function to upload file to server
@@ -246,7 +254,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   /**
    * Uploads a file to the server.
-   *
+   * 
    * @param file The file to upload.
    */
   uploadFileToServer(file: File) {
@@ -255,7 +263,7 @@ export class ProfileSettingsComponent implements OnInit {
 
   /**
    * Clears the file upload.
-   *
+   * 
    * @param event The file upload event.
    */
   clearUpload(event: any) {

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 /**
  * Defines the loading animation component.
- *
- * This component is used to display a loading animation with dots that
+ * 
+ * This component is used to display a loading animation with dots that 
  * appear and disappear in a loop.
- *
+ * 
  * @example
  * ```
  * <app-loader></app-loader>

@@ -8,7 +8,7 @@ from ml.train import step, train, predict, save_outputs
 
 
 def test_step():
-    x_train = random.randint(random.PRNGKey(97), shape=(1000, 5), minval=0,
+    x_train = random.randint(random.PRNGKey(97), shape=(1000, 5), minval=0, 
                              maxval=50).astype(float)
     y_train = random.bernoulli(random.PRNGKey(997), 0.35, shape=(1000,)).astype(float)
     train_params = init_deep_fm(51, 5, 5)
@@ -29,7 +29,7 @@ def test_save_outputs():
 
 def test_train():
     os.remove('ml/ml/figures/training_curves.jpg')
-    x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0,
+    x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0, 
                              maxval=50).astype(float)
     y_train = random.bernoulli(random.PRNGKey(9970), 0.35, shape=(1000,)).astype(float)
     train_data = Dataset(x_train, y_train, 256, 127)
@@ -52,7 +52,7 @@ def test_predict():
 
 
 def test_train():
-    x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0,
+    x_train = random.randint(random.PRNGKey(706), shape=(1000, 5), minval=0, 
                              maxval=50).astype(float)
     y_train = random.bernoulli(random.PRNGKey(9970), 0.35, shape=(1000,)).astype(float)
     train_data = Dataset(x_train, y_train, 128, 90)
@@ -67,9 +67,10 @@ def test_train():
 
 
 def test_predict():
-    x_train = random.randint(random.PRNGKey(59), shape=(1000, 5), minval=0,
+    x_train = random.randint(random.PRNGKey(59), shape=(1000, 5), minval=0, 
                              maxval=50).astype(float)
     train_params = init_deep_fm(51, 5, [5, 64, 64, 32, 32, 1])
     predictions = predict(train_params, x_train[:5])
     assert type(predictions) == jaxlib.xla_extension.ArrayImpl
     assert predictions.shape == (5,)
+

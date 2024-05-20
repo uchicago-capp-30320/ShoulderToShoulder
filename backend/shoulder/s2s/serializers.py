@@ -16,7 +16,7 @@ class GroupSerializer(ModelSerializer):
     class Meta:
         model = Group
         fields = "__all__"
-
+        
 class EventSerializer(ModelSerializer):
     class Meta:
         model = Event
@@ -27,11 +27,11 @@ class OnbordingSerializer(ModelSerializer):
         model = Onboarding
         fields = "__all__"
 
-class ScenariosSerializer(ModelSerializer):
+class ScenariosSerializer(ModelSerializer):   
     class Meta:
         model = Scenarios
-        fields = "__all__"
-
+        fields = "__all__"    
+         
 class AvailabilitySerializer(ModelSerializer):
     class Meta:
         model = Availability
