@@ -1,1 +1,0 @@
-from s2s.db_models.hobby import Hobby

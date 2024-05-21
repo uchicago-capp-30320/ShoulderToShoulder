@@ -86,6 +86,8 @@ export var formControlFieldMap: { [index: string]: string } = {
     'address1': 'Address Line 1',
     'address2': 'Address Line 2',
     'hobby_type': 'Event Category',
+    'description': 'Description',
+    'zipcode': 'Zip Code',
 
     // Demographics
     'groupSimilarity': 'Group Similarity',
