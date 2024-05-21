@@ -19,7 +19,7 @@ def _ensure_weights():
     """Add the pretrained weights to the global scope"""
     global WEIGHTS
     if WEIGHTS is None:
-        with open('ml/ml/weights/parameters.pkl', 'rb') as file:
+        with open('shoulder/ml/ml/weights/parameters.pkl', 'rb') as file:
             WEIGHTS = pickle.load(file)
 
 def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list, 

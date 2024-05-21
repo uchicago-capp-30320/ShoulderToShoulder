@@ -74,6 +74,8 @@ class Onboarding(models.Model):
     city = models.CharField(max_length=50, null=True, blank=True)
     state = models.CharField(max_length=50, null=True, blank=True)
     address_line1 = models.CharField(max_length=100, null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
     # event frequency and notifications
     event_frequency = models.CharField(choices=EVENT_FREQUENCIES, max_length=100, null=True, blank=True)

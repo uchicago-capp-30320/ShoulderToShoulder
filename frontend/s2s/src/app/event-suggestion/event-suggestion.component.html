@@ -2,6 +2,11 @@
     <h3>{{ currentSuggestion.event_name }}</h3>
     <p>{{ currentSuggestion.event_description }}</p>
     <p><b>Location</b>: {{ currentSuggestion.address1 }}{{ currentSuggestion.address2 ? " " + currentSuggestion.address2 : "" }}, {{ currentSuggestion.city }}, {{ currentSuggestion.state }} {{ currentSuggestion.zipcode }}</p>
+    @if (currentSuggestion.distance_from_user) {
+        <p><b>Distance From You</b>: {{ currentSuggestion.distance_from_user | titlecase}}</p>
+    } @else {
+        <p><b>Distance From You</b>: Unavailable</p>
+    }
     <p><b>Price</b>: {{ currentSuggestion.price ? currentSuggestion.price : "Unavailable" }}</p>
     <p><b>Date</b>: {{ currentSuggestion.event_date | date:"EE MMM d, y 'at' h:mm a" }}</p>
     <p><b>Duration</b>: {{ currentSuggestion.event_duration }} hours</p>

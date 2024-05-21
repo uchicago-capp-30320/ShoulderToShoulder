@@ -15,6 +15,7 @@ export interface Suggestion {
     state: string;
     zipcode: string;
     price: string;
+    distance_from_user: string;
 }
 
 export interface UserEvent {
