@@ -120,8 +120,6 @@ def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int
     with open(WEIGHTS_PATH, 'rb') as file:
             params = pickle.load(file)
 
-    print("Params: ", params)
-
     epochs, loss_list, acc_list, params = train(params, data, num_epochs, path=path)
 
     return epochs, loss_list, acc_list
