@@ -65,13 +65,11 @@ Navigate to `localhost:1800/data` in your web browser and enter the superuser lo
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
-## Running Our App On The Server
+## Running The App On A Server
 
 <!-- TBD -->
 
-## Development
-
-### Unit Testing
+## Unit Testing
 
 Following development in any module, run it's unit testing. 
 
@@ -103,7 +101,7 @@ exit
 </pre>
 
 
-### Pre-Commit Checklist
+## Pre-Commit Checklist
 
 Before merging your code, it needs to be properly formatted. Follow these steps (for each development module) to pass pre-commit.
 

@@ -6,10 +6,13 @@
 Directory with our web application's frontend development, which serves our UI/UX and user interaction. Our frontend employs Angular.
 
 #### `backend/shoulder` 
-Directory with our web application's backend development. Our backend employs Django with an AWS Posgres(QL) database. The backend development also involves a machine learning and GIS component. 
+Directory with our web application's backend development. Our backend employs Django with an AWS Posgres(QL) database. The backend development also involves a machine learning component, a GIS component, and a directory containing unit testing. 
 
 #### `backend/shoulder/s2s` and `backend/shoulder/ShoulderToShoulder` 
 The two directories which house our Django development. This is where the backend team manages the database, the models, the API endpoints (viewpoints), and the overall backend connection to the web application.  
+
+#### `backend/shoulder/config/gunicorn`
+The directory which establishes our application's AWS server deployment.
 
 #### `backend/shoulder/ml`
 Directory which contains our web application's machine learning development. Machine learning is used by our application to provide users with recommendations for events to attend.
@@ -52,6 +55,9 @@ For more information on factorization machines and DeepFMs, see:
 
 #### `backend/shoulder/gis`
 Directory which contains our web application's GIS module. We use spatial analysis to: locate events happening within a specified distance of a user's resident location; verify that inputted addresses exist; and locate places based on a given zipcode. 
+
+#### `backend/shoulder/tests`
+The directory which contains all of the unit testing for the backend module. We use pytest to test the information being passed to and from the ml and gis modules, and pytest-django to test the Django backend viewpoints. 
 
 ## Architecture Diagram
 
