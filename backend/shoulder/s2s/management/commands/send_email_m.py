@@ -16,14 +16,18 @@ class SendEmail(BaseCommand):
     help = "parent class for sending an email"
 
     def add_arguments(self, parser):
+        '''
+        Parses incoming information from views.py
+        '''
         parser.add_argument('user', type=str, help='user email', nargs='?')
         parser.add_argument('event_info', type=str, help='event object', nargs='?')
 
     def handle(self, *args, **kwargs):
+        '''
+        Runs data collection and sending of emails
+        '''
         user = kwargs.get('user')
         event_info = kwargs.get('event_info')
-        print(user)
-        print(event_info)
         data = self._get_data(event_info)
         message = self._create_message_body(data)
         subject = self._get_subject(data)
@@ -31,20 +35,29 @@ class SendEmail(BaseCommand):
         self._send_email(subject, message, recipient_list)
 
     def _get_data(self, event_info=None):
+        '''
+        Collects event information
+        '''
         print("potential NotImplementedError('Subclasses must implement _get_data() method')")
         return []
 
     def _create_message_body(self, data=None):
         '''
-        Creates the message body with necessary information from database.
+        Creates the message body with necessary information from database
         '''
         raise NotImplementedError("Subclasses must implement _create_message_body()")
     
     def _get_subject(self, data=None):
+        '''
+        Creates email subject line
+        '''
         raise NotImplementedError("Subclasses must implement _get_subject() method")
     
     def _get_recipient_list(self, user=None):
-         raise NotImplementedError("Subclasses must implement _get_recipient_list() method")
+        '''
+        Creates list of email addresses to send emails to
+        '''
+        raise NotImplementedError("Subclasses must implement _get_recipient_list() method")
     
     def _send_email(self, subject, message, recipient_list):
         '''
