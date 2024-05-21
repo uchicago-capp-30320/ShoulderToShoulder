@@ -6,27 +6,31 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ShoulderToShoulder.settings')
 django.setup()
 
 from django.core.management.base import BaseCommand
-from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth.models import User
 from botocore.exceptions import ClientError
-import smtplib
-# Import s2s models if needed
+
 
 ses_client = boto3.client('ses', region_name='us-east-2')
 
 class SendEmail(BaseCommand):
     help = "parent class for sending an email"
 
+    def add_arguments(self, parser):
+        parser.add_argument('user', type=str, help='user email', nargs='?')
+        parser.add_argument('event_info', type=str, help='event object', nargs='?')
+
     def handle(self, *args, **kwargs):
         user = kwargs.get('user')
-        data = self._get_data(user)
+        event_info = kwargs.get('event_info')
+        print(user)
+        print(event_info)
+        data = self._get_data(event_info)
         message = self._create_message_body(data)
-        subject = self._get_subject()
+        subject = self._get_subject(data)
         recipient_list = self._get_recipient_list(user)
         self._send_email(subject, message, recipient_list)
 
-    def _get_data(self, user=None):
+    def _get_data(self, event_info=None):
         print("potential NotImplementedError('Subclasses must implement _get_data() method')")
         return []
 

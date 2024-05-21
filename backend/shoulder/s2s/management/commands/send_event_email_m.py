@@ -10,53 +10,58 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from botocore.exceptions import ClientError
 from .send_email_m import SendEmail
-import smtplib
-# Import s2s models if needed
+import pytz
+
 
 class Command(SendEmail):
-    help = "sends email when user RSVPs yes to event and contains all \
-        event details"
+    help = "Sends email with all event details when user RSVPs yes to event."
     
-    def _get_data(self, user):
-        # TODO: retrieve data on specific event that a user has accepted
-        # TODO: retrieve user_id somehow
+    def _get_data(self, event_info):
+        '''
+        Collect and format event information.
+        '''
+        print(f"EVENT EMAIL TRIGGERED for {event_info.title}")
+        # Collect Event information
+        event_title = event_info.title
+        event_duration = event_info.duration_h
+        event_location = f"{event_info.address1} {event_info.address2 + ' '}
+            {event_info.city}, {event_info.state} {event_info.zipcode}"
+        event_price = event_info.price
+        event_description = event_info.description
 
-        incoming_data = None
-        ### TESTING
-        event_title = "Picnic at the Point"
-        event_date = "Monday May 20th"
-        event_time = "5p"
-        event_duration = "3 hours"
-        event_location = "Promontory Point"
-        event_distance = "1.1mi"
-        event_price = "$10"
-        event_description = "Come to The Point and bring a cute snack or \
-            drink. We're sticking around to see the sunset. Meet by the first \
-            firepit on the north side of the point. "
-        ###
+        # Collect and format datetime
+        datetime = event_info.datetime
+        utc_datetime = datetime.fromisoformat(str(datetime))
+
+        # Convert the datetime object to ET timezone
+        utc_timezone = pytz.utc
+        et_timezone = pytz.timezone("US/Eastern")
+        utc_datetime = utc_datetime.astimezone(utc_timezone)
+        et_datetime = utc_datetime.astimezone(et_timezone)
+
+        # Format the datetime in the desired format: day, month, year and time
+        event_date = et_datetime.strftime("%d %B %Y %I:%M %p %Z")
 
         event = {'title' : event_title, 
                 'date': event_date,
-                'time': event_time,
                 'duration': event_duration,
                 'location': event_location,
-                'distance': event_distance,
                 'price': event_price,
-                'description': event_description} # Add things
+                'description': event_description}
         return event
 
     def _create_message_body(self, data):
         s = "Thank you for your RSVP to join an event with Shoulder To Shoulder. Below are the details of your event. \n \n"
         s += f"{data['title']} \n"
-        s += f"Time: {data['date']} at {data['time']} for {data['duration']} \n"
-        s += f"Location: {data['location']}, which is {data['distance']} from you \n"
+        s += f"Time: {data['date']} for {data['duration']} hours \n"
+        s += f"Location: {data['location']}\n"
         s += f"Estimated Price: {data['price']} \n"
         s += f"Description: {data['description']}"
         return s
 
     def _get_subject(self, data):
-        event_title = data[0]
-        return f"S2S Event Confirmation for {event_title}"
+        event_title = data['title']
+        return f"S2S Event Confirmation: {event_title}"
 
     def _get_recipient_list(self, user):
         # Example: Fetch recipients from your RSVP model

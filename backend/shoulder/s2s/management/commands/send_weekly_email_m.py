@@ -16,15 +16,8 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ShoulderToShoulder.settings')
 django.setup()
 
-import boto3
-from django.core.management.base import BaseCommand
-from django.core.mail import send_mail
-from django.conf import settings
 from django.contrib.auth.models import User
-from botocore.exceptions import ClientError
 from .send_email_m import SendEmail
-import smtplib
-# Import s2s models if needed
 
 class Command(SendEmail):
     help = 'sends weekly email to check in on new events'
