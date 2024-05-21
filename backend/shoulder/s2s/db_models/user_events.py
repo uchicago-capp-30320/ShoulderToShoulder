@@ -32,3 +32,7 @@ class UserEvents(models.Model):
     user_rating = models.CharField(choices=ALLOWED_RATINGS, max_length=15, default="Not Rated")
     rsvp = models.CharField(choices=ALLOWED_RSVP, max_length=3, null=True, blank=True)
     attended = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return 'User: {}, Event: {}'.format(
+            self.user_id, self.event_id)

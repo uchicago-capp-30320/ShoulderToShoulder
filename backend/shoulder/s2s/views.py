@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from rest_framework.decorators import action
 from django.db import transaction
+from django.db.models import Exists, OuterRef, Count, Subquery, Q, F
 import boto3
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -23,6 +24,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 import pandas as pd
 from django.core.management import call_command
+from django.http import QueryDict
 
 
 from .serializers import *
@@ -206,6 +208,15 @@ class OnboardingViewSet(viewsets.ModelViewSet):
 
         # Attempt to get the onboarding record for the user
         onboarding, created = Onboarding.objects.get_or_create(user_id=user)
+
+        # Conduct the geocoding for the user
+        address_fields = ['address_line1', 'city', 'state', 'zip_code']
+        if all(field in request.data for field in address_fields):
+            full_address = f"{request.data['address_line1']} {request.data['city']}, {request.data['state']} {request.data['zip_code']}"
+            geo_response = geocode(full_address)
+            if geo_response:
+                request.data['latitude'] = geo_response['coords'][0]
+                request.data['longitude'] = geo_response['coords'][1]
 
         # Update onboarding data
         serializer = self.get_serializer(onboarding, data=request.data, partial=True)
@@ -1577,37 +1588,32 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({"error": f"Failed to find user or event panel data: {str(e)}"}, status=400)
 
-        # Note: distance function should be used here to populate a distance
-        # dictionary for each user-event combination.
-        # What is currently here is a placeholder to make the view functional!
-        distance_dict = {
-            'dist_within_1mi': False, 
-            'dist_within_5mi': False, 
-            'dist_within_10mi': False,
-            'dist_within_15mi': False, 
-            'dist_within_20mi': False,
-            'dist_within_30mi': False, 
-            'dist_within_40mi': False, 
-            'dist_within_50mi': False
-        }
         user_panel_dict = user_panel.__dict__.copy()
         user_panel_dict.pop('_state')
         user_panel_dict['user_id'] = user_panel_dict.pop('user_id_id')
 
-        # convert events to list of dictionaries
+        # convert events to list of dictionaries and constructs the distance portion of the dictionary
         event_panel_dict_lst = [event.__dict__.copy() for event in event_panel]
+        distance_panel_list = [] # Set up list to hold panel distance data
+        event_ids = [] # Set up list to hold event IDs
         for event in event_panel_dict_lst:
             event.pop('_state')
             event.pop('id')
             event['event_id'] = event.pop('event_id_id')
 
+            # Construct a distance dictionary for each event-user pair
+            distance_panel_list.append(
+                self.distance_calc(event['event_id'], user_id)[0]
+            )
+            
         # Combine the three dictionaries to form rows
         model_list = [
-            {**user_panel_dict, **event, **distance_dict} for event in event_panel_dict_lst
+            {**user_panel_dict, **event, **distance_panel} 
+            for event, distance_panel in zip(event_panel_dict_lst, distance_panel_list)
         ]
 
         # Get recommendations
-        prediction_probs = recommend(model_list)
+        prediction_probs = recommend(model_list, inference=True)
         event_ids = [event['event_id'] for event in event_panel_dict_lst]
 
         results = []
@@ -1637,34 +1643,69 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         if not user_id:
             return Response({"error": "User ID not provided"}, status=400)
         
-        # Call the endpoint to run the ML inference.
-        update_response = self.update_suggestions(request, user_id=user_id)
-
-        if update_response.status_code != 200:
-            return update_response
         
+        # Implementing several filters here: event timing, whether the event is 
+        # already full, whether the user is already RSVPed for the event,
+        # and whether the user is available for the event.
+
         current_date = timezone.now().date()
         two_weeks_from_now = current_date + timedelta(days=14)
-        top_events = SuggestionResults.objects.filter(user_id = user_id,
-                                                    event_id__datetime__date__range=(current_date, two_weeks_from_now)) \
-                                                    .order_by('-probability_of_attendance') \
-                                                    .values('event_id', 'probability_of_attendance', 'user_id')[:2]
         
-        top_events = [event['event_id'] for event in top_events]
+        already_rsvp_subquery = UserEvents.objects.filter(
+            user_id_id=OuterRef('user_id'), 
+            event_id_id=OuterRef('event_id')
+        )   
 
-        top_event_data = [
-            {
-                'user_id': user_id,
-                'event_id': SuggestionResults.objects.filter(event_id=event_id)[0].event_id.id,
-                'probability_of_attendance': SuggestionResults.objects.filter(event_id=event_id)[0].probability_of_attendance
-            }
-            for event_id in top_events
-        ]
+        attendees_count_subquery = UserEvents.objects.filter(
+            event_id_id=OuterRef('event_id')
+            ).values('event_id_id').annotate(
+                attendees_count=Count('user_id_id')
+            ).values('attendees_count')
+
+        top_events = SuggestionResults.objects.filter(
+            user_id = user_id,
+            event_id__datetime__date__range=(current_date, two_weeks_from_now) # Only events in the next two weeks
+            ) \
+            .exclude(
+                Exists(already_rsvp_subquery) # exclude if RSVPed already
+            ).annotate(
+                current_attendees=Subquery(attendees_count_subquery)
+            ).filter(
+                ~Q(current_attendees__gte=F('event_id__max_attendees'))
+            ) \
+            .order_by('-probability_of_attendance') \
+            .values('event_id', 'probability_of_attendance', 'user_id')
+        
+        # filter top events by distance
+        top_events = [event for event in top_events
+                      if self.distance_calc(event['event_id'], user_id)[1] <= 50 #remove events more than 50 miles away
+                      ]
+
+        top_event_data = top_events[:2] # return the top 2 events
 
         # add event data
         for event_suggestion in top_event_data:
             event_id = event_suggestion['event_id']
             event = Event.objects.get(id=event_id)
+
+            event_day_of_week = event.datetime.weekday()
+            event_start = event.datetime
+            event_end = event.datetime + timedelta(hours=event.duration_h)
+            event_hours = range(event_start.hour, event_end.hour if event_end.minute == 0 else event_end.hour + 1)
+            event_day_of_week = event_start.weekday()
+
+            # Query the availability for all the hours during which the event takes place
+            user_availability = Availability.objects.filter(
+                user_id_id=user_id,
+                day_of_week=event_day_of_week,
+                hour__in=event_hours,
+                available=True
+            ).count()
+
+            #If the user is available for all hours of the event, the user_availability query
+            # will be the number of hours in the event
+
+            event_suggestion['user_available'] = user_availability == len(event_hours)
             event_suggestion['event_name'] = event.title
             event_suggestion['event_description'] = event.description
             event_suggestion['event_date'] = event.datetime
@@ -1677,35 +1718,32 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             event_suggestion['zipcode'] = event.zipcode
             event_suggestion['price'] = event.price
 
-        # check if the user has already RSVP'd to the event
-        new_top_event_data = []
-        for event_suggestion in top_event_data:
-            event_id = event_suggestion['event_id']
-            user_id = event_suggestion['user_id']
-            user_event = UserEvents.objects.filter(user_id=user_id, event_id=event_id)
-
-            # a row is added to user_event if the user has RSVP'd to the event
-            if not user_event.exists():
-                new_top_event_data.append(event_suggestion)
+            distance_result, _ = self.distance_calc(event_id, user_id)
+            distance_from_user = next((key for key, value in distance_result.items() if value))
+            
+            distance_from_user = "within " + distance_from_user.split("_")[-1].split("mi")[0] + " miles"
+            event_suggestion['distance_from_user'] = distance_from_user
         
         # convert nan probabilities to 0
-        for event_suggestion in new_top_event_data:
+        for event_suggestion in top_event_data:
             if pd.isna(event_suggestion['probability_of_attendance']):
                 event_suggestion['probability_of_attendance'] = 0
         
         return Response({
-            'top_events': new_top_event_data
+            'top_events': top_event_data
         })
     
     def distance_calc(self, event_id, user_id):
         '''
         Calculates and returns a dictionary with distance binaries for
         use in the machine learning setup.
+
+        Returns that dictionary and the raw distance value in a tuple.
         '''
         event = Event.objects.get(id=event_id)
-        user = User.objects.get(id=user_id)
+        onboarding = Onboarding.objects.get(user_id=user_id)
         distance = distance_bin(
-            (user.latitude, user.longitude),
+            (onboarding.latitude, onboarding.longitude),
             (event.latitude, event.longitude)
         )
         
@@ -1724,9 +1762,9 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             for v in [1,5,10,15,20,30,40,50]:
                 if distance[0] < v:
                     distance_dict[f'dist_within_{v}mi'] = True
-                    return distance_dict
-        else:
-            return distance_dict
+                    return (distance_dict, distance[0])
+        
+        return (distance_dict, None)
     
 class SubmitOnboardingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
@@ -1789,6 +1827,15 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
             onboarding_response = self.trigger_onboarding(request, user_id)
             if onboarding_response.status_code not in [200, 201, 202]:
                 return onboarding_response
+
+        # Now that availability, onboarding, and scenarios are present,
+        # we can do the user's first inference so they have event suggestions  
+        if len(request.data.get('availability')) > 0 \
+        and len(request.data.get('scenarios')) > 0 \
+        and len(request.data.get('onboarding')) > 0:
+            inference_response = self.trigger_first_inference(user_id)
+            if inference_response.status_code not in [200, 201, 202]:
+                return inference_response
             
         return Response({"detail": "Successfully updated"}, status=201)
         
@@ -1848,4 +1895,17 @@ class SubmitOnboardingViewSet(viewsets.ModelViewSet):
         onboarding_view.action_map = {'post': 'update_onboarding'}
         onboarding_view.format_kwarg = None
         response = onboarding_view.update_onboarding(mimic_request)
+
+        return response
+    
+    def trigger_first_inference(self, user_id):
+        # Run initial round of inference
+        factory = APIRequestFactory()
+        suggestion_request = factory.get('/fake-url-suggestions/', {}, format='json')
+        suggestion_request.query_params = QueryDict(mutable=True)
+        suggestion_request.query_params['user_id'] = user_id
+
+        suggestion_view_set = SuggestionResultsViewSet()
+        suggestion_view_set.request = suggestion_request
+        response = suggestion_view_set.update_suggestions(suggestion_request)
         return response

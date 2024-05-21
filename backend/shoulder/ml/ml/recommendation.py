@@ -8,8 +8,8 @@ from shoulder.ml.ml.train import train, predict
 
 WEIGHTS_PATH = "shoulder/ml/ml/weights/parameters.pkl"
 
-
-def preprocess(raw_data: list, predict=False) -> jaxlib.xla_extension.ArrayImpl:
+def preprocess(raw_data: list,
+               inference=False) -> jaxlib.xla_extension.ArrayImpl:
     """
     Prepare data for training or predicting
 
@@ -21,22 +21,23 @@ def preprocess(raw_data: list, predict=False) -> jaxlib.xla_extension.ArrayImpl:
     Returns:
         A tuple of preprocessed arrays for training or predicting
     """
-    data = [{k: v for k, v in d.items() if k not in ("user_id", "id")} for d in raw_data]
-    feature_list = []
-    target_list = [] if not predict else None
+    feature_list, target_list = [], []
 
-    # Getting the user ID to update later
     for d in raw_data:
         user_id = d["user_id"]
         del d["user_id"]
 
-    for d in data:
-        if not predict:
+        if not inference:
+            # No target array for inference
             if d["attended_event"] == 1:
                 target_list.append(1)
             else:
                 target_list.append(0)
             del d["attended_event"]
+        else:
+            del d["event_id"]
+        
+        
 
         user_event_list, low, high = [], 0, 1
 
@@ -57,7 +58,7 @@ def preprocess(raw_data: list, predict=False) -> jaxlib.xla_extension.ArrayImpl:
 
     x = jnp.array(feature_list, dtype=float)
 
-    if not predict:
+    if not inference:
         y = jnp.array(target_list, dtype=float)
         return x, y
     else:
@@ -120,7 +121,8 @@ def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int
     return epochs, loss_list, acc_list
 
 
-def recommend(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
+def recommend(raw_data: requests.models.Response,
+              inference = False) -> jaxlib.xla_extension.ArrayImpl:
      """
      Get recommendations for users and events.
 
@@ -132,5 +134,5 @@ def recommend(raw_data: list) -> jaxlib.xla_extension.ArrayImpl:
         --------
             A jax NumPy array of predicted probabilities of attending events
      """
-     full_x = preprocess(raw_data, predict=True)
+     full_x = preprocess(raw_data, inference=inference)
      return predict(full_x)
