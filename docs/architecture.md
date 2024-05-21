@@ -12,9 +12,9 @@ Directory with our web application's backend development. Our backend employs Dj
 The two directories which house our Django development. This is where the backend team manages the database, the models, the API endpoints (viewpoints), and the overall backend connection to the web application.  
 
 #### `backend/shoulder/config/gunicorn`
-The directory which establishes our application's AWS server deployment.
+The directory which establishes our application's AWS deployment; this sets up our app on a server and also schedules the cron job to send users weekly email notifications. 
 
-#### `backend/shoulder/ml`
+#### `backend/shoulder/ml/ml`
 Directory which contains our web application's machine learning development. Machine learning is used by our application to provide users with recommendations for events to attend.
 
 To generate user recommendations, we employ a deep factorization machine (DeepFM). A DeepFM
@@ -61,7 +61,9 @@ The directory which contains all of the unit testing for the backend module. We 
 
 ## Architecture Diagram
 
-<!-- INSERT HERE -->
+A high level overview of our repository structure:
+
+![Architecture Diagram](media/architecture_diagram.png)
 
 ## About Our Data
 

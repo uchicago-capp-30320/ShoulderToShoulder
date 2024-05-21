@@ -71,19 +71,7 @@ To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the
 
 ## Unit Testing
 
-Following development in any module, run it's unit testing. 
-
-#### `frontend`
-
-<!-- TBD -->
-
-<pre>
-```
-
-```
-</pre>
-
-#### `backend`
+Following development, run unit testing. 
  
 <pre>
 ```
@@ -118,8 +106,8 @@ pre-commit run --all
 
 <pre>
 ```
-cd frontend
+cd frontend/s2s
+npm install prettier  //optional
 npm run lint
-npm run format
 ```
 </pre>
