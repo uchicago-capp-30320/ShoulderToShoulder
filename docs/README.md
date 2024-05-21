@@ -1,4 +1,5 @@
-# Developer Onboarding Instructions and Documentation
+# ShoulderToShoulder Developer Onboarding:  
+# Instructions and Documentation
 
 After cloning the repository to your local machine, you will need to set up the virtual environment and install necessary dependencies in order to begin developing. 
 
