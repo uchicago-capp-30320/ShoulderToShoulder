@@ -1580,11 +1580,18 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 event_panel_serialized = PanelEventSerializer(event_panel)
                 finetuning_dict.update(event_panel_serialized.data)
 
+                # add distance from user
+                distance_bin = self.distance_calc(event_id, user_id)
+                finetuning_dict.update(distance_bin[0])
+
                 finetuning_dict['attended_event'] = user_events_dict['attended']
                 finetuning_data.append(finetuning_dict)
 
         # finetune the model
         print("Finetuning the model...")
+        # epochs = 1
+        # loss_list = []
+        # acc_list = []
         epochs, loss_list, acc_list = finetune(finetuning_data)
 
         return Response({"data": finetuning_data, "epochs": epochs, "loss_list": loss_list, "acc_list": acc_list}, status=200)

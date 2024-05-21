@@ -14,18 +14,18 @@ from shoulder.ml.ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_e
 
 LR = 0.0001
 WEIGHTS = None
-
+TRAINING_CURVES_PATH = os.path.join(pathlib.Path(__file__).parent, "figures/training_curves.jpg")
+PARAMETERS_PATH = os.path.join(pathlib.Path(__file__).parent, "weights/parameters.pkl")
 
 def _ensure_weights():
     """Add the pretrained weights to the global scope"""
     global WEIGHTS
     if WEIGHTS is None:
-        train_path = pathlib.Path(__file__).parent
-        with open(train_path / 'weights/parameters.pkl', 'rb') as file:
+        with open(PARAMETERS_PATH, 'rb') as file:
             WEIGHTS = pickle.load(file)
 
 def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
-                 path: str='shoulder/ml/mlweights/parameters.pkl') -> None:
+                 path: str=PARAMETERS_PATH) -> None:
     """
     Save diagnostic plots and weights from training a DeepFM
 
@@ -36,22 +36,33 @@ def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
         acc_list (list): a list of accuracy for each epoch
         params (list): a list of model parameters
         path (str): a path for saving the weights
-    """
-    # Make sure we remove old plots
-    if os.path.isfile('shoulder/ml/ml/figures/training_curves.jpg'):
-        os.remove('shoulder/ml/ml/figures/training_curves.jpg')
-
-    plt.plot(epochs, loss_list, label='Loss')
-    plt.plot(epochs, acc_list, label='Accuracy')
-    plt.legend()
-    plt.title("Training Loss and Accuracy")
-    plt.savefig('shoulder/ml/ml/figures/training_curves.jpg')
-    plt.close()
-
+    """    
     # Saving the weights
     with open(path, 'wb') as file:
         pickle.dump(params, file)
 
+    plot_training_curves(epochs, loss_list, acc_list)
+
+def plot_training_curves(epochs: list, loss_list: list, acc_list: list) -> None:
+    """
+    Plot training curves and save the plot to a file
+
+    Parameters:
+    -----------
+        epochs (list): a list of training epochs
+        loss_list (list): a list of losses at each epoch
+        acc_list (list): a list of accuracy for each epoch
+    """
+    if os.path.isfile(TRAINING_CURVES_PATH):
+        os.remove(TRAINING_CURVES_PATH)
+
+    plt.figure()
+    plt.plot(epochs, loss_list, label='Loss')
+    plt.plot(epochs, acc_list, label='Accuracy')
+    plt.legend()
+    plt.title("Training Loss and Accuracy")
+    plt.savefig(TRAINING_CURVES_PATH)
+    plt.close()
 
 @jit
 def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
@@ -81,9 +92,8 @@ def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
     accuracy = jnp.mean(predicted_class == y)
     return params, loss, grads, accuracy
 
-
 def train(params: list, data: Dataset, num_epochs: int,
-          path: str="shoulder/ml/ml/weights/parameters.pkl"):
+          path: str=PARAMETERS_PATH):
     """
     Train a deep factorization machine, visualize the results, and save the weights
 
@@ -109,16 +119,14 @@ def train(params: list, data: Dataset, num_epochs: int,
             params = optax.apply_updates(params, updates)
 
         epochs.append(epoch + 1)
-        loss_list.append(loss)
-        acc_list.append(acc)
+        loss_list.append(float(loss))  # Ensure loss is a float
+        acc_list.append(float(acc))    # Ensure accuracy is a float
 
         if epoch % 10 == 0:
             print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc}")
 
     save_outputs(epochs, loss_list, acc_list, params, path)
-
     return epochs, loss_list, acc_list, params
-
 
 def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     """
@@ -132,9 +140,6 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     --------
         predictions (array): predicted probabilities of users RSVPing for events
     """
-    # Check if params is a global variable and if not, read them from a pkl file and add
-    # the parameters to the gloabl scope so we don't have to keep reading them in when we
-    # call predict
     _ensure_weights()
     params = WEIGHTS
 

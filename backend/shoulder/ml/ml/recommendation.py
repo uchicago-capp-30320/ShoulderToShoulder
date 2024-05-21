@@ -5,8 +5,10 @@ import jax.numpy as jnp
 from shoulder.ml.ml.dataset import Dataset
 from shoulder.ml.ml.model import init_deep_fm
 from shoulder.ml.ml.train import train, predict
+import os, pathlib
 
-WEIGHTS_PATH = "shoulder/ml/ml/weights/parameters.pkl"
+WEIGHTS_PATH = os.path.join(pathlib.Path(__file__).parent, "weights/parameters.pkl")
+PARAMETERS_PATH = os.path.join(pathlib.Path(__file__).parent, "weights/parameters.pkl")
 
 def preprocess(raw_data: list,
                inference=False) -> jaxlib.xla_extension.ArrayImpl:
@@ -24,6 +26,8 @@ def preprocess(raw_data: list,
     feature_list, target_list = [], []
 
     for d in raw_data:
+        if d.get('id', None):
+            del d['id']
         user_id = d["user_id"]
         del d["user_id"]
 
@@ -67,7 +71,7 @@ def preprocess(raw_data: list,
 
 def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=32, 
              num_epochs: int=10, seed=1994, seeds=(8, 6, 7), 
-             path: str="shoulder/ml/ml/weights/parameters.pkl") -> tuple[list]:
+             path: str=PARAMETERS_PATH) -> tuple[list]:
     """
     Pretrain a DeepFM
 
@@ -93,8 +97,8 @@ def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=
     return epochs, loss_list, acc_list
 
 
-def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=5, 
-             seed=1999, path: str="shoulder/ml/ml/weights/parameters.pkl") -> tuple[list]:
+def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=25, 
+             seed=1999, path: str=PARAMETERS_PATH) -> tuple[list]:
     """
     Finetune a DeepFM
 
@@ -115,6 +119,8 @@ def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int
 
     with open(WEIGHTS_PATH, 'rb') as file:
             params = pickle.load(file)
+
+    print("Params: ", params)
 
     epochs, loss_list, acc_list, params = train(params, data, num_epochs, path=path)
 
