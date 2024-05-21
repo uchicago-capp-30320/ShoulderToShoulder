@@ -29,7 +29,7 @@ from django.http import QueryDict
 from .serializers import *
 from .db_models import *
 
-from ml.ml.recommendation import recommend
+from ml.ml.recommendation import recommend, finetune
 
 # functions
 def index(request):
@@ -1536,6 +1536,48 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
     serializer_class = SuggestionResultsSerializer
     permission_classes = [HasAppToken]
     queryset = SuggestionResults.objects.all()
+
+    @action(detail=False, methods=['get'], url_path='finetune_model')
+    def finetune_model(self, request):
+        """
+        Finetunes the ML model.
+        """
+        user_events_data = UserEvents.objects.all()
+        user_events_data_serializer = UserEventsSerializer(user_events_data, many=True)
+        finetuning_data = []
+
+        # grab data for finetuning
+        print("Grabbing the finetuning data...")
+        for user_events_dict in user_events_data_serializer.data:
+            finetuning_dict = {}
+            user_id = user_events_dict['user_id']
+            user_panel = PanelUserPreferences.objects.filter(user_id=user_id)
+
+            event_id = user_events_dict['event_id']
+            # check if the event has passed and if not, don't add it to finetuning data
+            event = Event.objects.get(id=event_id)
+            if event.datetime < timezone.now():
+                continue
+            event_panel = PanelEvent.objects.filter(event_id=event_id)
+
+            if user_panel.exists() and event_panel.exists():
+
+                user_panel = user_panel[0]
+                user_panel_serialized = PanelUserPreferencesSerializer(user_panel)
+                finetuning_dict.update(user_panel_serialized.data)
+
+                event_panel = event_panel[0]
+                event_panel_serialized = PanelEventSerializer(event_panel)
+                finetuning_dict.update(event_panel_serialized.data)
+
+                finetuning_dict['attended_event'] = user_events_dict['attended']
+                finetuning_data.append(finetuning_dict)
+
+        # finetune the model
+        print("Finetuning the model...")
+        epochs, loss_list, acc_list = finetune(finetuning_data)
+
+        return Response({"data": finetuning_data, "epochs": epochs, "loss_list": loss_list, "acc_list": acc_list}, status=200)
 
     @action(detail=False, methods=['get'], url_path='get_training_data')
     def get_training_data(self, request):
