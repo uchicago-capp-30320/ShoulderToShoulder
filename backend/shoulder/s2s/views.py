@@ -1665,11 +1665,21 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 ~Q(current_attendees__gte=F('event_id__max_attendees'))
             ) \
             .order_by('-probability_of_attendance') \
-            .values('event_id', 'probability_of_attendance', 'user_id')[:2]
+            .values('event_id', 'probability_of_attendance', 'user_id')
         
+        new_top_events = []
+        for event in top_events:
+            event_id = event['event_id']
+            distance = self.distance_calc(event_id, user_id)
+            print(distance)
+            if any(distance[0].values()):
+                new_top_events.append(event)
+
+        print(new_top_events)
+
         top_events = [event['event_id'] for event in top_events
                       if self.distance_calc(event['event_id'], user_id)[1] <= 50 #remove events more than 50 miles away
-                      ]
+                      ][:2]
 
         top_event_data = [
             {
@@ -1739,10 +1749,13 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         '''
         event = Event.objects.get(id=event_id)
         onboarding = Onboarding.objects.get(user_id=user_id)
+        print(onboarding.latitude, onboarding.longitude)
         distance = distance_bin(
             (onboarding.latitude, onboarding.longitude),
             (event.latitude, event.longitude)
         )
+
+        print(event, distance)
         
         distance_dict = {
             'dist_within_1mi': False, 
@@ -1760,8 +1773,8 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 if distance[0] < v:
                     distance_dict[f'dist_within_{v}mi'] = True
                     return (distance_dict, distance[0])
-        else:
-            return (distance_dict, None)
+        
+        return (distance_dict, None)
     
 class SubmitOnboardingViewSet(viewsets.ModelViewSet):
     queryset = Onboarding.objects.all()
