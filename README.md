@@ -17,7 +17,7 @@ Join us in combating loneliness by engaging in your community through Shoulder t
 <!-- INSERT HERE -->
 
 
-## How To Run Our App
+## How To Run The App
 
 To open and use the application, first clone the repository to your local machine, and navigate to the `ShoulderToShoulder` directory in your terminal. 
 
@@ -54,7 +54,7 @@ Now, you can interact with the app through the frontend `localhost:4200/` browse
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
-## Running Our App On The Server
+## Running The App On A Server
 
 <!-- TBD -->
 
