@@ -1,3 +1,16 @@
+'''
+Script to send out emails to users about their events.
+
+Contains parent class SendEmail and child classes:
+    SendWeeklyEmail: sends weekly email to check in on new events
+    SendEventEmail: sends email when user RSVPs yes to event and contains all 
+        event details
+
+Sources:
+    https://docs.djangoproject.com/en/5.0/topics/email/
+
+'''
+
 import os
 import django
 import boto3
