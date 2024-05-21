@@ -1602,8 +1602,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             for event, distance_panel in zip(event_panel_dict_lst, distance_panel_list)
         ]
 
-        print(model_list[0]['user_id'])
-
         # Get recommendations
         prediction_probs = recommend(model_list, inference=True)
         event_ids = [event['event_id'] for event in event_panel_dict_lst]
@@ -1668,28 +1666,12 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             .order_by('-probability_of_attendance') \
             .values('event_id', 'probability_of_attendance', 'user_id')
         
-        new_top_events = []
-        for event in top_events:
-            event_id = event['event_id']
-            distance = self.distance_calc(event_id, user_id)
-            print(distance)
-            if any(distance[0].values()):
-                new_top_events.append(event)
-
-        print(new_top_events)
-
-        top_events = [event['event_id'] for event in top_events
+        # filter top events by distance
+        top_events = [event for event in top_events
                       if self.distance_calc(event['event_id'], user_id)[1] <= 50 #remove events more than 50 miles away
-                      ][:2]
+                      ]
 
-        top_event_data = [
-            {
-                'user_id': user_id,
-                'event_id': SuggestionResults.objects.filter(event_id=event_id)[0].event_id.id,
-                'probability_of_attendance': SuggestionResults.objects.filter(event_id=event_id)[0].probability_of_attendance
-            }
-            for event_id in top_events
-        ]
+        top_event_data = top_events[:2] # return the top 2 events
 
         # add event data
         for event_suggestion in top_event_data:
@@ -1712,7 +1694,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
 
             #If the user is available for all hours of the event, the user_availability query
             # will be the number of hours in the event
-            
 
             event_suggestion['user_available'] = user_availability == len(event_hours)
             event_suggestion['event_name'] = event.title
@@ -1751,13 +1732,10 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         '''
         event = Event.objects.get(id=event_id)
         onboarding = Onboarding.objects.get(user_id=user_id)
-        print(onboarding.latitude, onboarding.longitude)
         distance = distance_bin(
             (onboarding.latitude, onboarding.longitude),
             (event.latitude, event.longitude)
         )
-
-        print(event, distance)
         
         distance_dict = {
             'dist_within_1mi': False, 

@@ -71,6 +71,7 @@ export class EventSuggestionComponent implements OnInit {
       state: '',
       zipcode: '',
       price: '',
+      distance_from_user: '',
     };
   }
 
