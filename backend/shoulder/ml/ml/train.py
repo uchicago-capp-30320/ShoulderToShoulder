@@ -7,6 +7,7 @@ from tqdm import tqdm
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
 from shoulder.ml.ml.dataset import Dataset
+import pathlib
 
 from jax import value_and_grad, jit
 from shoulder.ml.ml.model import foward_deep_fm, foward_fm, foward_mlp, foward_embedding
@@ -19,10 +20,11 @@ def _ensure_weights():
     """Add the pretrained weights to the global scope"""
     global WEIGHTS
     if WEIGHTS is None:
-        with open('shoulder/ml/ml/weights/parameters.pkl', 'rb') as file:
+        train_path = pathlib.Path(__file__).parent
+        with open(train_path / 'weights/parameters.pkl', 'rb') as file:
             WEIGHTS = pickle.load(file)
 
-def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list, 
+def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
                  path: str='shoulder/ml/mlweights/parameters.pkl') -> None:
     """
     Save diagnostic plots and weights from training a DeepFM
@@ -52,7 +54,7 @@ def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
 
 
 @jit
-def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl, 
+def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
          y: jaxlib.xla_extension.ArrayImpl) -> tuple:
     """
     Make one update to a DeepFM
@@ -80,7 +82,7 @@ def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
     return params, loss, grads, accuracy
 
 
-def train(params: list, data: Dataset, num_epochs: int, 
+def train(params: list, data: Dataset, num_epochs: int,
           path: str="shoulder/ml/ml/weights/parameters.pkl"):
     """
     Train a deep factorization machine, visualize the results, and save the weights
@@ -130,8 +132,8 @@ def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     --------
         predictions (array): predicted probabilities of users RSVPing for events
     """
-    # Check if params is a global variable and if not, read them from a pkl file and add 
-    # the parameters to the gloabl scope so we don't have to keep reading them in when we 
+    # Check if params is a global variable and if not, read them from a pkl file and add
+    # the parameters to the gloabl scope so we don't have to keep reading them in when we
     # call predict
     _ensure_weights()
     params = WEIGHTS

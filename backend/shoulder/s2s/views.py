@@ -23,6 +23,7 @@ from .utils.calendar import calendar
 from datetime import datetime, timedelta
 from django.utils import timezone
 import pandas as pd
+from django.core.management import call_command
 from django.http import QueryDict
 
 
@@ -170,6 +171,9 @@ class EventViewSet(viewsets.ModelViewSet):
                 event = Event.objects.get(id=serializer.data['id'])
                 user_event = UserEvents(user_id=user, event_id=event, rsvp='Yes', attended=False)
                 user_event.save()
+                call_command("send_event_email_m", 
+                             user=user, 
+                             event_info = event)
         
             # trigger event suggestion panel data
             self.trigger_panel_event(serializer.data['id'])
@@ -805,6 +809,12 @@ class UserEventsViewSet(viewsets.ModelViewSet):
             return Response({"error": "User not found"}, status=404)
         except Event.DoesNotExist:
             return Response({"error": "Event not found"}, status=404)
+        
+        # Notify user of event via email
+        if rsvp == 'Yes':
+            call_command("send_event_email_m", 
+                             user=user, 
+                             event_info = event)
 
         # Create the user event object
         user_event = UserEvents(user_id=user, event_id=event, rsvp=rsvp, attended=False)
