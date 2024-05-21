@@ -989,159 +989,159 @@ def test_nonexistent_event(api_client, create_test_user):
     assert len(response.data["results"]) == 0
 
 
+@pytest.mark.skip
+@pytest.mark.django_db
+def test_panel_event_viewset(api_client, create_test_user):
+    """
+    Test the GET on PanelEventViewSet. 
+    If you can retreive the single row for the PanelEvent, then we know the "post" was successfully created.
+   """
+    user, app_token = create_test_user
+    event = create_test_event_add_user(api_client,user, app_token)
+    assert len(Event.objects.all()) == 1
 
-# @pytest.mark.django_db
-# def test_panel_event_viewset(api_client, create_test_user):
-#     """
-#     Test the GET on PanelEventViewSet. 
-#     If you can retreive the single row for the PanelEvent, then we know the "post" was successfully created.
-#    """
-#     user, app_token = create_test_user
-#    event = create_test_event_add_user(api_client,user, app_token)
-#     assert len(Event.objects.all()) == 1
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    url = f'/api/panel_events/'
 
-#     api_client.credentials(HTTP_X_APP_TOKEN=app_token)
-#     url = f'/api/panel_events/'
-
-#    #retrieve all events
-#     response = api_client.get(url)
-#    time.sleep(2.5)
-#     assert len(response.data["results"]) == 1
+   #retrieve all events
+    response = api_client.get(url)
+    time.sleep(2.5)
+    assert len(response.data["results"]) == 1
 
 
+@pytest.mark.skip
+@pytest.mark.django_db
+def test_panel_scenarios(api_client):
+    """
+    Test that the panel_scenarios get generated with the Scenarios viewset.
+    """
+    time.sleep(5)
+    app_token = generate_app_token()
+    assert ApplicationToken.objects.filter(name='s2s').exists()
 
-# @pytest.mark.django_db
-# def test_panel_scenarios(api_client):
-#     """
-#     Test that the panel_scenarios get generated with the Scenarios viewset.
-#     """
-#     time.sleep(5)
-#     app_token = generate_app_token()
-#     assert ApplicationToken.objects.filter(name='s2s').exists()
+    api_client.credentials(HTTP_X_APP_TOKEN=app_token)
 
-#     api_client.credentials(HTTP_X_APP_TOKEN=app_token)
+    user = User.objects.create(id=3, username='testuser')
 
-#     user = User.objects.create(id=3, username='testuser')
+    hobby_type1 = HobbyType.objects.create(id="1", type="OUTDOOR")
+    hobby_type2 = HobbyType.objects.create(id="2", type="EVENTS")
 
-#     hobby_type1 = HobbyType.objects.create(id="1", type="OUTDOOR")
-#     hobby_type2 = HobbyType.objects.create(id="2", type="EVENTS")
+    Hobby.objects.create(id=9, name='Running', type=hobby_type1)
+    Hobby.objects.create(id=10, name='Concert', type=hobby_type2)
+    Hobby.objects.create(id=5, name='Swimming', type=hobby_type1)
+    Hobby.objects.create(id=8, name='Party', type=hobby_type2)
 
-#     Hobby.objects.create(id=9, name='Running', type=hobby_type1)
-#     Hobby.objects.create(id=10, name='Concert', type=hobby_type2)
-#     Hobby.objects.create(id=5, name='Swimming', type=hobby_type1)
-#     Hobby.objects.create(id=8, name='Party', type=hobby_type2)
+    availability = Availability.objects.create(user_id=user, day_of_week='Monday', hour=1, available=True)
 
-#     availability = Availability.objects.create(user_id=user, day_of_week='Monday', hour=1, available=True)
+    data = {
+        "user_data": {"user_id": 3},
+        "availability": [{"user_id": 3, "day_of_week": "Monday", "hour": 1, "available": True}],
+        "onboarding": {
+        "user_id": 3,
+        "onboarded": True,
+        "most_interested_hobby_types": [
+            1,
+            2
+        ],
+        "most_interested_hobbies": [
+            5,
+            8
+        ],
+        "least_interested_hobbies": [
+            9,
+            10
+        ],
+        "num_participants": [
+            "1-5",
+            "5-10"
+        ],
+        "distance": "Within 5 miles",
+        "zip_code": "60615",
+        "city": "Chicago",
+        "state": "IL",
+        "address_line1": "",
+        "event_frequency": "Once a week",
+        "event_notification": "Email Only",
+        "similarity_to_group": "Moderately dissimilar",
+        "similarity_metrics": [
+            "Age range",
+            "Gender"
+        ],
+        "pronouns": "",
+        "gender": "",
+        "gender_description": "",
+        "race": "",
+        "race_description": "",
+        "age": "",
+        "sexual_orientation": "",
+        "sexual_orientation_description": "",
+        "religion": "",
+        "religion_description": "",
+        "political_leaning": "",
+        "political_description": "",
+        "num_participants": ["10-15"], "distance": "Within 10 miles", "similarity_to_group":"Neutral", "similarity_metrics":["Gender"]},
+            "scenarios": [{
+    "user_id": 3,
+    "hobby1": 9,
+    "hobby2": 8,
+    "distance1": "Within 30 miles",
+    "distance2": "Within 30 miles",
+    "num_participants1": "5-10",
+    "num_participants2": "5-10",
+    "day_of_week1": "Sunday",
+    "day_of_week2": "Sunday",
+    "time_of_day1": "Morning (9a-12p)",
+    "time_of_day2": "Evening (5-8p)",
+    "prefers_event1": False,
+    "prefers_event2": True,
+    "duration_h1": "3",
+    "duration_h2": "3"
+    }, {
+    "user_id": 3,
+    "hobby1": 8,
+    "hobby2": 9,
+    "distance1": "Within 10 miles",
+    "distance2": "Within 10 miles",
+    "num_participants1": "10-15",
+    "num_participants2": "5-10",
+    "day_of_week1": "Monday",
+    "day_of_week2": "Monday",
+    "time_of_day1": "Morning (9a-12p)",
+    "time_of_day2": "Evening (5-8p)",
+    "prefers_event1": True,
+    "prefers_event2": False,
+    "duration_h1": "3",
+    "duration_h2": "3"
+    }, {
+    "user_id": 3,
+    "hobby1": 8,
+    "hobby2": 9,
+    "distance1": "Within 10 miles",
+    "distance2": "Within 10 miles",
+    "num_participants1": "10-15",
+    "num_participants2": "5-10",
+    "day_of_week1": "Monday",
+    "day_of_week2": "Monday",
+    "time_of_day1": "Morning (9a-12p)",
+    "time_of_day2": "Evening (5-8p)",
+    "prefers_event1": True,
+    "prefers_event2": True,
+    "duration_h1": "3",
+    "duration_h2": "3"
+    }]
 
-#     data = {
-#         "user_data": {"user_id": 3},
-#         "availability": [{"user_id": 3, "day_of_week": "Monday", "hour": 1, "available": True}],
-#         "onboarding": {
-#     "user_id": 3,
-#     "onboarded": True,
-#     "most_interested_hobby_types": [
-#         1,
-#         2
-#     ],
-#     "most_interested_hobbies": [
-#         5,
-#         8
-#     ],
-#     "least_interested_hobbies": [
-#         9,
-#         10
-#     ],
-#     "num_participants": [
-#         "1-5",
-#         "5-10"
-#     ],
-#     "distance": "Within 5 miles",
-#     "zip_code": "60615",
-#     "city": "Chicago",
-#     "state": "IL",
-#     "address_line1": "",
-#     "event_frequency": "Once a week",
-#     "event_notification": "Email Only",
-#     "similarity_to_group": "Moderately dissimilar",
-#     "similarity_metrics": [
-#         "Age range",
-#         "Gender"
-#     ],
-#     "pronouns": "",
-#     "gender": "",
-#     "gender_description": "",
-#     "race": "",
-#     "race_description": "",
-#     "age": "",
-#     "sexual_orientation": "",
-#     "sexual_orientation_description": "",
-#     "religion": "",
-#     "religion_description": "",
-#     "political_leaning": "",
-#     "political_description": "",
-#     "num_participants": ["10-15"], "distance": "Within 10 miles", "similarity_to_group":"Neutral", "similarity_metrics":["Gender"]},
-#         "scenarios": [{
-#   "user_id": 3,
-#   "hobby1": 9,
-#   "hobby2": 8,
-#   "distance1": "Within 30 miles",
-#   "distance2": "Within 30 miles",
-#   "num_participants1": "5-10",
-#   "num_participants2": "5-10",
-#   "day_of_week1": "Sunday",
-#   "day_of_week2": "Sunday",
-#   "time_of_day1": "Morning (9a-12p)",
-#   "time_of_day2": "Evening (5-8p)",
-#   "prefers_event1": False,
-#   "prefers_event2": True,
-#   "duration_h1": "3",
-#   "duration_h2": "3"
-# }, {
-#   "user_id": 3,
-#   "hobby1": 8,
-#   "hobby2": 9,
-#   "distance1": "Within 10 miles",
-#   "distance2": "Within 10 miles",
-#   "num_participants1": "10-15",
-#   "num_participants2": "5-10",
-#   "day_of_week1": "Monday",
-#   "day_of_week2": "Monday",
-#   "time_of_day1": "Morning (9a-12p)",
-#   "time_of_day2": "Evening (5-8p)",
-#   "prefers_event1": True,
-#   "prefers_event2": False,
-#   "duration_h1": "3",
-#   "duration_h2": "3"
-# }, {
-#   "user_id": 3,
-#   "hobby1": 8,
-#   "hobby2": 9,
-#   "distance1": "Within 10 miles",
-#   "distance2": "Within 10 miles",
-#   "num_participants1": "10-15",
-#   "num_participants2": "5-10",
-#   "day_of_week1": "Monday",
-#   "day_of_week2": "Monday",
-#   "time_of_day1": "Morning (9a-12p)",
-#   "time_of_day2": "Evening (5-8p)",
-#   "prefers_event1": True,
-#   "prefers_event2": True,
-#   "duration_h1": "3",
-#   "duration_h2": "3"
-# }]
+    }
+    onboarding_url = "/api/submit_onboarding/"
+    r = api_client.post(onboarding_url, data=data, format='json')
+    assert r.status_code == status.HTTP_201_CREATED
+    assert len(Scenarios.objects.all()) == 3
 
-#     }
-#     onboarding_url = "/api/submit_onboarding/"
-#     r = api_client.post(onboarding_url, data=data, format='json')
-#     assert r.status_code == status.HTTP_201_CREATED
-#     assert len(Scenarios.objects.all()) == 3
+    panel_scenarios_url = "/api/panel_scenarios/"
+    response = api_client.get(panel_scenarios_url, HTTP_X_APP_TOKEN=app_token)
 
-#     panel_scenarios_url = "/api/panel_scenarios/"
-#     response = api_client.get(panel_scenarios_url, HTTP_X_APP_TOKEN=app_token)
-
-#     assert response.status_code == 200
-#     assert len(PanelScenario.objects.all()) == 3
-#     assert len(response.data["results"]) == 3
+    assert response.status_code == 200
+    assert len(PanelScenario.objects.all()) == 3
+    assert len(response.data["results"]) == 3
 
 
 
