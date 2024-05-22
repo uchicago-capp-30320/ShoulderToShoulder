@@ -30,7 +30,7 @@ from django.http import QueryDict
 from .serializers import *
 from .db_models import *
 
-from ml.ml.recommendation import recommend, finetune
+from ml.ml.recommendation import recommend, finetune, pretrain
 
 # functions
 def index(request):
@@ -1587,9 +1587,22 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 finetuning_dict['attended_event'] = user_events_dict['attended']
                 finetuning_data.append(finetuning_dict)
 
+        # pretrain the model
+        print("Pretraining the model...")
+        print("\tGetting pretraining data...")
+        pretraining_data = self.get_training_data(request)
+        if pretraining_data.status_code != 200:
+            return Response({"error": "Failed to fetch pretraining data"}, status=pretraining_data.status_code)
+        
+        pretraining_data = pretraining_data.data
+
+        print("\tPretraining the model...")
+        epochs, loss_list, acc_list = pretrain(pretraining_data)
+
+
         # finetune the model
         print("Finetuning the model...")
-        # epochs = 1
+        # epochs = []
         # loss_list = []
         # acc_list = []
         epochs, loss_list, acc_list = finetune(finetuning_data)
@@ -1603,6 +1616,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         """
         scenario_panel_data = PanelScenario.objects.all()
         scenario_panel_serializer = PanelScenarioSerializer(scenario_panel_data, many=True)
+        data = []
 
         # grab the associated user panel data
         for scenario_panel_dict in scenario_panel_serializer.data:
@@ -1611,12 +1625,14 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             if user_panel.exists():
                 user_panel = user_panel[0]
                 user_panel_serialized = PanelUserPreferencesSerializer(user_panel)
-                scenario_panel_dict.update(user_panel_serialized.data)
-            else:
-                # remove the scenario panel data from the dictionary
-                scenario_panel_dict = None
+                data.append({**user_panel_serialized.data, **scenario_panel_dict})
 
-        return Response(scenario_panel_serializer.data, status=200)
+        # assert that all of the dictions have the same keys
+        keys = data[0].keys()
+        for scenario_panel_dict in data:
+            assert scenario_panel_dict.keys() == keys, f"Not all dictionaries have the same keys for user {scenario_panel_dict['user_id']} {set(scenario_panel_dict.keys()) - set(keys)}, {set(keys) - set(scenario_panel_dict.keys())}"
+
+        return Response(data, status=200)
 
     @action(detail=False, methods=['get'], url_path='update')
     def update_suggestions(self, request, *args, **kwargs):

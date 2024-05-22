@@ -97,7 +97,7 @@ def pretrain(raw_data: requests.models.Response, num_factors: int=5, batch_size=
     return epochs, loss_list, acc_list
 
 
-def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=25, 
+def finetune(raw_data: requests.models.Response,  batch_size=32, num_epochs: int=5, 
              seed=1999, path: str=PARAMETERS_PATH) -> tuple[list]:
     """
     Finetune a DeepFM
