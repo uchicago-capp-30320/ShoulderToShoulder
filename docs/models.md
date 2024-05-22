@@ -84,7 +84,7 @@ Stores users' onboarding information, such as location, preference for event fre
 | num_participants | JSON Field | User's preference for size of events (i.e. number of people attending); can select multiple ranges (1-5, 5-10, 10-15, 15+). Null values possible. |
 | distance | Character Field | User's preference for how far away they are willing to attend an event. 9 options: Within 1 mile, Within 5 miles, Within 10 miles, Within 15 miles, Within 20 miles, Within 30 miles, Within 40 miles, Within 50 miles, No preference. Null values possible. |
 | similarity_to_group | Character Field | User's preference for how similiar they want their groupmates to be to them. 6 options: Completely dissimilar, Moderately dissimilar, Neutral, Moderately similar, Completely similar, No preference. Null values possible. |
-| similarity_metrics | The attributes that determine user's similarity_to_group preference (i.e. attributes to compare user's similarity preference to groupmates). Ex. race, religious affiliation, sexual orientation, age, gender, and political affiliation. Users can select multiple attributes; null values possible. |
+| similarity_metrics | JSONField |The attributes that determine user's similarity_to_group preference (i.e. attributes to compare user's similarity preference to groupmates). Ex. race, religious affiliation, sexual orientation, age, gender, and political affiliation. Users can select multiple attributes; null values possible. |
 | gender | JSON Field | User's self-identified gender. Optional field, so null values possible. |
 | gender_description | Character Field | Further description of user's gender identification. Optional field, so null values possible. |
 | pronouns | Character Field | User's preferred pronouns. Optional field, so null values possible. |
@@ -216,18 +216,18 @@ Stores users with every event they have been suggested (no matter if they decide
 Saves the display options (choices) for the frontend to show during onboarding. There is only one JSON object stored in this table, and it cannot be modified, as well as no other objects added, by users. It will remian static unless the development team decides to update the choices/options available for users to choose from during their onboarding.   
 
 Static JSON Object:  
-{"gender": ["Man", "Non-binary", "Woman", "Transgender", "Two-Spirit", "Other", "Prefer not to answer"], 
-"distance": ["Within 1 mile", "Within 5 miles", "Within 10 miles", "WIthin 15 miles", "Within 20 miles", "Within 30 miles", "Within 40 miles", "Within 50 miles", "No preference"], 
-"politics": ["Apolitical", "Conservative", "Moderate", "Liberal", "Other", "Prefer not to answer"], 
-"religion": ["Agnostic", "Atheist", "Bahá’í", "Buddhist", "Catholic", "Christian", "Hindu", "Jain", "Jewish", "Latter-day Saint", "Mormon", "Muslim", "Shinto", "Sikh", "Spiritual", "Taoist", "Zoroastrian", "None", "Other", "Prefer not to answer"], 
-"age_range": ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75-84", "85+", "Prefer not to answer"], 
-"group_size": ["1-5", "5-10", "10-15", "15+", "No preference"], 
-"time_of_day": ["Early morning (5-8a)", "Morning (9a-12p)", "Afternoon (1-4p)", "Evening (5-8p)", "Night (9p-12a)", "Late night (1-4a)"], 
-"race_ethnicity": ["African American", "Black", "Central Asian", "East Asian", "Hispanic", "Indigenous", "Jewish", "Latina/Latino/Latinx", "Middle Eastern", "Native American", "North African", "Pacific Islander", "South Asian", "Southeast Asian", "West Asian", "White", "Other", "Prefer not to answer"], 
-"event_frequency": ["Twice a week", "Once a week", "Once every two weeks", "Once a month", "Once every three months"], 
-"similarity_metric": ["Completely dissimilar", "Moderately dissimilar", "Neutral", "Moderately similar", "Completely similar", "No preference"], 
-"sexual_orientation": ["Asexual", "Bisexual", "Gay", "Heterosexual/Straight", "Lesbian", "Pansexual", "Queer", "Questioning", "Other", "Prefer not to answer"], 
-"notification_method": ["Email Only", "Email and Text", "Text Only", "None"], 
+{"gender": ["Man", "Non-binary", "Woman", "Transgender", "Two-Spirit", "Other", "Prefer not to answer"],   
+"distance": ["Within 1 mile", "Within 5 miles", "Within 10 miles", "WIthin 15 miles", "Within 20 miles", "Within 30 miles", "Within 40 miles", "Within 50 miles", "No preference"],   
+"politics": ["Apolitical", "Conservative", "Moderate", "Liberal", "Other", "Prefer not to answer"],   
+"religion": ["Agnostic", "Atheist", "Bahá’í", "Buddhist", "Catholic", "Christian", "Hindu", "Jain", "Jewish", "Latter-day Saint", "Mormon", "Muslim", "Shinto", "Sikh", "Spiritual", "Taoist", "Zoroastrian", "None", "Other", "Prefer not to answer"],   
+"age_range": ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75-84", "85+", "Prefer not to answer"],   
+"group_size": ["1-5", "5-10", "10-15", "15+", "No preference"],   
+"time_of_day": ["Early morning (5-8a)", "Morning (9a-12p)", "Afternoon (1-4p)", "Evening (5-8p)", "Night (9p-12a)", "Late night (1-4a)"],   
+"race_ethnicity": ["African American", "Black", "Central Asian", "East Asian", "Hispanic", "Indigenous", "Jewish", "Latina/Latino/Latinx", "Middle Eastern", "Native American", "North African", "Pacific Islander", "South Asian", "Southeast Asian", "West Asian", "White", "Other", "Prefer not to answer"],    
+"event_frequency": ["Twice a week", "Once a week", "Once every two weeks", "Once a month", "Once every three months"],   
+"similarity_metric": ["Completely dissimilar", "Moderately dissimilar", "Neutral", "Moderately similar", "Completely similar", "No preference"],   
+"sexual_orientation": ["Asexual", "Bisexual", "Gay", "Heterosexual/Straight", "Lesbian", "Pansexual", "Queer", "Questioning", "Other", "Prefer not to answer"],   
+"notification_method": ["Email Only", "Email and Text", "Text Only", "None"],   
 "similarity_attribute": ["Age range", "Gender", "Political Leaning", "Race or Ethnicity", "Religious Affiliation", "Sexual Orientation", "No preference"]}
 
 | Column | Type | Description |
