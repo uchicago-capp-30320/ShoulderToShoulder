@@ -12,7 +12,7 @@ A high level overview of our repository structure:
 Directory with our web application's frontend development, which serves our UI/UX and user interaction. Our frontend employs Angular.
 
 #### `backend/shoulder` 
-Directory with our web application's backend development. Our backend employs Django with an AWS Posgres(QL) database. The backend development also involves a machine learning component, a GIS component, and a directory containing unit testing. 
+Directory with our web application's backend development. Our backend employs Django with an AWS Posgre(SQL) database. The backend development also involves a machine learning component, a GIS component, and a directory containing unit testing. 
 
 #### `backend/shoulder/s2s` and `backend/shoulder/ShoulderToShoulder` 
 The two directories which house our Django development. This is where the backend team manages the database, the models, the API endpoints (viewpsets), and the overall backend connection to the web application.  
