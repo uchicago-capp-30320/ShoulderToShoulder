@@ -55,7 +55,7 @@ And finally, users can contact the development team at any point with questions 
 
 
 ## Application Features
-The frontend, user facing component employs Angular with Nodejs dependencies. The backend connection employs Django with an AWS Posgres(QL) database. All of our application's data is generated through user inputs.
+The frontend, user facing component employs Angular with Nodejs dependencies. The backend connection employs Django with an AWS Postgre(SQL) database. All of our application's data is generated through user inputs.
 
 Special features of our application include:
 - A machine learning module, which trains user preferences and feedback to create personalized event recommendations for each user. To generate user recommendations, our machine learning algorithm employs a deep factorization machine (DeepFM). 
