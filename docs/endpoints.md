@@ -411,12 +411,7 @@ defaults = {
     'event_date': event.datetime
 }).  
 At the completion of this process, the response object is JSON with the following information:  
-Response({"count": number of new rows saved/updated,   
-        "next": None,  
-        "previous": None,   
-        "results": A list of dictionaries, where each dict represents the new/modified row in the SuggestionResults model (see `models.md` for model documentation)},   
-        status=200)
-
+Response({"count": number of new rows saved/updated, "next": None, "previous": None, "results": A list of dictionaries, where each dict represents the new/modified row in the SuggestionResults model (see `models.md` for model documentation)}, status=200).
 
 Finally, to retrieve the suggestion results from the SuggestionResults model (`api/get_suggestions`), the GET request must include the "user_id" parameter. The function will call all of the rows in the SuggestionResults model, and filter for the rows with the highest probability that a user would attend the event. The response object returns the suggestion results, which need to continuously be updated as time moves forward, events pass, and new events get added in our database. 
 
