@@ -26,8 +26,6 @@ def preprocess(raw_data: list,
     feature_list, target_list = [], []
 
     for d in raw_data:
-        if d.get('id', None):
-            del d['id']
         user_id = d["user_id"]
         del d["user_id"]
 
