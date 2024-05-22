@@ -15,7 +15,7 @@ Directory with our web application's frontend development, which serves our UI/U
 Directory with our web application's backend development. Our backend employs Django with an AWS Posgres(QL) database. The backend development also involves a machine learning component, a GIS component, and a directory containing unit testing. 
 
 #### `backend/shoulder/s2s` and `backend/shoulder/ShoulderToShoulder` 
-The two directories which house our Django development. This is where the backend team manages the database, the models, the API endpoints (viewpoints), and the overall backend connection to the web application.  
+The two directories which house our Django development. This is where the backend team manages the database, the models, the API endpoints (viewpsets), and the overall backend connection to the web application.  
 
 #### `backend/shoulder/config/gunicorn`
 The directory which establishes our application's AWS deployment; this sets up our app on a server and also schedules the cron job to send users weekly email notifications. 
