@@ -3,12 +3,36 @@
 This document provides details about the Django Endpoints (i.e. ViewSets, located in `backend/shoulder/s2s/views.py`) used in the deployment of Shoulder to Shoulder.
 
 
+## ApplicationToken Endpoint
+
+`/api/applicationtokens/`
+
+#### Description
+Retrieves (and in special circumstances, generates a new) X_APP_TOKEN needed for the application wide authentification; this viewset allows GET and POST requests. Permissions require the existing X_APP_TOKEN.
+
+#### GET Response Content
+
+The frontend module (s2s permissions) retrieves the X_APP_TOKEN in order to facilitate the connection between the frontend and backend modules during the launch of the app. There is only one X_APP_TOKEN. The GET request must pass the parameters "name" (name of the token, which is "s2s" in our app) or "token" (the actual token string itself) in order to retrieve the ApplicationToken object saved in our database.  
+
+Response Object is JSON with the following information:
+
+- count: Total count of available categories.
+- next: URL to the next page of availability (null if no next page).
+- previous: URL to the previous page of availability (null if no previous page).
+- results: A list of dictionaries, where each dict represents a row returned from the ApplicationToken model (see `models.md` for model documentation): [{"id": , "name": , "token": , "created_at": }]
+
+
+#### POST Request Content 
+In special circumstances, the development team may need to create a new Application Token, either to replace the old one, or to create a separate user interface for a different category of users. The POST request requires all fields from the ApplicationToken object in order to serialize and save a new X_APP_TOKEN to our database.
+
+
+
 ## Hobby Endpoint
 
 `/api/hobbies/`
 
 #### Description
-Retrieves a list of hobbies; this viewset allows GET requests. Permissions require the X_APP_TOKEN.
+Retrieves a list of hobbies; this viewset allows GET requests. The Hobby model is a presaved list of hobbies available for users to choose from, therefore no POST requests are allowed (i.e. users cannot edit the hobbies saved in our database). Permissions require the X_APP_TOKEN.
 
 #### GET Response Content 
 When retrieving all of the rows, the viewset response returns 10 results per page on default. The request can also pass the parameters "id" and/or "type" in order to filter for a specific entry.    
@@ -20,6 +44,23 @@ Response Object is JSON with the following information:
 - previous: URL to the previous page of hobbies (null if no previous page).
 - results: A list of dictionaries, where each dict represents a row returned from the Hobby model (see `models.md` for model documentation): [{"id": , "name": , "scenario_format": , "type": }, {...}, ...]
 
+
+## HobbyType Endpoint
+
+`/api/hobbies/`
+
+#### Description
+Retrieves a list of hobby types; this viewset allows GET requests. The HobbyType model is a presaved list of hobby types available for users to choose from, therefore no POST requests are allowed (i.e. users cannot edit the hobby types saved in our database). Permissions require the X_APP_TOKEN.
+
+#### GET Response Content 
+When retrieving all of the rows, the viewset response returns 10 results per page on default. The request can also pass the parameters "id" and/or "type" in order to filter for a specific HobbyType entry.    
+
+Response Object is JSON with the following information:
+
+- count: Total count of hobbies available.
+- next: URL to the next page of hobbies (null if no next page).
+- previous: URL to the previous page of hobbies (null if no previous page).
+- results: A list of dictionaries, where each dict represents a row returned from the HobbyType model (see `models.md` for model documentation): [{"id": , "type": }, {...}, ...]
 
 ## Event Endpoint
 
@@ -240,6 +281,34 @@ The function then triggers the storage and creation of onboarding data into the 
 3. Insert/save onboarding data (trigger_onboarding)
 
 
+## UserEvents Endpoint
+
+`/api/userevents/`
+
+#### Description
+Retrieves, saves, and updates event x user combinations/interactions in our database; this viewset allows GET and POST requests. Permissions require the X_APP_TOKEN. 
+
+#### GET Response Content
+
+When retrieving all of the rows, the viewset response returns 10 results per page on default. Response Object is JSON with the following information:
+
+- count: Total count of available categories.
+- next: URL to the next page of availability (null if no next page).
+- previous: URL to the previous page of availability (null if no previous page).
+- results: A list of dictionaries, where each dict represents a row returned from the UserEvents model (see `models.md` for model documentation).   
+
+The GET request can also pass the parameter "user_id" in order to filter for a specific user's event information. In this case, the response object filters only for the events that users have given rsvp = "Yes", and returns a list of two dictionaries: {"past_events": [list of Event objects user attended in the past], "upcoming_events": [list of Event objects users plan on attending in the near future]}
+
+Finally, this viewset has a function get_upcoming_past_events(), which is accessed through the url: `api/upcoming_past_events`. This GET request requires a "user_id" parameter, and will return a dictionary with two objects: {"past_events": {"count": #, "events": [list of Event objects]}, "upcoming_events": {"count": #, "events": [list of Event objects]}}.
+
+
+#### POST Request Content 
+In order to save a new row in the UserEvents model, the following fields are required in the request: "user_id" and "event_id". Optional parameter in the request is "rsvp"; if "rsvp" is not present in the request, it will default to "No". The create() function for this POST request will serialize and save a new row in the UserEvents model, with the following attributes: UserEvents(user_id=user, event_id=event, rsvp=rsvp, attended=False). The response returns a status = 201, and the response data is the UserEvents object that just got created. 
+
+Additionally, there is a POST request method for users to review the previous events they have attended. This can be accessed through the url: `api/review_event`. The following fields are required in the request: "user_id" and "event_id". Optional parameter in the request are "attended" and "rating"; if the fields are present, the viewset will modify these values on the UserEvent row. If the fields are not present, the viewset will save no rating, and will save "attended" = "Did not attend". The response returns a status = 200, and the response data is the UserEvents object that just got modified. 
+
+
+
 ## PanelEvent Endpoint
 
 `/api/panel_events/`
@@ -261,6 +330,29 @@ Response Object is JSON with the following information:
 
 #### POST Request Content 
 The POST request requires the "event_id" field in order to execute the create() function. To create a row in the PanelEvent model using the information provided by the Event object, this viewset runs functions to parse and prepare the Event data, maps it to an expanded, one-hot encoded format, and then creates and saves the PanelEvent object. 
+
+
+## PanelScenario Endpoint
+
+`/api/panel_scenarios/`
+
+#### Description
+Panels (i.e. expands through one-hot encoding) the scenario information and also retrieves the panelized event data; this viewset allows GET and POST requests. Permissions require the X_APP_TOKEN. 
+
+#### GET Response Content
+
+When retrieving all of the rows, the viewset response returns 10 results per page on default. The GET request can also pass the parameters "user_id" in order to filter for a specific User's scenario responses.  
+
+Response Object is JSON with the following information:
+
+- count: Total count of available categories.
+- next: URL to the next page of availability (null if no next page).
+- previous: URL to the previous page of availability (null if no previous page).
+- results: A list of dictionaries, where each dict represents a row returned from the PanelScenario model (see `models.md` for model documentation): [{"id": , "scenario_id": , "user_id": , ... "duration_8hr": , "attended_event": }, {...}, ...]
+
+
+#### POST Request Content 
+The POST request requires the "user_id" field in order to execute the create() function. To create a row in the PanelScenario model, the viewset uses the User object to access the matching Onboarding object. The viewset then runs functions to parse and prepare the user's Scenarios from their Onboarding data, maps it to an expanded, one-hot encoded format, and then creates and saves the PanelScenario object. 
 
 
 ## PanelUserPreferences Endpoint
@@ -286,43 +378,70 @@ Response Object is JSON with the following information:
 The POST request requires the "user_id" field in order to execute the create() function. To create a row in the PanelUserPreferences model using the information provided by the User and Onboarding objects, this viewset runs functions to parse and prepare the user's Onboarding data, maps it to an expanded, one-hot encoded format, and then creates and saves the PanelUserPreferences object. 
 
 
-
-
-
-
 ## ZipCode Endpoint
 
-#### Description
-Retrieves zip code information to fill the onboarding survey.
-
-#### Response Attributes 
-- zipcode: The zipcode inputted
-- city: The city populated from the zipcode
-
-
-
-## Event Suggestions Endpoint
+`/api/zipcodes/`
 
 #### Description
-Retrieves the list of machine learning suggestions information, this model allows GET and POST requests. Returns 10 results per page on default.
+Retrieves the city and state for a provided zipcode; this viewset allows GET requests. Functionality requires a ZIPCODE_API_KEY from the US Postal Service API. 
 
-#### Response Attributes 
-To be determined
+#### GET Response Content 
+The GET request must pass the parameter "zip_code" in order to verify and locate a specific city. If the zipcode is valid, the response returns a JSON object containing:[{"zipcode": , "city", "state"}]. If the inputted zipcode does not exist, the response returns a 400 status. 
+
+
+
+## SuggestionResults Endpoint
+
+`/api/suggestionresults/`
+
+#### Description
+Retrieves, updates, and creates event suggestions for users, determined by trained dataset from the machine learning algorithm; this viewset allows GET requests. Permissions require the X_APP_TOKEN. 
+
+#### GET Response Content
+
+The viewset has multiple functionalities to perform a GET request. 
+
+To retrieve the training data for the ML model (`api/get_training_data`), the reponse returns a dictionary containing all of the PAnelScenario objects paired with the PanelUserPreferences objects, joined on the matching user_id. 
+
+To update and create suggestions to show the users (`api/update`), the GET request must include the "user_id" parameter. The function then retirieves all of the Event objects, as well as the User object and the PanelUserPreferences object specific to the given user_id. The viewset then executes fit on the ML algorithm, predicts the probability that the User would attend each Event, and creates and/or updates rows in the SuggestionResults model with the following attributes:  
+(user_id = user,
+event_id = event,
+defaults = {
+    'probability_of_attendance': pred[0],
+    'event_date': event.datetime
+}).  
+At the completion of this process, the response object is JSON with the following information:  
+Response({"count": number of new rows saved/updated,   
+        "next": None,  
+        "previous": None,   
+        "results": A list of dictionaries, where each dict represents the new/modified row in the SuggestionResults model (see `models.md` for model documentation)},   
+        status=200)
+
+
+Finally, to retrieve the suggestion results from the SuggestionResults model (`api/get_suggestions`), the GET request must include the "user_id" parameter. The function will call all of the rows in the SuggestionResults model, and filter for the rows with the highest probability that a user would attend the event. The response object returns the suggestion results, which need to continuously be updated as time moves forward, events pass, and new events get added in our database. 
+
 
 
 ## Group Endpoint
 
 __NOTE: Currently not implemented in the app's functionality. This can become an update for the second version of ShoulderToShoulder.__
 
-#### Description
-Retrieves the list of groups, this model allows GET and POST requests. Returns 10 results per page on default.
+`/api/groups/`
 
-#### Response Attributes 
+#### Description
+Retrieves and saves the list of groups in the Group model; this viewset allows GET and POST requests. Permissions require the user has a JWT access_token.
+
+#### GET Response Content
+
+When retrieving all of the rows, the viewset response returns 10 results per page on default. The GET request can also pass the parameters "event_id" in order to filter for a specific Event.  
+
+Response Object is JSON with the following information:
+
 - count: Total count of groups.
 - next: URL to the next page of hobbies (null if no next page).
 - previous: URL to the previous page of hobbies (null if no previous page).
-- results: List of Groups, where each Group has the following attributes:
-        - name: Name of the Group.
-        - group_description: Description of the Group.
-        - max_participants: Maximum number of participants allowed for the Group.
-        - members: List of members in the specified group.
+- results: A list of dictionaries, where each dict represents a row returned from the Group model (see `models.md` for model documentation): [{"id": , "name": , "group_description": , "max_participants": , "members": }, {...}, ...] 
+
+
+#### POST Request Content 
+To create a Group, the POST request requires the "members" field, which is a list of User objects (the users who belong to the Group). 
