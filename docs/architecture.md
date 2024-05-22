@@ -1,5 +1,11 @@
 # ShoulderToShoulder Architecture Documentation
 
+## Architecture Diagram
+
+A high level overview of our repository structure:
+
+![Architecture Diagram](media/architecture_diagram.png)
+
 ## Repository Contents
 
 #### `frontend`
@@ -59,11 +65,6 @@ Directory which contains our web application's GIS module. We use spatial analys
 #### `backend/shoulder/tests`
 The directory which contains all of the unit testing for the backend module. We use pytest to test the information being passed to and from the ml and gis modules, and pytest-django to test the Django backend viewpoints. 
 
-## Architecture Diagram
-
-A high level overview of our repository structure:
-
-![Architecture Diagram](media/architecture_diagram.png)
 
 ## About Our Data
 
