@@ -1707,7 +1707,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         event_ids = [] # Set up list to hold event IDs
         for event in event_panel_dict_lst:
             event.pop('_state')
-            event.pop('id')
             event['event_id'] = event.pop('event_id_id')
 
             # Construct a distance dictionary for each event-user pair
