@@ -2,6 +2,8 @@
 
 A web application created to combat social isolation and fight the loneliness epidemic by fostering meaningful connections.
 
+![HomePage](docs/media/home_page.png)
+
 ## About The Application
 
 In 2023, the United States Department of Health and Human Services acknowledged a profound challenge affecting millions: loneliness and social isolation have reached epidemic levels in America. This growing health concern has profound implications, as loneliness can impact mental and physical health significantly. At Shoulder to Shoulder, we are committed to addressing this silent epidemic through the power of community and connection.
@@ -11,8 +13,6 @@ Our platform is designed not just as a tool, but as a community builder that ena
 We facilitate a variety of events and activities, from hiking groups and book clubs to art classes and tech meetups. Our goal is to make it easier than ever for people to engage in shared interests and hobbies, which are crucial for building strong social ties. Whether you're new to the city, seeking to expand your social circle, or simply looking to explore new interests, Shoulder to Shoulder serves as your gateway to a more connected and fulfilling life.
 
 Join us in combating loneliness by engaging in your community through Shoulder to Shoulder. Let's rediscover the joy of connection together, one event at a time.
-
-![HomePage](docs/media/home_page.png)
 
 ## UI/UX (User) Tutorial 
 
@@ -26,17 +26,22 @@ They must complete an onboarding process in order to successfully complete their
 
 The onboarding collects three types of information: demographic information, logistics about their interests and availability, and an event preference survey. 
 
-![Onboarding 1.1](docs/media/onboarding_1_1.png)
-![Onboarding 1.2](docs/media/onboarding_1_2.png)
-![Onboarding 2](docs/media/onboarding_2.png)
-![Onboarding 3](docs/media/onboarding_3.png)
-![Onboarding 4](docs/media/onboarding_4.png)
+![Onboarding 1.1](docs/media/onboarding_1_1.png)  
+
+![Onboarding 1.2](docs/media/onboarding_1_2.png)  
+
+![Onboarding 2](docs/media/onboarding_2.png)  
+
+![Onboarding 3](docs/media/onboarding_3.png)  
+
+![Onboarding 4](docs/media/onboarding_4.png)  
+
 
 Following the onboarding process, users are taken to their profile page. On the profile page, users can view their upcoming events and past events; rate previous events they have attended; edit their availability; edit thier personal information and password; edit their onboarding responses; and upload a profile photo. 
 
 ![Profile](docs/media/profile_overview.png)
 
-Events get added to the database by users themselves. Our application has a submission form for Event Creation where users can post an event they know about or plan on attending by entering it's information; the created event is posted to the database and will be recommended to matched users until it reaches capacity.
+Events get added to the database by users themselves. Our application has a submission form for Event Creation where users can post an event they know about or plan on attending by entering it's information. The created event is saved to the database and will be recommended to matched users until it reaches capacity.
 
 ![Event Creation](docs/media/event_creation.png)
 
@@ -45,17 +50,18 @@ Periodically, users receive event recommendations through notifications on their
 ![Event Recommendation](docs/media/event_suggestion.png)
 
 And finally, users can contact the developers at any point with questions and concerns they may have!
+
 ![Contact Us](docs/media/contact_us_page.png)
 
 
 ## Application Features
-The frontend, user facing component employs Angular with nodejs dependencies. The backend connection employs Django with an AWS Posgres(QL) database. All of our application's data is generated through user inputs.
+The frontend, user facing component employs Angular with Nodejs dependencies. The backend connection employs Django with an AWS Posgres(QL) database. All of our application's data is generated through user inputs.
 
 Special features of our application include:
 - A machine learning module, which trains user preferences and feedback to create personalized event recommendations for each user. To generate user recommendations, our machine learning algorithm employs a deep factorization machine (DeepFM). 
 - A GIS module, which is used to locate events happening within a specified distance of a user's resident location; verify that inputted addresses exist; and locate places based on a given zipcode. 
 - Deployment on AWS, which sets up our app on a server.
-- Deployment on AWS also establishes a CronJob which is used to schedule weekly email notifications sent from the app to users. Additionally, when users sign up for an event, the event confirmation and information gets sent in an email to the user.
+- The AWS deployment also establishes a CronJob which is used to schedule weekly email notifications sent from the app to users. Additionally, when users sign up for an event, the event confirmation and information gets sent in an email to the user.
 - Secure information handling is established in multiple ways: 1. users must sign-up and log-in with their email and password (which must, at a minimum, have 8 characters, one lower case letter, one upper case letter, one number, and one special charcter); 2. JSON web tokens are used to authorize interaction with our API, including JWT access tokens for each user and also a single, application wide JWT token (each endpoint in the backend has different permissions and can only be accessed if the users / super users possess the required tokens); 3. integrated Zipcode and GIS APIs are used to verify if inputted locations exist, in order to prevent fake locations from being saved to events. 
 
 ## How To Run The App
