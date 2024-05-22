@@ -215,7 +215,7 @@ Unverified log-in requests receive a Response status = 401.
 
 
 
-## Submit_Onboarding Endpoint
+## SubmitOnboarding Endpoint
 
 `/api/submit_onboarding/`
 
@@ -224,24 +224,73 @@ Centralized endpoint for submitting onboarding data. Triggers the actions which 
 
 #### POST Request Content
 Request data should be a dictionary/JSON object with the following keys:
-        - user_data: user data dictionary  
-        - availability: list of availability dictionaries  
-        - onboarding: onboarding data dictionary  
-        - scenarios: list of scenario dictionaries  
-        i.e., {"user_data": {"user_id": number},   
-                "availability": [{"day_of_week": string, "hour": number, "available": boolean}, ...],   
-                "onboarding": {"num_participants": string, "distance": string,...},   
-                "scenarios": [{"day_of_week1": string, "time_of_day1": string,...},...]  
-                }   
+- user_data: user data dictionary  
+- availability: list of availability dictionaries  
+- onboarding: onboarding data dictionary  
+- scenarios: list of scenario dictionaries  
+i.e., {"user_data": {"user_id": number},   
+        "availability": [{"day_of_week": string, "hour": number, "available": boolean}, ...],   
+        "onboarding": {"num_participants": string, "distance": string,...},   
+        "scenarios": [{"day_of_week1": string, "time_of_day1": string,...},...]  
+        }   
 
-This functional handles the sequential requirements of data updates:   
-        1. Insert availability data  
-        2. Insert and panelize scenario data  
-        3. Insert onboarding data  
+The function then triggers the storage and creation of onboarding data into the database:   
+1. Insert/save availability data (trigger_availability)
+2. Insert/save and panelize scenario data  (trigger_scenario)
+3. Insert/save onboarding data (trigger_onboarding)
+
+
+## PanelEvent Endpoint
+
+`/api/panel_events/`
+
+#### Description
+Panels (i.e. expands through one-hot encoding) the event information and also retrieves the panelized event data; this viewset allows GET and POST requests. Permissions require the X_APP_TOKEN. 
+
+#### GET Response Content
+
+When retrieving all of the rows, the viewset response returns 10 results per page on default. The GET request can also pass the parameters "event_id" in order to filter for a specific Event.  
+
+Response Object is JSON with the following information:
+
+- count: Total count of available categories.
+- next: URL to the next page of availability (null if no next page).
+- previous: URL to the previous page of availability (null if no previous page).
+- results: A list of dictionaries, where each dict represents a row returned from the PanelEvent model (see `models.md` for model documentation): [{"id": , "event_id": , "hobby_category_travel": , ... "duration_7hr": , "duration_8hr": }, {...}, ...]
+
+
+#### POST Request Content 
+The POST request requires the "event_id" field in order to execute the create() function. To create a row in the PanelEvent model using the information provided by the Event object, this viewset runs functions to parse and prepare the Event data, maps it to an expanded, one-hot encoded format, and then creates and saves the PanelEvent object. 
+
+
+## PanelUserPreferences Endpoint
+
+`/api/panel_user_preferences/`
+
+#### Description
+Panels (i.e. expands through one-hot encoding) information about users' preferences and also retrieves the panelized preference data; this viewset allows GET and POST requests. Permissions require the X_APP_TOKEN. 
+
+#### GET Response Content
+
+When retrieving all of the rows, the viewset response returns 10 results per page on default. The GET request can also pass the parameters "user_id" in order to filter preferences for a specific User.  
+
+Response Object is JSON with the following information:
+
+- count: Total count of available categories.
+- next: URL to the next page of availability (null if no next page).
+- previous: URL to the previous page of availability (null if no previous page).
+- results: A list of dictionaries, where each dict represents a row returned from the PanelUserPreferences model (see `models.md` for model documentation): [{"id": , "user_id": , "pref_monday_early_morning": , ... "pref_hobby_category_community": , "pref_hobby_category_gaming": }, {...}, ...]
+
+
+#### POST Request Content 
+The POST request requires the "user_id" field in order to execute the create() function. To create a row in the PanelUserPreferences model using the information provided by the User and Onboarding objects, this viewset runs functions to parse and prepare the user's Onboarding data, maps it to an expanded, one-hot encoded format, and then creates and saves the PanelUserPreferences object. 
 
 
 
-## Zipcodes Endpoint
+
+
+
+## ZipCode Endpoint
 
 #### Description
 Retrieves zip code information to fill the onboarding survey.
@@ -249,6 +298,7 @@ Retrieves zip code information to fill the onboarding survey.
 #### Response Attributes 
 - zipcode: The zipcode inputted
 - city: The city populated from the zipcode
+
 
 
 ## Event Suggestions Endpoint
