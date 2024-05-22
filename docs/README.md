@@ -65,10 +65,6 @@ Navigate to `localhost:1800/data` in your web browser and enter the superuser lo
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
-## Running The App On A Server
-
-<!-- TBD -->
-
 ## Unit Testing
 
 Following development, run unit testing. 
