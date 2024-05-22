@@ -120,54 +120,63 @@ class EventViewSet(viewsets.ModelViewSet):
         
         return queryset
 
-
     def create(self, request, *args, **kwargs):
         required_fields = ['title', 'hobby_type', 'datetime', 'duration_h', 'address1', 'max_attendees', 'city', 'state', 'zipcode', 'price', 'description']
         if not all([field in request.data for field in required_fields]):
             return Response({"error": f"Missing required fields: one of {", ".join(required_fields[:-1])}"}, status=400)
-        
+
+        # create the event
+        response = self.create_event(request.data)
+        if "error" in response:
+            return Response(response, status=400)
+        return Response(response, status=201)
+
+    def create_event(self, data):
+        """
+        Create an event from the provided data.
+        """
         # get the hobby type object
-        hobby_type = HobbyType.objects.get(type=request.data['hobby_type'])
+        hobby_type = HobbyType.objects.get(type=data['hobby_type'])
 
         # get the user/created_by
-        if 'created_by' not in request.data:
+        if 'created_by' not in data:
             user = None
         else:
-            user = User.objects.get(id=request.data['created_by'])
+            user = User.objects.get(id=data['created_by'])
 
         # get the latitute and longitude from the address
-        full_address = f"{request.data['address1']} {request.data['city']}, {request.data['state']}"
+        full_address = f"{data['address1']} {data['city']}, {data['state']}"
         addr_resp = geocode(full_address)
         if not addr_resp:
-            return Response({"error": "Invalid address"}, status=400)
+            return {"error": "Invalid address"}
         latitude, longitude = addr_resp['coords']
         latitude = '%.10f'%(latitude)
         longitude = '%.11f'%(longitude)
 
         # create the event
         data = {
-            'title': request.data['title'],
-            'description': request.data.get('description', None),
+            'title': data['title'],
+            'description': data.get('description', None),
             'hobby_type': hobby_type.id,
             'created_by': user.id,
-            'datetime': request.data['datetime'],
-            'duration_h': request.data['duration_h'],
-            'address1': request.data['address1'],
-            'address2': request.data.get('address2', None),
-            'city': request.data['city'],
-            'state': request.data['state'],
+            'datetime': data['datetime'],
+            'duration_h': data['duration_h'],
+            'address1': data['address1'],
+            'address2': data.get('address2', None),
+            'city': data['city'],
+            'state': data['state'],
             'latitude': latitude,
             'longitude': longitude,
-            'max_attendees': request.data['max_attendees'],
-            'zipcode': request.data['zipcode'],
-            'price': request.data['price']
+            'max_attendees': data['max_attendees'],
+            'zipcode': data['zipcode'],
+            'price': data['price']
         }
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save()
 
             # add user to event if applicable
-            if request.data.get('add_user', None):
+            if data.get('add_user', None):
                 event = Event.objects.get(id=serializer.data['id'])
                 user_event = UserEvents(user_id=user, event_id=event, rsvp='Yes', attended=False)
                 user_event.save()
@@ -178,8 +187,9 @@ class EventViewSet(viewsets.ModelViewSet):
             # trigger event suggestion panel data
             self.trigger_panel_event(serializer.data['id'])
 
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+            return serializer.data
+        return serializer.errors
+
     
     def trigger_panel_event(self, event_id):
         # to mimic a request object
@@ -1552,12 +1562,21 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         """
         Finetunes the ML model.
         """
+        result = self.perform_finetune()
+        if "error" in result:
+            return Response(result, status=400)
+        return Response(result, status=200)
+
+    def perform_finetune(self):
+        """
+        Core logic to finetune the ML model.
+        """
         user_events_data = UserEvents.objects.all()
         user_events_data_serializer = UserEventsSerializer(user_events_data, many=True)
         finetuning_data = []
 
         # grab data for finetuning
-        print("Grabbing the finetuning data...")
+        print("Getting the finetuning data...")
         for user_events_dict in user_events_data_serializer.data:
             finetuning_dict = {}
             user_id = user_events_dict['user_id']
@@ -1588,31 +1607,42 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 finetuning_data.append(finetuning_dict)
 
         # pretrain the model
-        print("Pretraining the model...")
-        print("\tGetting pretraining data...")
-        pretraining_data = self.get_training_data(request)
-        if pretraining_data.status_code != 200:
-            return Response({"error": "Failed to fetch pretraining data"}, status=pretraining_data.status_code)
+        print("Getting pretraining data...")
+        pretraining_data = self.collect_training_data()
+        if not pretraining_data:
+            return {"error": "Failed to fetch pretraining data"}
         
-        pretraining_data = pretraining_data.data
-
-        print("\tPretraining the model...")
-        epochs, loss_list, acc_list = pretrain(pretraining_data)
-
+        print("Pretraining the model...")
+        epochs_pt, loss_list_pt, acc_list_pt = pretrain(pretraining_data, num_epochs=30)
 
         # finetune the model
         print("Finetuning the model...")
-        # epochs = []
-        # loss_list = []
-        # acc_list = []
-        epochs, loss_list, acc_list = finetune(finetuning_data)
+        epochs, loss_list, acc_list = finetune(finetuning_data, num_epochs=30)
 
-        return Response({"data": finetuning_data, "epochs": epochs, "loss_list": loss_list, "acc_list": acc_list}, status=200)
+        return {
+            "data": finetuning_data,
+            "pretraining_epochs": epochs_pt,
+            "pretraining_loss_list": loss_list_pt,
+            "pretraining_acc_list": acc_list_pt,
+            "finetuning_epochs": epochs,
+            "finetuning_loss_list": loss_list,
+            "finetuning_acc_list": acc_list
+        }
 
     @action(detail=False, methods=['get'], url_path='get_training_data')
     def get_training_data(self, request):
         """
         Returns the training data for the ML model.
+        """
+        data = self.collect_training_data()
+        if not data:
+            return Response({"error": "No data found"}, status=404)
+        
+        return Response(data, status=200)
+
+    def collect_training_data(self):
+        """
+        Collects the training data for the ML model.
         """
         scenario_panel_data = PanelScenario.objects.all()
         scenario_panel_serializer = PanelScenarioSerializer(scenario_panel_data, many=True)
@@ -1627,22 +1657,36 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 user_panel_serialized = PanelUserPreferencesSerializer(user_panel)
                 data.append({**user_panel_serialized.data, **scenario_panel_dict})
 
-        # assert that all of the dictions have the same keys
-        keys = data[0].keys()
-        for scenario_panel_dict in data:
-            assert scenario_panel_dict.keys() == keys, f"Not all dictionaries have the same keys for user {scenario_panel_dict['user_id']} {set(scenario_panel_dict.keys()) - set(keys)}, {set(keys) - set(scenario_panel_dict.keys())}"
-
-        return Response(data, status=200)
+        return data
 
     @action(detail=False, methods=['get'], url_path='update')
     def update_suggestions(self, request, *args, **kwargs):
         """
         Update suggestion results for a given user.
+
+        If no user_id is provided, return it updates suggestions for all users.
         """
         user_id = request.query_params.get('user_id')
-        if not user_id:
-            return Response({"error": "User ID not provided"}, status=400)
+        if user_id:
+            result = self.perform_update_suggestions(user_id)
+            if "error" in result:
+                return Response(result, status=400)
+            return Response(result, status=200)
         
+        user_ids = User.objects.values_list('id', flat=True)
+        results = []
+        for user_id in user_ids:
+            result = self.perform_update_suggestions(user_id)
+            if "error" in result:
+                return Response(result, status=400)
+            results.append(result)
+        
+        return Response(results, status=200)
+        
+    def perform_update_suggestions(self, user_id):
+        """
+        Update suggestion results for a given user.
+        """
         try:
             user = User.objects.get(pk=user_id)
 
@@ -1651,7 +1695,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
             event_panel = PanelEvent.objects.all()
             
         except Exception as e:
-            return Response({"error": f"Failed to find user or event panel data: {str(e)}"}, status=400)
+            return {"error": f"Failed to find user or event panel data: {str(e)}"}
 
         user_panel_dict = user_panel.__dict__.copy()
         user_panel_dict.pop('_state')
@@ -1696,7 +1740,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         
         # serialize the results for the response
         serializer = SuggestionResultsSerializer(results, many=True)
-        return Response({"count": len(results), "next": None, "previous": None, "results": serializer.data}, status=200)
+        return {"data": serializer.data}
 
     @action(detail=False, methods=['get'], url_path='get_suggestions')
     def trigger_suggestions(self, request):
@@ -1730,9 +1774,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         top_events = SuggestionResults.objects.filter(
             user_id = user_id,
             event_id__datetime__date__range=(current_date, two_weeks_from_now) # Only events in the next two weeks
-            ) \
-            .exclude(
-                Exists(already_rsvp_subquery) # exclude if RSVPed already
             ).annotate(
                 current_attendees=Subquery(attendees_count_subquery)
             ).filter(
@@ -1747,6 +1788,11 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                       ]
 
         top_event_data = top_events[:2] # return the top 2 events
+
+        # filter out events the user has already RSVPed for
+        user_rsvps = UserEvents.objects.filter(user_id=user_id).values_list('event_id', flat=True)
+        top_event_data = [event for event in top_event_data if event['event_id'] not in user_rsvps]
+        print(top_event_data)
 
         # add event data
         for event_suggestion in top_event_data:
