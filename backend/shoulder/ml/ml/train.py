@@ -17,12 +17,14 @@ WEIGHTS = None
 TRAINING_CURVES_PATH = os.path.join(pathlib.Path(__file__).parent, "figures/training_curves.jpg")
 PARAMETERS_PATH = os.path.join(pathlib.Path(__file__).parent, "weights/parameters.pkl")
 
+
 def _ensure_weights():
     """Add the pretrained weights to the global scope"""
     global WEIGHTS
     if WEIGHTS is None:
         with open(PARAMETERS_PATH, 'rb') as file:
             WEIGHTS = pickle.load(file)
+
 
 def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
                  path: str=PARAMETERS_PATH) -> None:
@@ -41,7 +43,8 @@ def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
     with open(path, 'wb') as file:
         pickle.dump(params, file)
 
-    # plot_training_curves(epochs, loss_list, acc_list)
+    plot_training_curves(epochs, loss_list, acc_list)
+
 
 def plot_training_curves(epochs: list, loss_list: list, acc_list: list) -> None:
     """
@@ -92,6 +95,7 @@ def step(params: tuple, x: jaxlib.xla_extension.ArrayImpl,
     accuracy = jnp.mean(predicted_class == y)
     return params, loss, grads, accuracy
 
+
 def train(params: list, data: Dataset, num_epochs: int,
           path: str=PARAMETERS_PATH):
     """
@@ -127,6 +131,7 @@ def train(params: list, data: Dataset, num_epochs: int,
 
     save_outputs(epochs, loss_list, acc_list, params, path)
     return epochs, loss_list, acc_list, params
+
 
 def predict(X: jax.Array) -> jaxlib.xla_extension.ArrayImpl:
     """

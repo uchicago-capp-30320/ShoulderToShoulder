@@ -6,7 +6,7 @@ from shoulder.ml.ml.recommendation import preprocess, pretrain, finetune, recomm
 
 
 def test_preprocess():
-    path = "tests/test_data.pkl"
+    path = "shoulder/tests/test_data.pkl"
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
 
@@ -21,10 +21,10 @@ def test_preprocess():
 
 
 def test_pretrain():
-    path = "tests/test_data.pkl"
+    path = "shoulder/tests/test_data.pkl"
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
-    out = pretrain(raw_data, path="tests/test_pretrain.pkl")
+    out = pretrain(raw_data, path="shoulder/tests/test_pretrain.pkl")
     epochs, _, _ = out
     assert len(out) == 3, "Ensure output is a tuple"
     assert len(epochs) == 10, "Ensure correct number of epochs"
@@ -33,7 +33,7 @@ def test_pretrain():
 
 
 def test_finetune():
-    path = "tests/test_data.pkl"
+    path = "shoulder/tests/test_data.pkl"
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
     out = finetune(raw_data)
@@ -41,7 +41,7 @@ def test_finetune():
 
 
 def test_recommend():
-    path = "tests/test_data.pkl"
+    path = "shoulder/tests/test_data.pkl"
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
 
