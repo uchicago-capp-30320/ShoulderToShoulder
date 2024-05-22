@@ -39,17 +39,17 @@ The onboarding collects three types of information: demographic information, log
 
 Following the onboarding process, users are taken to their profile page. On the profile page, users can view their upcoming events and past events; rate previous events they have attended; edit their availability; edit thier personal information and password; edit their onboarding responses; and upload a profile photo. 
 
-![Profile](docs/media/profile_overview.png)
+![Profile](docs/media/profile_overview.mov)
 
 Events get added to the database by users themselves. Our application has a submission form for Event Creation where users can post an event they know about or plan on attending by entering it's information. The created event is saved to the database and will be recommended to matched users until it reaches capacity.
 
 ![Event Creation](docs/media/event_creation.png)
 
-Periodically, users receive event recommendations through notifications on their profile, and they can accept or reject the event invitation. 
+Periodically, users will receive event recommendations through notifications on their profile, and they can accept or reject the event invitation. 
 
 ![Event Recommendation](docs/media/event_suggestion.png)
 
-And finally, users can contact the developers at any point with questions and concerns they may have!
+And finally, users can contact the development team at any point with questions and concerns they may have!
 
 ![Contact Us](docs/media/contact_us_page.png)
 
