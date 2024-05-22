@@ -2628,6 +2628,18 @@ files = [
 pbr = ">=2.0.0,<2.1.0 || >2.1.0"
 
 [[package]]
+name = "tcl"
+version = "0.2"
+description = "A coding language used for Graphical user interface"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "Tcl-0.2-py3-none-any.whl", hash = "sha256:482e8147ed4c07563a621ffa5be874574527a9d60f5c3e9917b1f4079c5b27e5"},
+    {file = "Tcl-0.2.tar.gz", hash = "sha256:395f69c382dedf29f88b6cce9114024528fce7f073d7b84eaefa9b608f3ea193"},
+]
+
+[[package]]
 name = "tk"
 version = "0.1.0"
 description = "TensorKit is a deep learning helper between Python and C++."
@@ -2895,4 +2907,4 @@ tests = ["vcrpy-unittest"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "f6d61255737e29603109d8ba1a7a96232c84384abf830ece24154801639432cb"
+content-hash = "140aaddac59e72accba3715a0a2467595fa69ec64c6c6b92e38542bea9ef2090"

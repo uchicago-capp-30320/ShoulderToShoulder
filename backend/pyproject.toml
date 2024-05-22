@@ -38,6 +38,7 @@ geopy = "^2.4.1"
 ipykernel = "^6.29.4"
 pandas = "^2.2.2"
 tkl = "^0.9.0"
+tcl = "^0.2"
 
 
 [build-system]
