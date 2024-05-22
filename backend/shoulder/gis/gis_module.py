@@ -3,6 +3,7 @@ import certifi
 import ssl
 import geopy.geocoders
 from geopy.geocoders import Nominatim
+from geopy import distance
 
 # set up certificates 
 ctx = ssl.create_default_context(cafile=certifi.where()) 
@@ -23,7 +24,7 @@ def geocode(address):
 
     return {'address': location.address, 'coords': (location.latitude, location.longitude)}
 
-def distance_bin(loc_one, loc_two, ellipsoid = "WGS-84", unit = "miles"):
+def distance_bin(loc_one, loc_two, ellipsoid = "WGS-84"):
     '''
     Takes two coordinate sets (tuples) and returns a distance in miles and a distance bin, using this logic:
     0 - 5 miles difference: 0
@@ -33,7 +34,7 @@ def distance_bin(loc_one, loc_two, ellipsoid = "WGS-84", unit = "miles"):
     ...
     '''
 
-    dist = eval(f'distance.distance(loc_one, loc_two, ellipsoid = ellipsoid).{unit}')
+    dist = distance.distance(loc_one, loc_two, ellipsoid = ellipsoid).miles
     bin = dist // 5
 
     return (dist, bin)
