@@ -213,11 +213,10 @@ Stores users with every event they have been suggested (no matter if they decide
 
 `backend/shoulder/s2s/db_models/choice.py`
 
-Saves the display options (choices) for the frontend to show during onboarding. There is only one JSON object stored in this table, and it cannot be modified, as well as no other objects added, by users. It will remian static unless the development team decides to update the choices/options available for users to choose from during their onboarding. 
+Saves the display options (choices) for the frontend to show during onboarding. There is only one JSON object stored in this table, and it cannot be modified, as well as no other objects added, by users. It will remian static unless the development team decides to update the choices/options available for users to choose from during their onboarding.   
 
-| Column | Type | Description |
-|--------|------|-------------|
-| categories | JSONField | {"gender": ["Man", "Non-binary", "Woman", "Transgender", "Two-Spirit", "Other", "Prefer not to answer"], 
+Static JSON Object:  
+{"gender": ["Man", "Non-binary", "Woman", "Transgender", "Two-Spirit", "Other", "Prefer not to answer"], 
 "distance": ["Within 1 mile", "Within 5 miles", "Within 10 miles", "WIthin 15 miles", "Within 20 miles", "Within 30 miles", "Within 40 miles", "Within 50 miles", "No preference"], 
 "politics": ["Apolitical", "Conservative", "Moderate", "Liberal", "Other", "Prefer not to answer"], 
 "religion": ["Agnostic", "Atheist", "Bahá’í", "Buddhist", "Catholic", "Christian", "Hindu", "Jain", "Jewish", "Latter-day Saint", "Mormon", "Muslim", "Shinto", "Sikh", "Spiritual", "Taoist", "Zoroastrian", "None", "Other", "Prefer not to answer"], 
@@ -229,7 +228,11 @@ Saves the display options (choices) for the frontend to show during onboarding. 
 "similarity_metric": ["Completely dissimilar", "Moderately dissimilar", "Neutral", "Moderately similar", "Completely similar", "No preference"], 
 "sexual_orientation": ["Asexual", "Bisexual", "Gay", "Heterosexual/Straight", "Lesbian", "Pansexual", "Queer", "Questioning", "Other", "Prefer not to answer"], 
 "notification_method": ["Email Only", "Email and Text", "Text Only", "None"], 
-"similarity_attribute": ["Age range", "Gender", "Political Leaning", "Race or Ethnicity", "Religious Affiliation", "Sexual Orientation", "No preference"]} |
+"similarity_attribute": ["Age range", "Gender", "Political Leaning", "Race or Ethnicity", "Religious Affiliation", "Sexual Orientation", "No preference"]}
+
+| Column | Type | Description |
+|--------|------|-------------|
+| categories | JSONField | See static object above. |
 
 ## `PanelEvent` 
 
