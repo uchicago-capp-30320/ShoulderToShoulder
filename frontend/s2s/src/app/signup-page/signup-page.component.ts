@@ -12,7 +12,7 @@ import { UserSignUp } from '../_models/user';
 
 // helpers
 import { StrongPasswordRegx } from '../_helpers/patterns';
-import { confirmPasswordValidator } from '../_helpers/validators';
+import { confirmPasswordValidator, strongPasswordValidator } from '../_helpers/validators';
 
 /**
  * Implements the application's Sign Up page, including the sign-up form.
@@ -52,8 +52,7 @@ export class SignupPageComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
                                       Validators.required, 
-                                      Validators.minLength(8), 
-                                      Validators.pattern(StrongPasswordRegx)]),
+                                      strongPasswordValidator()]),
     confirmPassword: new FormControl('', [
                                           Validators.required, 
                                           confirmPasswordValidator]),

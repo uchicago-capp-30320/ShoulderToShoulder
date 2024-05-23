@@ -43,14 +43,12 @@ export class EventService {
    * Loads all events for the current user.
    */
   loadAllEvents() {
-    this.authService.userSubject.subscribe(user => {
-      this.user = user as User;
-      let url = `${this.userEventsEndpoint}?user_id=${this.user.id}`
-      console.log('Fetching events from: ', url)
-      this.fetchEvents(url).subscribe(events => {
-        this.getPastEvents(events);
-        this.getUpcomingEvents(events);
-      });
+    this.user = this.authService.userValue;
+    let url = `${this.userEventsEndpoint}?user_id=${this.user.id}`
+    console.log('Fetching events from: ', url)
+    this.fetchEvents(url).subscribe(events => {
+      this.getPastEvents(events);
+      this.getUpcomingEvents(events);
     });
   }
 
