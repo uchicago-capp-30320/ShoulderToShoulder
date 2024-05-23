@@ -3,10 +3,13 @@ import jaxlib
 from pathlib import Path
 import jaxlib.xla_extension
 from shoulder.ml.ml.recommendation import preprocess, pretrain, finetune, recommend
+import os, pathlib
 
+TEST_DATA_DIR = pathlib.Path(__file__).parent
+FIGURES_DIR = os.path.join(pathlib.Path(__file__).parent.absolute().parent, "ml/ml/figures")
 
 def test_preprocess():
-    path = "shoulder/tests/test_data.pkl"
+    path = os.path.join(TEST_DATA_DIR, "test_data.pkl")
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
 
@@ -21,19 +24,19 @@ def test_preprocess():
 
 
 def test_pretrain():
-    path = "shoulder/tests/test_data.pkl"
+    path = os.path.join(TEST_DATA_DIR, "test_data.pkl")
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
-    out = pretrain(raw_data, path="shoulder/tests/test_pretrain.pkl")
+    out = pretrain(raw_data, path=os.path.join(TEST_DATA_DIR, "test_pretrain.pkl"))
     epochs, _, _ = out
     assert len(out) == 3, "Ensure output is a tuple"
     assert len(epochs) == 10, "Ensure correct number of epochs"
-    assert Path('shoulder/ml/ml/figures/training_curves.jpg').is_file(), "Ensure training curve is saved"
+    assert Path(os.path.join(FIGURES_DIR, 'training_curves.jpg')).is_file(), "Ensure training curve is saved"
     assert Path(path).is_file(), "Ensure model is saved"
 
 
 def test_finetune():
-    path = "shoulder/tests/test_data.pkl"
+    path = os.path.join(TEST_DATA_DIR, "test_data.pkl")
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
     out = finetune(raw_data)
@@ -41,7 +44,7 @@ def test_finetune():
 
 
 def test_recommend():
-    path = "shoulder/tests/test_data.pkl"
+    path = os.path.join(TEST_DATA_DIR, "test_data.pkl")
     with open(path, 'rb') as f:
         raw_data = pickle.load(f)
 

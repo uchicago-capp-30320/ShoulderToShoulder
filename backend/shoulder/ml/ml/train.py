@@ -43,7 +43,7 @@ def save_outputs(epochs: list, loss_list: list, acc_list: list, params: list,
     with open(path, 'wb') as file:
         pickle.dump(params, file)
 
-    plot_training_curves(epochs, loss_list, acc_list)
+    # plot_training_curves(epochs, loss_list, acc_list)
 
 
 def plot_training_curves(epochs: list, loss_list: list, acc_list: list) -> None:
