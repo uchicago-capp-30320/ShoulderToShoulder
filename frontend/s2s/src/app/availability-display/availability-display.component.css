@@ -1,0 +1,137 @@
+.scheduler {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.625rem;
+}
+
+.schedule-availability {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr);
+    border-radius: 0.625rem;
+}
+
+.overlay {
+    background-color: rgba(255, 255, 255, 0.8); /* White overlay with some transparency */
+    pointer-events: none; /* Disable mouse events */
+}
+
+.disabled {
+    pointer-events: none; /* Disable mouse events */
+    opacity: 0.5; /* Visually indicate disabled state */
+}
+
+.header-row, .time-slot {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr);
+}
+
+.header-cell, .time-label, .day-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+}
+
+.day-cell {
+    background-color: #FFECD1;
+    border: .2rem solid white;
+}
+
+.header-cell {  
+    font-weight: 600;
+    background: none;
+    color: #15616D;
+}
+
+.time-slot {
+    border: none;
+}
+
+.day-cell {
+    cursor: pointer;
+}
+
+.filled {
+    background: #15616D;
+    color: #15616D;
+    width: 100%;
+    height: 2rem;
+    border-top: solid .2rem white;
+    border-bottom: solid .2rem white;
+    text-align: center;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+.edit-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+.confirm-button {
+    margin-top: 1rem;
+    background-color: #78290f;
+    border-color: #78290f;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.confirm-button:hover {
+    background-color: #78290fb3;
+    border-color: #78290fb3;
+}
+
+.cancel-button, .edit-button {
+    margin-top: 1rem;
+    background: none;
+    border-color: #78290f;
+    color: #78290f;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.cancel-button:hover {
+    background-color: #78290f21;
+    border-color: #78290fb3;
+}
+
+.edit-button:hover {
+    background-color: #78290f21;
+    border-color: #78290fb3;  
+}
+  
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to cover the whole application */
+  }
+  
+.loading-overlay-content {
+    background-color: #FFECD1;
+    height: 12rem;
+    width: 25rem;
+    padding: 2rem;
+    border-radius: 0.8rem;
+    text-align: center;
+}
+
+.loading-overlay-content p {
+    color: #15616D;
+}
+
+.loading-overlay-content h3 {
+    color: #001524;
+}

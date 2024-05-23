@@ -80,7 +80,7 @@ describe('OnboardingComponent', () => {
 
   it('should disable the next button when the user preferences form is invalid and page is 2', () => {
     component.page = 2;
-    component.userService.preferencesForm.setErrors({ invalid: true });
+    component.onboardingService.preferencesForm.setErrors({ invalid: true });
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('#next-button')).nativeElement;
     expect(button.disabled).toBeTrue(); // Using toBeTrue for better semantics
@@ -88,7 +88,7 @@ describe('OnboardingComponent', () => {
 
   it('should disable the submit button when the user scenario form is invalid and page is 4', () => {
     component.page = 4;
-    component.userService.scenariosForm.setErrors({ invalid: true });
+    component.onboardingService.scenariosForm.setErrors({ invalid: true });
     fixture.detectChanges();
     const button = fixture.debugElement.query(By.css('#submit-button')).nativeElement;
     expect(button.disabled).toBeTrue(); // Using toBeTrue for better semantics

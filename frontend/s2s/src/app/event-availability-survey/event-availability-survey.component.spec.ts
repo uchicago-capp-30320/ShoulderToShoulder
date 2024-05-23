@@ -106,24 +106,29 @@ describe('EventAvailabilitySurveyComponent', () => {
   });
 
   it('should correctly add a time range to the selected day', () => {
-    const form = component.userService.eventAvailabilityForm;
+    const form = component.availabilityService.userAvailability;
     const timeRange = 'Early morning (5-8a)';
     const correctTimes = [5, 6, 7, 8];
-    const days = ['mondayTimes'];
+    const days = ['Monday'];
 
     component.addTimeRange(timeRange, days);
-    const mondayTimes = form.get('mondayTimes')?.value;
-    expect(mondayTimes).toEqual(correctTimes);
+    correctTimes.forEach(time => {
+      expect(form[time].days[0]).toBeTrue();
+    });
   });
 
   it('should correctly remove a time from the selected day', () => {
-    const form = component.userService.eventAvailabilityForm;
+    const form = component.availabilityService.userAvailability;
     const timeRange = 'Early morning (5-8a)';
-    const days = ['mondayTimes'];
+    const earlyMorningTimes = [5, 6, 7, 8];
+    const days = ['Monday'];
+    earlyMorningTimes.forEach(time => {
+      form[time].days[0] = true;
+    });
 
-    form.get('mondayTimes')?.setValue([1, 2, 3, 4, 5, 6, 7, 8]);
     component.removeTimeRange(timeRange, days);
-    const mondayTimes = form.get('mondayTimes')?.value;
-    expect(mondayTimes).toEqual([1, 2, 3, 4]);
+    earlyMorningTimes.forEach(time => {
+      expect(form[time].days[0]).toBeFalse();
+    });
   });
 });

@@ -1,26 +1,21 @@
 from django.db import models
+from .hobby_type import HobbyType
 
 
 class Hobby(models.Model):
-    class HobbyType(models.TextChoices):
-        SPORT = "Sport"
-        MUSIC = "Music"
-        ART = "Art"
-        LITERATURE = "Literature"
-        SCIENCE = "Science"
-        TECHNOLOGY = "Technology"
-        CRAFTS = "Crafts"
-        GAMING = "Gaming"
-        COOKING = "Cooking"
-        OTHER = "Other"
+    '''
+    Model representing specific hobbies in the Shoulder to Shoulder database.
 
+    Table Columns: 
+        name (str): name of hobby
+        scenario_format (str): formatted phrase containing hobby for scenario
+            creation
+        type: fk to hobby type table, representing hobby categories
+        
+    '''
     name = models.CharField(max_length=100)
-    max_participants = models.IntegerField()
-    type = models.CharField(
-        max_length=20,
-        choices=HobbyType.choices,
-        default=HobbyType.OTHER
-    )
+    scenario_format = models.CharField(max_length=100, null=True, blank=True, default=None)
+    type = models.ForeignKey(HobbyType, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "{} ({}), {} participants max".format(self.name, self.type, self.max_participants)
+        return "{} ({})".format(self.name, self.type)

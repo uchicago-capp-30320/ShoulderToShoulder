@@ -1,0 +1,46 @@
+<div class="scheduler drop-shadow">
+    <!-- Message Service -->
+    <p-messages></p-messages>
+    
+    <!-- Edit and submit buttons for profile view -->
+    @if (profileView) {
+        <div *ngIf="!isEditable" class="edit-buttons">
+            <button pButton (click)="isEditable = true" class="edit-button">Edit Availability</button>
+        </div>
+        <div *ngIf="isEditable" class="edit-buttons">
+            <button pButton (click)="cancelAvailability()" class="cancel-button">Cancel</button>
+            <button pButton (click)="submitAvailability()" class="confirm-button">Confirm</button>
+        </div>        
+    }
+    <div [class.overlay]="!isEditable" class="schedule-availability">
+        <!-- Headers -->
+        <div class="header-cell">Time</div>
+        <div class="header-cell" *ngFor="let day of days">{{ day }}</div>
+
+        <!-- Time slots and day cells -->
+        <ng-container *ngFor="let slot of availabilityService.userAvailability; let i = index">
+            <div class="time-label">{{ slot.time.label }}</div>
+            <div 
+                class="day-cell" 
+                *ngFor="let available of slot.days; let j = index" 
+                (click)="toggleAvailability(i, j)" 
+                (keyup.enter)="toggleAvailability(i, j)"
+                [attr.tabindex]="isEditable ? '0' : '-1'"
+                [class.disabled]="!isEditable"
+            >
+                <div *ngIf="available" class="filled">Available</div>
+            </div>
+        </ng-container>
+    </div>    
+</div>
+
+<!-- Loading Dialog -->
+@if (showLoadingDialog) {
+    <div class="loading-overlay">
+        <div class="loading-overlay-content">
+            <h3>Updating availability...</h3>
+            <p class="m-0">Please wait while we update your availability.</p>
+            <app-loader></app-loader>
+        </div>
+    </div>
+}

@@ -1,22 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 // services
-import { UserService } from '../_services/user.service';
-
-// contants and helpers
-import { 
-  ageRanges, 
-  races, 
-  religiousAffiliations, 
-  genders, 
-  sexualOrientations,
-  politicalLeanings,
-} from '../_helpers/demographics';
-
-import { 
-  groupSimilarity, 
-  groupSimilarityAttrs 
-} from '../_helpers/preferences';
+import { OnboardingService } from '../_services/onboarding.service';
+import { ChoicesService } from '../_services/choices.service';
 
 /**
  * DemographicsSurveyComponent
@@ -24,36 +10,47 @@ import {
  * This component handles the survey for users to input their demographic 
  * information. It allows users to select their age range, race, religious 
  * affiliation, gender, sexual orientation, and political affiliation.
+ * The actual demographics survey form is defined in the onboarding service.
  * 
- * Example:
+ * @example
  * ```
  * <app-demographics-survey></app-demographics-survey>
  * ```
+ * 
+ * @see OnboardingService
+ * @see ChoicesService
  */
 @Component({
   selector: 'app-demographics-survey',
   templateUrl: './demographics-survey.component.html',
   styleUrl: './demographics-survey.component.css'
 })
-export class DemographicsSurveyComponent {
-  groupSimilarity = groupSimilarity;
-  groupSimilarityAttrs = groupSimilarityAttrs;
-  ageRanges = ageRanges;
-  races = races;
-  religiousAffiliations = religiousAffiliations;
-  genders = genders;
-  sexualOrientations = sexualOrientations;
-  politicalLeanings = politicalLeanings;
+export class DemographicsSurveyComponent implements OnInit {
+  choices: { [index: string]: any[]; } = {};
 
   constructor(
-    public userService: UserService
+    public onboardingService: OnboardingService,
+    private choicesService: ChoicesService,
     ) {
+  }
+
+  ngOnInit() {
+    this.getChoices();
+  }
+
+  /**
+   * Gets the choices from the choices service.
+   */
+  getChoices() {
+    this.choicesService.choices.subscribe(choices => {
+      this.choices = choices;
+    });
   }
 
   /**
    * Submits the demographics form and saves the information in the User service.
    */
   onSubmit() {
-    console.log(this.userService.demographicsForm.value);
+    console.log(this.onboardingService.demographicsForm.value);
   }
 }

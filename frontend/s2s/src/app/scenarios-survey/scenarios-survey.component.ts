@@ -1,15 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 
 // services
-import { UserService } from '../_services/user.service';
+import { OnboardingService } from '../_services/onboarding.service';
 import { HobbyService } from '../_services/hobbies.service';
 
 // helpers
 import { Scenario, ScenarioInterface } from '../_helpers/scenario';
-import { days } from '../_helpers/preferences';
-import { getRandomInt } from '../_helpers/utils';
-import { Hobby } from '../_helpers/preferences';
+import { days, groupSizes, distances } from '../_helpers/preferences';
+import { getRandomInt, range } from '../_helpers/utils';
+import { Hobby } from '../_models/hobby';
+import { maxScenarios } from '../_models/scenarios';
 
 /**
  * ScenariosSurveyComponent
@@ -19,12 +21,12 @@ import { Hobby } from '../_helpers/preferences';
  * types of events, each with various attributes. Users are asked which event 
  * they would rather attend based on the provided information.
  * 
- * Example:
+ * @example
  * ```
  * <app-scenarios-survey></app-scenarios-survey>
  * ```
  * 
- * @see UserService
+ * @see OnboardingService
  * @see HobbyService
  */
 @Component({
@@ -32,58 +34,55 @@ import { Hobby } from '../_helpers/preferences';
   templateUrl: './scenarios-survey.component.html',
   styleUrl: './scenarios-survey.component.css'
 })
-export class ScenariosSurveyComponent {
-  // scenario information
+export class ScenariosSurveyComponent implements OnInit{
+  // scenario management
   scenarioNum = 1;
-  maxScenarios = 8;
+  maxScenarios = maxScenarios;
   scenarios: ScenarioInterface[] = []
   scenarioNavigation: any[] = [];
 
+  private subscription = new Subscription();
+
   // hobby information
   usedHobbyIndexes: number[] = [];
-  availableHobbies: Hobby[] = this.HobbyService.scenarioHobbies;
+  availableHobbies: Hobby[] = [];
 
-  // scenario additional information
+  // scenario attributes
+  durationMax = 6;
   days = days;
-  groupSizes = [
-    '1-5',
-    '6-10',
-    '10-15',
-    '15+',
-  ];
-  distances = [
-    'within 1 mile',
-    'within 5 miles',
-    'within 10 miles',
-    'within 15 miles',
-    'within 20 miles',
-    'within 30 miles',
-    'within 40 miles',
-    'within 50 miles',
-  ];
+  groupSizes = groupSizes;
+  distances = distances;
   timeCategories = ["morning", "afternoon", "evening"]; // getting a limited subset
   alteredVariableMap: { [index: string]: any[] } = {
     "time": this.timeCategories,
     "day": days,
     "numPeople": this.groupSizes,
-    "mileage": this.distances
+    "mileage": this.distances,
+    "duration": range(1, this.durationMax+1)
   }
 
   constructor(
-    public userService: UserService,
+    public onboardingService: OnboardingService,
     private sanitizer: DomSanitizer,
     private HobbyService: HobbyService
-  ) {
-    this.getScenarios();
-    this.getScenarioNavigation();
+  ) {}
+
+  ngOnInit(): void {
+    this.subscription.add(
+      this.HobbyService.scenarioHobbies.subscribe(hobbies => {
+        this.availableHobbies = hobbies;
+        this.getScenarios();
+        this.getScenarioNavigation();
+      })
+    );
   }
 
   /**
    * Gets the scenario navigation (e.g., Scenario X of Y).
    */
   getScenarioNavigation() {
-    for (let i = 1; i <= this.maxScenarios; i++) {
-      let nav = {label: `Scenario ${i} of ${this.maxScenarios}`, value: i}
+    for (let i = 1; i <= maxScenarios; i++) {
+      let nav = {label: `Scenario ${i} of ${maxScenarios}`, value: i}
       this.scenarioNavigation.push(nav);
     }
   }
@@ -98,26 +97,26 @@ export class ScenariosSurveyComponent {
 }
 
   /**
-   * Gets 8 scenarios for the form.
+   * Gets maxScenarios scenarios for the form.
    * 
-   * In the scenarios form, the user is presented with 8 scenarios comparing 
+   * In the scenarios form, the user is presented with maxScenarios scenarios comparing 
    * two types of events. Each scenario includes a hobby, a time, a day, the 
    * maximum number of people, and a mileage. In each scenario, one of the
    * variables is altered to create a comparison between the two events.
    * The user is then asked which event they would rather attend.
    */
-
   getScenarios() {
-    const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage'];
+    const alteredVariables: string[] = ['time', 'day', 'numPeople', 'mileage', 'duration'];
     const numVariables: number = alteredVariables.length;
 
     // Generate scenarios using the remaining items
-    for (let i = 0; i < this.maxScenarios; i++) {
+    for (let i = 0; i < maxScenarios; i++) {
+      
       // get the variable to alter
       const typeIndex = i % numVariables;
       let alteredVariable = alteredVariables[typeIndex];
 
-      // Get two hobbies that are not the same
+      // Get two unique hobbies
       let hobby1 = this.getHobby();
       let hobby2 = this.getHobby();
 
@@ -126,12 +125,14 @@ export class ScenariosSurveyComponent {
       const day = days[getRandomInt(0, days.length - 1)];
       const numPeople = this.groupSizes[getRandomInt(0, this.groupSizes.length - 1)];
       const mileage = this.distances[getRandomInt(0, this.distances.length - 1)];
+      const duration = String(getRandomInt(1, this.durationMax))
 
       let altVariableMap: {[index: string]: string} = {
         "time": time,
         "day": day,
         "numPeople": numPeople,
-        "mileage": mileage
+        "mileage": mileage,
+        "duration": duration
       };
 
       // create the scenario
@@ -143,6 +144,7 @@ export class ScenariosSurveyComponent {
           day, 
           numPeople, 
           mileage, 
+          duration as unknown as number,
           alteredVariable
         );
 
@@ -164,8 +166,8 @@ export class ScenariosSurveyComponent {
       );
 
       // set the form control scenario
-      let controlName = `scenario${i + 1}Choice`;
-      this.userService.scenariosForm.controls[controlName].setValue(scenario);
+      let controlName = `scenario${i + 1}`;
+      this.onboardingService.scenariosForm.controls[controlName].setValue(scenario);
     }
   }
 
@@ -211,7 +213,7 @@ export class ScenariosSurveyComponent {
    * Moves to the next scenario.
    */
   nextScenario() {
-    if (this.scenarioNum === this.maxScenarios) {
+    if (this.scenarioNum === maxScenarios) {
       return;
     }
     this.scenarioNum++;
@@ -250,10 +252,7 @@ export class ScenariosSurveyComponent {
 
     // set the form control scenario
     let controlName = `scenario${scenario.id}Choice`;
-    this.userService.scenariosForm.controls[controlName].setValue(scenario);
-    
-    let controlNameValue = `scenario${scenario.id}`;
-    this.userService.scenariosForm.controls[controlNameValue].setValue(value);
+    this.onboardingService.scenariosForm.controls[controlName].setValue(value);
 
     // move to the next scenario
     this.nextScenario();
@@ -266,8 +265,8 @@ export class ScenariosSurveyComponent {
    * @returns The class for the scenario button.
    */
   getClass(scenario: ScenarioInterface, value: number) {
-    let controlName = `scenario${scenario.id}`;
-    let selectedScenario = this.userService.scenariosForm.controls[controlName].value;
+    let controlName = `scenario${scenario.id}Choice`;
+    let selectedScenario = this.onboardingService.scenariosForm.controls[controlName].value;
     return selectedScenario === value ? 'selected-button' : 'event-button';
   }
 
@@ -275,6 +274,6 @@ export class ScenariosSurveyComponent {
    * Submits the scenarios survey form.
    */
   onSubmit() {
-    console.log(this.userService.scenariosForm.value)
+    console.log(this.onboardingService.scenariosForm.value)
   }
 }

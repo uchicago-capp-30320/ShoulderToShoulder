@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { PrimeNGConfig } from "primeng/api"; 
+import { Router } from '@angular/router';
 
 // services
-import { UserService } from '../_services/user.service';
+import { OnboardingService } from '../_services/onboarding.service';
+import { AuthService } from '../_services/auth.service';
+
+// helpers
 import { formControlFieldMap } from '../_helpers/preferences';
 
 /**
@@ -14,10 +18,13 @@ import { formControlFieldMap } from '../_helpers/preferences';
  * preferences, event availability, and scenarios. Users can navigate between 
  * pages, submit the collected data, and view a confirmation dialog.
  * 
- * Example:
+ * @example
  * ```
  * <app-onboarding></app-onboarding>
  * ```
+ * 
+ * @see OnboardingService
+ * @see AuthService
  */
 @Component({
   selector: 'app-onboarding',
@@ -25,23 +32,45 @@ import { formControlFieldMap } from '../_helpers/preferences';
   styleUrl: './onboarding.component.css'
 })
 export class OnboardingComponent implements OnInit{
-  page: number = 0;
+  page: number = -1;
   maxPage: number = 4;
+
   showConfirm: boolean = false;
   showInvalidDialog: boolean = false;
+
+  showExit: boolean = false;
   invalidDialogMessage: string = "Please fill out all required fields.";
 
+  progressBarColorMap: { [index: number]: string[] } = {
+    1: ['#104C56', '#FFECD1'],
+    2: ['#166A79', '#FFECD1'],
+    3: ['#1C889B', '#FFECD1'],
+    4: ['#23A6BE', '#001524'],
+  }
+
   constructor(
-    public userService: UserService,
-    private primengConfig: PrimeNGConfig
-  ) {}
+    public onboardingService: OnboardingService,
+    private primengConfig: PrimeNGConfig,
+    private authService: AuthService,
+    private router: Router
+  ) {
+  }
 
   ngOnInit(): void {
     this.primengConfig.ripple = true;
+    
+    // set page
+    this.authService.getOnboardingStatus().subscribe(onboarded => {
+      if (onboarded) {
+        this.router.navigate(['/profile/1']);
+      } else {
+        this.page = 0;
+      }
+    });
   }
 
   /**
-   * Moves to the next page.
+   * Moves to the next page of the onboarding process.
    */
   nextPage() {
     this.goToTop();
@@ -49,7 +78,17 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Moves to the previous page.
+   * Determines if the next button should be disabled.
+   * 
+   * @returns True if the next button should be disabled, false otherwise.
+   */
+  nextButtonDisabled(){
+    return (this.page === 1 && this.onboardingService.preferencesForm.invalid)
+    || (this.page===2 && this.onboardingService.demographicsForm.invalid)
+  }
+
+  /**
+   * Moves to the previous page of the onboarding process.
    */
   previousPage() {
     this.goToTop();
@@ -73,18 +112,24 @@ export class OnboardingComponent implements OnInit{
    * @param event The click event.
    */
   highlightInvalidFields(event: any) {
+    this.invalidDialogMessage = '';
+    
     // map the page number to the form
     let pageFormMap: { [index: number]: FormGroup} = {
-      1: this.userService.preferencesForm,
-      2: this.userService.demographicsForm,
-      3: this.userService.eventAvailabilityForm,
-      4: this.userService.scenariosForm
+      1: this.onboardingService.preferencesForm,
+      2: this.onboardingService.demographicsForm,
+      4: this.onboardingService.scenariosForm
     }
 
     // if the button is disabled, the form is invalid
-    if (event.target.querySelector('button').disabled){
+    if (event.target.querySelector('button') && event.target.querySelector('button').disabled){
       let form = pageFormMap[this.page];
-      form.markAllAsTouched();
+      for (let control in form.controls) {
+        let formControl = form.controls[control]
+        if (formControl.invalid) {
+          formControl.markAsDirty();
+        }
+      }
       this.showInvalidDialog = form.invalid ? true : false;
       this.invalidDialogMessage += " The following fields are missing values: "
 
@@ -109,16 +154,46 @@ export class OnboardingComponent implements OnInit{
   }
 
   /**
-   * Submits the demographics form.
+   * Hides the confirmation dialog.
+   */
+  hideConfirmDialog() {
+    this.showConfirm = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
+   * Shows the exit dialog.
+   */
+  showExitDialog() {
+    this.showExit = true;
+  }
+
+  /**
+   * Hides the invalid dialog.
+   */
+  hideInvalidDialog() {
+    this.showInvalidDialog = false;
+    document.body.style.overflow = 'auto';
+  }
+
+  /**
+   * Exits onboarding by sending current data to the backend and signing 
+   * user out.
+   */
+  exitOnboarding() {
+    let submit = this.page === this.maxPage + 1 ? true : false;
+    this.onboardingService.exitOnboarding(submit);
+  }
+
+  /**
+   * Submits the onboarding forms.
    */
   onSubmit() {
     this.showConfirm = false;
-    console.log("Onboading forms submitted")
-    console.log("Demographics: ", this.userService.demographicsForm.value);
-    console.log("Preferences: ", this.userService.preferencesForm.value);
-    console.log("Event Availability: ", this.userService.eventAvailabilityForm.value);
-    console.log("Scenarios: ", this.userService.scenariosForm.value);
     this.page = this.maxPage + 1;
+    this.onboardingService.submitOnboardingForms(true).subscribe(() => {
+      console.log("Onboading forms submitted");
+      this.router.navigate(['/profile/1']);
+    });
   }
-
 }

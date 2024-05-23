@@ -1,25 +1,43 @@
 .signup-button {
     background-color: #F06E28;
     color: #FFECD1;
-    border-radius: 5px;
-    padding: 7px;
+    border-radius: .3rem;
+    padding: 0.438rem;
     width: 5rem;
     text-align: center;
 }
 
 .login-button {
-    border: 1px solid #F06E28;
+    border: 0.063rem solid #F06E28;
     color: #F06E28;
-    border-radius: 5px;
-    padding: 7px;
+    border-radius: .3rem;
+    padding: 0.438rem;
     width: 5rem;
     text-align: center;
+    background: none;
+}
+
+.nav-bar {
+    z-index: 0;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.avatar {
+    width: 3.125rem;
+    height: 3.125rem;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 1.25rem;
+    border: 1px solid #fbe8ce;
 }
 
 ::ng-deep .p-menubar {
     background-color: #15616D;
-    padding: 10px;
-    border: 0px;
+    padding: 0.625rem;
+    border: 0rem;
 }
 ::ng-deep .p-menubar .p-menubar-root-list > .p-menuitem > .p-menuitem-content .p-menuitem-link {
     color: #FFECD1;

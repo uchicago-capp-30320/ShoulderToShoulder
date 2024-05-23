@@ -1,0 +1,50 @@
+<main>
+    <div class="header">
+        <h1 class="dark-text">Welcome Back to <br>Shoulder to Shoulder!</h1>
+        <p class="subtitle dark-text"> Use this form to gain access to your Shoulder To Shoulder account. </p>
+    </div>
+
+
+    <div class="login-form drop-shadow">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container">
+            <!-- Login Error -->
+            <p class="error-message" *ngIf="showLoginError">Invalid email or password. Please try again.</p>
+
+            <!-- email -->
+            <div class="field">
+                <label for="email" class="label">Email<span class="required">*</span></label>
+                <small class="p-error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">Valid email is required</small>
+                <input type="text" pInputText placeholder="shrek@swamp.net" formControlName="email" autocomplete="username"/>
+            </div>
+
+            <!-- password -->
+            <div class="field">
+                <label for="password" class="label">Password<span class="required">*</span></label>
+                <small class="p-error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">Password is required</small>
+                <input #passwordInput
+                    type="password" 
+                    pInputText 
+                    placeholder="••••••••••" 
+                    formControlName="password" 
+                    autocomplete="current-password" 
+                    (focus)="togglePasswordField(passwordInput)" 
+                    (blur)="togglePasswordField(passwordInput)"
+                    tooltipStyleClass="customtooltip" 
+                    tooltipEvent="focus" 
+                    pTooltip="Password should be at least 8 characters and contain one upper case letter, one lower case letter, one number, and one special character." />
+            </div>
+
+            <!-- log in redirect -->
+            <div>
+                <p class="light-text">Don't have an account? <a routerLink="/sign-up" class="link">Sign up for one here.</a></p>
+            </div>
+            
+            <!-- submit buttom -->
+            <div>
+                <!-- eslint-disable @angular-eslint/template/elements-content-->
+                <button pButton type="submit" label="Log In" class="submit-button" [disabled]="loginForm.invalid"></button>
+            </div>
+        </form>
+    </div>
+</main>
+<app-footer></app-footer>

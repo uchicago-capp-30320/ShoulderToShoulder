@@ -7,7 +7,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 
 // components and services
 import { ScenariosSurveyComponent } from './scenarios-survey.component';
-import { Hobby } from '../_helpers/preferences';
+import { Hobby } from '../_models/hobby';
 
 // helpers
 import { ScenarioInterface } from '../_helpers/scenario';
@@ -62,9 +62,9 @@ describe('ScenariosSurveyComponent', () => {
   });
 
   it('should correctly get a random hobby', () => {
-    let hobby1: Hobby = { name: 'Arcade bar', scenarioForm: 'an arcade bar', maxParticipants: 10, type: 'GAMING' };
-    let hobby2: Hobby = { name: 'Art Museums', scenarioForm: 'an art museum', maxParticipants: 10, type: 'ARTS AND CULTURE' };
-    let hobby3: Hobby = { name: 'Attending Book Signing', scenarioForm: 'a book signing', maxParticipants: 5, type: 'LITERATURE' };
+    let hobby1: Hobby = { id: 0, name: 'Arcade bar', scenario_format: 'an arcade bar', type: 'GAMING' };
+    let hobby2: Hobby = { id: 1, name: 'Art Museums', scenario_format: 'an art museum', type: 'ARTS AND CULTURE' };
+    let hobby3: Hobby = { id: 2, name: 'Attending Book Signing', scenario_format: 'a book signing', type: 'LITERATURE' };
 
     component.availableHobbies = [hobby1, hobby2, hobby3];
     component.usedHobbyIndexes = [];
@@ -89,7 +89,7 @@ describe('ScenariosSurveyComponent', () => {
       id: 1,
       description: 'Test scenario'
     }
-    component.userService.scenariosForm.controls["scenario1"].setValue(1);
+    component.onboardingService.scenariosForm.controls["scenario1"].setValue(1);
     
     let value = 1;
     let className = component.getClass(scenario, value);

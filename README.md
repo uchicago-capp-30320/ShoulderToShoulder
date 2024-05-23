@@ -1,106 +1,82 @@
-# Shoulder2Shoulder
+# Shoulder To Shoulder
 
-A web application to foster community engagement and fight the loneliness pandemic.
+A web application created to combat social isolation and fight the loneliness epidemic by fostering meaningful connections.
 
-## Repository Contents
+![HomePage](docs/media/home_page.png)
 
-#### `frontend`
-Directory with our web application's frontend development, which is created to display information and interact with users. Our frontend employs Angular.
+## About The Application
 
-#### `backend/shoulder` 
-Directory with our web application's backend development. Our backend employs Django with an AWS posgress database. The database contains account information, user data, and event data. The backend development team manages the database, the API endpoints, and involves a machine learning component. 
+In 2023, the United States Department of Health and Human Services acknowledged a profound challenge affecting millions: loneliness and social isolation have reached epidemic levels in America. This growing health concern has profound implications, as loneliness can impact mental and physical health significantly. At Shoulder to Shoulder, we are committed to addressing this silent epidemic through the power of community and connection.
 
-#### `backend/shoulder/ml`
-Directory which contains our web application's machine learning development. Machine learning is used by our application to provide users with recommendations for events to attend.
+Our platform is designed not just as a tool, but as a community builder that enables individuals to find and connect with like-minded people in their local area. We believe that meaningful social interactions are a key to improving personal well-being and overall community health. Shoulder to Shoulder offers a dynamic space where users can easily schedule activities and explore new places within their city, fostering real-world connections that go beyond digital interactions.
 
-To generate user recommendations, we employ a deep factorization machine (DeepFM). A DeepFM
-consists of three main components, as shown in the picture below.
+We facilitate a variety of events and activities, from hiking groups and book clubs to art classes and tech meetups. Our goal is to make it easier than ever for people to engage in shared interests and hobbies, which are crucial for building strong social ties. Whether you're new to the city, seeking to expand your social circle, or simply looking to explore new interests, Shoulder to Shoulder serves as your gateway to a more connected and fulfilling life.
 
-![DeepFM architecture](https://d2l.ai/_images/rec-deepfm.svg)
+Join us in combating loneliness by engaging in your community through Shoulder to Shoulder. Let's rediscover the joy of connection together, one event at a time.
 
-The embedding layer takes in vectors of user by event information and encodes it into a higher
-dimensional space. Each unique feature value is represented by a unique integer which corresponds
-to an index into an embedding matrix. For example, if each user by item data point contains
-five features and we want to represent features by ten dimensional embeddings, then each of
-the five features would have a 1 x 10 embedding vector and the user would have a 5x10 embedding,
-which is updated during training. This is equivalent to learning a linear layer but it saves
-computation by not having to execute expensive matrix multiplications. The outputs of the
-factorizaion machine are raw scores for each user.
+## UI/UX (User) Tutorial 
 
-The user-event embeddings are then passed into a facorization machine and an MLP. A factorization
-machine is like a linear regression that accounts for every second order user-event x user-event
-interaction but instead of naively conducting such a regression, the factorization computes
-an equivalents but more computationally efficient model.
+Users start by signing up for an account with their name, email, phone number, and passowrd. 
 
-The user-event embeddings are also passed to an MLP, which utilizes dense layers with relu and
-a tunable dropout parameter for regularization. The final output of the MLP are also raw scores
-for each user.
+![Sign Up](docs/media/sign_up_page.png)
 
-Finally, the raw outputs from the factorization machine and the MLP are summed and passed
-through a sigmoid function to calculate probabilities of a user attending an event.
+They must complete an onboarding process in order to successfully complete their account creation. Users' onboarding responses become the data that our machine learning model uses to generate personalized event recommendations for users. 
 
-Our overall training strategy is to pretrain our DeepFM once we have a sufficient amount of
-information and then periodically fine tune it by executing a small number of training epochs
-on new data.
+![Enter Onboarding](docs/media/onboarding_entry.png)
 
-For more information on factorization machines and DeepFMs, see:
+The onboarding collects three types of information: demographic information, logistics about their interests and availability, and an event preference survey. 
 
-- Rendle, Steffen. "Factorization machines." In 2010 IEEE International conference on data mining, pp. 995-1000. IEEE, 2010.
+![Onboarding 1.1](docs/media/onboarding_1_1.png)  
 
-- Guo, Huifeng, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. "DeepFM: a factorization-machine based neural network for CTR prediction." arXiv preprint arXiv:1703.04247 (2017).
+![Onboarding 1.2](docs/media/onboarding_1_2.png)  
 
-## Virtual Environments
+![Onboarding 2](docs/media/onboarding_2.png)  
 
-#### `frontend`
+![Onboarding 3](docs/media/onboarding_3.png)  
 
-The frontend development uses `npm` as its package manager. To use npm, you first need to install [nodejs](https://nodejs.org/en). (follow the installation instructions provided on the nodejs website, or run `brew install nodejs` in your terminal). Afterward, to install the necessary packages, follow these steps:
+![Onboarding 4](docs/media/onboarding_4.png)  
+
+
+Following the onboarding process, users are taken to their profile page. On the profile page, users can view their upcoming events and past events; rate previous events they have attended; edit their availability; edit thier personal information and password; edit their onboarding responses; and upload a profile photo. 
+
+![Profile](docs/media/profile_overview.gif)
+
+Events get added to the database by users themselves. Our application has a submission form for Event Creation where users can post an event they know about or plan on attending by entering it's information. The created event is saved to the database and will be recommended to matched users until it reaches capacity.
+
+![Event Creation](docs/media/event_creation.png)
+
+Periodically, users will receive event recommendations through notifications on their profile, and they can accept or reject the event invitation. 
+
+![Event Recommendation](docs/media/event_suggestion.png)
+
+And finally, users can contact the development team at any point with questions and concerns they may have!
+
+![Contact Us](docs/media/contact_us_page.png)
+
+
+## Application Features
+The frontend, user facing component employs Angular with Nodejs dependencies. The backend connection employs Django with an AWS Postgre(SQL) database. All of our application's data is generated through user inputs.
+
+Special features of our application include:
+- A machine learning module, which trains user preferences and feedback to create personalized event recommendations for each user. To generate user recommendations, our machine learning algorithm employs a deep factorization machine (DeepFM). 
+- A GIS module, which is used to locate events happening within a specified distance of a user's resident location; verify that inputted addresses exist; and locate places based on a given zipcode. 
+- Deployment on AWS, which sets up our app on a server.
+- The AWS deployment also establishes a CronJob which is used to schedule weekly email notifications sent from the app to users (every Sunday at 8am CT). Additionally, when users sign up for an event, the event confirmation and information gets sent in an email to the user.
+- Secure information handling is established in multiple ways: 1. users must sign-up and log-in with their email and password (which must, at a minimum, have 8 characters, one lower case letter, one upper case letter, one number, and one special charcter); 2. JSON web tokens are used to authorize interaction with our API, including JWT access tokens for each user and also a single, application wide JWT token (each endpoint in the backend has different permissions and can only be accessed if the users / super users possess the required tokens); 3. integrated Zipcode and GIS APIs are used to verify if inputted locations exist, in order to prevent fake locations from being saved to events. 
+
+## How To Run The App
+
+To open and use the application, first clone the repository to your local machine, and navigate to the `ShoulderToShoulder` directory in your terminal. 
+
+Next, you will need to set up and launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps in your terminal:
 
 <pre>
 ```
+brew install nodejs
 cd frontend
 npm install -g @angular/cli
 npm install
-```
-</pre>
-
-This process only needs to be done once. Once the packages have been installed, `cd frontend` at any time to develop in the frontend. 
-
-#### `backend`
-
-The backend employs a poetry virtual environment with Python 3.12. To create the environment for the first time, follow these steps:
- 
-<pre>
-```
-cd backend
-poetry env use 3.12
-poetry shell
-poetry install 
-
-#to exit the environment
-exit
-```
-</pre>
-
-If you have already created the poetry environment once before, you will need to enter it every time you develop in the backend. Follow these steps to open the environment: 
-
-<pre>
-```
-cd backend
-poetry env use 3.12
-poetry shell
-
-#to exit the environment
-exit 
-```
-</pre>
-
-## How to use our app
-
-To use the application, you will need to launch both the frontend module and the backend module at the same time in order to get the frontend and backend working in tandem. Follow these steps:
-
-<pre>
-```
-cd frontend/s2s
+cd s2s
 ng serve
 ```
 </pre>
@@ -114,47 +90,32 @@ Now, open a new terminal and run:
 cd backend
 poetry env use 3.12
 poetry shell
+poetry install
 python shoulder/manage.py runserver
 ```
 </pre>
 
-Navigate to `localhost:1800/` in your web browser and enter the superuser credentials.
+Navigate to `localhost:8000/data` in a new tab in your web browser and enter the superuser log-in credentials.
+
+Now, you can interact with the app through the frontend `localhost:4200/` browser, and your responses and data will be saved in real time to the `localhost:8000/data` backend browser. 
 
 To exit the application, run ctrl+C (i.e. ^C) in both terminals to shut down the local hosts.
 
-## Pre-Commit Checklist
-
-#### `backend`: 
-
-<pre>
-```
-cd backend
-pre-commit run --all
-```
-</pre>
-
-#### `frontend`: 
-
-<pre>
-```
-cd frontend
-npm run lint
-npm run format
-```
-</pre>
-
-
 ## Meet the Team
+
+![Meet the Team](docs/media/meet_the_team.png)
 
 - Aïcha Camara
     - Aïcha is a second year Master's student at the University of Chicago. They are passionate about exploring Chicago and interested in finding new places to hike or eat tasty food around the city.
 - Chanteria Milner
-    - Chanteria is a second year Master's student studying computational analysis and public policy. When she is not coding for the U.S. Census Bureau, Chanteria enjoys finding new knitting patterns, buying too many books, and petting her cat Clover.
+    - Chanteria is a second year Master's student studying computational analysis and public policy. When she is not coding for the U.S. Census Bureau, Chanteria enjoys finding new knitting patterns, buying too many books, and petting her cat, Clover.
 - Darren Colby
     - Darren is a second year Master's student at the University of Chicago. He is excited to apply his data science skills to difficult public policy challenges and spends his free time swimming and excercising.
 - Ethan Arsht
     - Ethan is a second year graduate student at the University of Chicago. He likes biking, baking, board games, building things, and alliteration.
+- Kate Habich
+    - Kate is a second year Master's student at the University of Chicago studying comutational analysis and public policy with a focus on environmental issues. They enjoy picking up new hobbies and skills including crochetting, writing, and spending time outdoors.
 - Sarah Walker
     - Sarah is a second year Master's student at the University of Chicago. As a student it can be difficult for her to find time to invest in her social life; she also finds it difficult to meet new people and try new things on such a tight schedule. She is glad to be working on a project aimed at connecting others who may feel lonely or stuck in their daily routines.
-- Kate Habich
+
 

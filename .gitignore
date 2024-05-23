@@ -1,9 +1,12 @@
 frontend/s2s/node_modules
 frontend/s2s/src/assets/api_keys/*
+backend/settings.py
 .DS_Store
 .vscode/
 *.log
 *.pyc
+curl.txt
+playground*.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -32,6 +35,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+backend/shoulder/static
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

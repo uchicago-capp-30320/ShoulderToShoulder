@@ -1,4 +1,4 @@
-// Description: This file contains regular expressions for survey form validation.
+// Purpose: This file contains regular expressions for survey form validation.
 
 /**
  * Pattern for ensuring a srong password.

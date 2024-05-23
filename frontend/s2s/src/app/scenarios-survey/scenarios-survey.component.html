@@ -8,7 +8,7 @@
 </div>
 
 <div class="scenario-form drop-shadow">
-    <form [formGroup]="this.userService.scenariosForm" (ngSubmit)="onSubmit()" class="form-container">
+    <form [formGroup]="this.onboardingService.scenariosForm" (ngSubmit)="onSubmit()" class="form-container">
         <!-- scenarios -->
         <div class="field" *ngFor="let scenario of scenarios">
             <div *ngIf="scenario.id === scenarioNum">
