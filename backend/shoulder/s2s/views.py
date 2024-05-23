@@ -1711,22 +1711,23 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return {"error": f"Failed to find user or event panel data: {str(e)}"}
 
-        user_panel_dict = user_panel.__dict__.copy()
-        user_panel_dict.pop('_state')
-        user_panel_dict['user_id'] = user_panel_dict.pop('user_id_id')
+        user_panel_dict = PanelUserPreferencesSerializer(user_panel).data
 
         # convert events to list of dictionaries and constructs the distance portion of the dictionary
-        event_panel_dict_lst = [event.__dict__.copy() for event in event_panel]
+        event_panel_dict_lst = [PanelEventSerializer(event).data for event in event_panel]
         distance_panel_list = [] # Set up list to hold panel distance data
         event_ids = [] # Set up list to hold event IDs
+        attendance = []
+        
+        # get distance and attendance
         for event in event_panel_dict_lst:
-            event.pop('_state')
-            event['event_id'] = event.pop('event_id_id')
-
             # Construct a distance dictionary for each event-user pair
             distance_panel_list.append(
                 self.distance_calc(event['event_id'], user_id)[0]
             )
+            user_event = UserEvents.objects.filter(user_id=user_id, event_id=event['event_id'])
+            if user_event.exists():
+                attendance.append(user_event[0].attended)
             
         # Combine the three dictionaries to form rows
         model_list = [

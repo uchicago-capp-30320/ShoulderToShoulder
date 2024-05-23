@@ -37,7 +37,16 @@
             <!-- password -->
             <div class="field">
                 <label for="password" class="label">Password<span class="required">*</span></label>
-                <small class="p-error light-error" *ngIf="signupForm.get('password')?.dirty && signupForm.get('password')?.invalid">Password is required</small>
+                <small class="p-error light-error" *ngIf="signupForm.get('password')?.dirty && signupForm.get('password')?.errors">
+                    <ng-container>Password missing:</ng-container>
+                    <ul style="margin-top: 0;">
+                        <li *ngIf="signupForm.get('password')?.errors?.['missingUpperCase']">at least one uppercase letter</li>
+                        <li *ngIf="signupForm.get('password')?.errors?.['missingLowerCase']">at least one lowercase letter</li>
+                        <li *ngIf="signupForm.get('password')?.errors?.['missingNumber']">at least one number</li>
+                        <li *ngIf="signupForm.get('password')?.errors?.['missingSpecial']">at least one special character</li>
+                        <li *ngIf="signupForm.get('password')?.errors?.['minLength']">atleast 8 characters</li>
+                    </ul>
+                </small>
                 <input #passwordInput
                     type="password" 
                     pInputText 

@@ -2,6 +2,45 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
+ * Custom validator to check if a password meets the following criteria:
+ * - Contains at least one uppercase letter
+ * - Contains at least one lowercase letter
+ * - Contains at least one number
+ * - Contains at least one special character
+ * @returns If the password meets all criteria, returns null. If the password
+ *          does not meet all criteria, returns an error object.
+ */
+export function strongPasswordValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (!value) {
+      return null;
+    }
+
+    const errors: any = {};
+
+    if (!/[A-Z]/.test(value)) {
+      errors.missingUpperCase = 'Password must contain at least one uppercase letter.';
+    }
+    if (!/[a-z]/.test(value)) {
+      errors.missingLowerCase = 'Password must contain at least one lowercase letter.';
+    }
+    if (!/\d/.test(value)) {
+      errors.missingNumber = 'Password must contain at least one number.';
+    }
+    if (!/[!@#$%^&*()+\-=[\]{};':"\\|,.<>/?]/.test(value)) {
+      errors.missingSpecial = 'Password must contain at least one special character.';
+    }
+    if (value.length < 8) {
+      errors.minLength = 'Password must be at least 8 characters long.';
+    }
+
+    return Object.keys(errors).length ? errors : null;
+  };
+}
+
+/**
  * Custom validator to check if two controls have the same value.
  * 
  * @param control Control to validate

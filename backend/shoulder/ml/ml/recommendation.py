@@ -31,7 +31,10 @@ def preprocess(raw_data: list, predict=False) -> jaxlib.xla_extension.ArrayImpl:
         user_id = d["user_id"]
         del d["user_id"]
         del d["id"]
-        del d["scenario_id"]
+        if d.get('scenario_id'):
+            del d["scenario_id"]
+        if d.get('event_id'):
+            del d["event_id"]
 
         if not predict:
             if d["attended_event"] == 1:
