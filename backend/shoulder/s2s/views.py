@@ -131,21 +131,21 @@ class EventViewSet(viewsets.ModelViewSet):
             return Response(response, status=400)
         return Response(response, status=201)
 
-    def create_event(self, data):
+    def create_event(self, request_data):
         """
         Create an event from the provided data.
         """
         # get the hobby type object
-        hobby_type = HobbyType.objects.get(type=data['hobby_type'])
+        hobby_type = HobbyType.objects.get(type=request_data['hobby_type'])
 
         # get the user/created_by
-        if 'created_by' not in data:
+        if 'created_by' not in request_data:
             user = None
         else:
-            user = User.objects.get(id=data['created_by'])
+            user = User.objects.get(id=request_data['created_by'])
 
         # get the latitute and longitude from the address
-        full_address = f"{data['address1']} {data['city']}, {data['state']}"
+        full_address = f"{request_data['address1']} {request_data['city']}, {request_data['state']}"
         addr_resp = geocode(full_address)
         if not addr_resp:
             return {"error": "Invalid address"}
@@ -155,28 +155,29 @@ class EventViewSet(viewsets.ModelViewSet):
 
         # create the event
         data = {
-            'title': data['title'],
-            'description': data.get('description', None),
+            'title': request_data['title'],
+            'description': request_data.get('description', None),
             'hobby_type': hobby_type.id,
             'created_by': user.id,
-            'datetime': data['datetime'],
-            'duration_h': data['duration_h'],
-            'address1': data['address1'],
-            'address2': data.get('address2', None),
-            'city': data['city'],
-            'state': data['state'],
+            'datetime': request_data['datetime'],
+            'duration_h': request_data['duration_h'],
+            'address1': request_data['address1'],
+            'address2': request_data.get('address2', None),
+            'city': request_data['city'],
+            'state': request_data['state'],
             'latitude': latitude,
             'longitude': longitude,
-            'max_attendees': data['max_attendees'],
-            'zipcode': data['zipcode'],
-            'price': data['price']
+            'max_attendees': request_data['max_attendees'],
+            'zipcode': request_data['zipcode'],
+            'price': request_data['price']
         }
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
             serializer.save()
 
             # add user to event if applicable
-            if data.get('add_user', None):
+            print("DATA: ", request_data)
+            if request_data.get('add_user', None):
                 event = Event.objects.get(id=serializer.data['id'])
                 user_event = UserEvents(user_id=user, event_id=event, rsvp='Yes', attended=False)
                 user_event.save()
@@ -1707,7 +1708,6 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         event_ids = [] # Set up list to hold event IDs
         for event in event_panel_dict_lst:
             event.pop('_state')
-            event.pop('id')
             event['event_id'] = event.pop('event_id_id')
 
             # Construct a distance dictionary for each event-user pair

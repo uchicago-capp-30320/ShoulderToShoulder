@@ -1,11 +1,15 @@
 # Frontend Team
 
-/ShoulderToShoulder/frontend/ @chanteriam @sarahwalker10
+/ShoulderToShoulder/frontend/ @chanteriam 
 
 # Backend Team
 
-/ShoulderToShoulder/backend/ @necabotheking @ehabich @ethanarsht @chanteriam
+/ShoulderToShoulder/backend/ @necabotheking @ehabich @sarahwalker10
 
 # ML Team
 
-/ShoulderToShoulder/ml @dscolby @ethanarsht
+/ShoulderToShoulder/backend/shoulder/ml @dscolby
+
+# GIS Team
+
+/ShoulderToShoulder/backend/shoulder/gis @ethanarsht
