@@ -1572,6 +1572,40 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         """
         Core logic to finetune the ML model.
         """
+        # get finetuning data
+        finetuning_data = self.get_finetuning_data()
+
+        # get pretraining data
+        print("Getting pretraining data...")
+        pretraining_data = self.collect_training_data()
+        if not pretraining_data:
+            return {"error": "Failed to fetch pretraining data"}
+        
+        # pretrain the model
+        print("Pretraining the model...")
+        epochs_pt, loss_list_pt, acc_list_pt = pretrain(pretraining_data, num_epochs=30)
+
+        # finetune the model
+        print("Finetuning the model...")
+        epochs, loss_list, acc_list = finetune(finetuning_data, num_epochs=30)
+
+        return {
+            "data": finetuning_data,
+            "pretraining_epochs": epochs_pt,
+            "pretraining_loss_list": loss_list_pt,
+            "pretraining_acc_list": acc_list_pt,
+            "finetuning_epochs": epochs,
+            "finetuning_loss_list": loss_list,
+            "finetuning_acc_list": acc_list
+        }
+    
+    def get_finetuning_data(self):
+        """
+        Gets the finetuning data for the ML model.
+
+        Returns:
+            finetuning_data (list): List of dictionaries containing the finetuning data
+        """
         user_events_data = UserEvents.objects.all()
         user_events_data_serializer = UserEventsSerializer(user_events_data, many=True)
         finetuning_data = []
@@ -1607,28 +1641,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
                 finetuning_dict['attended_event'] = user_events_dict['attended']
                 finetuning_data.append(finetuning_dict)
 
-        # pretrain the model
-        print("Getting pretraining data...")
-        pretraining_data = self.collect_training_data()
-        if not pretraining_data:
-            return {"error": "Failed to fetch pretraining data"}
-        
-        print("Pretraining the model...")
-        epochs_pt, loss_list_pt, acc_list_pt = pretrain(pretraining_data, num_epochs=30)
-
-        # finetune the model
-        print("Finetuning the model...")
-        epochs, loss_list, acc_list = finetune(finetuning_data, num_epochs=30)
-
-        return {
-            "data": finetuning_data,
-            "pretraining_epochs": epochs_pt,
-            "pretraining_loss_list": loss_list_pt,
-            "pretraining_acc_list": acc_list_pt,
-            "finetuning_epochs": epochs,
-            "finetuning_loss_list": loss_list,
-            "finetuning_acc_list": acc_list
-        }
+        return finetuning_data
 
     @action(detail=False, methods=['get'], url_path='get_training_data')
     def get_training_data(self, request):

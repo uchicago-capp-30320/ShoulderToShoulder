@@ -41,6 +41,7 @@ pytest-django = "^4.8.0"
 django-ses = "^4.0.0"
 pandas = "^2.2.2"
 tkl = "^0.9.0"
+tcl = "^0.2"
 
 
 [build-system]
