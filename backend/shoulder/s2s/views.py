@@ -1735,7 +1735,7 @@ class SuggestionResultsViewSet(viewsets.ModelViewSet):
         ]
 
         # Get recommendations
-        prediction_probs = recommend(model_list, inference=True)
+        prediction_probs = recommend(model_list)
         event_ids = [event['event_id'] for event in event_panel_dict_lst]
 
         results = []
